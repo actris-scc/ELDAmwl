@@ -1,0 +1,33 @@
+# use glob syntax.
+syntax: glob
+*.elc
+*.swp
+*.pyc
+*.pyo
+*.fs.*
+*.fs
+*.mo
+*~
+*.opj
+log/*
+test_depol/*
+input/*
+dcu/*
+zusatz_infos/*
+output/*
+intermediate/*
+*.bak
+.eggs
+.idea
+.project
+.pydevproject
+.settings
+*.egg-info
+*.egg-info/*
+dist
+dist/*
+parts/*
+_build/*
+# switch to regexp syntax.
+syntax: regexp
+^\.pc/
