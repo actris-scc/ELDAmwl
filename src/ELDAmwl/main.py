@@ -13,3 +13,5 @@ create_logger(meas_id)
 db_utils = DBUtils()
 
 db_utils.read_tasks(meas_id)
+
+log(INFO,'the end')

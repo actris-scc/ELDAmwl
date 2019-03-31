@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from ELDAmwl.database.tables.measurements import Measurements
+from ELDAmwl.database.tables.system_product import SystemProduct
 
 try:
     import configs.config as cfg
@@ -30,10 +31,10 @@ class DBUtils(object):
         self.session = sessionmaker(bind=self.engine)()
 
     def read_tasks(self, measurement_id):
-        measurements = self.session.query(
+        tasks = self.session.query(
             Measurements
-        )
-        for measurement in measurements:
+        ).join(SystemProduct)
+        for task in tasks:
             pass
 #        measurements = self.Base.classes.measurements
 #        sypro = self.Base.classes.system_product
