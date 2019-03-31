@@ -7,5 +7,5 @@ class SystemProduct(Base):
     __tablename__ = 'system_product'
 
     ID = Column(INTEGER, primary_key=True)
-    _system_ID = Column(INTEGER, nullable=False, index=True, server_default=text("'0'"))
-    _Product_ID = Column(INTEGER, nullable=False, index=True, server_default=text("'0'"))
+    _system_ID = Column(INTEGER, nullable=False, index=True)
+    _Product_ID = Column(INTEGER, nullable=False, index=True)

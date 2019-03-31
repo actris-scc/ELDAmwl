@@ -31,9 +31,9 @@ class DBUtils(object):
         self.session = sessionmaker(bind=self.engine)()
 
     def read_tasks(self, measurement_id):
-        tasks = self.session.query(
-            Measurements
-        ).join(SystemProduct)
+        tasks = self.session.query(#Measurements,
+                                   SystemProduct)
+                #.filter(SystemProduct._system_ID == Measurements._hoi_system_ID)
         for task in tasks:
             pass
 #        measurements = self.Base.classes.measurements
