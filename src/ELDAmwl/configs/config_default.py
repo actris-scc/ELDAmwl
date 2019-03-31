@@ -18,7 +18,7 @@ TEMP_PATH = 'd:/temp'
 DB_SERVER = 'localhost'
 DB_USER = 'earlinet'
 DB_PASS = 'dwdlidar'
-DB_DB = 'scc_dev_20180523'
+DB_DB = 'scc_dev_20190228'
 
 # ===================
 # Logging

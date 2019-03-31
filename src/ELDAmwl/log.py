@@ -3,7 +3,7 @@ from ELDAmwl.error import ERROR_LOG_DIR_NOT_EXISTS
 from logging import FileHandler
 from logging import Formatter
 from logging import getLogger
-from logging import log
+from logging import log, INFO, ERROR
 from logging import StreamHandler
 from sys import stdout
 
@@ -16,10 +16,6 @@ try:
 except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg
 
-if not os.path.exists(cfg.LOG_PATH):
-    log.notice('Log file directory does not exists {path}, please create it '.
-               format(path=cfg.LOG_PATH))
-    sys.exit(ERROR_LOG_DIR_NOT_EXISTS)
 
 try:
     import colorlog
@@ -62,3 +58,10 @@ def create_logger(meas_id):
     file_handler.setFormatter(file_handler_formatter)
     file_handler.setLevel(cfg.log_level_file)
     logger.addHandler(file_handler)
+
+
+if not os.path.exists(cfg.LOG_PATH):
+    log(ERROR, 'Log file directory does not exists {path}, please create it '.
+               format(path=cfg.LOG_PATH))
+    sys.exit(ERROR_LOG_DIR_NOT_EXISTS)
+
