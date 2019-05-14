@@ -3,8 +3,7 @@ from logging import ERROR
 from ELDAmwl import log
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.system_product import SystemProduct
-from ELDAmwl.database.tables.extinction import ExtinctionOption, ExtMethod
-
+from ELDAmwl.database.tables.extinction import ExtinctionOption, ExtMethod, OverlapFile
 
 dbutils = DBUtils()
 
@@ -26,8 +25,24 @@ def read_extinction_options(product_id):
         .filter(ExtinctionOption._product_ID == product_id)
 
     if options.count() == 1:
+        if options('_overlap_file_ID') == -1:
+            overlap_correction = False
+            overlap_file = None
+        else:
+            o_file = dbutils.session.query(OverlapFile,
+                                            ExtinctionOption) \
+                .filter(OverlapFile.ID == ExtinctionOption._overlap_file_ID) \
+                .filter(ExtinctionOption._product_ID == product_id)
+            if o_file.count() == 1:
+                overlap_correction = True
+                overlap_file = o_file('filename')
+            else:
+                log(ERROR, 'cannot find overlap file with id {} in db'.format( options('_overlap_file_ID') ))
+
         result = {'angstroem': options.value('angstroem'),
                   'python_classname': options.value('python_classname'),
+                  'overlap_correction': overlap_correction,
+                  'overlap_file': overlap_file
                   }
     else:
         log(ERROR, 'wrong number of extinction options ({})'.format(options.count()))
