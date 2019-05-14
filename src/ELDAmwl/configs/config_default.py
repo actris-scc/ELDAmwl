@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.log import INFO
 
+from logging import INFO
+
+from ELDAmwl.registry import Registry
 
 # ===================
 # Directories
@@ -41,3 +43,5 @@ log_colors = {
 
 WRITE_EXTENDED_OUTPUT = True
 APPEND_LOG_FILE = False
+
+registry = Registry()
