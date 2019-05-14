@@ -24,11 +24,28 @@ class BaseOperationFactory(object):
         klass = registry.find_class_byname(self.__class__, klass_name)
         return klass
 
+class Extetinction(BaseOperationFactory):
+
+    name = 'Extinction'
+
 
 class BaseOperation(object):
     """
     Base class of operations
     """
+
+class Klett(BaseOperation):
+    """
+
+    """
+registry.register_class(Extetinction, 'Klett algorithmus', Klett)
+
+
+class Iteration(BaseOperation):
+    """
+
+    """
+registry.register_class(Extetinction, 'Iterativer algorithmus', Iteration)
 
 
 registry.register_class(BaseOperationFactory, 'test', BaseOperation)

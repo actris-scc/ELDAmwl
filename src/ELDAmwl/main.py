@@ -7,7 +7,9 @@ from ELDAmwl.database import db_functions
 from ELDAmwl.log import create_logger
 
 from ELDAmwl.registry import Registry
-import ELDAmwl.factory
+#import ELDAmwl.factory
+from ELDAmwl.factory import Extetinction
+
 
 
 try:
@@ -34,5 +36,7 @@ db_utils = DBUtils()
 
 db_functions.read_extinction_options(ext_id)
 db_utils.read_tasks(meas_id)
+
+extinction = Extetinction('Huhu Params')
 
 log(INFO,'the end')
