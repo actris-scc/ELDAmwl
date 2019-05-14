@@ -3,6 +3,7 @@
 from logging import log, INFO, ERROR
 
 from ELDAmwl.database.db import DBUtils
+from ELDAmwl.database import db_functions
 from ELDAmwl.log import create_logger
 
 from ELDAmwl.registry import Registry
@@ -22,6 +23,8 @@ registry.status()
 
 
 meas_id = '20180515oh01'
+ext_id = 281
+
 create_logger(meas_id)
 
 log(INFO,'hello world')
@@ -29,6 +32,7 @@ log(INFO,'hello world')
 
 db_utils = DBUtils()
 
+db_functions.read_extinction_options(ext_id)
 db_utils.read_tasks(meas_id)
 
 log(INFO,'the end')

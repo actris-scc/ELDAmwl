@@ -56,6 +56,7 @@ setup(
         'flake8-string-format',
         'flake8-todo',
         'pytest',
+        'attrdict',
     ],
     extras_require={
         'test': [
