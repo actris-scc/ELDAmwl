@@ -17,17 +17,19 @@ class BaseOperationFactory(object):
         klass(*args, **kwargs)
 
     def get_classname_from_db(self):
-        return 'test'
+        return 'Klett algorithmus'
 
     def get_class(self):
         klass_name = self.get_classname_from_db()
-        klass = registry.find_class_byname(self.__class__, klass_name)
+        klass = registry.find_class_by_name(self.__class__, klass_name)
         return klass
 
 class Extetinction(BaseOperationFactory):
 
     name = 'Extinction'
 
+    def get_classname_from_db(self):
+        return 'Klett algorithmus'
 
 class BaseOperation(object):
     """
@@ -38,6 +40,10 @@ class Klett(BaseOperation):
     """
 
     """
+    def __init__(self, str):
+        print('Klett sagt ', str)
+
+
 registry.register_class(Extetinction, 'Klett algorithmus', Klett)
 
 

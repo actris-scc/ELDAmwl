@@ -17,7 +17,7 @@ try:
 except ModuleNotFoundError:
     import configs.config_default as cfg
 
-registry.update( cfg.registry.factory_registry )
+import ELDAmwl.plugins.plugin
 
 registry.status()
 
@@ -32,7 +32,7 @@ log(INFO,'hello world')
 
 db_utils = DBUtils()
 
-db_functions.read_extinction_options(ext_id)
+#db_functions.read_extinction_options(ext_id)
 db_utils.read_tasks(meas_id)
 
 extinction = Extetinction('Huhu Params')

@@ -58,7 +58,7 @@ class Registry(object):
             factory_registration = self.get_factory_registration(factory)
         else:
             return None
-        if hasattr(factory_registration, klass_name):
+        if klass_name in factory_registration:
             return factory_registration[klass_name]
         else:
             return None

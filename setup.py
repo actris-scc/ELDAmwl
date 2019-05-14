@@ -55,6 +55,7 @@ setup(
         'flake8-todo',
         'pytest',
         'attrdict',
+        'sphinx',
     ],
     extras_require={
         'test': [

@@ -43,5 +43,3 @@ log_colors = {
 
 WRITE_EXTENDED_OUTPUT = True
 APPEND_LOG_FILE = False
-
-registry = Registry()
