@@ -13,7 +13,7 @@ import sys
 
 try:
     import ELDAmwl.configs.config as cfg
-except ModuleNotFoundError:
+except ImportError:
     import ELDAmwl.configs.config_default as cfg
 
 

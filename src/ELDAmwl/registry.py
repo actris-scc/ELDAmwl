@@ -90,3 +90,5 @@ class Registry(object):
                 continue
             for klass_name, klass in reg.items():
                 self.factory_registry[factory_name][klass_name] = klass
+
+registry = Registry()

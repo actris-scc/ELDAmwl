@@ -6,7 +6,7 @@ from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database import db_functions
 from ELDAmwl.log import create_logger
 
-from ELDAmwl.registry import Registry
+from ELDAmwl.registry import registry
 #import ELDAmwl.factory
 from ELDAmwl.factory import Extetinction
 
@@ -16,8 +16,6 @@ try:
     import configs.config as cfg
 except ModuleNotFoundError:
     import configs.config_default as cfg
-
-registry = Registry()
 
 registry.update( cfg.registry.factory_registry )
 
