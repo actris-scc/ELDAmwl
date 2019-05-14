@@ -11,13 +11,12 @@ long_description = '\n\n'.join([
     open('CHANGES.rst').read(),
 ])
 
-
 setup(
     name='ELDAmwl',
     version='0.1',
     description='ELDA multi wavelengt SCC module',
     long_description=long_description,
-    # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
+
     classifiers=[
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.7',
@@ -29,8 +28,7 @@ setup(
     author_email='ina@ina-mattis.de',
     url='https://pypi.python.org/pypi/ELDAmwl',
     license='GPL version 2',
-    packages=find_packages('src', exclude=['ez_setup']),
-    namespace_packages=[],
+    packages=['ELDAmwl'],
     package_dir={'': 'src'},
     include_package_data=True,
     zip_safe=False,

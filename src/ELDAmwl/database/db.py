@@ -8,7 +8,7 @@ from ELDAmwl.database.tables.system_product import SystemProduct
 
 try:
     import configs.config as cfg
-except ModuleNotFoundError:
+except ImportError:
     import configs.config_default as cfg
 
 

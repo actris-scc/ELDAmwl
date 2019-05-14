@@ -1,4 +1,4 @@
-from ELDAmwl.main import registry
+from ELDAmwl.registry import registry
 
 try:
     import configs.config as cfg
@@ -46,8 +46,3 @@ class Iteration(BaseOperation):
 
     """
 registry.register_class(Extetinction, 'Iterativer algorithmus', Iteration)
-
-
-registry.register_class(BaseOperationFactory, 'test', BaseOperation)
-
-registry.status()
