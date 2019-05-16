@@ -56,6 +56,7 @@ setup(
         'pytest',
         'attrdict',
         'sphinx',
+        'xarray'
     ],
     extras_require={
         'test': [

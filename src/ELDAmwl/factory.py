@@ -35,3 +35,25 @@ class BaseOperation(object):
     Base class of operations
     """
 
+    def __init__(self):
+        """
+        Initialize the params, input and result storage
+        """
+        self._params = None
+
+    @property
+    def params(self):
+        """
+        Return the params
+        :returns: The params
+        """
+        return self._params
+
+    @params.setter
+    def params(self, value):
+        """
+        Set the params
+        :param value: The params. Usually an instance of a class derived from Params
+        """
+        self._params = value
+
