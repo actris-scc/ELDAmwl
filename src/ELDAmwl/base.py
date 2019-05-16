@@ -4,6 +4,13 @@
 
 """
 
+class Params(object):
+    """
+    Base Params
+    """
+
+    def __init__(self):
+        pass
 
 class _Operator(object):
     """

@@ -32,7 +32,7 @@ class Registry(object):
 
         Args:
             factory: The factory to register for
-            klass_name: The name under which the class is registered
+            klass_name: The name under which the class is registered (in the db)
             klass: The class to register
 
         Returns:

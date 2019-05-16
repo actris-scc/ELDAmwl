@@ -8,7 +8,8 @@ from ELDAmwl.log import create_logger
 
 from ELDAmwl.registry import registry
 #import ELDAmwl.factory
-from ELDAmwl.factory import Extetinction
+from ELDAmwl.extinction_factories import Extinction
+from ELDAmwl.elda_mwl_factories import RunELDAmwl
 
 
 
@@ -22,19 +23,31 @@ import ELDAmwl.plugins.plugin
 registry.status()
 
 
-meas_id = '20180515oh01'
-ext_id = 281
+meas_id = '20181017oh00'
+#hoi_system_id =182 (RALPH Bauhof night)
+#products=
+#   328: Rbsc&Depol 532, uc7
+#   379: LR 355 (377+378)
+#   381: LR 532
+#   330: EBsc 1064
+#   378: RBsc 355
+#   377: Ext 355
+#   598: mwl (378 + 379)
+
+ext_id = 377
 
 create_logger(meas_id)
 
 log(INFO,'hello world')
 
+elda_mwl = RunELDAmwl(meas_id)
+elda_mwl.read_tasks()
 
-db_utils = DBUtils()
+#db_utils = DBUtils()
 
 #db_functions.read_extinction_options(ext_id)
-db_utils.read_tasks(meas_id)
+#db_utils.read_tasks(meas_id)
 
-extinction = Extetinction('Huhu Params')
+#extinction = Extinction('Huhu Params').get_product()
 
 log(INFO,'the end')

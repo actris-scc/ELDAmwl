@@ -1,2 +1,2 @@
-#import ELDAmwl.plugins.myklett
+#import ELDAmwl.plugins.SavitzkyGolaySlope
 

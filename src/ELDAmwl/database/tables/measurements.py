@@ -71,7 +71,7 @@ class Measurements(Base):
 
     id = Column(INTEGER, primary_key=True)
     meas_id = Column(VARCHAR(15), nullable=False)
-    __hoi_stations__ID = Column(CHAR(3), index=True)
+    _hoi_stations_ID = Column('__hoi_stations__ID', CHAR(3), index=True)
     _hoi_system_ID = Column(INTEGER, nullable=False, index=True)
     start = Column(DateTime)
     stop = Column(DateTime, nullable=False)

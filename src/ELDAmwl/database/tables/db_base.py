@@ -50,15 +50,6 @@ class ErrorMethod(Base):
 #     method = Column(String(100), nullable=False)
 #
 #
-# class ProductType(Base):
-#     __tablename__ = '_product_types'
-#
-#     ID = Column(INTEGER, primary_key=True)
-#     product_type = Column(String(100), nullable=False)
-#     nc_file_id = Column(CHAR(1), nullable=False)
-#     processor_ID = Column(INTEGER, nullable=False)
-#
-#
 # class RamBscMethod(Base):
 #     __tablename__ = '_ram_bsc_methods'
 #
@@ -487,14 +478,6 @@ class ErrorMethod(Base):
 #     interpolation_id = Column(INTEGER)
 #
 #
-# class Product(Base):
-#     __tablename__ = 'products'
-#
-#     ID = Column(INTEGER, primary_key=True)
-#     _usecase_ID = Column(INTEGER)
-#     _prod_type_ID = Column(INTEGER, nullable=False, index=True)
-#     __hoi_stations__ID = Column(CHAR(3))
-#     _hirelpp_product_option_ID = Column(INTEGER)
 #
 #
 # class RamanBackscatterOption(Base):
