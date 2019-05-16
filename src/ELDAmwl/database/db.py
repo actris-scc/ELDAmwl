@@ -13,10 +13,13 @@ except ImportError:
 
 
 class DBUtils(object):
-    def __init__(self):
-        self.init_engine()
+    def __init__(self, connect_string=None):
+        self.connect_string = connect_string
+        self.init_engine(connect_string)
 
-    def connect_string(self):
+    def get_connect_string(self):
+        if self.connect_string:
+            return self.connect_string
         result = 'mysql+pymysql://{user}:{passw}@{host}/{db}'.format(
             user=cfg.DB_USER,
             passw=cfg.DB_PASS,
