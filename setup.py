@@ -54,6 +54,7 @@ setup(
         'flake8-string-format',
         'flake8-todo',
         'pytest',
+        'pytest-mock',
         'attrdict',
         'sphinx',
     ],

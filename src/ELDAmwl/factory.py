@@ -1,9 +1,9 @@
 from ELDAmwl.registry import registry
 
 try:
-    import configs.config as cfg
+    import ELDAmwl.configs.config as cfg
 except ModuleNotFoundError:
-    import configs.config_default as cfg
+    import ELDAmwl.configs.config_default as cfg
 
 class BaseOperationFactory(object):
     """
@@ -17,10 +17,13 @@ class BaseOperationFactory(object):
     """
     name = 'BaseFactory'
 
+    def __init__(self):
+        pass
 
-    def __init__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs):
         klass = self.get_class()
         klass(*args, **kwargs)
+        return klass
 
     def get_classname_from_db(self):
         pass

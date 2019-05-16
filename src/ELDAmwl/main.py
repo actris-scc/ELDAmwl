@@ -7,16 +7,14 @@ from ELDAmwl.database import db_functions
 from ELDAmwl.log import create_logger
 
 from ELDAmwl.registry import registry
-#import ELDAmwl.factory
-from ELDAmwl.extinction_factories import Extinction
 from ELDAmwl.elda_mwl_factories import RunELDAmwl
 
 
 
 try:
-    import configs.config as cfg
+    import ELDAmwl.configs.config as cfg
 except ModuleNotFoundError:
-    import configs.config_default as cfg
+    import ELDAmwl.configs.config_default as cfg
 
 import ELDAmwl.plugins.plugin
 

@@ -17,6 +17,7 @@ class SlopeToExtinction(BaseOperationFactory):
         """
         return 'getSlopeToExtinction'
 
+
 class getSlopeToExtinction(BaseOperation):
     """
     Calculates particle extinction coefficient from signal slope.
@@ -57,6 +58,7 @@ class getExtinction(BaseOperation):
 
 registry.register_class(Extinction, 'getExtinction', getExtinction)
 
+
 class SignalSlope(BaseOperationFactory):
     """
     Calculates signal slope.
@@ -66,6 +68,7 @@ class SignalSlope(BaseOperationFactory):
 
     def get_classname_from_db(self):
         return read_extinction_algorithm(281)
+
 
 class LinFit(BaseOperation):
     """
