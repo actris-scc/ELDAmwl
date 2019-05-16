@@ -2,7 +2,7 @@ from logging import ERROR
 from attrdict import AttrDict
 
 from ELDAmwl import log
-from ELDAmwl.constants import PRODUCT_TYPES
+from ELDAmwl.constants import MWL
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import SystemProduct, MWLproductProduct, Products, ProductTypes
@@ -109,7 +109,7 @@ def read_mwl_product_id(system_id):
                                      Products)\
         .filter(SystemProduct._system_ID == system_id)\
         .filter(SystemProduct._Product_ID == Products.ID)\
-        .filter(Products._prod_type_ID == PRODUCT_TYPES.mwl)
+        .filter(Products._prod_type_ID == MWL)
 
     if products.count() == 1:
         return products.value('_Product_ID')

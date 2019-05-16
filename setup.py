@@ -57,6 +57,7 @@ setup(
         'pytest-mock',
         'attrdict',
         'sphinx',
+        'xarray'
     ],
     extras_require={
         'test': [

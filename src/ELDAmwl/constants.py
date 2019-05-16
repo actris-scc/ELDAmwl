@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 from math import pi
-from attrdict import AttrDict
-
 
 LIGHT_SPEED = 3.E8  # m / s
 RAYL_LR = 8. * pi / 3
 
-PRODUCT_TYPES = AttrDict({'Rbsc': 0,
-                          'ext': 1,
-                          'lr': 2,
-                          'Ebsc': 3,
-                          'mwl': 10,
-                          'ae': 11,
-                          'cr': 12,
-                          'vldr': 13,
-                          'pldr': 14,
-                          })
+RBSC = 0
+EXT = 1
+LR = 2
+EBSC = 3
+MWL = 10
+AE = 11
+CR = 12
+VLDR = 13
+PLDR = 14
+
+PRODUCT_TYPES = [RBSC, EXT, LR, EBSC, MWL, AE, CR, VLDR, PLDR]
 
 ALGO1 = 'algo1'
 ALGO2 = 'algo2'
