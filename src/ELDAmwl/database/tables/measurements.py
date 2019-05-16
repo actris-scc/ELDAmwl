@@ -69,7 +69,7 @@ Base = declarative_base()
 class Measurements(Base):
     __tablename__ = '_measurements'
 
-    id = Column(INTEGER, primary_key=True)
+    ID = Column(INTEGER, primary_key=True)
     meas_id = Column(VARCHAR(15), nullable=False)
     _hoi_stations_ID = Column('__hoi_stations__ID', CHAR(3), index=True)
     _hoi_system_ID = Column(INTEGER, nullable=False, index=True)

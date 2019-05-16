@@ -64,5 +64,8 @@ setup(
         ],
     },
     entry_points="""
+    [console_scripts]
+    create_test_db = ELDAmwl.tests.database.create_test_db
     """,
+
 )

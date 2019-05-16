@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from logging import INFO
+from logging import INFO, DEBUG
 
 from ELDAmwl.registry import Registry
 
@@ -27,7 +27,8 @@ DB_DB = 'scc_dev_20190228'
 # ===================
 
 # The logfiles
-
+#general log level
+log_level = DEBUG
 # The desired loglevel for console output
 log_level_console = INFO
 # The desired loglevel for the logfile
@@ -43,3 +44,10 @@ log_colors = {
 
 WRITE_EXTENDED_OUTPUT = True
 APPEND_LOG_FILE = False
+
+
+# ===================
+# Time strings
+# ===================
+
+STRP_DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'

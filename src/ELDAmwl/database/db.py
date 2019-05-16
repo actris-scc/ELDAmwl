@@ -15,7 +15,7 @@ except ImportError:
 class DBUtils(object):
     def __init__(self, connect_string=None):
         self.connect_string = connect_string
-        self.init_engine(connect_string)
+        self.init_engine()
 
     def get_connect_string(self):
         if self.connect_string:
@@ -28,7 +28,7 @@ class DBUtils(object):
         return result
 
     def init_engine(self):
-        self.engine = create_engine(self.connect_string())
+        self.engine = create_engine(self.get_connect_string())
 
         # create a configured "Session" class
         self.session = sessionmaker(bind=self.engine)()

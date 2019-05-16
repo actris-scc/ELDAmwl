@@ -39,6 +39,8 @@ except Exception as e:
                           '%(levelname)-8s %(message)s',
                           '%Y-%m-%d %H:%M:%S')
 
+logger.setLevel(cfg.log_level)
+
 __all__ = ['logger']
 
 console_handler = StreamHandler(stdout)
@@ -47,7 +49,6 @@ console_handler = StreamHandler(stdout)
 console_formatter = formatter
 console_handler.setFormatter(console_formatter)
 console_handler.setLevel(cfg.log_level_console)
-
 logger.addHandler(console_handler)
 
 

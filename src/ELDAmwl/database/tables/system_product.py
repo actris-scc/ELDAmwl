@@ -36,10 +36,13 @@ class ProductTypes(Base):
 
     ID = Column(INTEGER, primary_key=True)
     product_type = Column(CHAR(100), nullable=False)
-    better_name = Column(CHAR(100), nullable=False)
+    # Changed to Nullable for csv import to work.
+    better_name = Column(CHAR(100), nullable=True)
     nc_file_id = Column(CHAR(1), nullable=False)
     processor_ID = Column(INTEGER, nullable=False)
-    is_mwl_only_product = Column(INTEGER, nullable=False)
-    is_in_mwl_products = Column(INTEGER, nullable=False)
+    # Changed to Nullable for csv import to work.
+    is_mwl_only_product = Column(INTEGER, nullable=True)
+    # Changed to Nullable for csv import to work.
+    is_in_mwl_products = Column(INTEGER, nullable=True)
 
 

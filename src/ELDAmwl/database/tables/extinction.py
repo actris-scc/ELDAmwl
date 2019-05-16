@@ -36,7 +36,8 @@ class OverlapFile(Base):
     __tablename__ = 'overlap_files'
 
     ID = Column(INTEGER, primary_key=True)
-    __hoi_stations__ID = Column(CHAR(3))
+    # Rule is: If a column has two underscores reduce to one
+    _hoi_stations_ID = Column('__hoi_stations__ID', CHAR(3))
     start = Column(DateTime)
     stop = Column(DateTime)
     filename = Column(String(100), nullable=False, server_default=text("''"))
