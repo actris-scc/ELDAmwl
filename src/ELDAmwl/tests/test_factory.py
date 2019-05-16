@@ -46,6 +46,6 @@ def test_factory(db, mocker):
 
     for klass_name, klass in db:
 
-        mocker.patch.object(TestFactory, 'get_classname', return_value = klass_name )
+        mocker.patch.object(TestFactory, 'get_classname_from_db', return_value=klass_name)
 
         assert TestFactory()() == klass

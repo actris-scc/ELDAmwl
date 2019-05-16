@@ -7,9 +7,9 @@ from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import SystemProduct
 
 try:
-    import configs.config as cfg
+    import ELDAmwl.configs.config as cfg
 except ImportError:
-    import configs.config_default as cfg
+    import ELDAmwl.configs.config_default as cfg
 
 
 class DBUtils(object):
