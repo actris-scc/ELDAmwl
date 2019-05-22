@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from math import pi
+from datetime import datetime
 
 LIGHT_SPEED = 3.E8  # m / s
+
+T0 = datetime(1094,1,1)
 RAYL_LR = 8. * pi / 3
 
 RBSC = 0

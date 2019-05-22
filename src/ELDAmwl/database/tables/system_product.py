@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Index, INTEGER, CHAR, DateTime, Table, text, VARCHAR
+from sqlalchemy import Boolean, Index, INTEGER, CHAR, DateTime, Table, text, VARCHAR, DECIMAL, String, Float
 from sqlalchemy import Column
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -44,5 +44,35 @@ class ProductTypes(Base):
     is_mwl_only_product = Column(INTEGER, nullable=True)
     # Changed to Nullable for csv import to work.
     is_in_mwl_products = Column(INTEGER, nullable=True)
+    # Changed to Nullable for csv import to work.
+    is_basic_product = Column(INTEGER, nullable=True)
+
+
+class ProductOptions(Base):
+    __tablename__ = 'product_options'
+
+    ID = Column(INTEGER, primary_key=True)
+    _product_ID = Column(INTEGER, nullable=False)
+    _lowrange_error_threshold_ID = Column(INTEGER, nullable=False, index=True)
+    _highrange_error_threshold_ID = Column(INTEGER, nullable=False, index=True)
+    detection_limit = Column(DECIMAL(11, 11), nullable=False)
+    min_height = Column(DECIMAL(10, 4), nullable=False)
+    max_height = Column(DECIMAL(10, 4), nullable=False)
+    preprocessing_integration_time = Column(INTEGER, nullable=False)
+    preprocessing_vertical_resolution = Column(DECIMAL(10, 4), nullable=False)
+    interpolation_id = Column(INTEGER, nullable=False)
+
+
+class ErrorThresholds(Base):
+    __tablename__ = '_error_thresholds'
+
+    ID = Column('Id', INTEGER, primary_key=True)
+    value = Column(Float, nullable=False)
+    name = Column(String(100), nullable=False)
+
+
+
+
+
 
 

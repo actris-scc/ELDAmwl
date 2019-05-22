@@ -4,7 +4,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from ELDAmwl.database.tables.measurements import Measurements
-from ELDAmwl.database.tables.system_product import SystemProduct
 
 try:
     import ELDAmwl.configs.config as cfg

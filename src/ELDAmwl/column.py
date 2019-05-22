@@ -1,9 +1,13 @@
+from ELDAmwl.constants import T0
 
 class Column(object):
     """
     base column class (1 dimensional)
     """
     def __init__(self):
+        self.start_time = T0
+        self.stop_time = T0
+
         # the 1 dimensional data array
         self._data = None
         # the  1 dimensional array of absolute errors, same dimension as _data

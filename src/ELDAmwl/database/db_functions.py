@@ -1,11 +1,13 @@
 from logging import ERROR
 from attrdict import AttrDict
+from sqlalchemy.orm import aliased
 
 from ELDAmwl import log
 from ELDAmwl.constants import MWL
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.measurements import Measurements
-from ELDAmwl.database.tables.system_product import SystemProduct, MWLproductProduct, Products, ProductTypes
+from ELDAmwl.database.tables.system_product import SystemProduct, MWLproductProduct, Products, ProductTypes, \
+    ProductOptions, ErrorThresholds
 from ELDAmwl.database.tables.extinction import ExtinctionOption, ExtMethod, OverlapFile
 
 dbutils = DBUtils()
@@ -82,12 +84,20 @@ def get_products_query(mwl_prod_id):
             list of individual product IDs corresponding to this mwl product
 
         """
+
+    ErrorThresholdsLow  = aliased(ErrorThresholds, name='ErrorThresholdsLow')
+    ErrorThresholdsHigh  = aliased(ErrorThresholds, name='ErrorThresholdsHigh')
+
     products = dbutils.session.query(MWLproductProduct, Products,
-                                     ProductTypes)\
+                                     ProductTypes, ProductOptions,
+                                     ErrorThresholdsLow, ErrorThresholdsHigh)\
         .filter(MWLproductProduct._mwl_product_ID == mwl_prod_id)\
         .filter(MWLproductProduct._Product_ID == Products.ID)\
         .filter(Products._prod_type_ID == ProductTypes.ID)\
-        .filter(ProductTypes.is_in_mwl_products == 1)
+        .filter(ProductTypes.is_in_mwl_products == 1)\
+        .filter(ProductOptions._product_ID == Products.ID)\
+        .filter(ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID)\
+        .filter(ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID)
 
     if products.count() >0:
         return products

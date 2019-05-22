@@ -36,13 +36,6 @@ class ErrorMethod(Base):
 #     method = Column(String(100), nullable=False)
 #
 #
-# class ErrorThresholds(Base):
-#     __tablename__ = '_error_thresholds'
-#     Id = Column(INTEGER, nullable=False),
-#     value = Column(Float, nullable=False),
-#     name = Column(String(100), nullable=False)
-#
-#
 # class LrInputMethod(Base):
 #     __tablename__ = '_lr_input_method'
 #
@@ -461,23 +454,6 @@ class ErrorMethod(Base):
 #     ID = Column(INTEGER, primary_key=True)
 #     _prod_ID = Column(INTEGER, nullable=False, index=True)
 #     _channel_ID = Column(INTEGER, nullable=False, index=True)
-#
-#
-# class ProductOption(Base):
-#     __tablename__ = 'product_options'
-#
-#     ID = Column(INTEGER, primary_key=True)
-#     _product_ID = Column(INTEGER, nullable=False)
-#     _lowrange_error_threshold_ID = Column(INTEGER, nullable=False, index=True)
-#     _highrange_error_threshold_ID = Column(INTEGER, nullable=False, index=True)
-#     detection_limit = Column(DECIMAL(11, 11), nullable=False)
-#     min_height = Column(DECIMAL(10, 4), nullable=False)
-#     max_height = Column(DECIMAL(10, 4), nullable=False)
-#     preprocessing_integration_time = Column(INTEGER, nullable=False)
-#     preprocessing_vertical_resolution = Column(DECIMAL(10, 4), nullable=False)
-#     interpolation_id = Column(INTEGER)
-#
-#
 #
 #
 # class RamanBackscatterOption(Base):
