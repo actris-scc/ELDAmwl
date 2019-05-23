@@ -16,7 +16,7 @@ from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.extinction import ExtMethod, ExtinctionOption, OverlapFile
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import SystemProduct, MWLproductProduct, Products, ProductTypes, \
-    ProductOptions, ErrorThresholds, ErrorThresholdsLow, ErrorThresholdsHigh
+    ProductOptions, ErrorThresholds
 
 from ELDAmwl.errors import CsvFileNotFound, FillTableFailed
 from ELDAmwl.log import logger
@@ -24,13 +24,13 @@ from ELDAmwl.log import logger
 # List of all DB tables in the test DB
 ALL_DB_TABLES = [
     SystemProduct,
-    OverlapFile,
-    ProductTypes,
     ExtMethod,
     ExtinctionOption,
+    OverlapFile,
     Measurements,
     MWLproductProduct,
     Products,
+    ProductTypes,
     ProductOptions,
     ErrorThresholds,
 ]
@@ -64,7 +64,10 @@ class DBConstructor(object):
 
     def remove_db(self):
         """Remove the prior DB"""
-        os.remove(TEST_DB_FILEPATH)
+        try:
+            os.remove(TEST_DB_FILEPATH)
+        except FileNotFoundError:
+            pass
 
     def create_tables(self):
         """
@@ -146,6 +149,7 @@ class DBConstructor(object):
             # Replace string 'Null' with None in all columns
             for col in table.__table__.columns:
                 try:
+
                     if row[col.name] == 'NULL':
                         new_row[col.name] = None
                 except KeyError:
