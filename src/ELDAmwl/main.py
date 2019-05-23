@@ -8,8 +8,7 @@ from ELDAmwl.log import create_logger
 
 from ELDAmwl.registry import registry
 from ELDAmwl.elda_mwl_factories import RunELDAmwl
-
-
+from ELDAmwl.signals import Signals
 
 try:
     import ELDAmwl.configs.config as cfg
@@ -40,6 +39,7 @@ log(INFO,'hello world')
 
 elda_mwl = RunELDAmwl(meas_id)
 elda_mwl.read_tasks()
+sig = Signals.from_nc_file('K:\\auswertung\Mattis\myPrograms\python\ELDAmwl\data\intermediate\\20181017oh00_0000379.nc', 0)
 
 #db_utils = DBUtils()
 
