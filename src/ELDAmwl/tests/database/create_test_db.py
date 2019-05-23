@@ -8,8 +8,9 @@ import datetime
 import sqlite3
 
 import sqlalchemy
-from sqlalchemy import DateTime
+from sqlalchemy import DateTime, inspect
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils import get_column_key, get_mapper
 
 from ELDAmwl.configs.config_default import STRP_DATE_TIME_FORMAT
 from ELDAmwl.database.db import DBUtils
@@ -99,13 +100,6 @@ class DBConstructor(object):
             raise CsvFileNotFound
         result = csv.DictReader(csvfile, delimiter=',')
 
-        # Correct for double underscores in column nomes wich confuse sqlalchemy
-        new_field_names = []
-        for fieldname in result.fieldnames:
-            new_field_names.append(fieldname.replace('__','_'))
-
-        result.fieldnames = new_field_names
-
         return result
 
     def fill_tables(self):
@@ -136,37 +130,38 @@ class DBConstructor(object):
             refined data
         """
 
-        # Find target columns wich are datetimes
-        cols_to_refine = []
-        for column in table.__table__.columns:
-            if column.type.__class__ == DateTime:
-                cols_to_refine.append(column.name)
-
         # refine the data
-        new_data = []
+        py_data = []
         for row in data:
-            new_row= row
+            py_row = {}
             # Replace string 'Null' with None in all columns
-            for col in table.__table__.columns:
+            for col_py_name, col in inspect(table).c.items():
+                col_db_name = col.expression.key
                 try:
-
-                    if row[col.name] == 'NULL':
-                        new_row[col.name] = None
+                    # Handle Columns that have the string 'NULL'
+                    if row[col_db_name] == 'NULL':
+                        py_row[col_py_name] = None
+                    # Handle date time fields
+                    elif col.type.__class__ == DateTime:
+                        if not row[col_db_name]:
+                            py_row[col_py_name] = None
+                        elif row[col_db_name] == '0000-00-00 00:00:00' or \
+                                row[col_db_name] == '-':
+                                py_row[col_py_name] = None
+                        else:
+                            py_row[col_py_name] = \
+                                datetime.datetime.strptime(
+                                row[col_db_name],
+                                STRP_DATE_TIME_FORMAT)
+                    else:
+                        # All other cases
+                        py_row[col_py_name] = row[col_db_name]
                 except KeyError:
                     logger.error("Refine data failed. Target table %s does not have a column %s" % (table.__tablename__,col) )
                     raise FillTableFailed
 
-            # Make DateTime objects for the expecting columns
-            for col in cols_to_refine:
-                if not row[col]:
-                    continue
-                if row[col] =='0000-00-00 00:00:00':
-                    new_row[col] = None
-                else:
-                    new_row[col] = datetime.datetime.strptime(row[col], STRP_DATE_TIME_FORMAT)
-
-            new_data.append(new_row)
-        return new_data
+            py_data.append(py_row)
+        return py_data
 
     def fill_table(self,table, data):
         """
@@ -189,6 +184,8 @@ class DBConstructor(object):
                 self.session.rollback()
                 logger.info("Found bad row for table %s" % table.__tablename__)
                 logger.info("Row %s" % row)
+            except Exception as e:
+                print(e)
 
 
 

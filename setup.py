@@ -37,6 +37,7 @@ setup(
         'setuptools',
         'netcdf4',
         'sqlalchemy',
+        'SQLAlchemy-Utils',
         'colorlog',
         'pymysql',
         'flake8',
