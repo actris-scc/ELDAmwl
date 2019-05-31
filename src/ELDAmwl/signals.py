@@ -40,58 +40,57 @@ class Signals(Columns):
             da = xr.DataArray.from_dict(dict)
             return da
 
-        ds = xr.open_dataset(nc_file)
+        nc_ds = xr.open_dataset(nc_file)
 
         result.channel_idx_in_ncfile = idx_in_file
 
-        result.ds = ds.range_corrected_signal[idx_in_file].to_dataset(name = 'data')
-        result.ds['err'] = ds.range_corrected_signal_statistical_error[idx_in_file]
-        #result.data.sel(time='2018-10-17T21:00:00').shape
-        result.ds['cf'] = ds.cloud_mask
+        result.ds = nc_ds.range_corrected_signal[idx_in_file].to_dataset(name='data')
+        result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file]
+        result.ds['cf'] = nc_ds.cloud_mask
 
-        result.station_latitude = ds.latitude
-        result.station_longitude = ds.longitude
-        result.station_altitude = ds.station_altitude
-        result.ds['altitude'] = ds.altitude
+        result.station_latitude = nc_ds.latitude
+        result.station_longitude = nc_ds.longitude
+        result.station_altitude = nc_ds.station_altitude
+        result.ds['altitude'] = nc_ds.altitude
 
-        result.ds['time_bounds'] = ds.time_bounds
+        result.ds['time_bounds'] = nc_ds.time_bounds
 
-        laser_pointing_angle_of_profiles = ds.laser_pointing_angle_of_profiles
+        laser_pointing_angle_of_profiles = nc_ds.laser_pointing_angle_of_profiles
 
-        laser_pointing_angle = ds.laser_pointing_angle
+        laser_pointing_angle = nc_ds.laser_pointing_angle
         result.ds['laser_pointing_angle'] = angle_to_time_dependent_var(laser_pointing_angle_of_profiles,
                                                                         laser_pointing_angle)
 
-        atmospheric_molecular_extinction = ds.atmospheric_molecular_extinction[idx_in_file]
+        atmospheric_molecular_extinction = nc_ds.atmospheric_molecular_extinction[idx_in_file]
         result.ds['mol_extinction'] = angle_to_time_dependent_var(laser_pointing_angle_of_profiles,
                                                                   atmospheric_molecular_extinction)
 
-        result.ds['mol_lidar_ratio'] = ds.atmospheric_molecular_lidar_ratio[idx_in_file]
+        result.ds['mol_lidar_ratio'] = nc_ds.atmospheric_molecular_lidar_ratio[idx_in_file]
 
-        mol_trasm_at_detection_wl = ds.atmospheric_molecular_trasmissivity_at_detection_wavelength[idx_in_file]
+        mol_trasm_at_detection_wl = nc_ds.atmospheric_molecular_trasmissivity_at_detection_wavelength[idx_in_file]
         result.ds['mol_trasm_at_detection_wl'] = angle_to_time_dependent_var(laser_pointing_angle_of_profiles,
                                                                              mol_trasm_at_detection_wl)
 
-        mol_trasm_at_emission_wl = ds.atmospheric_molecular_trasmissivity_at_detection_wavelength[idx_in_file]
+        mol_trasm_at_emission_wl = nc_ds.atmospheric_molecular_trasmissivity_at_detection_wavelength[idx_in_file]
         result.ds['mol_trasm_at_emission_wl'] = angle_to_time_dependent_var(laser_pointing_angle_of_profiles,
                                                                              mol_trasm_at_emission_wl)
 
-        result.channel_id = ds.range_corrected_signal_channel_id[idx_in_file]
-        result.detection_type = ds.range_corrected_signal_detection_mode[idx_in_file]
-        result.detection_wavelength = ds.range_corrected_signal_detection_wavelength[idx_in_file]
-        result.emission_wavelength = ds.range_corrected_signal_emission_wavelength[idx_in_file]
-        result.scatterer = ds.range_corrected_signal_scatterers[idx_in_file]
-        result.alt_range = ds.range_corrected_signal_range[idx_in_file]
-        result.pol_channel_conf = ds.polarization_channel_configuration[idx_in_file]
-        result.pol_channel_geometry = ds.polarization_channel_geometry[idx_in_file]
+        result.channel_id = nc_ds.range_corrected_signal_channel_id[idx_in_file]
+        result.detection_type = nc_ds.range_corrected_signal_detection_mode[idx_in_file]
+        result.detection_wavelength = nc_ds.range_corrected_signal_detection_wavelength[idx_in_file]
+        result.emission_wavelength = nc_ds.range_corrected_signal_emission_wavelength[idx_in_file]
+        result.scatterer = nc_ds.range_corrected_signal_scatterers[idx_in_file]
+        result.alt_range = nc_ds.range_corrected_signal_range[idx_in_file]
+        result.pol_channel_conf = nc_ds.polarization_channel_configuration[idx_in_file]
+        result.pol_channel_geometry = nc_ds.polarization_channel_geometry[idx_in_file]
 
-        result.g = ds.polarization_crosstalk_parameter_g[idx_in_file]
-        result.g_stat_err = ds.polarization_crosstalk_parameter_g_statistical_error[idx_in_file]
-        result.g_sys_err = ds.polarization_crosstalk_parameter_g_systematic_error[idx_in_file]
+        result.g = nc_ds.polarization_crosstalk_parameter_g[idx_in_file]
+        result.g_stat_err = nc_ds.polarization_crosstalk_parameter_g_statistical_error[idx_in_file]
+        result.g_sys_err = nc_ds.polarization_crosstalk_parameter_g_systematic_error[idx_in_file]
 
-        result.h = ds.polarization_crosstalk_parameter_h[idx_in_file]
-        result.h_stat_err = ds.polarization_crosstalk_parameter_h_statistical_error[idx_in_file]
-        result.h_sys_err = ds.polarization_crosstalk_parameter_h_systematic_error[idx_in_file]
+        result.h = nc_ds.polarization_crosstalk_parameter_h[idx_in_file]
+        result.h_stat_err = nc_ds.polarization_crosstalk_parameter_h_statistical_error[idx_in_file]
+        result.h_sys_err = nc_ds.polarization_crosstalk_parameter_h_systematic_error[idx_in_file]
 
 
         return result
@@ -121,6 +120,10 @@ class Signals(Columns):
         #result.err.values =
 
         return result
+
+    @property
+    def range(self):
+        return self.height * xr.ufuncs.cos( xr.ufuncs.radians(self.ds.laser_pointing_angle))
 
     @property
     def is_WV_sig(self):

@@ -1,7 +1,17 @@
 from ELDAmwl.registry import registry
 from ELDAmwl.database.db_functions import read_extinction_algorithm
 from ELDAmwl.factory import BaseOperationFactory, BaseOperation
+from ELDAmwl.products import Products, ProductParams
 
+
+class ExtinctionParams(ProductParams):
+    pass
+
+class Extinctions(Products):
+    """
+    time series of extinction profiles
+    """
+    pass
 
 class SlopeToExtinction(BaseOperationFactory):
     """

@@ -8,19 +8,20 @@ from ELDAmwl.registry import Registry
 # Directories
 # ===================
 
-LOG_PATH = 'd:/myprograms/FPC/ELDA/log'
-SIGNAL_PATH = 'd:/myprograms/FPC/ELDA/intermediate/cfFormat72hExercise'
-PRODUCT_PATH = 'd:/myprograms/FPC/ELDA/output'
-SAVGOL_FILE = 'd:/myprograms/FPC/ELDA/input/Savitzky_Golay.txt'
-TEMP_PATH = 'd:/temp'
+LOG_PATH = ''
+SIGNAL_PATH = ''
+PRODUCT_PATH = ''
+TEMP_PATH = ''
 
 
+# ===================
 # database connection
+# ===================
 
-DB_SERVER = 'localhost'
-DB_USER = 'earlinet'
-DB_PASS = 'dwdlidar'
-DB_DB = 'scc_dev_20190228'
+DB_SERVER = ''
+DB_USER = ''
+DB_PASS = ''
+DB_DB = ''
 
 # ===================
 # Logging

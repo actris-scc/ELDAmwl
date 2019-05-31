@@ -360,19 +360,6 @@ class ErrorMethod(Base):
 #     message = Column(String(400), nullable=False)
 #
 #
-# class OverlapFile(Base):
-#     __tablename__ = 'overlap_files'
-#
-#     ID = Column(INTEGER, primary_key=True)
-#     __hoi_stations__ID = Column(CHAR(3))
-#     start = Column(DateTime)
-#     stop = Column(DateTime)
-#     filename = Column(String(100), nullable=False)
-#     _interpolation_id = Column(INTEGER)
-#     submission_date = Column(DateTime)
-#     status = Column(String(20), nullable=False)
-#
-#
 # class PolarizationCalibrationCorrectionFactor(Base):
 #     __tablename__ = 'polarization_calibration_correction_factors'
 #
@@ -438,14 +425,6 @@ class ErrorMethod(Base):
 #     _correction_factor_method_ID = Column(INTEGER, nullable=False)
 #
 #
-# class PreparedSignalFile(Base):
-#     __tablename__ = 'prepared_signal_files'
-#
-#     ID = Column(INTEGER, primary_key=True)
-#     __measurements__ID = Column(String(15), index=True)
-#     _Product_ID = Column(INTEGER, nullable=False, index=True)
-#     _scc_version_ID = Column(INTEGER)
-#     filename = Column(String(100), nullable=False)
 #
 #
 # class ProductChannel(Base):

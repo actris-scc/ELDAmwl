@@ -35,11 +35,14 @@ ext_id = 377
 
 create_logger(meas_id)
 
-log(INFO,'hello world')
+log(INFO,'welcome to the EARLINET Lidar Data Analyzer for multi-wavelengths measurements (ELDAmwl)')
+log(INFO, 'ELDA version: ' );
+log(INFO, 'analyze measurement number: ' + meas_id);
 
 elda_mwl = RunELDAmwl(meas_id)
 elda_mwl.read_tasks()
-sig = Signals.from_nc_file('K:\\auswertung\Mattis\myPrograms\python\ELDAmwl\data\intermediate\\20181017oh00_0000379.nc', 0)
+elda_mwl.read_signals()
+#sig = Signals.from_nc_file('K:\\auswertung\Mattis\myPrograms\python\ELDAmwl\data\intermediate\\20181017oh00_0000379.nc', 0)
 
 #db_utils = DBUtils()
 

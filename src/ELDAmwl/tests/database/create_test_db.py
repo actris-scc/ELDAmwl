@@ -17,7 +17,7 @@ from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.extinction import ExtMethod, ExtinctionOption, OverlapFile
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import SystemProduct, MWLproductProduct, Products, ProductTypes, \
-    ProductOptions, ErrorThresholds
+    ProductOptions, ErrorThresholds, PreparedSignalFile
 
 from ELDAmwl.errors import CsvFileNotFound, FillTableFailed
 from ELDAmwl.log import logger
@@ -34,6 +34,7 @@ ALL_DB_TABLES = [
     ProductTypes,
     ProductOptions,
     ErrorThresholds,
+    PreparedSignalFile,
 ]
 
 # Where does the test-DB live

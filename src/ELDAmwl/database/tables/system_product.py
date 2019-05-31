@@ -71,6 +71,14 @@ class ErrorThresholds(Base):
     name = Column(String(100), nullable=False)
 
 
+class PreparedSignalFile(Base):
+    __tablename__ = 'prepared_signal_files'
+
+    ID = Column(INTEGER, primary_key=True)
+    _measurements_ID = Column('__measurements__ID', String(15), index=True)
+    _Product_ID = Column(INTEGER, nullable=False, index=True)
+    _scc_version_ID = Column(INTEGER, nullable=False)
+    filename = Column(String(100), nullable=False)
 
 
 

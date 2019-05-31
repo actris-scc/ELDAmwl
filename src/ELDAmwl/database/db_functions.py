@@ -7,7 +7,7 @@ from ELDAmwl.constants import MWL
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import SystemProduct, MWLproductProduct, Products, ProductTypes, \
-    ProductOptions, ErrorThresholds
+    ProductOptions, ErrorThresholds, PreparedSignalFile
 from ELDAmwl.database.tables.extinction import ExtinctionOption, ExtMethod, OverlapFile
 
 dbutils = DBUtils()
@@ -33,10 +33,10 @@ def read_extinction_algorithm(product_id):
         log(ERROR, 'wrong number of extinction options ({})'.format(options.count()))
 
 
-def read_extinction_options(product_id):
+def read_extinction_params(product_id):
     """ function to read options of an extinction product from db.
 
-        This function reads from db with which options an extinction product shall be derived.
+        This function reads from db with which parameters an extinction product shall be derived.
 
         Args:
             product_id (int): the id of the actual extinction product
@@ -74,7 +74,7 @@ def read_extinction_options(product_id):
         log(ERROR, 'wrong number of extinction options ({})'.format(options.count()))
 
 
-def get_products_query(mwl_prod_id):
+def get_products_query(mwl_prod_id, measurement_id):
     """ read from db which of the products correlated to this system is the mwl product.
 
         Args:
@@ -90,14 +90,17 @@ def get_products_query(mwl_prod_id):
 
     products = dbutils.session.query(MWLproductProduct, Products,
                                      ProductTypes, ProductOptions,
-                                     ErrorThresholdsLow, ErrorThresholdsHigh)\
+                                     ErrorThresholdsLow, ErrorThresholdsHigh,
+                                     PreparedSignalFile)\
         .filter(MWLproductProduct._mwl_product_ID == mwl_prod_id)\
         .filter(MWLproductProduct._Product_ID == Products.ID)\
         .filter(Products._prod_type_ID == ProductTypes.ID)\
         .filter(ProductTypes.is_in_mwl_products == 1)\
         .filter(ProductOptions._product_ID == Products.ID)\
         .filter(ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID)\
-        .filter(ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID)
+        .filter(ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID)\
+        .filter(PreparedSignalFile._Product_ID == Products.ID)\
+        .filter(PreparedSignalFile._measurements_ID == measurement_id)
 
     if products.count() >0:
         return products

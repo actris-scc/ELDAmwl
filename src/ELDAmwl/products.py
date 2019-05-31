@@ -1,6 +1,13 @@
-from ELDAmwl.base import Params
 from attrdict import AttrDict
 
+from ELDAmwl.base import Params
+from ELDAmwl.signals import Signals
+
+
+class Products(Signals):
+
+    def save_to_netcdf(self):
+        pass
 
 class ProductParams(Params):
     """
@@ -24,6 +31,8 @@ class ProductParams(Params):
 
         self.valid_alt_range = AttrDict({'min_height': None, 'max_height': None})
 
+        self.ELPP_filename = ''
+
     @classmethod
     def from_query(cls, query):
         result = cls()
@@ -34,7 +43,6 @@ class ProductParams(Params):
         result.is_basic_product = query.ProductTypes.is_basic_product
         result.is_derived_product = ~ result.is_basic_product
 
-#        result.error_method = query.ProductOptions.
         result.error_threshold.low = query.ErrorThresholdsLow.value
         result.error_threshold.high = query.ErrorThresholdsHigh.value
         result.detection_limit = query.ProductOptions.detection_limit
@@ -42,5 +50,6 @@ class ProductParams(Params):
         result.valid_alt_range.min_height = query.ProductOptions.min_height
         result.valid_alt_range.max_height = query.ProductOptions.max_height
 
+        result.ELPP_filename = query.PreparedSignalFile.filename
 
         return result

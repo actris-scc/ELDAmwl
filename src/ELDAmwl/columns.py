@@ -6,22 +6,9 @@ class Columns(object):
     """
     base column class (1 dimensional)
     """
+
     def __init__(self):
         self.ds = xr.Dataset()
-
-    #result.data.coords['time'][0].values
-
-    # @classmethod
-    # def create_with_data(cls, in_data, header_info):
-    #     result = cls()
-    #
-    #     result.ds = in_data
-    #     try:
-    #         result.header.attrs = header_info.attrs.copy()
-    #     except BaseException:
-    #         result.header.attrs = header_info.copy()
-    #
-    #     return result
 
     def relative_error(self):
         return self.err[:] / self.data[:]
