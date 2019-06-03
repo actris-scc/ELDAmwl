@@ -18,7 +18,13 @@ class Signals(Columns):
         self.pol_channel_conf = np.nan
 
     @classmethod
-    def from_nc_file(cls, nc_file, idx_in_file):
+    def from_nc_file(cls, nc_ds, idx_in_file):
+        """
+
+        :param nc_ds: netcdf dataset = Xarray dataset
+        :param idx_in_file:
+        :return:
+        """
         result = cls()
 
         def angle_to_time_dependent_var(angle_var, data_var):
@@ -40,13 +46,13 @@ class Signals(Columns):
             da = xr.DataArray.from_dict(dict)
             return da
 
-        nc_ds = xr.open_dataset(nc_file)
+
 
         result.channel_idx_in_ncfile = idx_in_file
 
         result.ds = nc_ds.range_corrected_signal[idx_in_file].to_dataset(name='data')
         result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file]
-        result.ds['cf'] = nc_ds.cloud_mask
+        result.ds['cf'] = nc_ds.cloud_mask.astype(int)
 
         result.station_latitude = nc_ds.latitude
         result.station_longitude = nc_ds.longitude
@@ -75,14 +81,14 @@ class Signals(Columns):
         result.ds['mol_trasm_at_emission_wl'] = angle_to_time_dependent_var(laser_pointing_angle_of_profiles,
                                                                              mol_trasm_at_emission_wl)
 
-        result.channel_id = nc_ds.range_corrected_signal_channel_id[idx_in_file]
-        result.detection_type = nc_ds.range_corrected_signal_detection_mode[idx_in_file]
+        result.channel_id = nc_ds.range_corrected_signal_channel_id[idx_in_file].astype(int)
+        result.detection_type = nc_ds.range_corrected_signal_detection_mode[idx_in_file].astype(int)
         result.detection_wavelength = nc_ds.range_corrected_signal_detection_wavelength[idx_in_file]
         result.emission_wavelength = nc_ds.range_corrected_signal_emission_wavelength[idx_in_file]
-        result.scatterer = nc_ds.range_corrected_signal_scatterers[idx_in_file]
-        result.alt_range = nc_ds.range_corrected_signal_range[idx_in_file]
-        result.pol_channel_conf = nc_ds.polarization_channel_configuration[idx_in_file]
-        result.pol_channel_geometry = nc_ds.polarization_channel_geometry[idx_in_file]
+        result.scatterer = nc_ds.range_corrected_signal_scatterers[idx_in_file].astype(int)
+        result.alt_range = nc_ds.range_corrected_signal_range[idx_in_file].astype(int)
+        result.pol_channel_conf = nc_ds.polarization_channel_configuration[idx_in_file].astype(int)
+        result.pol_channel_geometry = nc_ds.polarization_channel_geometry[idx_in_file].astype(int)
 
         result.g = nc_ds.polarization_crosstalk_parameter_g[idx_in_file]
         result.g_stat_err = nc_ds.polarization_crosstalk_parameter_g_statistical_error[idx_in_file]
