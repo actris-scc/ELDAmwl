@@ -8,9 +8,20 @@ class Params(object):
     """
     Base Params
     """
+    sub_params = None
 
     def __init__(self):
-        pass
+        sub_params = []
+
+    def __getattribute__(self, item):
+        for sp_name in self.sub_params:
+            sp = getattr(self, sp_name)
+            try:
+                return getattr(sp, item)
+            except AttributeError:
+                continue
+
+        raise(AttributeError('class %s has no attribute %s' % (self.__class__.__name__, item)))
 
 
 # class _Operator(object):

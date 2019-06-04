@@ -3,6 +3,7 @@ import xarray as xr
 from attrdict import AttrDict
 
 from ELDAmwl.base import Params
+from ELDAmwl.constants import PARAM_CLASSES
 from ELDAmwl.database.db_functions import read_system_id, get_products_query, read_mwl_product_id
 from ELDAmwl.products import ProductParams
 from ELDAmwl.registry import registry
@@ -22,12 +23,20 @@ class MeasurementParams(Params):
         self.meas_id = measurement_id
         self.system_id = read_system_id(self.meas_id)
         self.mwl_product_id = read_mwl_product_id(self.system_id)
-        self.products = []
+        self.products = AttrDict({'basic':AttrDict({}),
+                                  'derived': AttrDict({})})
 
     def read_product_list(self):
         p_query = get_products_query(self.mwl_product_id, self.meas_id)
         for q in p_query:
-            self.products.append(ProductParams.from_query(q))
+            params = ProductParams.from_query(q)
+            prod_type = params.product_type
+            prod_params = PARAM_CLASSES[prod_type].from_db(params)
+
+            if params.is_basic_product:
+                if not prod_type in self.products.basic:
+                    self.products.basic[prod_params] = []
+            self.products.basic.prod_type.append(prod_params)
 
 
 
@@ -35,10 +44,11 @@ class RunELDAmwl(BaseOperation):
     """
     This is the global ELDAmwl operation class
     """
-    _data = AttrDict()
+    _data = None
 
     def __init__(self, measurement_id):
         self.params = MeasurementParams(measurement_id)
+        _data = AttrDict()
 
     def read_tasks(self):
         self.params.read_product_list()

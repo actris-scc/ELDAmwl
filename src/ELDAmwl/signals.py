@@ -21,7 +21,7 @@ class Signals(Columns):
     def from_nc_file(cls, nc_ds, idx_in_file):
         """
 
-        :param nc_ds: netcdf dataset = Xarray dataset
+        :param nc_ds: netcdf dataset = content of the netcdf file as Xarray dataset
         :param idx_in_file:
         :return:
         """

@@ -1,7 +1,5 @@
 import xarray as xr
 
-from ELDAmwl.constants import T0
-
 class Columns(object):
     """
     base column class (1 dimensional)

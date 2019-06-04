@@ -2,7 +2,7 @@ from attrdict import AttrDict
 
 from ELDAmwl.base import Params
 from ELDAmwl.signals import Signals
-
+from ELDAmwl.log import logger
 
 class Products(Signals):
 
@@ -51,5 +51,15 @@ class ProductParams(Params):
         result.valid_alt_range.max_height = query.ProductOptions.max_height
 
         result.ELPP_filename = query.PreparedSignalFile.filename
+
+        return result
+
+    @classmethod
+    def from_db(cls, general_params):
+        if not isinstance(general_params, ProductParams):
+            logger.error('')
+            return None
+
+        result = general_params.deepcopy()
 
         return result
