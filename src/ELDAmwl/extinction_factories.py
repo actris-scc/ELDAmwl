@@ -1,7 +1,7 @@
 from ELDAmwl.base import Params
 from ELDAmwl.registry import registry
 from ELDAmwl.factory import BaseOperationFactory, BaseOperation
-from ELDAmwl.products import Products, ProductParams
+from ELDAmwl.products import Products
 from ELDAmwl.log import logger
 from ELDAmwl.database.db_functions import read_extinction_algorithm
 

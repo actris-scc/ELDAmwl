@@ -2,8 +2,6 @@
 from math import pi
 from datetime import datetime
 
-from ELDAmwl.extinction_factories import ExtinctionParams
-
 LIGHT_SPEED = 3.E8  # m / s
 
 T0 = datetime(1094,1,1)
@@ -21,8 +19,6 @@ VLDR = 13
 PLDR = 14
 
 PRODUCT_TYPES = [RBSC, EXT, LR, EBSC, MWL, AE, CR, VLDR, PLDR]
-
-PARAM_CLASSES = {EXT: ExtinctionParams}
 
 # ====== signal detection types ======
 ANALOG = 1

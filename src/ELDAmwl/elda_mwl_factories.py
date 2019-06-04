@@ -3,8 +3,9 @@ import xarray as xr
 from attrdict import AttrDict
 
 from ELDAmwl.base import Params
-from ELDAmwl.constants import PARAM_CLASSES
+from ELDAmwl.constants import EXT
 from ELDAmwl.database.db_functions import read_system_id, get_products_query, read_mwl_product_id
+from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.products import ProductParams
 from ELDAmwl.registry import registry
 from ELDAmwl.factory import BaseOperationFactory, BaseOperation
@@ -15,16 +16,21 @@ try:
 except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg
 
+PARAM_CLASSES = {EXT: ExtinctionParams}
+
 class MeasurementParams(Params):
     """
     Those are general parameters of the measurement
     """
     def __init__(self, measurement_id):
-        self.meas_id = measurement_id
-        self.system_id = read_system_id(self.meas_id)
-        self.mwl_product_id = read_mwl_product_id(self.system_id)
-        self.products = AttrDict({'basic':AttrDict({}),
-                                  'derived': AttrDict({})})
+        self.sub_params = ['measurement_params']
+        self.measurement_params = AttrDict({})
+
+        self.measurement_params.meas_id = measurement_id
+        self.measurement_params.system_id = read_system_id(self.meas_id)
+        self.measurement_params.mwl_product_id = read_mwl_product_id(self.system_id)
+        self.measurement_params.products = AttrDict({'basic':AttrDict({}),
+                                                     'derived': AttrDict({})})
 
     def read_product_list(self):
         p_query = get_products_query(self.mwl_product_id, self.meas_id)
@@ -47,7 +53,7 @@ class RunELDAmwl(BaseOperation):
     _data = None
 
     def __init__(self, measurement_id):
-        self.params = MeasurementParams(measurement_id)
+        self._params = MeasurementParams(measurement_id)
         _data = AttrDict()
 
     def read_tasks(self):

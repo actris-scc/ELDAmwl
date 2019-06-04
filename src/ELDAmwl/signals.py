@@ -1,8 +1,8 @@
 import numpy as np
 import xarray as xr
 
-from ELDAmwl.columns import Columns
 from ELDAmwl.constants import WATER_VAPOR, PARTICLE, NEAR_RANGE, FAR_RANGE, TOTAL, CROSS, PARALLEL
+from ELDAmwl.columns import Columns
 
 
 class Signals(Columns):
