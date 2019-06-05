@@ -14,14 +14,17 @@ class Params(object):
         sub_params = []
 
     def __getattribute__(self, item):
-        for sp_name in object.__getattribute__(self, 'sub_params'):
-            sp = object.__getattribute__(self, sp_name)
-            try:
-                return object.__getattribute__(sp, item)
-            except AttributeError:
-                continue
+        try:
+            return object.__getattribute__(self, item)
+        except AttributeError:
+            for sp_name in object.__getattribute__(self, 'sub_params'):
+                sp = object.__getattribute__(self, sp_name)
+                try:
+                    return object.__getattribute__(sp, item)
+                except AttributeError:
+                    continue
 
-        raise(AttributeError('class %s has no attribute %s' % (object.__getattribute__(sp, '__class__').__name__, item)))
+            raise(AttributeError('class %s has no attribute %s' % (object.__getattribute__(sp, '__class__').__name__, item)))
 
 
 # class _Operator(object):

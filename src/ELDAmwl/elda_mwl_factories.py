@@ -24,7 +24,7 @@ class MeasurementParams(Params):
     """
     def __init__(self, measurement_id):
         self.sub_params = ['measurement_params']
-        self.measurement_params = AttrDict({})
+        self.measurement_params = Params()
 
         self.measurement_params.meas_id = measurement_id
         self.measurement_params.system_id = read_system_id(self.meas_id)
