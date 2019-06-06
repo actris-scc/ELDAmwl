@@ -40,8 +40,8 @@ class ProductParams(Params):
         result.prod_id = query.Products.ID
         result.product_type = query.Products._prod_type_ID
 
-        result.is_basic_product = query.ProductTypes.is_basic_product
-        result.is_derived_product = ~ result.is_basic_product
+        result.is_basic_product = query.ProductTypes.is_basic_product == 1
+        result.is_derived_product = not result.is_basic_product
 
         result.error_threshold.low = query.ErrorThresholdsLow.value
         result.error_threshold.high = query.ErrorThresholdsHigh.value
