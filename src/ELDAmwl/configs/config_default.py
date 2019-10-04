@@ -13,7 +13,6 @@ SIGNAL_PATH = ''
 PRODUCT_PATH = ''
 TEMP_PATH = ''
 
-
 # ===================
 # database connection
 # ===================
