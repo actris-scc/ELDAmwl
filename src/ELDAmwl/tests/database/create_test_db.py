@@ -19,7 +19,7 @@ from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import SystemProduct, MWLproductProduct, Products, ProductTypes, \
     ProductOptions, ErrorThresholds, PreparedSignalFile
 
-from ELDAmwl.errors import CsvFileNotFound, FillTableFailed
+from ELDAmwl.exceptions import CsvFileNotFound, FillTableFailed
 from ELDAmwl.log import logger
 
 # List of all DB tables in the test DB
