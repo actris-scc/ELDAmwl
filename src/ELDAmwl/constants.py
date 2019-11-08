@@ -4,7 +4,7 @@ from datetime import datetime
 
 LIGHT_SPEED = 3.E8  # m / s
 
-T0 = datetime(1094,1,1)
+T0 = datetime(1904,1,1)
 RAYL_LR = 8. * pi / 3
 
 # ====== product types ======
