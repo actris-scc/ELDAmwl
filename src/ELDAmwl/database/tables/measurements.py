@@ -12,9 +12,8 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 # structure geneated with
-# (ELDAmwl) C:\Users\imattis>sqlacodegen mysql+pymysql://earlinet:dwdlidar@localho
-# st/scc_dev_20190228 > k:\auswertung\Mattis\myPrograms\python\ELDAmwl\db_structur
-# e.txt
+# (ELDAmwl) C:\Users\imattis>sqlacodegen mysql+pymysql://earlinet:dwdlidar@localhost/scc_dev_20190228
+# > k:\auswertung\Mattis\myPrograms\python\ELDAmwl\db_structure.txt
 
 # Measurements = Table(
 #     'measurements', metadata,

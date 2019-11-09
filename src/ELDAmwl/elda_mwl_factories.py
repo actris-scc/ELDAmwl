@@ -7,9 +7,10 @@ from attrdict import AttrDict
 
 from ELDAmwl.backscatter_factories import BackscatterParams
 from ELDAmwl.base import Params
-from ELDAmwl.constants import EXT, RBSC
+from ELDAmwl.constants import EXT, RBSC, LR
 from ELDAmwl.database.db_functions import read_system_id, get_products_query, read_mwl_product_id
 from ELDAmwl.extinction_factories import ExtinctionParams
+from ELDAmwl.lidar_ratio_factories import LidarRatioParams
 from ELDAmwl.products import ProductParams
 from ELDAmwl.registry import registry
 from ELDAmwl.factory import BaseOperationFactory, BaseOperation
@@ -22,7 +23,8 @@ except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg
 
 PARAM_CLASSES = {RBSC: BackscatterParams,
-                 EXT: ExtinctionParams}
+                 EXT: ExtinctionParams,
+                 LR: LidarRatioParams}
 
 class MeasurementParams(Params):
     """

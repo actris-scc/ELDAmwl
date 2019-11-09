@@ -2,6 +2,8 @@
 from math import pi
 from datetime import datetime
 
+ELDA_MWL_VERSION = '0.0.1'
+
 LIGHT_SPEED = 3.E8  # m / s
 
 T0 = datetime(1904,1,1)
