@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.configs.config_default import *
 
 # ===================
 # user specific configurations in this file

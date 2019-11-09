@@ -1,26 +1,24 @@
-import os
-from copy import copy
+# -*- coding: utf-8 -*-
+"""example Classes for db tables by Volker"""
 
 from attrdict import AttrDict
+from copy import copy
+from eprofile.database.engine_pid_guard import add_engine_pidguard
+from eprofile.database.tables.privileged_ip import PrivilegedIP
+from eprofile.database.tables.station import Station
+from eprofile.database.tables.windprofiler import COLS_INCOMING_Windprofiler
+from eprofile.database.tables.windprofiler import Windprofiler
+from eprofile.database.tables.windprofiler_comb_dayfiles import WindprofilerCombDaily  # noqa E501
+from eprofile.database.tables.windprofiler_daily import COLS_WindprofilerDaily
+from eprofile.database.tables.windprofiler_mode import WindprofilerMode
+from eprofile.database.tables.windprofiler_ql import WindprofilerQL
+from eprofile.log import logger
 from psycopg2._range import NumericRange
 from sqlalchemy import create_engine
 from sqlalchemy.dialects.postgresql import psycopg2
 from sqlalchemy.orm import sessionmaker
 
-from eprofile.database.engine_pid_guard import add_engine_pidguard
-from eprofile.database.tables.privileged_ip import PrivilegedIP
-from eprofile.database.tables.station import Station
-from eprofile.database.tables.windprofiler import (
-    Windprofiler,
-    COLS_INCOMING_Windprofiler, )
-from eprofile.database.tables.windprofiler_comb_dayfiles import \
-    WindprofilerCombDaily
-from eprofile.database.tables.windprofiler_daily import \
-    (
-    COLS_WindprofilerDaily, )
-from eprofile.database.tables.windprofiler_mode import WindprofilerMode
-from eprofile.database.tables.windprofiler_ql import WindprofilerQL
-from eprofile.log import logger
+import os
 
 
 class DBFunc(object):
@@ -31,9 +29,9 @@ class DBFunc(object):
         self.instrument_table = instrument_table
 
     def connect_string(self):
-        result = "postgres://%s:%s@%s/%s" % (
+        result = 'postgres://{0}:{1}@{2}/{3}'.format(
             self.cfg.DB_USER, self.cfg.DB_PASS, self.cfg.DB_SERVER,
-            self.cfg.DB_DB,)
+            self.cfg.DB_DB)
         return result
 
     def init_engine(self):
@@ -101,17 +99,18 @@ class DBFunc(object):
         if instrument_where:
             day_files = self.session.query(self.daily_table,
                                            self.instrument_table,
-                                           Station
+                                           Station,
                                            ).filter_by(**where).join(
                 self.instrument_table,
-                self.daily_table.instrument_id == self.instrument_table.id
+                self.daily_table.instrument_id == self.instrument_table.id,
             ).filter_by(**instrument_where)
         else:
             day_files = self.session.query(self.daily_table,
                                            self.instrument_table,
                                            Station).filter_by(**where).join(
                 self.instrument_table,
-                self.daily_table.instrument_id == self.instrument_table.id).join(
+                self.daily_table.instrument_id ==
+                                               self.instrument_table.id).join(
                 Station,
                 self.instrument_table.station_id == Station.id)
         if zoom is not None:
@@ -144,16 +143,20 @@ class DBFunc(object):
     def get_low_high_modes(self, instrument_id):
         instrument_modes = self.session.query(WindprofilerMode) \
             .join(self.instrument_table,
-                  self.instrument_table.id == WindprofilerMode.windprofiler_id) \
+                  self.instrument_table.id ==
+                  WindprofilerMode.windprofiler_id) \
             .filter(self.instrument_table.id == instrument_id).all()
         return instrument_modes
 
     def get_low_high_dayfiles(self, instrument_id, date):
-        day_files = self.session.query(self.daily_table, WindprofilerMode) \
+        day_files = self.session.query(
+            self.daily_table, WindprofilerMode) \
             .join(WindprofilerMode,
-                  WindprofilerMode.id == self.daily_table.windprofiler_mode_id) \
+                  WindprofilerMode.id ==
+                  self.daily_table.windprofiler_mode_id) \
             .join(self.instrument_table,
-                  self.instrument_table.id == WindprofilerMode.windprofiler_id) \
+                  self.instrument_table.id ==
+                  WindprofilerMode.windprofiler_id) \
             .filter(self.daily_table.measurement_date == date) \
             .filter(self.instrument_table.id == instrument_id).all()
         return day_files
@@ -181,7 +184,8 @@ class DBFunc(object):
             .filter(WindprofilerMode.wigos == wigos) \
             .filter(WindprofilerMode.name == instrument_id) \
             .join(self.instrument_table,
-                  self.instrument_table.id == WindprofilerMode.windprofiler_id) \
+                  self.instrument_table.id ==
+                  WindprofilerMode.windprofiler_id) \
             .join(Station) \
             .all()
         if result:
@@ -270,8 +274,8 @@ class DBFunc(object):
 
     def select_ceilometer_date(self, instrument_id, measurement_date):
         result = self.session.query(self.daily_table) \
-            .filter_by( **{'instrument_id': instrument_id,
-                      'measurement_date' :measurement_date})
+            .filter_by(**{'instrument_id': instrument_id,
+                          'measurement_date': measurement_date})
         return result
 
     def insert_day(self, data):
@@ -300,7 +304,7 @@ class DBFunc(object):
 
     def get_dayfile_for_windprofiler_mode_and_date_as_dict(self,
                                                            measurement_date,
-                                                           windprofiler_mode_id):
+                                                           windprofiler_mode_id):  # noqa E501
         result = self.session.query(self.daily_table) \
             .filter(self.daily_table.measurement_date == measurement_date) \
             .filter(
@@ -344,13 +348,11 @@ class DBFunc(object):
 
         return self.session.query(Station)
 
-
-
-
     # Obsolete
     # ======================================
+
     def migrate(self, source, target):
-        logger.info("Migrating WMO stations to WIGOS")
+        logger.info('Migrating WMO stations to WIGOS')
 
         source_connection = psycopg2.connect(source)
         source_cur = source_connection.cursor()
@@ -376,8 +378,8 @@ class DBFunc(object):
             target_session.add(station)
             target_session.commit()
 
-        logger.info("Migrated WMO station to WIGOS, successfully")
-        logger.info("Migrating WMO instruments to WIGOS")
+#         logger.info("Migrated WMO station to WIGOS, successfully")
+#         logger.info("Migrating WMO instruments to WIGOS")
 
         source_cur.execute("""SELECT * from ceilometer""")
 
@@ -403,4 +405,4 @@ class DBFunc(object):
             ceilometer = self.instrument_table(**data)
             target_session.add(ceilometer)
             target_session.commit()
-        logger.info("Migrated WMO instruments to WIGOS, successfully")
+        logger.info('Migrated WMO instruments to WIGOS, successfully')

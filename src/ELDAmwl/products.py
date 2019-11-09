@@ -1,8 +1,11 @@
-from attrdict import AttrDict
+# -*- coding: utf-8 -*-
+"""base classes for products"""
 
+from attrdict import AttrDict
 from ELDAmwl.base import Params
-from ELDAmwl.signals import Signals
 from ELDAmwl.log import logger
+from ELDAmwl.signals import Signals
+
 
 class Products(Signals):
 
@@ -40,9 +43,11 @@ class GeneralProductParams(Params):
 
         self.error_method = None
         self.detection_limit = None
-        self.error_threshold = AttrDict({'low': None, 'high': None})
+        self.error_threshold = AttrDict({'low': None,
+                                         'high': None})
 
-        self.valid_alt_range = AttrDict({'min_height': None, 'max_height': None})
+        self.valid_alt_range = AttrDict({'min_height': None,
+                                         'max_height': None})
 
         self.ELPP_filename = ''
 

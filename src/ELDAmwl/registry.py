@@ -1,6 +1,9 @@
-from attrdict import AttrDict
+# -*- coding: utf-8 -*-
+"""Class registry"""
 
+from attrdict import AttrDict
 from ELDAmwl.exceptions import OnlyOneOverrideAllowed
+
 
 OVERRIDE = '__OVERRIDE__'
 
@@ -19,7 +22,7 @@ class FactoryRegistry(object):
 
         Args:
             factory: The factory to register for
-            klass_name: The name under which the class is registered (in the db)
+            klass_name: The name under which the class is registered in the db
             klass: The class to register
         """
         self.registry[klass_name] = klass
@@ -50,6 +53,7 @@ class FactoryRegistry(object):
             else:
                 return None
 
+
 class Registry(object):
     """
     Registers classes for the class factories
@@ -61,7 +65,7 @@ class Registry(object):
         """
         self.factory_registry = AttrDict()
 
-    def get_factory_registration(self, factory ):
+    def get_factory_registration(self, factory):
         """
         Retireve or create new factory entry in the registry
 
@@ -81,15 +85,15 @@ class Registry(object):
 
         Args:
             factory: The factory to register for
-            klass_name: The name under which the class is registered (in the db)
+            klass_name: The name under which the class is registered in the db
             klass: The class to register
 
         Returns:
 
         """
         factory_registration = self.get_factory_registration(factory)
-        factory_registration.register_class(klass_name, klass, override=override)
-
+        factory_registration.register_class(klass_name, klass,
+                                            override=override)
 
     def find_class_by_name(self, factory, klass_name):
         """

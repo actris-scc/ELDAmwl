@@ -1,69 +1,23 @@
-from sqlalchemy import Boolean, Index, INTEGER, CHAR, DateTime, Table, text, VARCHAR
+# -*- coding: utf-8 -*-
+"""Classes for measurement related db tables"""
+
+from sqlalchemy import CHAR
 from sqlalchemy import Column
-#from sqlalchemy import Float
-#from sqlalchemy import ForeignKey
-#from sqlalchemy import Integer
+from sqlalchemy import DateTime
+from sqlalchemy import INTEGER
 from sqlalchemy import String
-#from sqlalchemy.dialects.mssql import TINYINT
-#from sqlalchemy.dialects.postgresql import INT4RANGE
+from sqlalchemy import VARCHAR
 from sqlalchemy.ext.declarative import declarative_base
-#from sqlalchemy.testing.suite.test_reflection import metadata
+
+
+# from sqlalchemy.testing.suite.test_reflection import metadata
 
 Base = declarative_base()
 
 # structure geneated with
-# (ELDAmwl) C:\Users\imattis>sqlacodegen mysql+pymysql://earlinet:dwdlidar@localhost/scc_dev_20190228
+# (ELDAmwl) C:\Users\imattis>sqlacodegen mysql+pymysql://earlinet:dwdlidar@localhost/scc_dev_20190228  # noqa E501
 # > k:\auswertung\Mattis\myPrograms\python\ELDAmwl\db_structure.txt
 
-# Measurements = Table(
-#     'measurements', metadata,
-#     Column('ID', String(15), index=True),
-#     Column('__hoi_stations__ID', CHAR(3), index=True),
-#     Column('_hoi_system_ID', INTEGER(11), nullable=False, index=True, server_default=text("'0'")),
-#     Column('start', DateTime),
-#     Column('stop', DateTime, nullable=False, server_default=text("'1970-01-01 00:00:00'")),
-#     Column('comment', String(100), nullable=False, server_default=text("''")),
-#     Column('calipso', TINYINT(1), nullable=False, server_default=text("'0'")),
-#     Column('cirrus', TINYINT(1), nullable=False, server_default=text("'0'")),
-#     Column('etna', TINYINT(1), nullable=False, server_default=text("'0'")),
-#     Column('rurban', TINYINT(1), nullable=False, server_default=text("'0'")),
-#     Column('stratos', TINYINT(1), nullable=False, server_default=text("'0'")),
-#     Column('dicycles', TINYINT(1), nullable=False, server_default=text("'0'")),
-#     Column('photosmog', TINYINT(1), nullable=False, server_default=text("'0'")),
-#     Column('forfires', TINYINT(1), nullable=False, server_default=text("'0'")),
-#     Column('sahadust', TINYINT(1), nullable=False, server_default=text("'0'")),
-#     Column('climatol', TINYINT(1), nullable=False, server_default=text("'0'")),
-#     Column('upload', INTEGER(11), nullable=False, server_default=text("'0'")),
-#     Column('hirelpp', INTEGER(11), nullable=False, server_default=text("'0'")),
-#     Column('cloudmask', INTEGER(11), nullable=False, server_default=text("'0'")),
-#     Column('elquick', INTEGER(11), nullable=False, server_default=text("'0'")),
-#     Column('elpp', INTEGER(11), nullable=False, server_default=text("'0'")),
-#     Column('elda', INTEGER(11), nullable=False, server_default=text("'0'")),
-#     Column('eldec', INTEGER(11), nullable=False, server_default=text("'0'")),
-#     Column('elic', INTEGER(11), nullable=False, server_default=text("'0'")),
-#     Column('hirelpp_return_code', INTEGER(11)),
-#     Column('cloudmask_return_code', INTEGER(11)),
-#     Column('elquick_return_code', INTEGER(11)),
-#     Column('elpp_return_code', INTEGER(11), index=True),
-#     Column('elda_return_code', INTEGER(11)),
-#     Column('eldec_return_code', INTEGER(11)),
-#     Column('elic_return_code', INTEGER(11)),
-#     Column('interface_return_code', INTEGER(11), index=True),
-#     Column('elpp_current_product_id', INTEGER(11)),
-#     Column('eldec_current_product_id', INTEGER(11)),
-#     Column('hirelpp_current_product_id', INTEGER(11)),
-#     Column('cloudmask_current_product_id', INTEGER(11)),
-#     Column('elda_current_product_id', INTEGER(11)),
-#     Column('elic_current_product_id', INTEGER(11)),
-#     Column('elquick_current_product_id', INTEGER(11)),
-#     Column('creation_date', DateTime),
-#     Column('updated_date', DateTime),
-#     Column('sounding_file_id', INTEGER(11), index=True),
-#     Column('lidar_ratio_file_id', INTEGER(11), index=True),
-#     Column('overlap_file_id', INTEGER(11), index=True),
-#     Column('creation_auth_user_ID', INTEGER(11)),
-#     Column('update_auth_user_ID', INTEGER(11))
-# )
 
 class Measurements(Base):
     __tablename__ = '_measurements'
@@ -76,7 +30,7 @@ class Measurements(Base):
     stop = Column(DateTime, nullable=False)
     comment = Column(String(100), nullable=False)
     calipso = Column(INTEGER, nullable=False)
-    cirrus= Column(INTEGER, nullable=False)
+    cirrus = Column(INTEGER, nullable=False)
     etna = Column(INTEGER, nullable=False)
     rurban = Column(INTEGER, nullable=False)
     stratos = Column(INTEGER, nullable=False)

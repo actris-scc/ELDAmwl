@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.database.tables.db_base import ElastBscMethod
+from ELDAmwl.database.tables.system_product import SystemProduct
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from ELDAmwl.database.tables.measurements import Measurements
 
 try:
     import ELDAmwl.configs.config as cfg
@@ -33,9 +32,9 @@ class DBUtils(object):
         self.session = sessionmaker(bind=self.engine)()
 
     def read_tasks(self, measurement_id):
-        tasks = self.session.query(#Measurements,
+        tasks = self.session.query(  # Measurements,
                                    SystemProduct)
-                #.filter(SystemProduct._system_ID == Measurements._hoi_system_ID)
+        # .filter(SystemProduct._system_ID == Measurements._hoi_system_ID)
         for task in tasks:
             pass
 #        measurements = self.Base.classes.measurements

@@ -1,8 +1,11 @@
-from attrdict import AttrDict
+# -*- coding: utf-8 -*-
+"""Classes for backscatter calculation"""
 
+from attrdict import AttrDict
 from ELDAmwl.base import Params
 from ELDAmwl.database.db_functions import get_bsc_cal_params_query
 from ELDAmwl.products import ProductParams
+
 
 class BscCalibrationParams(Params):
 
@@ -17,15 +20,17 @@ class BscCalibrationParams(Params):
     def from_db(cls, general_params):
         result = cls()
 
-        query = get_bsc_cal_params_query(general_params.prod_id, general_params.product_type)
+        query = get_bsc_cal_params_query(general_params.prod_id,
+                                         general_params.product_type)
 
-        result.CalRangeSearchMethod = query.BscCalibrOption._calRangeSearchMethod_ID
+        result.CalRangeSearchMethod = query.BscCalibrOption._calRangeSearchMethod_ID  # noqa E501
         result.WindowWidth = query.BscCalibrOption.WindowWidth
         result.CalValue = query.BscCalibrOption.calValue
         result.CalInterval['from'] = query.BscCalibrOption.LowestHeight
         result.CalInterval['to'] = query.BscCalibrOption.TopHeight
 
         return result
+
 
 class BackscatterParams(ProductParams):
 
@@ -38,5 +43,5 @@ class BackscatterParams(ProductParams):
     def from_db(cls, general_params):
         result = cls()
         result.general_params = general_params
-        result.calibration_params = BscCalibrationParams.from_db(general_params)
+        result.calibration_params = BscCalibrationParams.from_db(general_params)  # noqa E501
         return result

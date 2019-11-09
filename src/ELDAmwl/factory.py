@@ -1,19 +1,27 @@
+# -*- coding: utf-8 -*-
+"""bas Classes for factories and operators"""
+
 from ELDAmwl.registry import registry
 
+
 try:
-    import ELDAmwl.configs.config as cfg
+    import ELDAmwl.configs.config as cfg  # noqa E401
 except ModuleNotFoundError:
-    import ELDAmwl.configs.config_default as cfg
+    import ELDAmwl.configs.config_default as cfg  # noqa E401
+
 
 class BaseOperationFactory(object):
     """
     Base class of factories.
 
-    Base class of factories, returns an instance of a BaseOperation.
-    If several alternative BaseOperation classes are available, this factory decides, which one to provide.
-    This decision is based on options in the database or whether user defined plugins are available.
+    Base class of factories, returns an instance of a
+    BaseOperation. If several alternative BaseOperation
+    classes are available, this factory decides,
+    which one to provide. This decision is based on options
+    in the database or whether user defined plugins are available.
 
-    If arguments or keywords are provided, they are automatically passed to the BaseOperation instance.
+    If arguments or keywords are provided,
+    they are automatically passed to the BaseOperation instance.
     """
     name = 'BaseFactory'
 
@@ -32,6 +40,7 @@ class BaseOperationFactory(object):
         klass_name = self.get_classname_from_db()
         klass = registry.find_class_by_name(self.__class__, klass_name)
         return klass
+
 
 class BaseOperation(object):
     """
@@ -56,7 +65,7 @@ class BaseOperation(object):
     def params(self, value):
         """
         Set the params
-        :param value: The params. Usually an instance of a class derived from Params
+        :param value: The params. Usually an instance of a
+                      class derived from Params
         """
         self._params = value
-

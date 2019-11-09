@@ -1,8 +1,17 @@
-from sqlalchemy import Boolean, Index, INTEGER, CHAR, DateTime, Table, text, VARCHAR, DECIMAL, String, Float
+# -*- coding: utf-8 -*-
+"""Classes for measurement system-product related db tables"""
+
+from sqlalchemy import CHAR
 from sqlalchemy import Column
+from sqlalchemy import DECIMAL
+from sqlalchemy import Float
+from sqlalchemy import INTEGER
+from sqlalchemy import String
 from sqlalchemy.ext.declarative import declarative_base
 
+
 Base = declarative_base()
+
 
 class SystemProduct(Base):
     __tablename__ = 'system_product'
@@ -10,6 +19,7 @@ class SystemProduct(Base):
     ID = Column(INTEGER, primary_key=True)
     _system_ID = Column(INTEGER, nullable=False, index=True)
     _Product_ID = Column(INTEGER, nullable=False, index=True)
+
 
 class MWLproductProduct(Base):
     __tablename__ = 'mwlproduct_product'
@@ -79,8 +89,3 @@ class PreparedSignalFile(Base):
     _Product_ID = Column(INTEGER, nullable=False, index=True)
     _scc_version_ID = Column(INTEGER, nullable=False)
     filename = Column(String(100), nullable=False)
-
-
-
-
-

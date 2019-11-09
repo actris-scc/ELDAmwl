@@ -1,19 +1,34 @@
-from attrdict import AttrDict
+# -*- coding: utf-8 -*-
+"""functions for db handling"""
+
+from ELDAmwl.constants import EBSC
+from ELDAmwl.constants import MWL
+from ELDAmwl.constants import RBSC
+from ELDAmwl.database.db import DBUtils
+from ELDAmwl.database.tables.backscatter import BscCalibrOption
+from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
+from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
+from ELDAmwl.database.tables.extinction import ExtinctionOption
+from ELDAmwl.database.tables.extinction import ExtMethod
+from ELDAmwl.database.tables.extinction import OverlapFile
+from ELDAmwl.database.tables.measurements import Measurements
+from ELDAmwl.database.tables.system_product import ErrorThresholds
+from ELDAmwl.database.tables.system_product import MWLproductProduct
+from ELDAmwl.database.tables.system_product import PreparedSignalFile
+from ELDAmwl.database.tables.system_product import ProductOptions
+from ELDAmwl.database.tables.system_product import Products
+from ELDAmwl.database.tables.system_product import ProductTypes
+from ELDAmwl.database.tables.system_product import SystemProduct
+from ELDAmwl.log import logger
 from sqlalchemy.orm import aliased
 
-from ELDAmwl.database.tables.backscatter import BscCalibrOption, ElastBackscatterOption, RamanBackscatterOption
-from ELDAmwl.log import logger
-from ELDAmwl.constants import MWL, EBSC, RBSC
-from ELDAmwl.database.db import DBUtils
-from ELDAmwl.database.tables.measurements import Measurements
-from ELDAmwl.database.tables.system_product import SystemProduct, MWLproductProduct, Products, ProductTypes, \
-    ProductOptions, ErrorThresholds, PreparedSignalFile
-from ELDAmwl.database.tables.extinction import ExtinctionOption, ExtMethod, OverlapFile
 
 dbutils = DBUtils()
 
+
 def read_extinction_algorithm(product_id):
-    """ read from db which algorithm shall be used for the slope calculation in extinction retrievals.
+    """ read from db which algorithm shall be used for the slope
+        calculation in extinction retrievals.
 
         Args:
             product_id (int): the id of the actual extinction product
@@ -23,20 +38,23 @@ def read_extinction_algorithm(product_id):
 
         """
     options = dbutils.session.query(ExtMethod,
-                               ExtinctionOption)\
+                                    ExtinctionOption)\
         .filter(ExtMethod.ID == ExtinctionOption._ext_method_ID)\
         .filter(ExtinctionOption._product_ID == product_id)
 
     if options.count() == 1:
         result = options.value('python_classname')
+        return result
     else:
-        logger.error('wrong number of extinction options ({})'.format(options.count()))
+        logger.error('wrong number of extinction options ({0})'
+                     .format(options.count()))
 
 
 def read_extinction_params(product_id):
     """ function to read options of an extinction product from db.
 
-        This function reads from db with which parameters an extinction product shall be derived.
+        This function reads from db with which parameters an
+        extinction product shall be derived.
 
         Args:
             product_id (int): the id of the actual extinction product
@@ -46,7 +64,7 @@ def read_extinction_params(product_id):
 
         """
     options = dbutils.session.query(ExtMethod,
-                               ExtinctionOption)\
+                                    ExtinctionOption)\
         .filter(ExtMethod.ID == ExtinctionOption._ext_method_ID)\
         .filter(ExtinctionOption._product_ID == product_id)
 
@@ -56,26 +74,30 @@ def read_extinction_params(product_id):
             overlap_file = None
         else:
             o_file = dbutils.session.query(OverlapFile,
-                                            ExtinctionOption) \
+                                           ExtinctionOption) \
                 .filter(OverlapFile.ID == ExtinctionOption._overlap_file_ID) \
                 .filter(ExtinctionOption._product_ID == product_id)
             if o_file.count() == 1:
                 overlap_correction = True
                 overlap_file = o_file('filename')
             else:
-                logger.error('cannot find overlap file with id {} in db'.format( options('_overlap_file_ID') ))
+                logger.error('cannot find overlap file with id {0} in db'
+                             .format(options('_overlap_file_ID')))
 
         result = {'angstroem': options.value('angstroem'),
                   'python_classname': options.value('python_classname'),
                   'overlap_correction': overlap_correction,
-                  'overlap_file': overlap_file
+                  'overlap_file': overlap_file,
                   }
+        return result
     else:
-        logger.error('wrong number of extinction options ({})'.format(options.count()))
+        logger.error('wrong number of extinction options ({0})'
+                     .format(options.count()))
 
 
 def get_products_query(mwl_prod_id, measurement_id):
-    """ read from db which of the products correlated to this system is the mwl product.
+    """ read from db which of the products correlated to
+        this system is the mwl product.
 
         Args:
             mwl_prod_id (int): product id of mwl product
@@ -86,12 +108,17 @@ def get_products_query(mwl_prod_id, measurement_id):
 
         """
 
-    ErrorThresholdsLow  = aliased(ErrorThresholds, name='ErrorThresholdsLow')
-    ErrorThresholdsHigh  = aliased(ErrorThresholds, name='ErrorThresholdsHigh')
+    ErrorThresholdsLow = aliased(ErrorThresholds,
+                                 name='ErrorThresholdsLow')
+    ErrorThresholdsHigh = aliased(ErrorThresholds,
+                                  name='ErrorThresholdsHigh')
 
-    products = dbutils.session.query(MWLproductProduct, Products,
-                                     ProductTypes, ProductOptions,
-                                     ErrorThresholdsLow, ErrorThresholdsHigh,
+    products = dbutils.session.query(MWLproductProduct,
+                                     Products,
+                                     ProductTypes,
+                                     ProductOptions,
+                                     ErrorThresholdsLow,
+                                     ErrorThresholdsHigh,
                                      PreparedSignalFile)\
         .filter(MWLproductProduct._mwl_product_ID == mwl_prod_id)\
         .filter(MWLproductProduct._Product_ID == Products.ID)\
@@ -101,12 +128,13 @@ def get_products_query(mwl_prod_id, measurement_id):
         .filter(ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID)\
         .filter(ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID)\
         .filter(PreparedSignalFile._Product_ID == Products.ID)\
-        .filter(PreparedSignalFile._measurements_ID == measurement_id)
+        .filter(PreparedSignalFile._measurements_ID == measurement_id)  # noqa E501
 
-    if products.count() >0:
+    if products.count() > 0:
         return products
     else:
         logger.error('no individual products for mwl product')
+
 
 def get_bsc_cal_params_query(bsc_prod_id, bsc_type):
     """ read from db which shall be used to get the calibration of a sc product.
@@ -120,21 +148,26 @@ def get_bsc_cal_params_query(bsc_prod_id, bsc_type):
 
         """
     if bsc_type == EBSC:
-        BackscatterOption  = aliased(ElastBackscatterOption, name='BackscatterOption')
+        BackscatterOption = aliased(ElastBackscatterOption,
+                                    name='BackscatterOption')
     if bsc_type == RBSC:
-        BackscatterOption  = aliased(RamanBackscatterOption, name='BackscatterOption')
+        BackscatterOption = aliased(RamanBackscatterOption,
+                                    name='BackscatterOption')
 
-    cal_params = dbutils.session.query(BscCalibrOption, BackscatterOption)\
+    cal_params = dbutils.session.query(BscCalibrOption,
+                                       BackscatterOption)\
         .filter(BscCalibrOption.ID == BackscatterOption._bsc_calibr_options_ID)\
         .filter(BackscatterOption._product_ID == bsc_prod_id)
 
-    if cal_params.count() >0:
+    if cal_params.count() > 0:
         return cal_params[0]
     else:
         logger.error('no calibration params for bsc product')
 
+
 def read_mwl_product_id(system_id):
-    """ read from db which of the products correlated to this system is the mwl product.
+    """ read from db which of the products correlated
+        to this system is the mwl product.
 
         Args:
             system_id (int): the id of the actual lidar system
@@ -152,16 +185,19 @@ def read_mwl_product_id(system_id):
     if products.count() == 1:
         return products.value('_Product_ID')
     else:
-        logger.error('wrong number of mwl products ({})'.format(products.count()))
+        logger.error('wrong number of mwl products ({0})'
+                     .format(products.count()))
 
 
 def read_system_id(measurement_id):
     """ function to read from db which products shall be derived .
 
-        This function reads from db which products (as product IDs) shall be derived.
+        This function reads from db which products
+          (as product IDs) shall be derived.
 
         Args:
-            measurement_id (str): the id string of the actual measurement
+            measurement_id (str): the id string of the
+            actual measurement
 
         Returns:
             list: List of product ids (int)
@@ -173,7 +209,7 @@ def read_system_id(measurement_id):
     if sys_id.count() == 1:
         return sys_id.value('_hoi_system_ID')
     else:
-        logger.error('wrong number of system IDs ({})'.format(sys_id.count()))
+        logger.error('wrong number of system IDs ({0})'.format(sys_id.count()))
 
 #    for task in tasks:
 #        pass
@@ -198,4 +234,3 @@ def read_system_id(measurement_id):
     #     else:
     #         for filenames in psf_query:
     #             logger.notice(product_id, filenames.filename)
-

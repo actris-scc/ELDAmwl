@@ -1,9 +1,12 @@
-from ELDAmwl.base import Params
-from ELDAmwl.registry import registry
-from ELDAmwl.factory import BaseOperationFactory, BaseOperation
-from ELDAmwl.products import Products, ProductParams
-from ELDAmwl.log import logger
+# -*- coding: utf-8 -*-
+"""Classes for extinction calculation"""
+
 from ELDAmwl.database.db_functions import read_extinction_algorithm
+from ELDAmwl.factory import BaseOperation
+from ELDAmwl.factory import BaseOperationFactory
+from ELDAmwl.products import ProductParams
+from ELDAmwl.products import Products
+from ELDAmwl.registry import registry
 
 
 class ExtinctionParams(ProductParams):
@@ -15,11 +18,13 @@ class ExtinctionParams(ProductParams):
         # extinction_params.from_db()
         return result
 
+
 class Extinctions(Products):
     """
     time series of extinction profiles
     """
     pass
+
 
 class SlopeToExtinction(BaseOperationFactory):
     """
@@ -40,8 +45,8 @@ class getSlopeToExtinction(BaseOperation):
     """
     Calculates particle extinction coefficient from signal slope.
     """
-
-    # WFA := 1.0 + power((DetectionWL / EmissionWL),( Params as TExtParams).WL_Dep);
+    # WFA := 1.0 + power((DetectionWL / EmissionWL),
+    #                    ( Params as TExtParams).WL_Dep);
     # WFAinv := 1/WFA;
     #
     # for bin := firstBin to lastBin do
@@ -51,7 +56,9 @@ class getSlopeToExtinction(BaseOperation):
     #   Err[bin] := Err[bin] * WFAinv ;
     #   end;
 
-registry.register_class(SlopeToExtinction, 'getSlopeToExtinction', getSlopeToExtinction)
+
+registry.register_class(SlopeToExtinction, 'getSlopeToExtinction',
+                        getSlopeToExtinction)
 
 
 class Extinction(BaseOperationFactory):
@@ -60,6 +67,7 @@ class Extinction(BaseOperationFactory):
     """
 
     name = 'Extinction'
+
 
 class getExtinction(BaseOperation):
     """
@@ -70,6 +78,8 @@ class getExtinction(BaseOperation):
         slope = SignalSlope()
         ext = SlopeToExtinction(slope)
         result = ext
+        return result
+
 
 registry.register_class(Extinction, 'getExtinction', getExtinction)
 
@@ -93,7 +103,7 @@ class LinFit(BaseOperation):
 
     def __init__(self, weight):
         super(LinFit, self).__init__()
-        print('calculate linear fit with weight', weight)
+        # print('calculate linear fit with weight', weight)
 
 
 class WeightedLinFit(BaseOperation):
@@ -102,7 +112,7 @@ class WeightedLinFit(BaseOperation):
     """
     def __init__(self, str):
         super(WeightedLinFit, self).__init__()
-        print('WeightedLinFit sagt ', str)
+        # print('WeightedLinFit sagt ', str)
         LinFit(True)
 
 
@@ -116,7 +126,7 @@ class NonWeightedLinFit(BaseOperation):
 
     def __init__(self, str):
         super(NonWeightedLinFit, self).__init__()
-        print('NonWeightedLinFit sagt ', str)
+        # print('NonWeightedLinFit sagt ', str)
         LinFit(False)
 
 

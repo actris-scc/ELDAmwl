@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 """Base classes of the Operator and the Operator factory
 
 .. moduleauthor:: Volker Jaenisch <volker.jaenisch@inqbus.de>
 
 """
+
 
 class Params(object):
     """
@@ -11,7 +13,7 @@ class Params(object):
     sub_params = None
 
     def __init__(self):
-        sub_params = []
+        self.sub_params = []
 
     def __getattribute__(self, item):
         try:
@@ -24,7 +26,8 @@ class Params(object):
                 except AttributeError:
                     continue
 
-            raise(AttributeError('class %s has no attribute %s' % (object.__getattribute__(sp, '__class__').__name__, item)))
+            class_name = object.__getattribute__(sp, '__class__').__name__
+            raise(AttributeError('class {0} has no attribute {1}'.format(class_name, item)))  # noqa E501
 
 
 # class _Operator(object):

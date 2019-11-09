@@ -1,9 +1,9 @@
 # # -*- coding: utf-8 -*-
-from sqlalchemy import Column, INTEGER, CHAR, DECIMAL, BIGINT, DateTime, text, Text, VARCHAR
-from sqlalchemy import Float
-from sqlalchemy import Integer
+from sqlalchemy import Column
+from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy.ext.declarative import declarative_base
+
 
 Base = declarative_base()
 
@@ -13,8 +13,8 @@ Base = declarative_base()
 #
 #     Id = Column(INTEGER, primary_key=True)
 #     method = Column(String(100), nullable=False)
-#
-#
+
+
 class ElastBscMethod(Base):
     __tablename__ = '_elast_bsc_methods'
 
@@ -124,8 +124,12 @@ class ErrorMethod(Base):
 #
 #     ID = Column(INTEGER, primary_key=True)
 #     _product_ID = Column(INTEGER, nullable=False)
-#     _extinction_options_product_ID = Column(INTEGER, nullable=False, index=True)
-#     _raman_backscatter_options_product_ID = Column(INTEGER, nullable=False, index=True)
+#     _extinction_options_product_ID = Column(INTEGER,
+#                                             nullable=False,
+#                                             index=True)
+#     _raman_backscatter_options_product_ID = Column(INTEGER,
+#                                                    nullable=False,
+#                                                    index=True)
 #     _error_method_ID = Column(INTEGER, nullable=False, index=True)
 #
 #
@@ -296,9 +300,11 @@ class ErrorMethod(Base):
 #     __tablename__ = 'iter_backscatter_options'
 #
 #     id = Column(INTEGER, primary_key=True)
-#     iter_conv_crit = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0100'"))
+#     iter_conv_crit = Column(DECIMAL(10, 4), nullable=False,
+#                             server_default=text("'0.0100'"))
 #     _ram_bsc_method_id = Column(INTEGER, nullable=False)
-#     max_iteration_count = Column(INTEGER, nullable=False, server_default=text("'10'"))
+#     max_iteration_count = Column(INTEGER, nullable=False,
+#                                  server_default=text("'10'"))
 #
 #
 # class LidarConstant(Base):
@@ -366,8 +372,10 @@ class ErrorMethod(Base):
 #     ID = Column(INTEGER, primary_key=True)
 #     _product_ID = Column(INTEGER, nullable=False)
 #     correction = Column(Float(asdecimal=True), nullable=False)
-#     correction_statistical_error = Column(Float(asdecimal=True), nullable=False)
-#     correction_systematic_error = Column(Float(asdecimal=True), nullable=False)
+#     correction_statistical_error = Column(Float(asdecimal=True),
+#                                           nullable=False)
+#     correction_systematic_error = Column(Float(asdecimal=True),
+#                                          nullable=False)
 #     wavelength = Column(Float(asdecimal=True), nullable=False)
 #     _range_ID = Column(INTEGER, nullable=False)
 #     correction_date = Column(DateTime, nullable=False)
@@ -381,13 +389,16 @@ class ErrorMethod(Base):
 #     __measurements__ID = Column(String(15))
 #     _product_ID = Column(INTEGER, nullable=False)
 #     calibration = Column(Float(asdecimal=True), nullable=False)
-#     calibration_statistical_error = Column(Float(asdecimal=True), nullable=False)
-#     calibration_systematic_error = Column(Float(asdecimal=True), nullable=False)
+#     calibration_statistical_error = Column(Float(asdecimal=True),
+#                                            nullable=False)
+#     calibration_systematic_error = Column(Float(asdecimal=True),
+#                                           nullable=False)
 #     _calibration_type_ID = Column(INTEGER, nullable=False)
 #     wavelength = Column(Float(asdecimal=True))
 #     _range_ID = Column(INTEGER, nullable=False)
 #     calibration_date = Column(DateTime, nullable=False)
-#     calibration_submission_date = Column(DateTime, nullable=False)
+#     calibration_submission_date = Column(DateTime,
+#                                          nullable=False)
 #     _scc_version_ID = Column(INTEGER)
 #     filename = Column(String(200), nullable=False)
 #

@@ -1,4 +1,8 @@
+# -*- coding: utf-8 -*-
+"""base class for columns"""
+
 import xarray as xr
+
 
 class Columns(object):
     """
@@ -29,8 +33,8 @@ class Columns(object):
 
     @property
     def altitude(self):
-        return self.ds.altitude # altitude axis in m a.s.l.
+        return self.ds.altitude  # altitude axis in m a.s.l.
 
     @property
     def height(self):
-        return self.altitude - self.station_altitude # height axis in m a.g.
+        return self.altitude - self.station_altitude  # height axis in m a.g.

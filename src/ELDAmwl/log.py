@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from ELDAmwl.error_codes import ERROR_LOG_DIR_NOT_EXISTS
+from logging import ERROR
 from logging import FileHandler
 from logging import Formatter
 from logging import getLogger
-from logging import log, INFO, ERROR
+from logging import log
 from logging import StreamHandler
 from sys import stdout
 
@@ -32,7 +33,7 @@ try:
                                     )
     logger = colorlog.getLogger('ELDAmwl')
 
-except Exception as e:
+except Exception as e:  # noqa E841
     #   print(e)
     logger = getLogger('ELDAmwl')
     formatter = Formatter('%(asctime)s [%(process)d] '
@@ -56,7 +57,7 @@ def create_logger(meas_id):
     if not os.path.exists(cfg.LOG_PATH):
         log(ERROR,
             'Log file directory does not exists {path}, please create it '.
-                format(path=cfg.LOG_PATH))
+            format(path=cfg.LOG_PATH))
         sys.exit(ERROR_LOG_DIR_NOT_EXISTS)
 
     file_handler = FileHandler(os.path.join(cfg.LOG_PATH,
@@ -65,6 +66,3 @@ def create_logger(meas_id):
     file_handler.setFormatter(file_handler_formatter)
     file_handler.setLevel(cfg.log_level_file)
     logger.addHandler(file_handler)
-
-
-

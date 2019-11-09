@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
+"""Classes for lidar ratio calculation"""
+
 from ELDAmwl.backscatter_factories import BackscatterParams
-from ELDAmwl.base import Params
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.products import ProductParams
 

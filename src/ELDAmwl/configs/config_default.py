@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from logging import INFO, DEBUG
+from logging import DEBUG
+from logging import INFO
 
-from ELDAmwl.registry import Registry
 
 # ===================
 # Directories
@@ -27,7 +27,7 @@ DB_DB = ''
 # ===================
 
 # The logfiles
-#general log level
+# general log level
 log_level = DEBUG
 # The desired loglevel for console output
 log_level_console = INFO
