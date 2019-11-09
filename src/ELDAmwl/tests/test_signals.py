@@ -1,6 +1,10 @@
-import os
+# -*- coding: utf-8 -*-
+"""Tests for Signals"""
 
 from ELDAmwl.signals import Signals
+
+import os
+
 
 # Where are the python files for testing
 TEST_FILE_PATH = os.path.split(__file__)[0]
@@ -9,7 +13,11 @@ TEST_FILE_PATH = os.path.split(__file__)[0]
 TEST_DATA_PATH = os.path.join(TEST_FILE_PATH, 'data')
 
 # test file 1 for intermediate nc file
-TEST_INTERMEDIATE_FILE_1 = os.path.join(TEST_DATA_PATH, '20181228oh00_0000379.nc')
+TEST_INTERMEDIATE_FILE_1 = os.path.join(
+    TEST_DATA_PATH,
+    '20181228oh00_0000379.nc',
+)
+
 
 def test_Signals_from_nc_file():
     for channelidx in range(2):

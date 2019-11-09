@@ -1,40 +1,45 @@
-import pytest
-from ELDAmwl.factory import BaseOperationFactory
+# -*- coding: utf-8 -*-
+"""Tests for Signals"""
+
 from ELDAmwl.factory import BaseOperation
+from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.registry import Registry
 
+import pytest
 
-class TestFactory(BaseOperationFactory):
+
+class Factory(BaseOperationFactory):
     pass
 
 
-class TestOperationA(BaseOperation):
+class OperationA(BaseOperation):
     pass
 
 
-class TestOperationB(BaseOperation):
+class OperationB(BaseOperation):
     pass
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def db(request):
     data = [
-        ('TestA', TestOperationA),
-        ('TestB', TestOperationB),
+        ('TestA', OperationA),
+        ('TestB', OperationB),
     ]
     return data
+
 
 def test_factory_registration():
 
     registry = Registry()
-    registry.register_class(TestFactory, 'TestA', TestOperationA)
-    registry.register_class(TestFactory, 'TestB', TestOperationB)
+    registry.register_class(Factory, 'TestA', OperationA)
+    registry.register_class(Factory, 'TestB', OperationB)
 
-    assert len(registry.factory_registry[TestFactory.name]) == 2
-    assert registry.factory_registry[TestFactory.name]['TestA'] == TestOperationA
-    assert registry.factory_registry[TestFactory.name]['TestB'] == TestOperationB
-    assert registry.find_class_by_name(TestFactory, 'TestA') == TestOperationA
-    assert registry.find_class_by_name(TestFactory, 'TestB') == TestOperationB
+    assert len(registry.factory_registry[Factory.name]) == 2
+    assert registry.factory_registry[Factory.name]['TestA'] == OperationA  # noqa E501
+    assert registry.factory_registry[Factory.name]['TestB'] == OperationB  # noqa E501
+    assert registry.find_class_by_name(Factory, 'TestA') == OperationA
+    assert registry.find_class_by_name(Factory, 'TestB') == OperationB
 
 
 def test_factory(db, mocker):
@@ -42,10 +47,14 @@ def test_factory(db, mocker):
     from ELDAmwl.registry import registry
 
     for klass_name, klass in db:
-        registry.register_class(TestFactory, klass_name, klass)
+        registry.register_class(Factory, klass_name, klass)
 
     for klass_name, klass in db:
 
-        mocker.patch.object(TestFactory, 'get_classname_from_db', return_value=klass_name)
+        mocker.patch.object(
+            Factory,
+            'get_classname_from_db',
+            return_value=klass_name,
+        )
 
-        assert TestFactory()() == klass
+        assert Factory()() == klass

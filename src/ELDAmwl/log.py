@@ -53,6 +53,12 @@ logger.addHandler(console_handler)
 
 
 def create_logger(meas_id):
+    if not os.path.exists(cfg.LOG_PATH):
+        log(ERROR,
+            'Log file directory does not exists {path}, please create it '.
+                format(path=cfg.LOG_PATH))
+        sys.exit(ERROR_LOG_DIR_NOT_EXISTS)
+
     file_handler = FileHandler(os.path.join(cfg.LOG_PATH,
                                             '{id}.log'.format(id=meas_id)))
     file_handler_formatter = formatter
@@ -61,8 +67,4 @@ def create_logger(meas_id):
     logger.addHandler(file_handler)
 
 
-if not os.path.exists(cfg.LOG_PATH):
-    log(ERROR, 'Log file directory does not exists {path}, please create it '.
-               format(path=cfg.LOG_PATH))
-    sys.exit(ERROR_LOG_DIR_NOT_EXISTS)
 
