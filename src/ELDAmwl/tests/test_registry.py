@@ -28,7 +28,7 @@ def test_registry_register():
     assert registry.factory_registry[Factory.name].find_class_by_name('This is a test') == OperationA  # noqa E501
     assert registry.find_class_by_name(Factory, 'This is a test') == OperationA  # noqa E501
 
-    registry.register_class(Factory, 'This is an override', OperationB, override=True)
+    registry.register_class(Factory, 'This is an override', OperationB, override=True) # noqa E501
 
     assert len(registry.factory_registry) == 1
     assert len(registry.factory_registry[Factory.name].registry) == 3
@@ -38,4 +38,3 @@ def test_registry_register():
 
     assert registry.factory_registry[Factory.name].find_class_by_name('This is a test') == OperationB  # noqa E501
     assert registry.find_class_by_name(Factory, 'This is a test') == OperationB  # noqa E501
-
