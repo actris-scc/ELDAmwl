@@ -6,20 +6,36 @@ from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.registry import Registry
 
 
-class TestFactory(BaseOperationFactory):
-    name = 'TestFactory'
+class Factory(BaseOperationFactory):
+    name = 'Factory'
 
 
-class TestOperation(BaseOperation):
+class OperationA(BaseOperation):
+    pass
+
+
+class OperationB(BaseOperation):
     pass
 
 
 def test_registry_register():
 
     registry = Registry()
-    registry.register_class(TestFactory, 'This is a test', TestOperation)
+    registry.register_class(Factory, 'This is a test', OperationA)
 
     assert len(registry.factory_registry) == 1
-    assert len(registry.factory_registry[TestFactory.name]) == 1
-    assert registry.factory_registry[TestFactory.name]['This is a test'] == TestOperation  # noqa E501
-    assert registry.find_class_by_name(TestFactory, 'This is a test') == TestOperation  # noqa E501
+    assert len(registry.factory_registry[Factory.name].registry) == 1
+    assert registry.factory_registry[Factory.name].find_class_by_name('This is a test') == OperationA  # noqa E501
+    assert registry.find_class_by_name(Factory, 'This is a test') == OperationA  # noqa E501
+
+    registry.register_class(Factory, 'This is an override', OperationB, override=True)
+
+    assert len(registry.factory_registry) == 1
+    assert len(registry.factory_registry[Factory.name].registry) == 3
+
+    assert registry.factory_registry[Factory.name].find_class_by_name('This is an override') == OperationB  # noqa E501
+    assert registry.find_class_by_name(Factory, 'This is an override') == OperationB  # noqa E501
+
+    assert registry.factory_registry[Factory.name].find_class_by_name('This is a test') == OperationB  # noqa E501
+    assert registry.find_class_by_name(Factory, 'This is a test') == OperationB  # noqa E501
+

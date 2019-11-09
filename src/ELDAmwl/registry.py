@@ -1,5 +1,54 @@
 from attrdict import AttrDict
 
+from ELDAmwl.exceptions import OnlyOneOverrideAllowed
+
+OVERRIDE = '__OVERRIDE__'
+
+
+class FactoryRegistry(object):
+
+    def __init__(self):
+        """
+        Initialize the registry with a blank dict
+        """
+        self.registry = AttrDict()
+
+    def register_class(self, klass_name, klass, override=False):
+        """
+        Registers a class by name
+
+        Args:
+            factory: The factory to register for
+            klass_name: The name under which the class is registered (in the db)
+            klass: The class to register
+        """
+        self.registry[klass_name] = klass
+        if override:
+            if OVERRIDE in self.registry:
+                raise OnlyOneOverrideAllowed
+            self.registry[OVERRIDE] = klass_name
+
+    def find_class_by_name(self, klass_name):
+        """
+        Retrieve a class by class name
+
+        Args:
+            klass_name: Its klass name
+
+        Returns:
+            None : if no class is registred
+            Class: The registered class
+            Override class: if a override class was registered
+
+        """
+
+        if OVERRIDE in self.registry:
+            return self.registry[self.registry[OVERRIDE]]
+        else:
+            if klass_name in self.registry:
+                return self.registry[klass_name]
+            else:
+                return None
 
 class Registry(object):
     """
@@ -23,10 +72,10 @@ class Registry(object):
 
         """
         if not hasattr(self.factory_registry,  factory.name):
-            self.factory_registry[factory.name] = AttrDict()
+            self.factory_registry[factory.name] = FactoryRegistry()
         return self.factory_registry[factory.name]
 
-    def register_class(self, factory, klass_name, klass):
+    def register_class(self, factory, klass_name, klass, override=False):
         """
         Registers a class by name to the given factory
 
@@ -39,7 +88,8 @@ class Registry(object):
 
         """
         factory_registration = self.get_factory_registration(factory)
-        factory_registration[klass_name] = klass
+        factory_registration.register_class(klass_name, klass, override=override)
+
 
     def find_class_by_name(self, factory, klass_name):
         """
@@ -58,10 +108,7 @@ class Registry(object):
             factory_registration = self.get_factory_registration(factory)
         else:
             return None
-        if klass_name in factory_registration:
-            return factory_registration[klass_name]
-        else:
-            return None
+        return factory_registration.find_class_by_name(klass_name)
 
     def status(self):
         """
