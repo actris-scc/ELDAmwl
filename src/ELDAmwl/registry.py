@@ -116,26 +116,13 @@ class Registry(object):
         Returns:
 
         """
+        res = []
         for factory_name, reg in self.factory_registry.items():
-            print(factory_name)
-            for name, klass in reg.items():
-                print(' ' * 4, name, ' => ', klass)
+            res.append(factory_name)
+            for name, klass in reg.registry.items():
+                res.append(' ' * 4 + name + ' => ' + str(klass))
 
-    def update(self, other):
-        """
-        merge two registries
+        return '\n'.join(res)
 
-        Args:
-            other: the other registry
-
-        Returns:
-
-        """
-        for factory_name, reg in self.factory_registry.items():
-            if not hasattr(self.factory_registry, factory_name):
-                self.factory_registry[factory_name] = reg
-                continue
-            for klass_name, klass in reg.items():
-                self.factory_registry[factory_name][klass_name] = klass
 
 registry = Registry()
