@@ -16,9 +16,9 @@ class ProductParams(Params):
         self.sub_params = ['general_params']
         self.general_params = None
 
-    @classmethod
-    def from_db(cls, general_params):
-        pass
+#    @classmethod
+#    def from_db(cls, general_params):
+#        pass
 
 
 class GeneralProductParams(Params):

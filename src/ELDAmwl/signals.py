@@ -8,6 +8,7 @@ from ELDAmwl.columns import Columns
 class Signals(Columns):
 
     def __init__(self):
+        super(Signals, self).__init__()
         self.emission_wavelength = np.nan
         self.detection_wavelength = np.nan
         self.channel_id = np.nan

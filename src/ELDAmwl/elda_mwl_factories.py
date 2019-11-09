@@ -31,6 +31,7 @@ class MeasurementParams(Params):
     Those are general parameters of the measurement
     """
     def __init__(self, measurement_id):
+        super(MeasurementParams, self).__init__()
         self.sub_params = ['measurement_params']
         self.measurement_params = Params()
 
@@ -80,12 +81,14 @@ class MeasurementParams(Params):
             logger.notice('prod_id %s already exists' % (gen_params.prod_id))
 
 
-    @property
     def prod_params(self, prod_type, wl):
         prod_df = self.measurement_params.products.header
         ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.type == prod_type)]
 
-        return self.measurement_params.products.params[ids]
+        if ids > 0:
+            return self.measurement_params.products.params[ids]
+        else:
+            return None
 
 
 
@@ -96,6 +99,7 @@ class RunELDAmwl(BaseOperation):
     _data = None
 
     def __init__(self, measurement_id):
+        super(RunELDAmwl, self).__init__()
         self._params = MeasurementParams(measurement_id)
         _data = AttrDict()
 

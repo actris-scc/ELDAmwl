@@ -129,7 +129,7 @@ def get_bsc_cal_params_query(bsc_prod_id, bsc_type):
         .filter(BackscatterOption._product_ID == bsc_prod_id)
 
     if cal_params.count() >0:
-        return cal_params
+        return cal_params[0]
     else:
         logger.error('no calibration params for bsc product')
 

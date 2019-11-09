@@ -13,7 +13,7 @@ try:
 except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg
 
-registry.status()
+#registry.status()
 
 
 meas_id = '20181017oh00'
@@ -37,7 +37,7 @@ log(INFO, 'analyze measurement number: ' + meas_id);
 
 elda_mwl = RunELDAmwl(meas_id)
 elda_mwl.read_tasks()
-elda_mwl.read_signals()
+#elda_mwl.read_signals()
 #db_functions.read_extinction_options(ext_id)
 
 log(INFO,'the end')

@@ -66,9 +66,6 @@ class getExtinction(BaseOperation):
     derives particle extinction coefficient.
     """
 
-    def __init__(self):
-        pass
-
     def get_product(self):
         slope = SignalSlope()
         ext = SlopeToExtinction(slope)
@@ -95,7 +92,8 @@ class LinFit(BaseOperation):
     name = 'LinFit'
 
     def __init__(self, weight):
-        print('calculate fit with weight', weight)
+        super(LinFit, self).__init__()
+        print('calculate linear fit with weight', weight)
 
 
 class WeightedLinFit(BaseOperation):
@@ -103,6 +101,7 @@ class WeightedLinFit(BaseOperation):
 
     """
     def __init__(self, str):
+        super(WeightedLinFit, self).__init__()
         print('WeightedLinFit sagt ', str)
         LinFit(True)
 
@@ -116,6 +115,7 @@ class NonWeightedLinFit(BaseOperation):
     """
 
     def __init__(self, str):
+        super(NonWeightedLinFit, self).__init__()
         print('NonWeightedLinFit sagt ', str)
         LinFit(False)
 

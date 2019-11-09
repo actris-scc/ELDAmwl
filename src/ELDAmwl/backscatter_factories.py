@@ -15,8 +15,9 @@ class BscCalibrationParams(Params):
 
     @classmethod
     def from_db(cls, general_params):
-        query = get_bsc_cal_params_query(general_params.prod_id, general_params.product_type)[0]
         result = cls()
+
+        query = get_bsc_cal_params_query(general_params.prod_id, general_params.product_type)
 
         result.CalRangeSearchMethod = query.BscCalibrOption._calRangeSearchMethod_ID
         result.WindowWidth = query.BscCalibrOption.WindowWidth
