@@ -6,6 +6,26 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+pytest = "*"
+flake8-todo = "*"
+flake8-string-format = "*"
+flake8-quotes = "*"
+flake8-print = "*"
+flake8-pep3101 = "*"
+flake8-isort = "*"
+flake8-deprecated = "*"
+flake8-debugger = "*"
+flake8-commas = "*"
+flake8-coding = "*"
+flake8-blind-except = "*"
+PyMySQL = "*"
+colorlog = "*"
+SQLAlchemy-Utils = "*"
+netCDF4 = "*"
+pandas = ">=0.24"
+sphinxcontrib-serializinghtml = "*"
+sphinxcontrib-qthelp = "*"
+Sphinx = "*"
 
 [requires]
 python_version = "3.7"
