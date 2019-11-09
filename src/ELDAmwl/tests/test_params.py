@@ -1,46 +1,40 @@
 # -*- coding: utf-8 -*-
 """Tests for Signals"""
-from ELDAmwl.elda_mwl_factories import MeasurementParams
-
-import pytest
 
 
-
-@pytest.fixture(scope='module')
-def db(request):
-    data = [
-        ('TestA', OperationA),
-        ('TestB', OperationB),
-    ]
-    return data
+from ELDAmwl.base import Params
 
 
-def test_factory_registration():
+class ParamsA(Params):
 
-    registry = Registry()
-    registry.register_class(Factory, 'TestA', OperationA)
-    registry.register_class(Factory, 'TestB', OperationB)
+    def __init__(self):
+        super(ParamsA, self).__init__()
 
-    assert len(registry.factory_registry[Factory.name].registry) == 2
-    assert registry.get_factory_registration(Factory).find_class_by_name('TestA') == OperationA  # noqa E501
-    assert registry.get_factory_registration(Factory).find_class_by_name('TestB')  == OperationB  # noqa E501
-    assert registry.find_class_by_name(Factory, 'TestA') == OperationA
-    assert registry.find_class_by_name(Factory, 'TestB') == OperationB
+        self.a = 12
+        self.b = 14
+
+        self.sub_params = ['measurement_params']
+        self.measurement_params = Params()
+        self.measurement_params.c = 15
+        self.measurement_params.d = 16
+
+    def funcaplusb(self, a, b):
+        return a+b
+
+    @property
+    def aplusb(self):
+        return self.a + self.getb
+
+    @property
+    def getb(self):
+        return self.b
 
 
-def test_factory(db, mocker):
+def test_params():
 
-    from ELDAmwl.registry import registry
+    paramsA = ParamsA()
 
-    for klass_name, klass in db:
-        registry.register_class(Factory, klass_name, klass)
-
-    for klass_name, klass in db:
-
-        mocker.patch.object(
-            Factory,
-            'get_classname_from_db',
-            return_value=klass_name,
-        )
-
-        assert Factory()() == klass
+    assert paramsA.aplusb == paramsA.a + paramsA.b
+    assert paramsA.funcaplusb(1, 2) == 3
+    assert paramsA.measurement_params.c == 15
+    assert paramsA.measurement_params.d == 16
