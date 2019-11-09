@@ -1,8 +1,9 @@
 from attrdict import AttrDict
 from sqlalchemy.orm import aliased
 
+from ELDAmwl.database.tables.backscatter import BscCalibrOption, ElastBackscatterOption, RamanBackscatterOption
 from ELDAmwl.log import logger
-from ELDAmwl.constants import MWL
+from ELDAmwl.constants import MWL, EBSC, RBSC
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import SystemProduct, MWLproductProduct, Products, ProductTypes, \
@@ -78,6 +79,7 @@ def get_products_query(mwl_prod_id, measurement_id):
 
         Args:
             mwl_prod_id (int): product id of mwl product
+            measurement_id(str): id of measurement
 
         Returns:
             list of individual product IDs corresponding to this mwl product
@@ -106,6 +108,30 @@ def get_products_query(mwl_prod_id, measurement_id):
     else:
         logger.error('no individual products for mwl product')
 
+def get_bsc_cal_params_query(bsc_prod_id, bsc_type):
+    """ read from db which shall be used to get the calibration of a sc product.
+
+        Args:
+            bsc_prod_id (int): product id of the bsc product
+            bsc_type (int): must be 0 (Raman bsc) or 3 (elast bsc)
+
+        Returns:
+            calibration parameter
+
+        """
+    if bsc_type == EBSC:
+        BackscatterOption  = aliased(ElastBackscatterOption, name='BackscatterOption')
+    if bsc_type == RBSC:
+        BackscatterOption  = aliased(RamanBackscatterOption, name='BackscatterOption')
+
+    cal_params = dbutils.session.query(BscCalibrOption, BackscatterOption)\
+        .filter(BscCalibrOption.ID == BackscatterOption._bsc_calibr_options_ID)\
+        .filter(BackscatterOption._product_ID == bsc_prod_id)
+
+    if cal_params.count() >0:
+        return cal_params
+    else:
+        logger.error('no calibration params for bsc product')
 
 def read_mwl_product_id(system_id):
     """ read from db which of the products correlated to this system is the mwl product.

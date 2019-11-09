@@ -9,7 +9,19 @@ class Products(Signals):
     def save_to_netcdf(self):
         pass
 
+
 class ProductParams(Params):
+
+    def __init__(self):
+        self.sub_params = ['general_params']
+        self.general_params = None
+
+    @classmethod
+    def from_db(cls, general_params):
+        pass
+
+
+class GeneralProductParams(Params):
     """
     general parameters for product retrievals
     """
@@ -18,6 +30,7 @@ class ProductParams(Params):
         # product id
         self.prod_id = None
         self.product_type = None
+        self.usecase = None
 
         self.is_basic_product = False
         self.is_derived_product = False
@@ -39,6 +52,7 @@ class ProductParams(Params):
 
         result.prod_id = query.Products.ID
         result.product_type = query.Products._prod_type_ID
+        result.usecase = query.Products._usecase_ID
 
         result.is_basic_product = query.ProductTypes.is_basic_product == 1
         result.is_derived_product = not result.is_basic_product

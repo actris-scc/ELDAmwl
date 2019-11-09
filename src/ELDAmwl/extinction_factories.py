@@ -1,18 +1,12 @@
 from ELDAmwl.base import Params
 from ELDAmwl.registry import registry
 from ELDAmwl.factory import BaseOperationFactory, BaseOperation
-from ELDAmwl.products import Products
+from ELDAmwl.products import Products, ProductParams
 from ELDAmwl.log import logger
 from ELDAmwl.database.db_functions import read_extinction_algorithm
 
 
-class ExtinctionParams(Params):
-
-    def __init__(self):
-        self.sub_params = ['general_params',
-                            'extinction_params']
-        self.general_params = None
-        self.extinction_params = None
+class ExtinctionParams(ProductParams):
 
     @classmethod
     def from_db(cls, general_params):

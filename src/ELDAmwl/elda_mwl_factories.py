@@ -11,7 +11,7 @@ from ELDAmwl.constants import EXT, RBSC, LR
 from ELDAmwl.database.db_functions import read_system_id, get_products_query, read_mwl_product_id
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.lidar_ratio_factories import LidarRatioParams
-from ELDAmwl.products import ProductParams
+from ELDAmwl.products import ProductParams, GeneralProductParams
 from ELDAmwl.registry import registry
 from ELDAmwl.factory import BaseOperationFactory, BaseOperation
 from ELDAmwl.signals import Signals
@@ -57,26 +57,27 @@ class MeasurementParams(Params):
     def read_product_list(self):
         p_query = get_products_query(self.mwl_product_id, self.meas_id)
         for q in p_query:
-            params = ProductParams.from_query(q)
-            prod_type = params.product_type
-            prod_params = PARAM_CLASSES[prod_type].from_db(params)
+            general_params = GeneralProductParams.from_query(q)
+            prod_type = general_params.product_type
+            prod_params = PARAM_CLASSES[prod_type].from_db(general_params)
 
             self.assign_to_product_list(prod_params)
 
     def assign_to_product_list(self, params):
-        if not params.prod_id in self.measurement_params.products.params:
-            self.measurement_params.products.params[params.prod_id] = params
+        gen_params = params.general_params
+        if not gen_params.prod_id in self.measurement_params.products.params:
+            self.measurement_params.products.params[gen_params.prod_id] = params
             self.measurement_params.products.header = \
-                self.measurement_params.products.header.append({'id': params.prod_id,
+                self.measurement_params.products.header.append({'id': gen_params.prod_id,
                                                             'wl': np.nan,
-                                                            'type': params.product_type,
-                                                            'basic': params.is_basic_product,
-                                                            'derived': params.is_derived_product,
-                                                            'hres': params.calc_with_hr,
-                                                            'lres': params.calc_with_lr},
+                                                            'type': gen_params.product_type,
+                                                            'basic': gen_params.is_basic_product,
+                                                            'derived': gen_params.is_derived_product,
+                                                            'hres': gen_params.calc_with_hr,
+                                                            'lres': gen_params.calc_with_lr},
                                                                ignore_index=True)
         else:
-            logger.notice('prod_id %s already exists' % (params.prod_id))
+            logger.notice('prod_id %s already exists' % (gen_params.prod_id))
 
 
     @property
@@ -100,7 +101,7 @@ class RunELDAmwl(BaseOperation):
 
     def read_tasks(self):
         self.params.read_product_list()
-        p = self.params.prod_params(EXT, 355)
+#        p = self.params.prod_params(EXT, 355)
 
     def read_signals(self):
         self._data['raw_signals'] = AttrDict()
