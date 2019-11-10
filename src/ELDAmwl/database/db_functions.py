@@ -113,22 +113,33 @@ def get_products_query(mwl_prod_id, measurement_id):
     ErrorThresholdsHigh = aliased(ErrorThresholds,
                                   name='ErrorThresholdsHigh')
 
-    products = dbutils.session.query(MWLproductProduct,
-                                     Products,
-                                     ProductTypes,
-                                     ProductOptions,
-                                     ErrorThresholdsLow,
-                                     ErrorThresholdsHigh,
-                                     PreparedSignalFile)\
-        .filter(MWLproductProduct._mwl_product_ID == mwl_prod_id)\
-        .filter(MWLproductProduct._Product_ID == Products.ID)\
-        .filter(Products._prod_type_ID == ProductTypes.ID)\
-        .filter(ProductTypes.is_in_mwl_products == 1)\
-        .filter(ProductOptions._product_ID == Products.ID)\
-        .filter(ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID)\
-        .filter(ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID)\
-        .filter(PreparedSignalFile._Product_ID == Products.ID)\
-        .filter(PreparedSignalFile._measurements_ID == measurement_id)  # noqa E501
+    products = dbutils.session.query(
+        MWLproductProduct,
+        Products,
+        ProductTypes,
+        ProductOptions,
+        ErrorThresholdsLow,
+        ErrorThresholdsHigh,
+        PreparedSignalFile,
+    ).filter(
+        MWLproductProduct._mwl_product_ID == mwl_prod_id,
+    ).filter(
+        MWLproductProduct._Product_ID == Products.ID,
+    ).filter(
+        Products._prod_type_ID == ProductTypes.ID,
+    ).filter(
+        ProductTypes.is_in_mwl_products == 1,
+    ).filter(
+        ProductOptions._product_ID == Products.ID,
+    ).filter(
+        ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
+    ).filter(
+        ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
+    ).filter(
+        PreparedSignalFile._Product_ID == Products.ID,
+    ).filter(
+        PreparedSignalFile._measurements_ID == measurement_id,
+    )
 
     if products.count() > 0:
         return products
@@ -154,10 +165,11 @@ def get_bsc_cal_params_query(bsc_prod_id, bsc_type):
         BackscatterOption = aliased(RamanBackscatterOption,
                                     name='BackscatterOption')
 
-    cal_params = dbutils.session.query(BscCalibrOption,
-                                       BackscatterOption)\
-        .filter(BscCalibrOption.ID == BackscatterOption._bsc_calibr_options_ID)\
-        .filter(BackscatterOption._product_ID == bsc_prod_id)
+    cal_params = dbutils.session.query(
+        BscCalibrOption, BackscatterOption,
+    ).filter(
+        BscCalibrOption.ID == BackscatterOption._bsc_calibr_options_ID,
+    ).filter(BackscatterOption._product_ID == bsc_prod_id)
 
     if cal_params.count() > 0:
         return cal_params[0]

@@ -74,13 +74,18 @@ class DBFunc(object):
         return metadata
 
     def get_windprofiler_ql_to_be_processed(self, ql_mode, limit=None):
-        query = self.session.query(self.instrument_table,
-                                   self.daily_table.measurement_date) \
-            .join(WindprofilerMode,
-                  WindprofilerMode.windprofiler_id == self.instrument_table.id) \
-            .join(self.daily_table,
-                  self.daily_table.windprofiler_mode_id == WindprofilerMode.id) \
-            .filter(self.daily_table.quicklook_state == ql_mode)
+        query = self.session.query(
+            self.instrument_table,
+            self.daily_table.measurement_date,
+        ).join(
+            WindprofilerMode,
+            WindprofilerMode.windprofiler_id == self.instrument_table.id,
+        ).join(
+            self.daily_table,
+            self.daily_table.windprofiler_mode_id == WindprofilerMode.id,
+        ).filter(
+            self.daily_table.quicklook_state == ql_mode,
+        )
         if limit:
             query = query.limit(limit)
         return query
