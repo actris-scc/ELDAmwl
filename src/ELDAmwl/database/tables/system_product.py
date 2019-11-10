@@ -7,6 +7,7 @@ from sqlalchemy import DECIMAL
 from sqlalchemy import Float
 from sqlalchemy import INTEGER
 from sqlalchemy import String
+from sqlalchemy import text
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -81,6 +82,17 @@ class ErrorThresholds(Base):
     name = Column(String(100), nullable=False)
 
 
+# class ErrorMethod(Base):
+#     __tablename__ = '_error_method'
+#
+#     id = Column(INTEGER,
+#                 primary_key=True,
+#                 server_default=text("'0'"))
+#     method = Column(String(100),
+#                     nullable=False,
+#                     server_default=text("''"))
+#
+#
 class PreparedSignalFile(Base):
     __tablename__ = 'prepared_signal_files'
 

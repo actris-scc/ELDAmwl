@@ -11,6 +11,7 @@ from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
+from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import ErrorThresholds
 from ELDAmwl.database.tables.system_product import MWLproductProduct
@@ -47,6 +48,29 @@ def read_extinction_algorithm(product_id):
         return result
     else:
         logger.error('wrong number of extinction options ({0})'
+                     .format(options.count()))
+
+
+def read_lidar_ratio_params(product_id):
+    """ function to read options of an lidar ratio product from db.
+
+        This function reads from db with which parameters an
+        lidar ratio product shall be derived.
+
+        Args:
+            product_id (int): the id of the actual extinction product
+
+        Returns:
+            ??: options
+
+        """
+    options = dbutils.session.query(ExtBscOption)\
+        .filter(ExtBscOption._product_ID == product_id)
+
+    if options.count() == 1:
+        return options[0]
+    else:
+        logger.error('wrong number of lidar ratio options ({0})'
                      .format(options.count()))
 
 
@@ -95,7 +119,7 @@ def read_extinction_params(product_id):
                      .format(options.count()))
 
 
-def get_products_query(mwl_prod_id, measurement_id):
+def get_products_query(mwl_prod_id):
     """ read from db which of the products correlated to
         this system is the mwl product.
 
@@ -120,7 +144,7 @@ def get_products_query(mwl_prod_id, measurement_id):
         ProductOptions,
         ErrorThresholdsLow,
         ErrorThresholdsHigh,
-        PreparedSignalFile,
+        # PreparedSignalFile,
     ).filter(
         MWLproductProduct._mwl_product_ID == mwl_prod_id,
     ).filter(
@@ -135,16 +159,60 @@ def get_products_query(mwl_prod_id, measurement_id):
         ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
     ).filter(
         ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
-    ).filter(
-        PreparedSignalFile._Product_ID == Products.ID,
-    ).filter(
-        PreparedSignalFile._measurements_ID == measurement_id,
     )
+    # .filter(
+    #     PreparedSignalFile._Product_ID == Products.ID,
+    # ).filter(
+    #     PreparedSignalFile._measurements_ID == measurement_id,
+    # )
 
     if products.count() > 0:
         return products
     else:
         logger.error('no individual products for mwl product')
+
+
+def get_general_params_query(prod_id):
+    """ read general params of a product from db
+
+        Args:
+            prod_id (int): id of the product
+
+        Returns:
+            general products
+
+        """
+
+    ErrorThresholdsLow = aliased(ErrorThresholds,
+                                 name='ErrorThresholdsLow')
+    ErrorThresholdsHigh = aliased(ErrorThresholds,
+                                  name='ErrorThresholdsHigh')
+
+    options = dbutils.session.query(
+        Products,
+        ProductTypes,
+        ProductOptions,
+        ErrorThresholdsLow,
+        ErrorThresholdsHigh,
+    ).filter(
+        ProductOptions._product_ID == Products.ID,
+    ).filter(
+        Products._prod_type_ID == ProductTypes.ID,
+    ).filter(
+        ProductTypes.is_in_mwl_products == 1,
+    ).filter(
+        ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
+    ).filter(
+        ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
+    ).filter(
+        Products.ID == prod_id
+    )
+
+    if options.count() == 1:
+        return options[0]
+    else:
+        logger.error('wrong number of product options ({0})'
+                     .format(options.count()))
 
 
 def get_bsc_cal_params_query(bsc_prod_id, bsc_type):

@@ -60,3 +60,9 @@ TRANSMITTED = 1
 REFLECTED = 2
 
 CHANNEL_GEOMETRIES = [TRANSMITTED, REFLECTED]
+
+# ====== error calculation methods ======
+MC = 0
+ASS = 1
+
+ERROR_METHODS = [MC, ASS]

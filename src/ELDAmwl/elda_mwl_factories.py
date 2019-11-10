@@ -64,29 +64,33 @@ class MeasurementParams(Params):
                       })
 
     def read_product_list(self):
-        p_query = get_products_query(self.mwl_product_id, self.meas_id)
+        p_query = get_products_query(self.mwl_product_id)
         for q in p_query:
             general_params = GeneralProductParams.from_query(q)
             prod_type = general_params.product_type
             prod_params = PARAM_CLASSES[prod_type].from_db(general_params)
 
-            self.assign_to_product_list(prod_params)
-
-    def assign_to_product_list(self, params):
-        gen_params = params.general_params
-        if gen_params.prod_id not in self.measurement_params.products.params:
-            self.measurement_params.products.params[gen_params.prod_id] = params  # noqa E501
-            self.measurement_params.products.header = \
-                self.measurement_params.products.header.append({'id': gen_params.prod_id,  # noqa E501
-                                                                'wl': np.nan,
-                                                                'type': gen_params.product_type,  # noqa E501
-                                                                'basic': gen_params.is_basic_product,  # noqa E501
-                                                                'derived': gen_params.is_derived_product,  # noqa E501
-                                                                'hres': gen_params.calc_with_hr,  # noqa E501
-                                                                'lres': gen_params.calc_with_lr},  # noqa E501
-                                                                ignore_index=True)  # noqa E501
-        else:
-            logger.notice('prod_id {0} already exists'.format(gen_params.prod_id))  # noqa E501
+            xx = prod_params.assign_to_product_list(
+                self.measurement_params.products.params,
+                self.measurement_params.products.header
+            )
+    #         self.assign_to_product_list(prod_params)
+    #
+    # def assign_to_product_list(self, params):
+    #     gen_params = params.general_params
+    #     if gen_params.prod_id not in self.measurement_params.products.params:
+    #         self.measurement_params.products.params[gen_params.prod_id] = params  # noqa E501
+    #         self.measurement_params.products.header = \
+    #             self.measurement_params.products.header.append({'id': gen_params.prod_id,  # noqa E501
+    #                                                             'wl': np.nan,
+    #                                                             'type': gen_params.product_type,  # noqa E501
+    #                                                             'basic': gen_params.is_basic_product,  # noqa E501
+    #                                                             'derived': gen_params.is_derived_product,  # noqa E501
+    #                                                             'hres': gen_params.calc_with_hr,  # noqa E501
+    #                                                             'lres': gen_params.calc_with_lr},  # noqa E501
+    #                                                             ignore_index=True)  # noqa E501
+    #     else:
+    #         logger.notice('prod_id {0} already exists'.format(gen_params.prod_id))  # noqa E501
 
     def prod_params(self, prod_type, wl):
         prod_df = self.measurement_params.products.header
