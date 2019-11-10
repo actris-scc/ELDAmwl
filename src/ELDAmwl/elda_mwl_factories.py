@@ -13,11 +13,9 @@ from ELDAmwl.database.db_functions import read_system_id
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.lidar_ratio_factories import LidarRatioParams
-from ELDAmwl.log import logger
 from ELDAmwl.products import GeneralProductParams
 from ELDAmwl.signals import Signals
 
-import numpy as np
 import os
 import pandas as pd
 import xarray as xr
@@ -70,9 +68,8 @@ class MeasurementParams(Params):
             prod_type = general_params.product_type
             prod_params = PARAM_CLASSES[prod_type].from_db(general_params)
 
-            xx = prod_params.assign_to_product_list(
-                self.measurement_params.products.params,
-                self.measurement_params.products.header
+            prod_params.assign_to_product_list(
+                self.measurement_params.products,
             )
     #         self.assign_to_product_list(prod_params)
     #

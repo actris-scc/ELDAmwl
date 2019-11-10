@@ -15,7 +15,6 @@ from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import ErrorThresholds
 from ELDAmwl.database.tables.system_product import MWLproductProduct
-from ELDAmwl.database.tables.system_product import PreparedSignalFile
 from ELDAmwl.database.tables.system_product import ProductOptions
 from ELDAmwl.database.tables.system_product import Products
 from ELDAmwl.database.tables.system_product import ProductTypes
@@ -205,7 +204,7 @@ def get_general_params_query(prod_id):
     ).filter(
         ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
     ).filter(
-        Products.ID == prod_id
+        Products.ID == prod_id,
     )
 
     if options.count() == 1:

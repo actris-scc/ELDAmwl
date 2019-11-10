@@ -6,6 +6,7 @@ from ELDAmwl.base import Params
 from ELDAmwl.database.db_functions import get_general_params_query
 from ELDAmwl.log import logger
 from ELDAmwl.signals import Signals
+
 import numpy as np
 
 
@@ -25,11 +26,13 @@ class ProductParams(Params):
 #    def from_db(cls, general_params):
 #        pass
 
-    def assign_to_product_list(self, param_dict, header_list):
+    def assign_to_product_list(self, product_list):
         gen_params = self.general_params
-        if gen_params.prod_id not in param_dict:
-            param_dict[gen_params.prod_id] = self
-            header_list = header_list.append(
+        header_list = product_list['header']
+        params_list = product_list['params']
+        if gen_params.prod_id not in params_list:
+            params_list[gen_params.prod_id] = self
+            hl = header_list.append(
                 {'id': gen_params.prod_id,
                  'wl': np.nan,
                  'type': gen_params.product_type,
@@ -37,8 +40,18 @@ class ProductParams(Params):
                  'derived': gen_params.is_derived_product,
                  'hres': gen_params.calc_with_hr,
                  'lres': gen_params.calc_with_lr},
-                 ignore_index=True)
-        return param_dict
+                ignore_index=True)
+            product_list['header'] = hl
+        else:
+            hl = header_list[(header_list.id == gen_params.prod_id)]
+
+            hres = hl.hres[0] or gen_params.calc_with_hr
+            lres = hl.lres[0] or gen_params.calc_with_lr
+
+            header_list.loc[header_list.id == 378, 'hres'] = hres
+            header_list.loc[header_list.id == 378, 'lres'] = lres
+
+            product_list['header'] = header_list
 
 
 class GeneralProductParams(Params):
@@ -84,6 +97,15 @@ class GeneralProductParams(Params):
         result.valid_alt_range.min_height = query.ProductOptions.min_height
         result.valid_alt_range.max_height = query.ProductOptions.max_height
 
+        # the MWLproducProduct table is not available if query is
+        # related to a simple (not mwl) product. There is no way to test
+        # whether the table is inside the query collection -> just try
+        try:
+            result.calc_with_hr = bool(query.MWLproductProduct.create_with_hr)
+            result.calc_with_lr = bool(query.MWLproductProduct.create_with_lr)
+        except AttributeError:
+            pass
+
         return result
 
     @classmethod
@@ -95,7 +117,6 @@ class GeneralProductParams(Params):
         result = general_params.deepcopy()
 
         return result
-
 
     @classmethod
     def from_id(cls, prod_id):

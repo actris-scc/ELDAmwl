@@ -7,7 +7,6 @@ from sqlalchemy import DECIMAL
 from sqlalchemy import Float
 from sqlalchemy import INTEGER
 from sqlalchemy import String
-from sqlalchemy import text
 from sqlalchemy.ext.declarative import declarative_base
 
 
