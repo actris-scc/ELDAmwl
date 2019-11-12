@@ -136,7 +136,7 @@ def read_extinction_params(product_id):
                      .format(options.count()))
 
 
-def get_products_query(mwl_prod_id):
+def get_products_query(mwl_prod_id, measurement_id):
     """ read from db which of the products correlated to
         this system is the mwl product.
 
@@ -161,7 +161,7 @@ def get_products_query(mwl_prod_id):
         ProductOptions,
         ErrorThresholdsLow,
         ErrorThresholdsHigh,
-        # PreparedSignalFile,
+        PreparedSignalFile,
     ).filter(
         MWLproductProduct._mwl_product_ID == mwl_prod_id,
     ).filter(
@@ -176,12 +176,11 @@ def get_products_query(mwl_prod_id):
         ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
     ).filter(
         ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
+    ).filter(
+        PreparedSignalFile._Product_ID == Products.ID,
+    ).filter(
+        PreparedSignalFile._measurements_ID == measurement_id,
     )
-    # .filter(
-    #     PreparedSignalFile._Product_ID == Products.ID,
-    # ).filter(
-    #     PreparedSignalFile._measurements_ID == measurement_id,
-    # )
 
     if products.count() > 0:
         return products

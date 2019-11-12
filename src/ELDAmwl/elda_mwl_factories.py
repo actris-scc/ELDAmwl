@@ -7,6 +7,7 @@ from ELDAmwl.base import Params
 from ELDAmwl.constants import EXT
 from ELDAmwl.constants import LR
 from ELDAmwl.constants import RBSC
+from ELDAmwl.data_storage import DataStorage
 from ELDAmwl.database.db_functions import get_products_query, read_signal_filenames
 from ELDAmwl.database.db_functions import read_mwl_product_id
 from ELDAmwl.database.db_functions import read_system_id
@@ -44,72 +45,54 @@ class MeasurementParams(Params):
         self.measurement_params.meas_id = measurement_id
         self.measurement_params.system_id = read_system_id(self.meas_id)
         self.measurement_params.mwl_product_id = read_mwl_product_id(self.system_id)  # noqa E501
-        self.measurement_params.products = \
-            Dict({'params': Dict({}),
-                      'header': pd.DataFrame.from_dict({'id': [],
+        self.measurement_params.product_list =  Dict()
+        self.measurement_params.product_table = pd.DataFrame.from_dict({'id': [],
                                                         'wl': [],
                                                         'type': [],
                                                         'basic': [],
                                                         'derived': [],
                                                         'hres': [],
-                                                        'lres': []}).
-                      astype({'id': 'int',
+                                                        'lres': [],
+                                                        'elpp_file': []})\
+            .astype({'id': 'str',
                               'wl': 'float',
                               'type': 'int',
                               'basic': 'bool',
                               'derived': 'bool',
                               'hres': 'bool',
-                              'lres': 'bool'}),
-                      })
+                              'lres': 'bool',
+                              'elpp_file': 'str'})
 
-        self.measurement_params.signals = pd.DataFrame.from_dict({'id': [],
-                                                        'em_wl': [],
-                                                        'det_wl': [],
-                                                        'det_type': [],
-                                                        'scatterer': [],
-                                                        'alt_range': [],
-                                                        'elast': [],
-                                                        'Raman': [],
-                                                        'wv': [],
-                                                        'nr': [],
-                                                        'fr': [],
-                                                        'total': [],
-                                                        'cross': [],
-                                                        'parallel': [],
-                                                        }).\
-            astype({'id': 'str',
-                              'em_wl': 'float',
-                              'det_wl': 'float',
-                              'det_type': 'int',
-                              'scatterer': 'int',
-                              'alt_range': 'int',
-                              'elast': 'bool',
-                              'Raman': 'bool',
-                              'wv': 'bool',
-                              'nr': 'bool',
-                              'fr': 'bool',
-                              'total': 'bool',
-                              'cross': 'bool',
-                              'parallel': 'bool',
-                              })
+
+    def basic_products(self):
+        prod_df = self.measurement_params.product_table
+        ids = prod_df ['id'][prod_df.basic == True]
+        if len(ids) > 0:
+            result = []
+            for idx in ids:
+                result.append(self.measurement_params.product_list[idx])
+            return result
+        else:
+            return None
 
     def read_product_list(self):
-        p_query = get_products_query(self.mwl_product_id)
+        p_query = get_products_query(self.mwl_product_id, self.measurement_params.meas_id)
         for q in p_query:
             general_params = GeneralProductParams.from_query(q)
             prod_type = general_params.product_type
             prod_params = PARAM_CLASSES[prod_type].from_db(general_params)
 
-            prod_params.assign_to_product_list(
-                self.measurement_params.products,
-            )
+            prod_params.assign_to_product_list(self.measurement_params)
 
     def prod_params(self, prod_type, wl):
-        prod_df = self.measurement_params.products.header
+        prod_df = self.measurement_params.product_table
         ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.type == prod_type)]
 
         if ids > 0:
-            return self.measurement_params.products.params[ids]
+            result = []
+            for idx in ids:
+                result.append(self.measurement_params.product_list[idx])
+            return result
         else:
             return None
 
@@ -118,39 +101,27 @@ class RunELDAmwl(BaseOperation):
     """
     This is the global ELDAmwl operation class
     """
-    _data = None
 
     def __init__(self, measurement_id):
         super(RunELDAmwl, self).__init__()
         # todo: read current scc version
         self._params = MeasurementParams(measurement_id)
-        self._data = Dict({'signals': Dict(),
-                               'products': Dict(),
-                               'AtmTransmission': Dict(),
-                               'RaylScat': Dict(),
-                               })
+        self._data = DataStorage()
 
     def read_tasks(self):
         self.params.read_product_list()
         # todo: check params (e.g. whether all time and vert. resolutions are equal)
 
     def read_signals(self):
-        file_name_query = read_signal_filenames(self.params.measurement_params.meas_id)
-        for fquery in file_name_query:
-            fname = fquery.filename
+        for p_param in self.params.basic_products():
+
             # todo: check if scc version in query = current version
 
             nc_ds = xr.open_dataset(os.path.join(cfg.SIGNAL_PATH,
-                                                 fname))
+                                                 p_param.general_params.elpp_file))
             for idx in range(nc_ds.dims['channel']):
                 sig = Signals.from_nc_file(nc_ds, idx)
-                channel_id = str(sig.channel_id.values)
-                if channel_id not in self.data.signals:
-                    self.data['signals'][channel_id] = sig
-                    sig.assign_to_signal_list(self.params.measurement_params.signals, fquery)
-                else:
-                    logger.debug('signal {0} already registered'.format(channel_id))
-                    # todo: check if both signals are equal (e.g. in altitude axis)
+                sig.register(self.data, p_param)
 
         # todo: calculate combined signals (from depol components)
 

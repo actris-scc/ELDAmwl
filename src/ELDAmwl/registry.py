@@ -14,6 +14,7 @@ class FactoryRegistry(object):
         """
         Initialize the registry with a blank dict
         """
+#        self.registry = AttrDict()
         self.registry = Dict()
 
     def register_class(self, klass_name, klass, override=False):
@@ -75,7 +76,7 @@ class Registry(object):
         Returns:
 
         """
-        if not hasattr(self.factory_registry,  factory.name):
+        if factory.name not in self. factory_registry:
             self.factory_registry[factory.name] = FactoryRegistry()
         return self.factory_registry[factory.name]
 
@@ -108,7 +109,7 @@ class Registry(object):
             Class: The registered class
 
         """
-        if hasattr(self.factory_registry, factory.name):
+        if factory.name in self.factory_registry:
             factory_registration = self.get_factory_registration(factory)
         else:
             return None

@@ -21,6 +21,7 @@ class Signals(Columns):
         self.emission_wavelength = np.nan
         self.detection_wavelength = np.nan
         self.channel_id = np.nan
+        self.channel_id_str = ''
         self.detection_type = np.nan
         self.channel_idx_in_ncfile = np.nan
         self.scatterer = np.nan
@@ -107,6 +108,9 @@ class Signals(Columns):
         result.h_stat_err = nc_ds.polarization_crosstalk_parameter_h_statistical_error[idx_in_file]  # noqa E501
         result.h_sys_err = nc_ds.polarization_crosstalk_parameter_h_systematic_error[idx_in_file]  # noqa E501
 
+        result.channel_id_str = str(result.channel_id.values)
+
+
         return result
 
     @classmethod
@@ -134,6 +138,11 @@ class Signals(Columns):
         # result.err.values =
 
         return result
+
+
+    def register(self, storage, p_params):
+        storage.products()[p_params.prod_id_str].signals[self.channel_id_str] = self
+        p_params.general_params.signals.append(self.channel_id_str)
 
     def assign_to_signal_list(self, sig_list, fquery):
         """

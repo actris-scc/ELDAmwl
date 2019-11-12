@@ -22,36 +22,35 @@ class ProductParams(Params):
         self.sub_params = ['general_params']
         self.general_params = None
 
-#    @classmethod
-#    def from_db(cls, general_params):
-#        pass
+    @property
+    def prod_id_str(self):
+        return str(self.general_params.prod_id)
 
-    def assign_to_product_list(self, product_list):
+
+    def assign_to_product_list(self, measurement_params):
         gen_params = self.general_params
-        header_list = product_list['header']
-        params_list = product_list['params']
-        if gen_params.prod_id not in params_list:
-            params_list[gen_params.prod_id] = self
-            hl = header_list.append(
-                {'id': gen_params.prod_id,
+        params_list = measurement_params.product_list
+        params_table = measurement_params.product_table
+
+        if self.prod_id_str not in params_list:
+            params_list[self.prod_id_str] = self
+            params_table.loc[len(params_table.index)] = \
+                {'id': self.prod_id_str,
                  'wl': np.nan,
                  'type': gen_params.product_type,
                  'basic': gen_params.is_basic_product,
                  'derived': gen_params.is_derived_product,
                  'hres': gen_params.calc_with_hr,
-                 'lres': gen_params.calc_with_lr},
-                ignore_index=True)
-            product_list['header'] = hl
+                 'lres': gen_params.calc_with_lr,
+                 'elpp_file': gen_params.elpp_file}
         else:
-            hl = header_list[(header_list.id == gen_params.prod_id)]
+            df = params_table[(params_table.id == self.prod_id_str)]
 
-            hres = hl.hres[0] or gen_params.calc_with_hr
-            lres = hl.lres[0] or gen_params.calc_with_lr
+            hres = df.hres[0] or gen_params.calc_with_hr
+            lres = df.lres[0] or gen_params.calc_with_lr
 
-            header_list.loc[header_list.id == 378, 'hres'] = hres
-            header_list.loc[header_list.id == 378, 'lres'] = lres
-
-            product_list['header'] = header_list
+            params_table.loc[params_table.id == self.prod_id_str, 'hres'] = hres
+            params_table.loc[params_table.id == self.prod_id_str, 'lres'] = lres
 
 
 class GeneralProductParams(Params):
@@ -79,6 +78,10 @@ class GeneralProductParams(Params):
         self.valid_alt_range = Dict({'min_height': None,
                                          'max_height': None})
 
+        self.elpp_file = ''
+
+        self.signals = []
+
     @classmethod
     def from_query(cls, query):
         result = cls()
@@ -97,12 +100,13 @@ class GeneralProductParams(Params):
         result.valid_alt_range.min_height = query.ProductOptions.min_height
         result.valid_alt_range.max_height = query.ProductOptions.max_height
 
-        # the MWLproducProduct table is not available if query is
+        # the MWLproducProduct and PreparedSignalFile tables are not available if query is
         # related to a simple (not mwl) product. There is no way to test
         # whether the table is inside the query collection -> just try
         try:
             result.calc_with_hr = bool(query.MWLproductProduct.create_with_hr)
             result.calc_with_lr = bool(query.MWLproductProduct.create_with_lr)
+            result.elpp_file = query.PreparedSignalFile.filename
         except AttributeError:
             pass
 

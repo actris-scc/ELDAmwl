@@ -34,10 +34,12 @@ class LidarRatioParams(ProductParams):
         bsc_general_params = result.from_id(result.bsc_prod_id)
         result.backscatter_params = BackscatterParams.from_db(bsc_general_params)  # noqa E501
         result.backscatter_params.general_params.calc_with_lr = True
+        result.backscatter_params.general_params.elpp_file = general_params.elpp_file
 
         ext_general_params = result.from_id(result.ext_prod_id)
         result.extinction_params = ExtinctionParams.from_db(ext_general_params)
         result.extinction_params.general_params.calc_with_lr = True
+        result.extinction_params.general_params.elpp_file = general_params.elpp_file
         return result
 
     def assign_to_product_list(self, global_product_list):
