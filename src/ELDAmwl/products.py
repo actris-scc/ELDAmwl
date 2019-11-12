@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """base classes for products"""
 
-from attrdict import AttrDict
+from addict import Dict
 from ELDAmwl.base import Params
 from ELDAmwl.database.db_functions import get_general_params_query
 from ELDAmwl.log import logger
@@ -73,10 +73,10 @@ class GeneralProductParams(Params):
 
         self.error_method = None
         self.detection_limit = None
-        self.error_threshold = AttrDict({'low': None,
+        self.error_threshold = Dict({'low': None,
                                          'high': None})
 
-        self.valid_alt_range = AttrDict({'min_height': None,
+        self.valid_alt_range = Dict({'min_height': None,
                                          'max_height': None})
 
     @classmethod

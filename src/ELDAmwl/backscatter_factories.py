@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for backscatter calculation"""
 
-from attrdict import AttrDict
+from addict import Dict
 from ELDAmwl.base import Params
 from ELDAmwl.database.db_functions import get_bsc_cal_params_query
 from ELDAmwl.products import ProductParams
@@ -14,7 +14,7 @@ class BscCalibrationParams(Params):
         self.CalRangeSearchMethod = None
         self.WindowWidth = None
         self.CalValue = None
-        self.CalInterval = AttrDict({'from': None, 'to': None})
+        self.CalInterval = Dict({'from': None, 'to': None})
 
     @classmethod
     def from_db(cls, general_params):

@@ -56,7 +56,7 @@ setup(
         'flake8-todo',
         'pytest',
         'pytest-mock',
-        'attrdict',
+        'addict',
         'sphinx',
         'xarray'
     ],

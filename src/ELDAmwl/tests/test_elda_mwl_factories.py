@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Tests for the factories"""
-from attrdict import AttrDict
+from addict import Dict
 from ELDAmwl.elda_mwl_factories import MeasurementParams
 
 
@@ -16,7 +16,7 @@ def test_MeasurementParams(mocker):
         return_value=1,
     )
 
-    val = AttrDict({'Products': AttrDict({'ID': 1})})
+    val = Dict({'Products': Dict({'ID': 1})})
 
     mocker.patch(
         'ELDAmwl.elda_mwl_factories.get_products_query',

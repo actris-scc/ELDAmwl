@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Class registry"""
 
-from attrdict import AttrDict
+from addict import Dict
 from ELDAmwl.exceptions import OnlyOneOverrideAllowed
 
 
@@ -14,7 +14,7 @@ class FactoryRegistry(object):
         """
         Initialize the registry with a blank dict
         """
-        self.registry = AttrDict()
+        self.registry = Dict()
 
     def register_class(self, klass_name, klass, override=False):
         """
@@ -63,7 +63,7 @@ class Registry(object):
         """
         Initialize the registry with a blank dict
         """
-        self.factory_registry = AttrDict()
+        self.factory_registry = Dict()
 
     def get_factory_registration(self, factory):
         """

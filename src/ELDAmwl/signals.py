@@ -135,17 +135,43 @@ class Signals(Columns):
 
         return result
 
+    def assign_to_signal_list(self, sig_list, fquery):
+        """
+
+        Args:
+            sig_list: pd.Dataframe with a list of signals and header information
+            fquery:
+
+        Returns:
+
+        """
+        sig_list.loc[len(sig_list.index)] = {'id': str(self.channel_id.values),
+             'em_wl': float(self.emission_wavelength.values),
+             'det_wl': float(self.detection_wavelength.values),
+             'det_type': int(self.detection_type.values),
+             'scatterer': int(self.scatterer.values),
+             'alt_range': int(self.alt_range.values),
+             'elast': self.is_elast_sig,
+             'Raman': self.is_Raman_sig,
+             'wv': self.is_WV_sig,
+             'nr': self.is_nr_signal,
+             'fr': self.is_fr_signal,
+             'total': self.is_total_sig,
+             'cross': self.is_cross_sig,
+             'parallel': self.is_parallel_sig,
+             }
+
     @property
     def range(self):
         return self.height * xr.ufuncs.cos(xr.ufuncs.radians(self.ds.laser_pointing_angle))  # noqa E501
 
     @property
     def is_WV_sig(self):
-        return self.scatterer == WATER_VAPOR
+        return (self.scatterer == WATER_VAPOR).values
 
     @property
     def is_elast_sig(self):
-        return (self.scatterer & PARTICLE) == PARTICLE
+        return ((self.scatterer & PARTICLE) == PARTICLE).values
 
     @property
     def is_Raman_sig(self):
@@ -153,20 +179,21 @@ class Signals(Columns):
 
     @property
     def is_nr_signal(self):
-        return self.alt_range == NEAR_RANGE
+        return (self.alt_range == NEAR_RANGE).values
 
     @property
     def is_fr_signal(self):
-        return self.alt_range == FAR_RANGE
+        return (self.alt_range == FAR_RANGE).values
 
     @property
     def is_total_sig(self):
-        return self.pol_channel_conf == TOTAL
+        return (self.pol_channel_conf == TOTAL).values
 
     @property
     def is_cross_sig(self):
-        return self.pol_channel_conf == CROSS
+        return (self.pol_channel_conf == CROSS).values
 
     @property
     def is_parallel_sig(self):
-        return self.pol_channel_conf == PARALLEL
+        return (self.pol_channel_conf == PARALLEL).values
+

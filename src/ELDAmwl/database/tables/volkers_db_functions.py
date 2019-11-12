@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """example Classes for db tables by Volker"""
 
-from attrdict import AttrDict
+from addict import Dict
 from copy import copy
 from eprofile.database.engine_pid_guard import add_engine_pidguard
 from eprofile.database.tables.privileged_ip import PrivilegedIP
@@ -95,7 +95,7 @@ class DBFunc(object):
                                                                 limit).all()
 
         for instrument, date in query_result:
-            result_dict = AttrDict()
+            result_dict = Dict()
             for field in COLS_INCOMING_Windprofiler:
                 result_dict[field] = copy(getattr(instrument, field))
             yield result_dict, date
@@ -317,7 +317,7 @@ class DBFunc(object):
             windprofiler_mode_id).all()
         if len(result) != 1:
             return None
-        result_dict = AttrDict()
+        result_dict = Dict()
         for field in COLS_WindprofilerDaily:
             result_dict[field] = copy(getattr(result[0], field))
 

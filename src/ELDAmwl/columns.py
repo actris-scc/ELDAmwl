@@ -11,6 +11,7 @@ class Columns(object):
 
     def __init__(self):
         self.ds = xr.Dataset()
+        self.station_altitude = None
 
     def relative_error(self):
         return self.err[:] / self.data[:]
