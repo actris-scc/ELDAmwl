@@ -120,8 +120,9 @@ class RunELDAmwl(BaseOperation):
 
     def prepare_signals(self):
         for p_param in self.params.basic_products():
-            combine_signals = CombineDepolComponents()(p_param)
-            combine_signals.run()
+            if p_param.is_bsc_from_depol_components():
+                combine_signals = CombineDepolComponents()(p_param)
+                combine_signals.run()
 
     @property
     def data(self):

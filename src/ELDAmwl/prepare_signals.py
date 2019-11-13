@@ -39,6 +39,7 @@ class CombineDepolComponents(BaseOperationFactory):
         return GetCombinedSignal.__class__.__name__
 
 
-registry.register_class(CombineDepolComponents, GetCombinedSignal)
+registry.register_class(CombineDepolComponents, GetCombinedSignal.__class__.__name__,
+                        GetCombinedSignal)
 
 
