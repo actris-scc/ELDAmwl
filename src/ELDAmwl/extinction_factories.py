@@ -130,4 +130,4 @@ class NonWeightedLinFit(BaseOperation):
         LinFit(False)
 
 
-registry.register_class(SignalSlope, 'NonWeightedLinearFit', NonWeightedLinFit)
+registry.register_class(SignalSlope, NonWeightedLinFit)

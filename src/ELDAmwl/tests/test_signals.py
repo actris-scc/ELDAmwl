@@ -4,6 +4,7 @@
 from ELDAmwl.signals import Signals
 
 import os
+import xarray as xr
 
 
 # Where are the python files for testing
@@ -20,5 +21,6 @@ TEST_INTERMEDIATE_FILE_1 = os.path.join(
 
 
 def test_Signals_from_nc_file():
+    nc_ds = xr.open_dataset(TEST_INTERMEDIATE_FILE_1)
     for channelidx in range(2):
-        Signals.from_nc_file(TEST_INTERMEDIATE_FILE_1, channelidx)
+        Signals.from_nc_file(nc_ds, channelidx)

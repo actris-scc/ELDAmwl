@@ -30,8 +30,8 @@ class BaseOperationFactory(object):
 
     def __call__(self, *args, **kwargs):
         klass = self.get_class()
-        klass(*args, **kwargs)
-        return klass
+        res = klass(*args, **kwargs)
+        return res
 
     def get_classname_from_db(self):
         pass

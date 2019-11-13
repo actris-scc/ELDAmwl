@@ -3,6 +3,7 @@
 
 from addict import Dict
 from ELDAmwl.base import Params
+from ELDAmwl.constants import RBSC, EBSC, COMBINE_DEPOL_USE_CASES
 from ELDAmwl.database.db_functions import get_general_params_query
 from ELDAmwl.log import logger
 from ELDAmwl.signals import Signals
@@ -51,6 +52,15 @@ class ProductParams(Params):
 
             params_table.loc[params_table.id == self.prod_id_str, 'hres'] = hres
             params_table.loc[params_table.id == self.prod_id_str, 'lres'] = lres
+
+    def is_bsc_from_depol_components(self):
+        if self.general_params.product_type in [RBSC, EBSC]:
+            if self.general_params.usecase in COMBINE_DEPOL_USE_CASES[self.general_params.product_type]:
+                return True
+            else:
+                return False
+        else:
+            return False
 
 
 class GeneralProductParams(Params):

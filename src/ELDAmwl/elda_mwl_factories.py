@@ -14,8 +14,9 @@ from ELDAmwl.database.db_functions import read_system_id
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.lidar_ratio_factories import LidarRatioParams
+from ELDAmwl.prepare_signals import CombineDepolComponents
 from ELDAmwl.products import GeneralProductParams
-from ELDAmwl.signals import Signals
+from ELDAmwl.signals import Signals, ElppData
 from ELDAmwl.log import logger
 
 import os
@@ -112,18 +113,15 @@ class RunELDAmwl(BaseOperation):
         self.params.read_product_list()
         # todo: check params (e.g. whether all time and vert. resolutions are equal)
 
-    def read_signals(self):
+    def read_elpp_data(self):
         for p_param in self.params.basic_products():
+            elpp_data = ElppData()
+            elpp_data.read_nc_file(self.data, p_param)
 
-            # todo: check if scc version in query = current version
-
-            nc_ds = xr.open_dataset(os.path.join(cfg.SIGNAL_PATH,
-                                                 p_param.general_params.elpp_file))
-            for idx in range(nc_ds.dims['channel']):
-                sig = Signals.from_nc_file(nc_ds, idx)
-                sig.register(self.data, p_param)
-
-        # todo: calculate combined signals (from depol components)
+    def prepare_signals(self):
+        for p_param in self.params.basic_products():
+            combine_signals = CombineDepolComponents()(p_param)
+            combine_signals.run()
 
     @property
     def data(self):

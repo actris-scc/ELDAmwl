@@ -24,6 +24,9 @@ PLDR = 14
 
 PRODUCT_TYPES = [RBSC, EXT, LR, EBSC, MWL, AE, CR, VLDR, PLDR]
 
+COMBINE_DEPOL_USE_CASES = {RBSC: [7, 9, 10, 11, 12, 18, 17],
+                           EBSC: [3, 4, 7, 8 ]}
+
 # ====== signal detection types ======
 ANALOG = 1
 PH_CNT = 2

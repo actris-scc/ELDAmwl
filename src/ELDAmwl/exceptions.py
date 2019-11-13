@@ -18,3 +18,8 @@ class OnlyOneOverrideAllowed(Exception):
     """
     Raised on attempt to add more than one override to class registry
     """
+
+class NotFoundInStorage(Exception):
+    """
+    Raised if the requested data are not found in data storage
+    """
