@@ -57,4 +57,4 @@ def test_factory(db, mocker):
             return_value=klass_name,
         )
 
-        assert Factory()() == klass
+        assert Factory()().__class__ == klass

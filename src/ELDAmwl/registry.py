@@ -14,18 +14,17 @@ class FactoryRegistry(object):
         """
         Initialize the registry with a blank dict
         """
-#        self.registry = AttrDict()
         self.registry = Dict()
 
-    def register_class(self, klass, override=False):
+    def register_class(self, klass_name, klass, override=False):
         """
         Registers a class by name
 
         Args:
             factory: The factory to register for
+            klass_name: The name under which the class is registered in the db
             klass: The class to register
         """
-        klass_name = klass.__class__.__name__
         self.registry[klass_name] = klass
         if override:
             if OVERRIDE in self.registry:
@@ -76,23 +75,24 @@ class Registry(object):
         Returns:
 
         """
-        if factory.name not in self. factory_registry:
+        if factory.name  not in self.factory_registry :
             self.factory_registry[factory.name] = FactoryRegistry()
         return self.factory_registry[factory.name]
 
-    def register_class(self, factory, klass, override=False):
+    def register_class(self, factory, klass_name, klass, override=False):
         """
         Registers a class by name to the given factory
 
         Args:
             factory: The factory to register for
+            klass_name: The name under which the class is registered in the db
             klass: The class to register
 
         Returns:
 
         """
         factory_registration = self.get_factory_registration(factory)
-        factory_registration.register_class(klass,
+        factory_registration.register_class(klass_name, klass,
                                             override=override)
 
     def find_class_by_name(self, factory, klass_name):
