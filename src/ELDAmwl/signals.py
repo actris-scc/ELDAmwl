@@ -7,17 +7,21 @@ from ELDAmwl.constants import FAR_RANGE
 from ELDAmwl.constants import NEAR_RANGE
 from ELDAmwl.constants import PARALLEL
 from ELDAmwl.constants import PARTICLE
+from ELDAmwl.constants import REFLECTED
 from ELDAmwl.constants import TOTAL
+from ELDAmwl.constants import TRANSMITTED
 from ELDAmwl.constants import WATER_VAPOR
 
 import numpy as np
-import xarray as xr
 import os
+import xarray as xr
+
 
 try:
     import ELDAmwl.configs.config as cfg
 except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg
+
 
 class ElppData(object):
 
@@ -32,7 +36,7 @@ class ElppData(object):
                                              p_param.general_params.elpp_file))
 
         self._cloud_mask = nc_ds.cloud_mask.astype(int)
-        data_storage.products()[p_param.prod_id_str].cloud_mask = self._cloud_mask
+        data_storage.products()[p_param.prod_id_str].cloud_mask = self._cloud_mask  # noqa E501
 
         for idx in range(nc_ds.dims['channel']):
             sig = Signals.from_nc_file(nc_ds, idx)
@@ -119,7 +123,6 @@ class Signals(Columns):
 
         result.channel_id_str = str(result.channel_id.values)
 
-
         return result
 
     @classmethod
@@ -148,10 +151,10 @@ class Signals(Columns):
 
         return result
 
-
     def register(self, storage, p_params):
-        storage.products()[p_params.prod_id_str].signals[self.channel_id_str] = self
+        storage.products()[p_params.prod_id_str].signals[self.channel_id_str] = self  # noqa E501
         p_params.general_params.signals.append(self.channel_id_str)
+        p_params.add_signal_role(self)
 
     @property
     def range(self):
@@ -189,3 +192,10 @@ class Signals(Columns):
     def is_parallel_sig(self):
         return (self.pol_channel_conf == PARALLEL).values
 
+    @property
+    def is_transm_sig(self):
+        return (self.pol_channel_geometry == TRANSMITTED).values
+
+    @property
+    def is_refl_sig(self):
+        return (self.pol_channel_geometry == REFLECTED).values

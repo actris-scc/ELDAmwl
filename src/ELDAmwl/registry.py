@@ -75,7 +75,7 @@ class Registry(object):
         Returns:
 
         """
-        if factory.name  not in self.factory_registry :
+        if factory.name not in self.factory_registry:
             self.factory_registry[factory.name] = FactoryRegistry()
         return self.factory_registry[factory.name]
 

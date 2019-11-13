@@ -3,8 +3,7 @@
 from ELDAmwl.constants import ELDA_MWL_VERSION
 from ELDAmwl.elda_mwl_factories import RunELDAmwl
 from ELDAmwl.log import create_logger
-from logging import INFO
-from logging import log
+from ELDAmwl.log import logger
 
 
 try:
@@ -30,14 +29,14 @@ ext_id = 377
 
 create_logger(meas_id)
 
-log(INFO, 'welcome to the EARLINET Lidar Data Analyzer for \
+logger.info('welcome to the EARLINET Lidar Data Analyzer for \
            multi-wavelengths measurements (ELDAmwl)')
-log(INFO, 'ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
-log(INFO, 'analyze measurement number: ' + meas_id)
+logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
+logger.info('analyze measurement number: ' + meas_id)
 
 elda_mwl = RunELDAmwl(meas_id)
 elda_mwl.read_tasks()
 elda_mwl.read_elpp_data()
 elda_mwl.prepare_signals()
 
-log(INFO, 'the end')
+logger.info('the end')

@@ -15,10 +15,12 @@ class Columns(object):
 
     def angle_to_time_dependent_var(self, angle_var, data_var):
         """
-        converts xr variables from (time dependent) angle dimension to time dimension
+        converts xr variables from (time dependent) angle dimension
+        to time dimension
 
         Args:
-            angle_var: angle var is the time dependent laser_pointing_angle_of_profiles
+            angle_var: angle var is the time dependent
+            laser_pointing_angle_of_profiles
             data_var: data_var is the angle dependent variable
 
         Returns: xarray with time dependent data

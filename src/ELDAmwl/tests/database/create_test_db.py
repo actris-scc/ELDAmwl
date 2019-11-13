@@ -3,9 +3,13 @@
 
 from ELDAmwl.configs.config_default import STRP_DATE_TIME_FORMAT
 from ELDAmwl.database.db import DBUtils
+from ELDAmwl.database.tables.backscatter import BscCalibrOption
+from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
+from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
+from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import ErrorThresholds
 from ELDAmwl.database.tables.system_product import MWLproductProduct
@@ -29,11 +33,15 @@ import sqlalchemy
 
 # List of all DB tables in the test DB
 ALL_DB_TABLES = [
-    SystemProduct,
+    BscCalibrOption,
+    ElastBackscatterOption,
+    RamanBackscatterOption,
     ExtMethod,
     ExtinctionOption,
     OverlapFile,
+    ExtBscOption,
     Measurements,
+    SystemProduct,
     MWLproductProduct,
     Products,
     ProductTypes,

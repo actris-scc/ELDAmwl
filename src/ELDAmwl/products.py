@@ -3,7 +3,9 @@
 
 from addict import Dict
 from ELDAmwl.base import Params
-from ELDAmwl.constants import RBSC, EBSC, COMBINE_DEPOL_USE_CASES
+from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES
+from ELDAmwl.constants import EBSC
+from ELDAmwl.constants import RBSC
 from ELDAmwl.database.db_functions import get_general_params_query
 from ELDAmwl.log import logger
 from ELDAmwl.signals import Signals
@@ -27,7 +29,6 @@ class ProductParams(Params):
     def prod_id_str(self):
         return str(self.general_params.prod_id)
 
-
     def assign_to_product_list(self, measurement_params):
         gen_params = self.general_params
         params_list = measurement_params.product_list
@@ -50,17 +51,20 @@ class ProductParams(Params):
             hres = df.hres[0] or gen_params.calc_with_hr
             lres = df.lres[0] or gen_params.calc_with_lr
 
-            params_table.loc[params_table.id == self.prod_id_str, 'hres'] = hres
-            params_table.loc[params_table.id == self.prod_id_str, 'lres'] = lres
+            params_table.loc[params_table.id == self.prod_id_str, 'hres'] = hres  # noqa E501
+            params_table.loc[params_table.id == self.prod_id_str, 'lres'] = lres  # noqa E501
 
     def is_bsc_from_depol_components(self):
         if self.general_params.product_type in [RBSC, EBSC]:
-            if self.general_params.usecase in COMBINE_DEPOL_USE_CASES[self.general_params.product_type]:
+            if self.general_params.usecase in COMBINE_DEPOL_USE_CASES[self.general_params.product_type]:  # noqa E501
                 return True
             else:
                 return False
         else:
             return False
+
+    def add_signal_role(self, signal):
+        pass
 
 
 class GeneralProductParams(Params):
@@ -83,10 +87,10 @@ class GeneralProductParams(Params):
         self.error_method = None
         self.detection_limit = None
         self.error_threshold = Dict({'low': None,
-                                         'high': None})
+                                     'high': None})
 
         self.valid_alt_range = Dict({'min_height': None,
-                                         'max_height': None})
+                                     'max_height': None})
 
         self.elpp_file = ''
 
@@ -110,7 +114,8 @@ class GeneralProductParams(Params):
         result.valid_alt_range.min_height = query.ProductOptions.min_height
         result.valid_alt_range.max_height = query.ProductOptions.max_height
 
-        # the MWLproducProduct and PreparedSignalFile tables are not available if query is
+        # the MWLproducProduct and PreparedSignalFile tables
+        # are not available if query is
         # related to a simple (not mwl) product. There is no way to test
         # whether the table is inside the query collection -> just try
         try:

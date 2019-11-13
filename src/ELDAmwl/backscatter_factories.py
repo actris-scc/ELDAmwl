@@ -4,6 +4,7 @@
 from addict import Dict
 from ELDAmwl.base import Params
 from ELDAmwl.database.db_functions import get_bsc_cal_params_query
+from ELDAmwl.log import logger
 from ELDAmwl.products import ProductParams
 
 
@@ -38,6 +39,11 @@ class BackscatterParams(ProductParams):
         super(BackscatterParams, self).__init__()
         self.sub_params += ['calibration_params']
         self.calibration_params = None
+        self.total_sig_id = None
+        self.transm_sig_id = None
+        self.refl_sig_id = None
+        self.cross_sig_id = None
+        self.parallel_sig_id = None
 
     @classmethod
     def from_db(cls, general_params):
@@ -45,3 +51,20 @@ class BackscatterParams(ProductParams):
         result.general_params = general_params
         result.calibration_params = BscCalibrationParams.from_db(general_params)  # noqa E501
         return result
+
+    def add_signal_role(self, signal):
+        super(BackscatterParams, self)
+        if signal.is_elast_sig:
+            if signal.is_total_sig:
+                self.total_sig_id = signal.channel_id_str
+            if signal.is_cross_sig:
+                self.cross_sig_id = signal.channel_id_str
+            if signal.is_parallel_sig:
+                self.parallel_sig_id = signal.channel_id_str
+            if signal.is_transm_sig:
+                self.transm_sig_id = signal.channel_id_str
+            if signal.is_refl_sig:
+                self.refl_sig_id = signal.channel_id_str
+        else:
+            logger.debug('channel {0} is no elast signal'.
+                         format(signal.channel_id_str))

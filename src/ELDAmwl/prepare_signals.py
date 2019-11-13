@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Classes for preparation of signals (combining depol comonents, ttempoaral integration, .."""
+"""Classes for preparation of signals
+(combining depol comonents, ttempoaral integration, .."""
 
-from ELDAmwl.factory import BaseOperationFactory, BaseOperation
+from ELDAmwl.factory import BaseOperation
+from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.registry import registry
 from ELDAmwl.signals import Signals
 
@@ -22,6 +24,7 @@ class GetCombinedSignal(BaseOperation):
             self.params.refl_sig,
             self.params.dp_cal_params,
         )
+        return total_sig
 
 
 class CombineDepolComponents(BaseOperationFactory):
@@ -39,7 +42,6 @@ class CombineDepolComponents(BaseOperationFactory):
         return GetCombinedSignal.__class__.__name__
 
 
-registry.register_class(CombineDepolComponents, GetCombinedSignal.__class__.__name__,
+registry.register_class(CombineDepolComponents,
+                        GetCombinedSignal.__class__.__name__,
                         GetCombinedSignal)
-
-

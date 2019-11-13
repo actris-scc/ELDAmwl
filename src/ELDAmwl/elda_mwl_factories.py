@@ -8,7 +8,7 @@ from ELDAmwl.constants import EXT
 from ELDAmwl.constants import LR
 from ELDAmwl.constants import RBSC
 from ELDAmwl.data_storage import DataStorage
-from ELDAmwl.database.db_functions import get_products_query, read_signal_filenames
+from ELDAmwl.database.db_functions import get_products_query
 from ELDAmwl.database.db_functions import read_mwl_product_id
 from ELDAmwl.database.db_functions import read_system_id
 from ELDAmwl.extinction_factories import ExtinctionParams
@@ -16,18 +16,15 @@ from ELDAmwl.factory import BaseOperation
 from ELDAmwl.lidar_ratio_factories import LidarRatioParams
 from ELDAmwl.prepare_signals import CombineDepolComponents
 from ELDAmwl.products import GeneralProductParams
-from ELDAmwl.signals import Signals, ElppData
-from ELDAmwl.log import logger
+from ELDAmwl.signals import ElppData
 
-import os
 import pandas as pd
-import xarray as xr
 
 
 try:
-    import ELDAmwl.configs.config as cfg
+    import ELDAmwl.configs.config as cfg  # noqa E401
 except ModuleNotFoundError:
-    import ELDAmwl.configs.config_default as cfg
+    import ELDAmwl.configs.config_default as cfg  # noqa E401
 
 PARAM_CLASSES = {RBSC: BackscatterParams,
                  EXT: ExtinctionParams,
@@ -46,28 +43,28 @@ class MeasurementParams(Params):
         self.measurement_params.meas_id = measurement_id
         self.measurement_params.system_id = read_system_id(self.meas_id)
         self.measurement_params.mwl_product_id = read_mwl_product_id(self.system_id)  # noqa E501
-        self.measurement_params.product_list =  Dict()
-        self.measurement_params.product_table = pd.DataFrame.from_dict({'id': [],
-                                                        'wl': [],
-                                                        'type': [],
-                                                        'basic': [],
-                                                        'derived': [],
-                                                        'hres': [],
-                                                        'lres': [],
-                                                        'elpp_file': []})\
+        self.measurement_params.product_list = Dict()
+        self.measurement_params.product_table = pd.DataFrame.from_dict(
+            {'id': [],
+             'wl': [],
+             'type': [],
+             'basic': [],
+             'derived': [],
+             'hres': [],
+             'lres': [],
+             'elpp_file': []})\
             .astype({'id': 'str',
-                              'wl': 'float',
-                              'type': 'int',
-                              'basic': 'bool',
-                              'derived': 'bool',
-                              'hres': 'bool',
-                              'lres': 'bool',
-                              'elpp_file': 'str'})
-
+                     'wl': 'float',
+                     'type': 'int',
+                     'basic': 'bool',
+                     'derived': 'bool',
+                     'hres': 'bool',
+                     'lres': 'bool',
+                     'elpp_file': 'str'})
 
     def basic_products(self):
         prod_df = self.measurement_params.product_table
-        ids = prod_df ['id'][prod_df.basic == True]
+        ids = prod_df['id'][prod_df.basic == True]
         if len(ids) > 0:
             result = []
             for idx in ids:
@@ -77,7 +74,9 @@ class MeasurementParams(Params):
             return None
 
     def read_product_list(self):
-        p_query = get_products_query(self.mwl_product_id, self.measurement_params.meas_id)
+        p_query = get_products_query(
+            self.mwl_product_id,
+            self.measurement_params.meas_id)
         for q in p_query:
             general_params = GeneralProductParams.from_query(q)
             prod_type = general_params.product_type
@@ -111,7 +110,8 @@ class RunELDAmwl(BaseOperation):
 
     def read_tasks(self):
         self.params.read_product_list()
-        # todo: check params (e.g. whether all time and vert. resolutions are equal)
+        # todo: check params (e.g. whether all
+        #  time and vert. resolutions are equal)
 
     def read_elpp_data(self):
         for p_param in self.params.basic_products():
@@ -121,8 +121,13 @@ class RunELDAmwl(BaseOperation):
     def prepare_signals(self):
         for p_param in self.params.basic_products():
             if p_param.is_bsc_from_depol_components():
-                combine_signals = CombineDepolComponents()(p_param)
-                combine_signals.run()
+                transm_sig = self.data.signals(p_param.prod_id)[p_param.transm_sig_id]  # noqa E501
+                refl_sig = self.data.signals(p_param.prod_id)[p_param.refl_sig_id]  # noqa E501
+                combine_signals = CombineDepolComponents()(
+                    Dict({'transm_sig': transm_sig,
+                          'refl_sig': refl_sig}))
+                total_sig = combine_signals.run()
+                total_sig.register(self.data, p_param)
 
     @property
     def data(self):

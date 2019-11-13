@@ -13,8 +13,9 @@ from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
-from ELDAmwl.database.tables.system_product import ErrorThresholds, PreparedSignalFile
+from ELDAmwl.database.tables.system_product import ErrorThresholds
 from ELDAmwl.database.tables.system_product import MWLproductProduct
+from ELDAmwl.database.tables.system_product import PreparedSignalFile
 from ELDAmwl.database.tables.system_product import ProductOptions
 from ELDAmwl.database.tables.system_product import Products
 from ELDAmwl.database.tables.system_product import ProductTypes
@@ -24,6 +25,7 @@ from sqlalchemy.orm import aliased
 
 
 dbutils = DBUtils()
+
 
 def read_signal_filenames(measurement_id):
     """
@@ -37,7 +39,7 @@ def read_signal_filenames(measurement_id):
     signals = dbutils.session.query(PreparedSignalFile)\
         .filter(PreparedSignalFile._measurements_ID == measurement_id)
 
-    if signals.count() >0:
+    if signals.count() > 0:
         return signals
     else:
         logger.error('no prepared signal files for measurement {0}'
