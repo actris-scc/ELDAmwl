@@ -43,7 +43,15 @@ class MeasurementParams(Params):
         self.measurement_params.meas_id = measurement_id
         self.measurement_params.system_id = read_system_id(self.meas_id)
         self.measurement_params.mwl_product_id = read_mwl_product_id(self.system_id)  # noqa E501
+
+        # product_list provides a link between product id and the parameter object of the product
         self.measurement_params.product_list = Dict()
+
+        # the product_table provides a table-like overview of all individual products.
+        # it shall be used for search operations (e.g. for all extinction products or all basic products or..)
+        # the search operations are realized by filtering the DataFrame. they return the corresponding product_ids.
+        # Using the link between product id and parameter object from the product_list, the search operations
+        # will return lists of product parameter objects.
         self.measurement_params.product_table = pd.DataFrame.from_dict(
             {'id': [],
              'wl': [],
