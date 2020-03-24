@@ -39,5 +39,6 @@ elda_mwl = RunELDAmwl(meas_id)
 elda_mwl.read_tasks()
 elda_mwl.read_elpp_data()
 elda_mwl.prepare_signals()
+elda_mwl.get_basic_products()
 
 logger.info('the end')

@@ -16,7 +16,7 @@ class BaseOperationFactory(object):
 
     Base class of factories, returns an instance of a
     BaseOperation. If several alternative BaseOperation
-    classes are available, this factory decides,
+    classes are available, the factory decides,
     which one to provide. This decision is based on options
     in the database or whether user defined plugins are available.
 

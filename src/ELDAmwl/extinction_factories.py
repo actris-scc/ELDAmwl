@@ -28,7 +28,9 @@ class Extinctions(Products):
 
 class SlopeToExtinction(BaseOperationFactory):
     """
-    Calculates particle extinction coefficient from signal slope.
+    Returns an instance of BaseOperation which calculates the particle
+    extinction coefficient from signal slope. In this case, it
+    will be always an instance of getSlopeToExtinction().
     """
 
     name = 'SlopeToExtinction'

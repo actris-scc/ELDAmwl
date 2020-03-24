@@ -29,7 +29,10 @@ class GetCombinedSignal(BaseOperation):
 
 class CombineDepolComponents(BaseOperationFactory):
     """
-    Calculates particle extinction coefficient from signal slope.
+    Returns an instance of BaseOperation which
+    calculates a total signal from two signals with
+    depolarization components. In this case, it will be
+    always an instance of GetCombinedSignal().
     """
 
     name = 'CombineDepolComponents'

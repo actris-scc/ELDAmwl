@@ -59,8 +59,8 @@ class Columns(object):
         return self.relative_error()
 
     @property
-    def cf(self):
-        return self.ds.cf
+    def cm(self):
+        return self.ds.cm
 
     @property
     def altitude(self):
