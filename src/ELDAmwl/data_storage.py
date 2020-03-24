@@ -11,34 +11,45 @@ class DataStorage(object):
 
     """
     def __init__(self):
-        self._data = Dict({'products': Dict()})
+        self._data = Dict({'elpp_signals': Dict(),
+                           'prepared_signals': Dict(),
+                           'header': None,
+                           'cloud_mask': None,
+                           })
 
-    def products(self):
-        return self._data.products
 
-    def channel_ids(self, prod_id_str):
-        try:
-            return self._data.products[prod_id_str].signals
-        except AttributeError:
-            logger.error('cannot find signals for product {0} '
-                         'in data storage'.format(prod_id_str))
-            raise NotFoundInStorage
+    def elpp_signals(self, prod_id_str):
+        """ELPP signals
 
-    def signals(self, prod_id_str):
+        Those are the original signals of one basic product from
+        the corresponding ELPP file.
+
+        Args:
+            prod_id_str (str):  product id
+
+        Returns:
+            :obj:`list` of :obj:`Signals`: list all signals related
+                                            to the product id
+
+        Raises:
+             NotFoundInStorage: if no signals for the given product id
+                are found in storage
+        """
         try:
             result = []
-            for ch_id in self.channel_ids(prod_id_str):
-                result.append(self._data.products[prod_id_str].signals[ch_id])
+            for ch_id in self._data.elpp_signals[prod_id_str]:
+                result.append(self._data.elpp_signals[prod_id_str][ch_id])
             return result
         except AttributeError:
             logger.error('cannot find signals for product {0} '
                          'in data storage'.format(prod_id_str))
             raise NotFoundInStorage
 
-    def cloud_mask(self, prod_id_str):
-        try:
-            return self._data.products[prod_id_str].cloud_mask
-        except AttributeError:
-            logger.error('cannot find cloud mask for product {0} '
-                         'in data storage'.format(prod_id_str))
-            raise NotFoundInStorage
+
+    @property
+    def cloud_mask(self):
+        return self._data.cloud_mask
+
+    @property
+    def header(self):
+        return self._data.header

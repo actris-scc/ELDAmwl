@@ -33,8 +33,7 @@ PARAM_CLASSES = {RBSC: BackscatterParams,
 
 
 class MeasurementParams(Params):
-    """
-    Those are general parameters of the measurement
+    """General parameters and settings of the measurement
     """
     def __init__(self, measurement_id):
         super(MeasurementParams, self).__init__()
@@ -127,25 +126,29 @@ class RunELDAmwl(BaseOperation):
             elpp_data = ElppData()
             elpp_data.read_nc_file(self.data, p_param)
 
-    def combine_depol_components(self, p_param):
-        if p_param.is_bsc_from_depol_components():
-            transm_sig = self.data.signals(p_param.prod_id)[p_param.transm_sig_id]  # noqa E501
-            refl_sig = self.data.signals(p_param.prod_id)[p_param.refl_sig_id]  # noqa E501
-            combine_signals = CombineDepolComponents()(
-                Dict({'transm_sig': transm_sig,
-                      'refl_sig': refl_sig}))
-            total_sig = combine_signals.run()
-            total_sig.register(self.data, p_param)
+    # def combine_depol_components(self, p_param):
+    #     if p_param.is_bsc_from_depol_components():
+    #         transm_sig = self.data.signals(p_param.prod_id)[p_param.transm_sig_id]  # noqa E501
+    #         refl_sig = self.data.signals(p_param.prod_id)[p_param.refl_sig_id]  # noqa E501
+    #         combine_signals = CombineDepolComponents()(
+    #             Dict({'transm_sig': transm_sig,
+    #                   'refl_sig': refl_sig}))
+    #         total_sig = combine_signals.run()
+    #         total_sig.register(self.data, p_param)
 
     def normalize_by_shots(self, p_param):
         for sig in self.data.signals(p_param.prod_id_str):
             sig.normalize_by_shots()
 
+#    def correct_molecular_transmission(self, p_param):
+#        for sig in self.data.signals(p_param.prod_id_str):
+
+
 
     def prepare_signals(self):
         for p_param in self.params.basic_products():
             self.normalize_by_shots(p_param)
-            self.combine_depol_components(p_param)
+    #        self.combine_depol_components(p_param)
 
     def get_basic_products(self):
         for p_param in self.params.basic_products():

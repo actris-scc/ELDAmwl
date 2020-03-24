@@ -31,6 +31,7 @@ class ElppData(object):
     def __init__(self):
         self._signals = None
         self._cloud_mask = None
+        self._header = None
 
     def read_nc_file(self, data_storage, p_param):
         # todo: check if scc version in query = current version
@@ -39,11 +40,46 @@ class ElppData(object):
                                              p_param.general_params.elpp_file))
 
         self._cloud_mask = nc_ds.cloud_mask.astype(int)
-        data_storage.products()[p_param.prod_id_str].cloud_mask = self._cloud_mask  # noqa E501
+#        data_storage.products()[p_param.prod_id_str].cloud_mask = self._cloud_mask  # noqa E501
+        # todo: check, if cloud mask already exists. if yes -> is it equal
+        data_storage._data.cloud_mask = self._cloud_mask
+
+        self._header = Header.from_nc_file(nc_ds)
+        data_storage._data.header = self._header
 
         for idx in range(nc_ds.dims['channel']):
             sig = Signals.from_nc_file(nc_ds, idx)
             sig.register(data_storage, p_param)
+
+        nc_ds.close()
+
+
+class Header(object):
+    def __init__(self):
+        self._station_latitude = np.nan
+        self._station_longitude = np.nan
+        self._station_altitude = np.nan
+
+    @classmethod
+    def from_nc_file(cls, nc_ds):
+        result = cls()
+        result._station_latitude = nc_ds.latitude
+        result._station_longitude = nc_ds.longitude
+        result._station_altitude = nc_ds.station_altitude
+
+        return result
+
+    @property
+    def latitude(self):
+        return self._station_latitude
+
+    @property
+    def longitude(self):
+        return self._station_longitude
+
+    @property
+    def altitude(self):
+        return self._station_altitude
 
 
 class Signals(Columns):
@@ -84,8 +120,6 @@ class Signals(Columns):
         result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file]  # noqa E501
 #        result.ds['cm'] = nc_ds.cloud_mask.astype(int)
 
-        result.station_latitude = nc_ds.latitude
-        result.station_longitude = nc_ds.longitude
         result.station_altitude = nc_ds.station_altitude
         result.ds['altitude'] = nc_ds.altitude
 
@@ -184,7 +218,7 @@ class Signals(Columns):
         return result
 
     def register(self, storage, p_params):
-        storage.products()[p_params.prod_id_str].signals[self.channel_id_str] = self  # noqa E501
+        storage._data.elpp_signals[p_params.prod_id_str][self.channel_id_str] = self  # noqa E501
         p_params.general_params.signals.append(self.channel_id_str)
         p_params.add_signal_role(self)
 
@@ -194,6 +228,7 @@ class Signals(Columns):
 
     @property
     def range(self):
+        """xarray.DataArray(dimensions=time,level): range axis in m = distance from lidar"""
         return self.height * xr.ufuncs.cos(xr.ufuncs.radians(self.ds.laser_pointing_angle))  # noqa E501
 
     @property

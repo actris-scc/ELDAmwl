@@ -15,10 +15,14 @@ class GetCombinedSignal(BaseOperation):
     params : Dict...
     """
 
-    def __init__(self, params):
-        self._params = params
+    def __init__(self, sig_trans, sig_refl, HR, eta):
+        p = {'HR': HR}
+        self._params = p
 
-    def run(self):
+    def run(self, ):
+        #todo: mache hier die rechnung
+
+        #todo: der aufruf von getcombination kommt nach Signal.from_depol_components
         total_sig = Signals.from_depol_components(
             self.params.transm_sig,
             self.params.refl_sig,

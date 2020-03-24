@@ -43,7 +43,7 @@ class Columns(object):
         da = xr.DataArray.from_dict(dict)
         return da
 
-    def relative_error(self):
+    def _relative_error(self):
         return self.err[:] / self.data[:]
 
     @property
@@ -56,7 +56,7 @@ class Columns(object):
 
     @property
     def rel_err(self):
-        return self.relative_error()
+        return self._relative_error()
 
     @property
     def cm(self):
@@ -64,8 +64,10 @@ class Columns(object):
 
     @property
     def altitude(self):
-        return self.ds.altitude  # altitude axis in m a.s.l.
+        """xarray.DataArray(dimensions=time,level): altitude axis in m a.s.l."""
+        return self.ds.altitude
 
     @property
     def height(self):
-        return self.altitude - self.station_altitude  # height axis in m a.g.
+        """xarray.DataArray(dimensions=time,level): height axis in m a.g."""
+        return self.altitude - self.station_altitude
