@@ -17,7 +17,6 @@ class DataStorage(object):
                            'cloud_mask': None,
                            })
 
-
     def elpp_signals(self, prod_id_str):
         """ELPP signals
 
@@ -44,7 +43,6 @@ class DataStorage(object):
             logger.error('cannot find signals for product {0} '
                          'in data storage'.format(prod_id_str))
             raise NotFoundInStorage
-
 
     @property
     def cloud_mask(self):

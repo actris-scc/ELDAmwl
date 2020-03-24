@@ -2,7 +2,8 @@
 """Classes for signals"""
 
 from ELDAmwl.columns import Columns
-from ELDAmwl.constants import CROSS, ANALOG
+from ELDAmwl.constants import ANALOG
+from ELDAmwl.constants import CROSS
 from ELDAmwl.constants import FAR_RANGE
 from ELDAmwl.constants import NEAR_RANGE
 from ELDAmwl.constants import PARALLEL
@@ -158,7 +159,9 @@ class Signals(Columns):
             result.scale_factor_shots = 1 / nc_ds.shots
         else:
             # if the detection mode is ANALOG
-            result.scale_factor_shots = xr.DataArray(np.ones(nc_ds.dims['time']),coords=[nc_ds.time], dims=['time'])
+            result.scale_factor_shots = xr.DataArray(np.ones(nc_ds.dims['time']), # noqa E501
+                                                     coords=[nc_ds.time],
+                                                     dims=['time'])
         result.scale_factor_shots.name = 'scale_factor_shots'
 
         result.pol_channel_conf = nc_ds.polarization_channel_configuration[idx_in_file].astype(int)  # noqa E501
@@ -228,7 +231,8 @@ class Signals(Columns):
 
     @property
     def range(self):
-        """xarray.DataArray(dimensions=time,level): range axis in m = distance from lidar"""
+        """xarray.DataArray(dimensions = time,level): range axis in m
+                                                    = distance from lidar"""
         return self.height * xr.ufuncs.cos(xr.ufuncs.radians(self.ds.laser_pointing_angle))  # noqa E501
 
     @property

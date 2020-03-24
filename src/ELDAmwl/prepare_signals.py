@@ -19,10 +19,11 @@ class GetCombinedSignal(BaseOperation):
         p = {'HR': HR}
         self._params = p
 
-    def run(self, ):
-        #todo: mache hier die rechnung
+    def run(self):
+        # todo: mache hier die rechnung
 
-        #todo: der aufruf von getcombination kommt nach Signal.from_depol_components
+        # todo: der aufruf von getcombination kommt nach
+        #  Signal.from_depol_components
         total_sig = Signals.from_depol_components(
             self.params.transm_sig,
             self.params.refl_sig,

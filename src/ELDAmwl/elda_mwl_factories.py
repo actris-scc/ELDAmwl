@@ -14,10 +14,9 @@ from ELDAmwl.database.db_functions import read_system_id
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.lidar_ratio_factories import LidarRatioParams
-from ELDAmwl.prepare_signals import CombineDepolComponents
+from ELDAmwl.log import logger
 from ELDAmwl.products import GeneralProductParams
 from ELDAmwl.signals import ElppData
-from ELDAmwl.log import logger
 
 import pandas as pd
 
@@ -44,13 +43,17 @@ class MeasurementParams(Params):
         self.measurement_params.system_id = read_system_id(self.meas_id)
         self.measurement_params.mwl_product_id = read_mwl_product_id(self.system_id)  # noqa E501
 
-        # product_list provides a link between product id and the parameter object of the product
+        # product_list provides a link between product id and
+        # the parameter object of the product
         self.measurement_params.product_list = Dict()
 
-        # the product_table provides a table-like overview of all individual products.
-        # it shall be used for search operations (e.g. for all extinction products or all basic products or..)
-        # the search operations are realized by filtering the DataFrame. they return the corresponding product_ids.
-        # Using the link between product id and parameter object from the product_list, the search operations
+        # the product_table provides a table-like overview of
+        # all individual products. It shall be used for search operations
+        # (e.g. for all extinction products or all basic products or..)
+        # the search operations are realized by filtering the DataFrame.
+        # they return the corresponding product_ids.
+        # Using the link between product id and parameter object from
+        # the product_list, the search operations
         # will return lists of product parameter objects.
         self.measurement_params.product_table = pd.DataFrame.from_dict(
             {'id': [],
@@ -72,7 +75,7 @@ class MeasurementParams(Params):
 
     def basic_products(self):
         prod_df = self.measurement_params.product_table
-        ids = prod_df['id'][prod_df.basic == True]
+        ids = prod_df['id'][prod_df.basic]
         if len(ids) > 0:
             result = []
             for idx in ids:
@@ -142,8 +145,6 @@ class RunELDAmwl(BaseOperation):
 
 #    def correct_molecular_transmission(self, p_param):
 #        for sig in self.data.signals(p_param.prod_id_str):
-
-
 
     def prepare_signals(self):
         for p_param in self.params.basic_products():

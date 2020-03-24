@@ -64,7 +64,8 @@ class Columns(object):
 
     @property
     def altitude(self):
-        """xarray.DataArray(dimensions=time,level): altitude axis in m a.s.l."""
+        """xarray.DataArray(dimensions=time,level):
+                altitude axis in m a.s.l."""
         return self.ds.altitude
 
     @property
