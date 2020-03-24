@@ -138,8 +138,8 @@ class RunELDAmwl(BaseOperation):
             total_sig.register(self.data, p_param)
 
     def normalize_by_shots(self, p_param):
-        for sig in self.data.signals(p_param.prod_id)[:]:
-            sig.normalize_by_shots
+        for sig in self.data.signals(p_param.prod_id_str):
+            sig.normalize_by_shots()
 
 
     def prepare_signals(self):
