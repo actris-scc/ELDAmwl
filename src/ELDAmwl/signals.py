@@ -35,13 +35,22 @@ class ElppData(object):
         self._header = None
 
     def read_nc_file(self, data_storage, p_param):
+        """ reading an ELPP file
+
+        Signals, cloud mask, and the header are read
+        from an ELPP file and put into the data_storage
+
+        Args:
+            data_storage (:obj:`DataStorage`): global data storage instance
+            p_param:
+
+        """
         # todo: check if scc version in query = current version
 
         nc_ds = xr.open_dataset(os.path.join(cfg.SIGNAL_PATH,
                                              p_param.general_params.elpp_file))
 
         self._cloud_mask = nc_ds.cloud_mask.astype(int)
-#        data_storage.products()[p_param.prod_id_str].cloud_mask = self._cloud_mask  # noqa E501
         # todo: check, if cloud mask already exists. if yes -> is it equal
         data_storage._data.cloud_mask = self._cloud_mask
 
@@ -63,6 +72,11 @@ class Header(object):
 
     @classmethod
     def from_nc_file(cls, nc_ds):
+        """reads header information from an ELPP file
+
+        Args:
+            nc_ds (xarray.Dataset): content of the ELPP file.
+        """
         result = cls()
         result._station_latitude = nc_ds.latitude
         result._station_longitude = nc_ds.longitude
@@ -80,6 +94,7 @@ class Header(object):
 
     @property
     def altitude(self):
+        """station altitude in m a.s.l."""
         return self._station_altitude
 
 

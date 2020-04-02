@@ -74,6 +74,12 @@ class MeasurementParams(Params):
                      'elpp_file': 'str'})
 
     def basic_products(self):
+        """list of parameters of all basic products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all basic products
+        """
         prod_df = self.measurement_params.product_table
         ids = prod_df['id'][prod_df.basic]
         if len(ids) > 0:
@@ -85,6 +91,18 @@ class MeasurementParams(Params):
             return None
 
     def read_product_list(self):
+        """Reads the parameter of all products of this measurement from database.
+
+        General information on the product (id, product type, wavelength,
+        is it a basic product,
+        to be calculated with high / low resolution, etc.) are
+        stored in the product_table (pandas.DataFrame).
+        This table is used for search
+        and filter operations.
+        The parameters (:class:`ProductParams`) itself are stored in
+        product_list (dict) from where
+        they can be assessed by their product_id_str (str).
+        """
         p_query = get_products_query(
             self.mwl_product_id,
             self.measurement_params.meas_id)
