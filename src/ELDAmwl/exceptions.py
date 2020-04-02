@@ -24,3 +24,16 @@ class NotFoundInStorage(Exception):
     """
     Raised if the requested data are not found in data storage
     """
+
+
+class DifferentCloudMaskExists(Exception):
+    """
+    Raised if a cloud_mask shall be written to the data storage
+    but the existing one is different from the new one
+    """
+
+class DifferentHeaderExists(Exception):
+    """
+    Raised if a header shall be written to the data storage
+    but the existing one is different from the new one
+    """

@@ -51,11 +51,10 @@ class ElppData(object):
                                              p_param.general_params.elpp_file))
 
         self._cloud_mask = nc_ds.cloud_mask.astype(int)
-        # todo: check, if cloud mask already exists. if yes -> is it equal
-        data_storage._data.cloud_mask = self._cloud_mask
+        data_storage.cloud_mask = self._cloud_mask
 
         self._header = Header.from_nc_file(nc_ds)
-        data_storage._data.header = self._header
+        data_storage.header = self._header
 
         for idx in range(nc_ds.dims['channel']):
             sig = Signals.from_nc_file(nc_ds, idx)
@@ -86,15 +85,17 @@ class Header(object):
 
     @property
     def latitude(self):
+        """measurement site latitude in degrees_north"""
         return self._station_latitude
 
     @property
     def longitude(self):
+        """measurement site longitude in degrees_east"""
         return self._station_longitude
 
     @property
     def altitude(self):
-        """station altitude in m a.s.l."""
+        """measurement site altitude in m a.s.l."""
         return self._station_altitude
 
 
@@ -236,7 +237,7 @@ class Signals(Columns):
         return result
 
     def register(self, storage, p_params):
-        storage._data.elpp_signals[p_params.prod_id_str][self.channel_id_str] = self  # noqa E501
+        storage.set_elpp_signals(p_params.prod_id_str, self)  # noqa E501
         p_params.general_params.signals.append(self.channel_id_str)
         p_params.add_signal_role(self)
 
