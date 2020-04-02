@@ -47,11 +47,11 @@ class BaseOperation(object):
     Base class of operations
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         """
         Initialize the params, input and result storage
         """
-        self._params = None
+        self.kwargs = kwargs
 
     @property
     def params(self):
