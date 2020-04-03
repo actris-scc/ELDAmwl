@@ -18,20 +18,20 @@ class DataStorage(object):
                            'cloud_mask': None,
                           })
 
-    def add_prepared_signal(self, prod_id_str, new_signal):
-        """add new prepared signal to storage"""
+    def set_prepared_signal(self, prod_id_str, new_signal):
+        """write new prepared signal to storage"""
 
         self.data.prepared_signals[prod_id_str][new_signal.channel_id_str] = new_signal
 
 
-    def add_elpp_signal(self, prod_id_str, new_signal):
-        """add new ELPP signal to storage"""
+    def set_elpp_signal(self, prod_id_str, new_signal):
+        """write new ELPP signal to storage"""
 
         self.data.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal
 
 
     def elpp_signals(self, prod_id_str):
-        """ELPP signals
+        """all ELPP signals of one product
 
         Those are the original signals of one basic product from
         the corresponding ELPP file.
@@ -55,6 +55,27 @@ class DataStorage(object):
         except AttributeError:
             logger.error('cannot find signals for product {0} '
                          'in data storage'.format(prod_id_str))
+            raise NotFoundInStorage
+
+    def elpp_signal(self, prod_id_str, ch_id_str):
+        """one ELPP signal
+
+        Args:
+            prod_id_str (str):  product id
+            ch_id_str (str):  channel id
+
+        Returns:
+            :obj:`Signals`: the requested ELPP signal
+
+        Raises:
+             NotFoundInStorage: if no signals for the given product id
+                are found in storage
+        """
+        try:
+            return self.data.elpp_signals[prod_id_str][ch_id_str]
+        except AttributeError:
+            logger.error('cannot find signal {} for product {0} '
+                         'in data storage'.format(ch_id_str, prod_id_str))
             raise NotFoundInStorage
 
     @property

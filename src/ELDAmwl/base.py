@@ -4,7 +4,7 @@
 .. moduleauthor:: Volker Jaenisch <volker.jaenisch@inqbus.de>
 
 """
-
+import xarray as xr
 
 class Params(object):
     """
@@ -30,3 +30,27 @@ class Params(object):
             raise(AttributeError('class {0} has no attribute {1}'.format(class_name, item)))  # noqa E501
 
 
+class DataPoint(object):
+    """a single data point
+    """
+
+    def __init__(self):
+        self.data = xr.Dataset()
+
+    @classmethod
+    def from_nc_file(cls, nc_ds, variable_name, idx_in_file):
+        result = cls()
+
+        stat_err_name = variable_name + '_statistical_error'
+        sys_err_name = variable_name + '_systematic_error'
+
+        value = nc_ds.data_vars[variable_name][idx_in_file]
+        stat_err = nc_ds.data_vars[stat_err_name][idx_in_file]
+        sys_err = nc_ds.data_vars[sys_err_name][idx_in_file]
+
+        dummy = xr.Dataset()
+        result.data = dummy.assign({'value': value,
+                                    'statistical_error': stat_err,
+                                    'systematic_error': sys_err,
+                                    })
+        return result

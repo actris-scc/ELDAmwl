@@ -3,6 +3,7 @@
 (combining depol comonents, ttempoaral integration, .."""
 from copy import deepcopy
 
+from ELDAmwl.constants import EBSC, KF
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
@@ -19,26 +20,29 @@ class DoPrepareSignals(BaseOperation):
     def combine_depol_components(self, p_param):
         if p_param.is_bsc_from_depol_components():
             pid = p_param.prod_id_str
-            transm_sig = self.data_storage.elpp_signals(pid)[p_param.transm_sig_id]  # noqa E501
-            refl_sig = self.data_storage.elpp_signals(pid)[p_param.refl_sig_id]  # noqa E501
+            transm_sig = self.data_storage.elpp_signal(pid, p_param.transm_sig_id)
+            refl_sig = self.data_storage.elpp_signal(pid, p_param.refl_sig_id)
             total_sig = Signals.from_depol_components(transm_sig, refl_sig)
-            # combine_signals = CombineDepolComponents()(
-            #     Dict({'transm_sig': transm_sig,
-            #           'refl_sig': refl_sig}))
-            # total_sig = combine_signals.run()
-            #total_sig.register(self.data, p_param)
+            self.data_storage.set_prepared_signal(p_param.prod_id_str, total_sig)
+            total_sig.register(p_param)
 
     def normalize_by_shots(self, p_param):
         pid = p_param.prod_id_str
         for sig in self.data_storage.elpp_signals(pid):
            new_sig = deepcopy(sig)
            new_sig.normalize_by_shots()
-           self.data_storage.add_prepared_signal(pid, new_sig)
+           self.data_storage.set_prepared_signal(pid, new_sig)
 
 
     def correct_molecular_transmission(self, p_param):
-       for sig in self.data.signals(p_param.prod_id_str):
-           pass
+#        if (p_param.product_type == EBSC ) and \
+#            (p_param.elast_bsc_method == KF):
+#            pass
+        pid = p_param.prod_id_str
+        for sig in self.data.signals(p_param.prod_id_str):
+           new_sig = deepcopy(sig)
+           new_sig.correct_for_mol_transmission()
+           self.data_storage.set_prepared_signal(pid, new_sig)
 
     def run(self):
         self.data_storage = self.kwargs['data_storage']
@@ -47,8 +51,7 @@ class DoPrepareSignals(BaseOperation):
         for p_param in products:
             self.normalize_by_shots(p_param)
             self.combine_depol_components(p_param)
-
-        logger.debug('do something')
+#            self.correct_molecular_transmission(p_param)
 
 
 class PrepareSignals(BaseOperationFactory):

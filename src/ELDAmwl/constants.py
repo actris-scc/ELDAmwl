@@ -69,3 +69,13 @@ MC = 0
 ASS = 1
 
 ERROR_METHODS = [MC, ASS]
+
+# ====== elast bsc methods ======
+KF = 0  # Klett-Fernald
+IT = 1  # iterative
+
+ELAST_BSC_METHODS = [KF, IT]
+
+# ====== fill values ======
+NC_FILL_BYTE = -127
+
