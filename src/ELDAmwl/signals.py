@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 """Classes for signals"""
 
-from addict import Dict
 from copy import deepcopy
-from math import sqrt
-
 from ELDAmwl.base import DataPoint
 from ELDAmwl.columns import Columns
-from ELDAmwl.constants import ANALOG, NC_FILL_BYTE
+from ELDAmwl.constants import ANALOG
 from ELDAmwl.constants import CROSS
 from ELDAmwl.constants import FAR_RANGE
+from ELDAmwl.constants import NC_FILL_BYTE
 from ELDAmwl.constants import NEAR_RANGE
 from ELDAmwl.constants import PARALLEL
 from ELDAmwl.constants import PARTICLE
@@ -17,7 +15,8 @@ from ELDAmwl.constants import REFLECTED
 from ELDAmwl.constants import TOTAL
 from ELDAmwl.constants import TRANSMITTED
 from ELDAmwl.constants import WATER_VAPOR
-from ELDAmwl.factory import BaseOperation, BaseOperationFactory
+from ELDAmwl.factory import BaseOperation
+from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.registry import registry
 
 import numpy as np
@@ -70,6 +69,7 @@ class ElppData(object):
 
         nc_ds.close()
 
+
 class DepolarizationCalibration(object):
     gain_factor = None
     gain_factor_correction = None
@@ -86,13 +86,13 @@ class DepolarizationCalibration(object):
             DataPoint.from_nc_file(nc_ds,
                                    'polarization_gain_factor_correction',
                                    pol_cal_idx)
-
-        #polarization_gain_factor_measurementid
-        #polarization_gain_factor_correction_start_datetime
-        #seconds since 1970-01-01T00:00:00Z
-        #polarization_gain_factor_correction_stop_datetime
-        #polarization_gain_factor_correction_start_datetime
-        #polarization_gain_factor_correction_stop_datetime
+        # todo: how to handle the following info? are they needed?
+        # polarization_gain_factor_measurementid
+        # polarization_gain_factor_correction_start_datetime
+        # seconds since 1970-01-01T00:00:00Z
+        # polarization_gain_factor_correction_stop_datetime
+        # polarization_gain_factor_correction_start_datetime
+        # polarization_gain_factor_correction_stop_datetime
         return result
 
 
@@ -174,18 +174,19 @@ class Signals(Columns):
 
         result.ds = nc_ds.range_corrected_signal[idx_in_file].to_dataset(name='data')  # noqa E501
         result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file]  # noqa E501
-        result.ds['qf'] = xr.DataArray(np.zeros((nc_ds.dims['time'],nc_ds.dims['level'])).astype(int),
-                                                     coords=[nc_ds.time, nc_ds.level],
-                                                     dims=['time', 'level'])
+        result.ds['qf'] = xr.DataArray(np.zeros((nc_ds.dims['time'],
+                                                 nc_ds.dims['level'])).astype(int),  # noqa E501
+                                       coords=[nc_ds.time, nc_ds.level],
+                                       dims=['time', 'level'])
         result.ds['qf'].attrs = {'long_name': 'quality_flag',
-                                 'flag_meanings': 'data_ok ' \
-                                        'negative_data ' \
-                                        'incomplete_overlap_not_correctable ' \
-                                        'above_max_altitude_range ' \
-                                        'cloud_contamination ' \
-                                        'above_Klett_reference_height ' \
-                                        'depol_ratio_larger_100% ' \
-                                        'backscatter_ratio_below_required_min_value',
+                                 'flag_meanings': 'data_ok '
+                                        'negative_data '
+                                        'incomplete_overlap_not_correctable '
+                                        'above_max_altitude_range '
+                                        'cloud_contamination '
+                                        'above_Klett_reference_height '
+                                        'depol_ratio_larger_100% '
+                                        'backscatter_ratio_below_required_min_value',  # noqa E501
                                  'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64],
                                  'valid_range': [0, 107],
                                  'units': '1',
@@ -238,13 +239,18 @@ class Signals(Columns):
         result.pol_channel_conf = nc_ds.polarization_channel_configuration[idx_in_file].astype(int)  # noqa E501
         result.pol_channel_geometry = nc_ds.polarization_channel_geometry[idx_in_file].astype(int)  # noqa E501
 
-        result.g = DataPoint.from_nc_file(nc_ds, 'polarization_crosstalk_parameter_g', idx_in_file)
-        result.h = DataPoint.from_nc_file(nc_ds, 'polarization_crosstalk_parameter_h', idx_in_file)
+        result.g = DataPoint.from_nc_file(nc_ds,
+                                          'polarization_crosstalk_parameter_g',
+                                          idx_in_file)
+        result.h = DataPoint.from_nc_file(nc_ds,
+                                          'polarization_crosstalk_parameter_h',
+                                          idx_in_file)
 
         if 'depolarization_calibration_index' in nc_ds:
-            if not nc_ds.depolarization_calibration_index[idx_in_file].isnull():
-                pol_calibr_idx = int(nc_ds.depolarization_calibration_index[idx_in_file])
-                result.pol_calibr = DepolarizationCalibration.from_nc_file(nc_ds, pol_calibr_idx)
+            if not nc_ds.depolarization_calibration_index[idx_in_file].isnull():  # noqa E501
+                pol_calibr_idx = int(nc_ds.depolarization_calibration_index[idx_in_file])  # noqa E501
+                result.pol_calibr = DepolarizationCalibration.from_nc_file(nc_ds,  # noqa E501
+                                                                           pol_calibr_idx)  # noqa E501
 
         return result
 
@@ -271,19 +277,20 @@ class Signals(Columns):
                         'GR': refl_sig.g.data,
                         'HT': transm_sig.h.data,
                         'GT': transm_sig.g.data,
-                        'gain_factor': refl_sig.pol_calibr.gain_factor.data,
-                        'gain_factor_correction': refl_sig.pol_calibr.gain_factor_correction.data,
+                        'gain_factor': refl_sig.pol_calibr.gain_factor.data,  # noqa E501
+                        'gain_factor_correction': refl_sig.pol_calibr.gain_factor_correction.data,  # noqa E501
                         }
 
         comb_depol_signals = CombineDepolComponents()(
             transm_sig=transm_sig.ds,
             refl_sig=refl_sig.ds,
-            depol_params=depol_params
+            depol_params=depol_params,
         )
         result.ds = comb_depol_signals.run()
 
-
-        result.channel_id = xr.concat([transm_sig.channel_id,refl_sig.channel_id],dim='nc')
+        result.channel_id = xr.concat([transm_sig.channel_id,
+                                       refl_sig.channel_id],
+                                      dim='nc')
         result.pol_channel_conf.values = TOTAL
         result.pol_channel_geometry.values = TRANSMITTED + REFLECTED
 
@@ -306,8 +313,8 @@ class Signals(Columns):
                          self.mol_trasm_at_emission_wl / \
                          self.mol_trasm_at_detection_wl
         self.ds['data'] = self.ds['data'] / \
-                          self.mol_trasm_at_emission_wl / \
-                          self.mol_trasm_at_detection_wl
+            self.mol_trasm_at_emission_wl /\
+            self.mol_trasm_at_detection_wl
 
     @property
     def range(self):
@@ -379,7 +386,7 @@ class GetCombinedSignal(BaseOperation):
             err_etaS = 0
 
         K = float(calibr_params['gain_factor_correction'].value)
-        err_K = float(calibr_params['gain_factor_correction'].statistical_error)
+        err_K = float(calibr_params['gain_factor_correction'].statistical_error)  # noqa E501
         if np.isnan(err_K):
             err_K = 0
 
@@ -393,15 +400,13 @@ class GetCombinedSignal(BaseOperation):
 
         result = deepcopy(transm_sig)
         result['data'] = (factor * transm_sig.data -
-                          HT * refl_sig.data ) / denom
+                          HT * refl_sig.data) / denom
         result['err'] = np.sqrt(np.square(HT * refl_sig.err) +
-                        np.square(factor * transm_sig.err) +
-                        np.square(HR / K * transm_sig.data * err_etaS) +
-                        np.square(HR / K / K * transm_sig.data * err_K)) \
-                        /denom
+                                np.square(factor * transm_sig.err) +
+                                np.square(HR / K * transm_sig.data * err_etaS) +  # noqa E501
+                                np.square(HR / K / K * transm_sig.data * err_K)) / denom  # noqa E501
 
         result['qf'] = transm_sig.qf | refl_sig.qf
-
 
         return result
 
@@ -448,4 +453,3 @@ class CombineDepolComponents(BaseOperationFactory):
 registry.register_class(CombineDepolComponents,
                         GetCombinedSignal.__class__.__name__,
                         GetCombinedSignal)
-

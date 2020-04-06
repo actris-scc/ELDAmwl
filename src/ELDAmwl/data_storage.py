@@ -2,7 +2,9 @@
 """ELDAmwl factories"""
 
 from addict import Dict
-from ELDAmwl.exceptions import NotFoundInStorage, DifferentCloudMaskExists, DifferentHeaderExists
+from ELDAmwl.exceptions import DifferentCloudMaskExists
+from ELDAmwl.exceptions import DifferentHeaderExists
+from ELDAmwl.exceptions import NotFoundInStorage
 from ELDAmwl.log import logger
 
 
@@ -12,23 +14,21 @@ class DataStorage(object):
     """
     def __init__(self):
         self.data = Dict({'elpp_signals': Dict(),
-                           'prepared_signals': Dict(),
-                           'basic_products': Dict(),
-                           'header': None,
-                           'cloud_mask': None,
+                          'prepared_signals': Dict(),
+                          'basic_products': Dict(),
+                          'header': None,
+                          'cloud_mask': None,
                           })
 
     def set_prepared_signal(self, prod_id_str, new_signal):
         """write new prepared signal to storage"""
 
-        self.data.prepared_signals[prod_id_str][new_signal.channel_id_str] = new_signal
-
+        self.data.prepared_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_elpp_signal(self, prod_id_str, new_signal):
         """write new ELPP signal to storage"""
 
-        self.data.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal
-
+        self.data.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def elpp_signals(self, prod_id_str):
         """all ELPP signals of one product
@@ -74,7 +74,7 @@ class DataStorage(object):
         try:
             return self.data.elpp_signals[prod_id_str][ch_id_str]
         except AttributeError:
-            logger.error('cannot find signal {} for product {0} '
+            logger.error('cannot find signal {0} for product {1} '
                          'in data storage'.format(ch_id_str, prod_id_str))
             raise NotFoundInStorage
 

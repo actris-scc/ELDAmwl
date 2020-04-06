@@ -31,8 +31,9 @@ meas_id = '20181017oh00'
 #   380: Ext 532
 #   598: mwl (378 + 379 + 328)
 
+
 def main():
-    #ext_id = 377
+    # ext_id = 377
 
     create_logger(meas_id)
 
@@ -49,5 +50,6 @@ def main():
 
     logger.info('the end')
 
-if __name__ =='__main__':
+
+if __name__ == '__main__':
     main()

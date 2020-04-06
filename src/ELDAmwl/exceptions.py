@@ -32,6 +32,7 @@ class DifferentCloudMaskExists(Exception):
     but the existing one is different from the new one
     """
 
+
 class DifferentHeaderExists(Exception):
     """
     Raised if a header shall be written to the data storage

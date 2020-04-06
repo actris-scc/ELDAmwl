@@ -78,4 +78,3 @@ ELAST_BSC_METHODS = [KF, IT]
 
 # ====== fill values ======
 NC_FILL_BYTE = -127
-
