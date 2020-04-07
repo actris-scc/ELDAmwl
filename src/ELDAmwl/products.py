@@ -3,7 +3,7 @@
 
 from addict import Dict
 from ELDAmwl.base import Params
-from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES
+from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, EXT, MERGE_PRODUCT_USE_CASES
 from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import RBSC
 from ELDAmwl.database.db_functions import get_general_params_query
@@ -28,6 +28,10 @@ class ProductParams(Params):
     @property
     def prod_id_str(self):
         return str(self.general_params.prod_id)
+
+    @property
+    def error_method(self):
+        return self.general_params.error_method
 
     def assign_to_product_list(self, measurement_params):
         gen_params = self.general_params
@@ -56,7 +60,25 @@ class ProductParams(Params):
 
     def is_bsc_from_depol_components(self):
         if self.general_params.product_type in [RBSC, EBSC]:
+            # todo: put info on COMBINE_DEPOL_USE_CASES in db table
             if self.general_params.usecase in COMBINE_DEPOL_USE_CASES[self.general_params.product_type]:  # noqa E501
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    # todo: read error_method from db
+    # def error_from_mc(self):
+    #     if self.general_params.error_method == MC:
+    #         return True
+    #     else:
+    #         return False
+
+    def includes_product_merging(self):
+        if self.general_params.product_type in [EXT, RBSC, EBSC]:
+            # todo: put info on MERGE_PRODUCT_USE_CASES in db table
+            if self.general_params.usecase in MERGE_PRODUCT_USE_CASES[self.general_params.product_type]:  # noqa E501
                 return True
             else:
                 return False

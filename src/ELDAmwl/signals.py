@@ -36,9 +36,9 @@ class ElppData(object):
     """
 
     def __init__(self):
-        self._signals = None
-        self._cloud_mask = None
-        self._header = None
+        self.signals = None
+        self.cloud_mask = None
+        self.header = None
 
     def read_nc_file(self, data_storage, p_param):
         """ reading an ELPP file
@@ -56,11 +56,11 @@ class ElppData(object):
         nc_ds = xr.open_dataset(os.path.join(cfg.SIGNAL_PATH,
                                              p_param.general_params.elpp_file))
 
-        self._cloud_mask = nc_ds.cloud_mask.astype(int)
-        data_storage.cloud_mask = self._cloud_mask
+        self.cloud_mask = nc_ds.cloud_mask.astype(int)
+        data_storage.cloud_mask = self.cloud_mask
 
-        self._header = Header.from_nc_file(nc_ds)
-        data_storage.header = self._header
+        self.header = Header.from_nc_file(nc_ds)
+        data_storage.header = self.header
 
         for idx in range(nc_ds.dims['channel']):
             sig = Signals.from_nc_file(nc_ds, idx)
@@ -100,6 +100,7 @@ class Header(object):
     station_latitude = np.nan
     station_longitude = np.nan
     station_altitude = np.nan
+    # todo: read further info about institution, PI etc.
 
     @classmethod
     def from_nc_file(cls, nc_ds):
@@ -143,8 +144,6 @@ class Signals(Columns):
 
     """
 
-    #    def __init__(self):
-    #        super(Signals, self).__init__()
     emission_wavelength = np.nan
     detection_wavelength = np.nan
     channel_id = np.nan
@@ -175,7 +174,7 @@ class Signals(Columns):
         result.ds = nc_ds.range_corrected_signal[idx_in_file].to_dataset(name='data')  # noqa E501
         result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file]  # noqa E501
         result.ds['qf'] = xr.DataArray(np.zeros((nc_ds.dims['time'],
-                                                 nc_ds.dims['level'])).astype(int),  # noqa E501
+                                                 nc_ds.dims['level'])).astype(np.int8),  # noqa E501
                                        coords=[nc_ds.time, nc_ds.level],
                                        dims=['time', 'level'])
         result.ds['qf'].attrs = {'long_name': 'quality_flag',
@@ -281,12 +280,11 @@ class Signals(Columns):
                         'gain_factor_correction': refl_sig.pol_calibr.gain_factor_correction.data,  # noqa E501
                         }
 
-        comb_depol_signals = CombineDepolComponents()(
+        result.ds = CombineDepolComponents()(
             transm_sig=transm_sig.ds,
             refl_sig=refl_sig.ds,
             depol_params=depol_params,
-        )
-        result.ds = comb_depol_signals.run()
+        ).run()
 
         result.channel_id = xr.concat([transm_sig.channel_id,
                                        refl_sig.channel_id],
@@ -309,16 +307,16 @@ class Signals(Columns):
         self.ds['data'] = self.ds['data'] * self.scale_factor_shots
 
     def correct_for_mol_transmission(self):
-        self.ds['err'] = self.ds['err'] / \
-                         self.mol_trasm_at_emission_wl / \
-                         self.mol_trasm_at_detection_wl
         self.ds['data'] = self.ds['data'] / \
-            self.mol_trasm_at_emission_wl /\
-            self.mol_trasm_at_detection_wl
+            self.ds.mol_trasm_at_emission_wl /\
+            self.ds.mol_trasm_at_detection_wl
+        self.ds['err'] = self.ds['err'] / \
+                         self.ds.mol_trasm_at_emission_wl / \
+                         self.ds.mol_trasm_at_detection_wl
 
     @property
     def range(self):
-        """xarray.DataArray(dimensions = time,level): range axis in m
+        """xarray.DataArray(dimensions = time, level): range axis in m
                                                     = distance from lidar"""
         return self.height * xr.ufuncs.cos(xr.ufuncs.radians(self.ds.laser_pointing_angle))  # noqa E501
 

@@ -11,11 +11,17 @@ from ELDAmwl.log import logger
 class DataStorage(object):
     """ global data storage
 
+    All signals, intermediate products, products etc. are stored in the central :obj:`Dict`
+    of this class. The access to the stored data (reading and writing) must occur exclusively
+    via the implemented properties and methods. This restriction allows to implement e.g.
+    intelligent memory caching in future (if needed).
+
     """
     def __init__(self):
         self.data = Dict({'elpp_signals': Dict(),
                           'prepared_signals': Dict(),
-                          'basic_products': Dict(),
+                          'basic_products_auto_smooth': Dict(),
+                          'basic_products_common_smooth': Dict(),
                           'header': None,
                           'cloud_mask': None,
                           })
@@ -29,6 +35,11 @@ class DataStorage(object):
         """write new ELPP signal to storage"""
 
         self.data.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
+
+    def set_basic_product_auto_smooth(self, prod_id_str, new_product):
+        """write new auto smoothed basic product to storage
+        """
+        self.data.elpp_signals[prod_id_str] = new_product  # noqa E501
 
     def elpp_signals(self, prod_id_str):
         """all ELPP signals of one product
@@ -68,11 +79,36 @@ class DataStorage(object):
             :obj:`Signals`: the requested ELPP signal
 
         Raises:
-             NotFoundInStorage: if no signals for the given product id
-                are found in storage
+             NotFoundInStorage: if no entry for the given product id
+                and signal id was found in storage
         """
         try:
             return self.data.elpp_signals[prod_id_str][ch_id_str]
+        except AttributeError:
+            logger.error('cannot find signal {0} for product {1} '
+                         'in data storage'.format(ch_id_str, prod_id_str))
+            raise NotFoundInStorage
+
+    def prepared_signal(self, prod_id_str, ch_id_str):
+        """one prepared signal
+
+        The preparation includes normalization by number of laser shots,
+        combination of depolarization components(where necessary),
+        and correction for molecular transmission (except for KF retrieval).
+
+        Args:
+            prod_id_str (str):  product id
+            ch_id_str (str):  channel id
+
+        Returns:
+            :obj:`Signals`: the requested prepared signal
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and signal id was found in storage
+        """
+        try:
+            return self.data.prepared_signals[prod_id_str][ch_id_str]
         except AttributeError:
             logger.error('cannot find signal {0} for product {1} '
                          'in data storage'.format(ch_id_str, prod_id_str))

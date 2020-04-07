@@ -112,7 +112,7 @@ def read_extinction_params(product_id):
         .filter(ExtinctionOption._product_ID == product_id)
 
     if options.count() == 1:
-        if options('_overlap_file_ID') == -1:
+        if options.value('_overlap_file_ID') == -1:
             overlap_correction = False
             overlap_file = None
         else:
@@ -122,15 +122,16 @@ def read_extinction_params(product_id):
                 .filter(ExtinctionOption._product_ID == product_id)
             if o_file.count() == 1:
                 overlap_correction = True
-                overlap_file = o_file('filename')
+                overlap_file = o_file.value('filename')
             else:
                 logger.error('cannot find overlap file with id {0} in db'
                              .format(options('_overlap_file_ID')))
 
-        result = {'angstroem': options.value('angstroem'),
-                  'python_classname': options.value('python_classname'),
+        result = {'angstroem': float(options.value('angstroem')),
+                  'ext_method': options.value('_ext_method_ID'),
                   'overlap_correction': overlap_correction,
                   'overlap_file': overlap_file,
+                  'error_method': options.value('_error_method_ID')
                   }
         return result
     else:

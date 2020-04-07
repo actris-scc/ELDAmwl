@@ -13,6 +13,7 @@ from ELDAmwl.database.db_functions import read_mwl_product_id
 from ELDAmwl.database.db_functions import read_system_id
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.factory import BaseOperation
+from ELDAmwl.get_basic_products import GetBasicProducts
 from ELDAmwl.lidar_ratio_factories import LidarRatioParams
 from ELDAmwl.log import logger
 from ELDAmwl.prepare_signals import PrepareSignals
@@ -83,13 +84,39 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
         ids = prod_df['id'][prod_df.basic]
-        if len(ids) > 0:
+        return self.filtered_list(ids)
+
+    def extinction_products(self):
+        """list of parameters of all extinction products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all extinction products
+        """
+        prod_df = self.measurement_params.product_table
+        ids = prod_df['id'][prod_df.type == EXT]
+        return self.filtered_list(ids)
+
+    def filtered_list(self, filtered_ids):
+        """ converts a filtered subset of the product_table
+        into list of product parameter instances`
+
+        Args:
+            filtered_ids: filtered subset of the product_table (pd.DataFrame)
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters corresponding to the filtered_ids
+
+        """
+        if len(filtered_ids) > 0:
             result = []
-            for idx in ids:
+            for idx in filtered_ids:
                 result.append(self.measurement_params.product_list[idx])
             return result
         else:
             return None
+
 
     def read_product_list(self):
         """Reads the parameter of all products of this measurement from database.
@@ -139,25 +166,30 @@ class RunELDAmwl(BaseOperation):
         self._data = DataStorage()
 
     def read_tasks(self):
+        logger.info('read tasks from db')
         self.params.read_product_list()
         # todo: check params (e.g. whether all
         #  time and vert. resolutions are equal)
 
     def read_elpp_data(self):
+        logger.info('read ELPP files')
         for p_param in self.params.basic_products():
             elpp_data = ElppData()
             elpp_data.read_nc_file(self.data, p_param)
 
     def prepare_signals(self):
+        logger.info('prepare signals')
         prepare_signals = PrepareSignals()(
             data_storage=self.data,
             products=self.params.basic_products(),
-            )
-        prepare_signals.run()
+            ).run()
 
     def get_basic_products(self):
-        for p_param in self.params.basic_products():
-            logger.info('calc basic product ')
+        logger.info('calc basic products ')
+        get_basic_products = GetBasicProducts()(
+            data_storage=self.data,
+            product_params=self.params,
+            ).run()
 
     @property
     def data(self):

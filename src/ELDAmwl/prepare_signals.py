@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Classes for preparation of signals
-(combining depol comonents, ttempoaral integration, .."""
+(combining depol components, temporal integration, .."""
 from copy import deepcopy
-from ELDAmwl.constants import EBSC
+from ELDAmwl.constants import EBSC, EXT
 from ELDAmwl.constants import KF
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
@@ -43,7 +43,7 @@ class DoPrepareSignals(BaseOperation):
         if (p_param.product_type == EBSC) and (p_param.elast_bsc_method == KF):
             pass
         pid = p_param.prod_id_str
-        for sig in self.data.signals(p_param.prod_id_str):
+        for sig in self.data_storage.elpp_signals(pid):
             new_sig = deepcopy(sig)
             new_sig.correct_for_mol_transmission()
             self.data_storage.set_prepared_signal(pid, new_sig)
@@ -55,7 +55,10 @@ class DoPrepareSignals(BaseOperation):
         for p_param in products:
             self.normalize_by_shots(p_param)
             self.combine_depol_components(p_param)
-#            self.correct_molecular_transmission(p_param)
+            self.correct_molecular_transmission(p_param)
+            if p_param.product_type == EXT:
+                # todo: calc log
+                pass
 
 
 class PrepareSignals(BaseOperationFactory):

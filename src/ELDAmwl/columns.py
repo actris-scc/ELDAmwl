@@ -1,16 +1,25 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
 
+import numpy as np
 import xarray as xr
 
 
 class Columns(object):
     """
-    base column class (2 dimensional)
+    base column class (2 dimensional: (time, level))
     """
 
     def __init__(self):
-        self.ds = xr.Dataset()
+        self.ds = xr.Dataset(
+            {'data': (['time','level'], np.empty((0,0))),
+             'err': (['time', 'level'], np.empty((0, 0))),
+             'qf': (['time', 'level'], np.empty((0, 0), dtype=np.int8)),
+             'time_bounds': (['time', 'nv'], np.empty((0, 0), dtype=np.datetime64)),
+             },
+        coords={'time': (['time'], np.empty((0),dtype=np.datetime64)),
+                'level': (['level'],np.empty((0),dtype=np.int64)),
+                'altitude': (['time','level'],np.empty((0,0)))})
         self.station_altitude = None
 
     def angle_to_time_dependent_var(self, angle_var, data_var):
@@ -59,8 +68,8 @@ class Columns(object):
         return self._relative_error()
 
     @property
-    def cm(self):
-        return self.ds.cm
+    def qf(self):
+        return self.ds.qf
 
     @property
     def altitude(self):
