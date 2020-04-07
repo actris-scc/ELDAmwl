@@ -117,7 +117,6 @@ class MeasurementParams(Params):
         else:
             return None
 
-
     def read_product_list(self):
         """Reads the parameter of all products of this measurement from database.
 
@@ -179,14 +178,14 @@ class RunELDAmwl(BaseOperation):
 
     def prepare_signals(self):
         logger.info('prepare signals')
-        prepare_signals = PrepareSignals()(
+        PrepareSignals()(
             data_storage=self.data,
             products=self.params.basic_products(),
             ).run()
 
     def get_basic_products(self):
         logger.info('calc basic products ')
-        get_basic_products = GetBasicProducts()(
+        GetBasicProducts()(
             data_storage=self.data,
             product_params=self.params,
             ).run()

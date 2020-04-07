@@ -2,17 +2,20 @@
 """Classes for extinction calculation"""
 from addict import Dict
 from copy import deepcopy
-
-from ELDAmwl.constants import NC_FILL_STR, MC
-from ELDAmwl.database.db_functions import read_extinction_algorithm, read_extinction_params
+from ELDAmwl.constants import MC
+from ELDAmwl.constants import NC_FILL_STR
+from ELDAmwl.database.db_functions import read_extinction_algorithm
+from ELDAmwl.database.db_functions import read_extinction_params
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.registry import registry
+
 import numpy as np
 import xarray as xr
+
 
 class ExtinctionParams(ProductParams):
 
@@ -47,6 +50,7 @@ class ExtinctionParams(ProductParams):
             logger.debug('channel {0} is no Raman signal'.
                          format(signal.channel_id_str))
 
+
 class Extinctions(Products):
     """
     time series of extinction profiles
@@ -55,13 +59,15 @@ class Extinctions(Products):
     def from_signal(cls, signal, p_params):
         result = cls()
 
+        ae_da = xr.DataArray(p_params.angstroem,
+                             name='angstroem_exponent',
+                             attrs={'long_name': 'Angstroem exponent '
+                                                 'for the extinction '
+                                                 'retrieval'})
+
         ext_params = Dict({'detection_wavelength': signal.detection_wavelength,
                            'emission_wavelength': signal.emission_wavelength,
-                           'angstroem': xr.DataArray(p_params.angstroem,
-                                                     name='angstroem_exponent',
-                                                     attrs={'long_name':
-                                                                'Angstroem exponent '
-                                                                'for the extinction retrieval'})})
+                           'angstroem': ae_da})
         sig_slope = SignalSlope()(signal=signal.ds).run()
         result.ds = SlopeToExtinction()(slope=sig_slope,
                                         ext_params=ext_params).run()
@@ -115,7 +121,6 @@ class SlopeToExtinctionDefault(BaseOperation):
         return result
 
 
-
 class ExtinctionFactory(BaseOperationFactory):
     """
 
@@ -128,7 +133,6 @@ class ExtinctionFactory(BaseOperationFactory):
         assert 'ext_param' in kwargs
         res = super(ExtinctionFactory, self).__call__(**kwargs)
         return res
-
 
     def get_classname_from_db(self):
         """
@@ -150,18 +154,18 @@ class ExtinctionFactoryDefault(BaseOperation):
         self.param = self.kwargs['ext_param']
 
         if not self.param.includes_product_merging():
-            raman_sig = self.data_storage.prepared_signal(self.param.prod_id_str,
-                                                          self.param.raman_sig_id)
+            raman_sig = self.data_storage.prepared_signal(
+                self.param.prod_id_str,
+                self.param.raman_sig_id)
             result = Extinctions.from_signal(raman_sig, self.param)
         else:
-            #result = Extinctions.from_merged_signals()
+            # result = Extinctions.from_merged_signals()
             pass
 
         if self.param.error_method == MC:
             pass
 
         return result
-
 
 
 class SignalSlope(BaseOperationFactory):
@@ -196,7 +200,6 @@ class WeightedLinFit(BaseOperation):
         LinFit(True)
 
 
-
 class NonWeightedLinFit(BaseOperation):
     """
 
@@ -219,4 +222,3 @@ registry.register_class(ExtinctionFactory,
 registry.register_class(SlopeToExtinction,
                         SlopeToExtinctionDefault.__class__.__name__,
                         SlopeToExtinctionDefault)
-

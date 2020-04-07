@@ -11,9 +11,11 @@ from ELDAmwl.log import logger
 class DataStorage(object):
     """ global data storage
 
-    All signals, intermediate products, products etc. are stored in the central :obj:`Dict`
-    of this class. The access to the stored data (reading and writing) must occur exclusively
-    via the implemented properties and methods. This restriction allows to implement e.g.
+    All signals, intermediate products, products etc. are stored
+    in the central :obj:`Dict` of this class.
+    The access to the stored data (reading and writing) must
+    occur exclusively via the implemented properties and methods.
+    This restriction allows to implement e.g.
     intelligent memory caching in future (if needed).
 
     """

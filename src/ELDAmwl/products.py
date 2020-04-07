@@ -3,8 +3,10 @@
 
 from addict import Dict
 from ELDAmwl.base import Params
-from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, EXT, MERGE_PRODUCT_USE_CASES
+from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES
 from ELDAmwl.constants import EBSC
+from ELDAmwl.constants import EXT
+from ELDAmwl.constants import MERGE_PRODUCT_USE_CASES
 from ELDAmwl.constants import RBSC
 from ELDAmwl.database.db_functions import get_general_params_query
 from ELDAmwl.log import logger

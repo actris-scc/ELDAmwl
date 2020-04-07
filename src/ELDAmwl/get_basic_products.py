@@ -23,7 +23,9 @@ class GetBasicProductsDefault(BaseOperation):
                 data_storage=self.data_storage,
                 ext_param=ext_param,
             ).get_product()
-            self.data_storage.set_basic_product_auto_smooth(ext_param.prod_id_str, extinction)
+            self.data_storage.set_basic_product_auto_smooth(
+                ext_param.prod_id_str, extinction)
+
 
 class GetBasicProducts(BaseOperationFactory):
     """

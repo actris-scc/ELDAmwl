@@ -12,14 +12,15 @@ class Columns(object):
 
     def __init__(self):
         self.ds = xr.Dataset(
-            {'data': (['time','level'], np.empty((0,0))),
+            {'data': (['time', 'level'], np.empty((0, 0))),
              'err': (['time', 'level'], np.empty((0, 0))),
              'qf': (['time', 'level'], np.empty((0, 0), dtype=np.int8)),
-             'time_bounds': (['time', 'nv'], np.empty((0, 0), dtype=np.datetime64)),
+             'time_bounds': (['time', 'nv'],
+                             np.empty((0, 0), dtype=np.datetime64)),
              },
-        coords={'time': (['time'], np.empty((0),dtype=np.datetime64)),
-                'level': (['level'],np.empty((0),dtype=np.int64)),
-                'altitude': (['time','level'],np.empty((0,0)))})
+            coords={'time': (['time'], np.empty((0), dtype=np.datetime64)),
+                    'level': (['level'], np.empty((0), dtype=np.int64)),
+                    'altitude': (['time', 'level'], np.empty((0, 0)))})
         self.station_altitude = None
 
     def angle_to_time_dependent_var(self, angle_var, data_var):

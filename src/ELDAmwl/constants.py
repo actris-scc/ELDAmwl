@@ -29,8 +29,8 @@ COMBINE_DEPOL_USE_CASES = {RBSC: [7, 9, 10, 11, 12, 18, 17],
                            EBSC: [3, 4, 7, 8]}
 
 MERGE_PRODUCT_USE_CASES = {EXT: [2, 4, 5],
-                             RBSC: [2, 4, 6, 12, 13, 14, 15, 16, 19],
-                             EBSC: [2, 5, 6, 9]}
+                           RBSC: [2, 4, 6, 12, 13, 14, 15, 16, 19],
+                           EBSC: [2, 5, 6, 9]}
 
 # ====== signal detection types ======
 ANALOG = 1
@@ -84,4 +84,3 @@ ELAST_BSC_METHODS = [KF, IT]
 # ====== fill values ======
 NC_FILL_BYTE = -127
 NC_FILL_STR = ''
-

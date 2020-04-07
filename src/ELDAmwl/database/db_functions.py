@@ -131,7 +131,7 @@ def read_extinction_params(product_id):
                   'ext_method': options.value('_ext_method_ID'),
                   'overlap_correction': overlap_correction,
                   'overlap_file': overlap_file,
-                  'error_method': options.value('_error_method_ID')
+                  'error_method': options.value('_error_method_ID'),
                   }
         return result
     else:

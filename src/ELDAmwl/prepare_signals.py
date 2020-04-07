@@ -2,13 +2,16 @@
 """Classes for preparation of signals
 (combining depol components, temporal integration, .."""
 from copy import deepcopy
-from ELDAmwl.constants import EBSC, EXT, RBSC
+from ELDAmwl.constants import EBSC
+from ELDAmwl.constants import EXT
 from ELDAmwl.constants import KF
+from ELDAmwl.constants import RBSC
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
 from ELDAmwl.registry import registry
 from ELDAmwl.signals import Signals
+
 
 class PrepareBscSignalsDefault(BaseOperation):
     """prepare ELPP signals for extinction retrieval with the steps:
@@ -22,16 +25,17 @@ class PrepareBscSignalsDefault(BaseOperation):
     bsc_param = None
 
     def combine_depol_components(self, p_param):
-            pid = p_param.prod_id_str
-            transm_sig = self.data_storage.prepared_signal(pid,
+        logger.debug('PrepareBscSignalsDefault.combine_depol_components')
+        pid = p_param.prod_id_str
+        transm_sig = self.data_storage.prepared_signal(pid,
                                                        p_param.transm_sig_id)
-            refl_sig = self.data_storage.prepared_signal(pid,
+        refl_sig = self.data_storage.prepared_signal(pid,
                                                      p_param.refl_sig_id)
-            total_sig = Signals.from_depol_components(transm_sig,
-                                                      refl_sig)
-            self.data_storage.set_prepared_signal(p_param.prod_id_str,
-                                                  total_sig)
-            total_sig.register(p_param)
+        total_sig = Signals.from_depol_components(transm_sig,
+                                                  refl_sig)
+        self.data_storage.set_prepared_signal(p_param.prod_id_str,
+                                              total_sig)
+        total_sig.register(p_param)
 
     def run(self):
         self.data_storage = self.kwargs['data_storage']
@@ -39,19 +43,18 @@ class PrepareBscSignalsDefault(BaseOperation):
 
         pid = self.bsc_param.prod_id_str
         for sig in self.data_storage.elpp_signals(pid):
-                new_sig = deepcopy(sig)
-                new_sig.normalize_by_shots()
-                self.data_storage.set_prepared_signal(pid, new_sig)
+            new_sig = deepcopy(sig)
+            new_sig.normalize_by_shots()
+            self.data_storage.set_prepared_signal(pid, new_sig)
         if self.bsc_param.is_bsc_from_depol_components():
             self.combine_depol_components(self.bsc_param)
 
         if (self.bsc_param.product_type == EBSC) and \
-            (self.bsc_param.elast_bsc_method == KF):
+                (self.bsc_param.elast_bsc_method == KF):
             pass
         else:
             for sig in self.data_storage.prepared_signals(pid):
                 sig.correct_for_mol_transmission()
-
 
 
 class PrepareBscSignals(BaseOperationFactory):
@@ -101,6 +104,7 @@ class PrepareExtSignalsDefault(BaseOperation):
 
                 self.data_storage.set_prepared_signal(pid, new_sig)
 
+
 class PrepareExtSignals(BaseOperationFactory):
     """
     Args:
@@ -142,9 +146,9 @@ class PrepareSignalsDefault(BaseOperation):
 
         for p_param in products:
             if p_param.product_type in PREP_SIG_CLASSES:
-                prep_sig = PREP_SIG_CLASSES[p_param.product_type]()\
-                    (data_storage=self.data_storage,
-                     prod_param=p_param)\
+                PREP_SIG_CLASSES[p_param.product_type]()(
+                    data_storage=self.data_storage,
+                    prod_param=p_param)\
                     .run()
 
 
