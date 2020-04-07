@@ -89,6 +89,32 @@ class DataStorage(object):
                          'in data storage'.format(ch_id_str, prod_id_str))
             raise NotFoundInStorage
 
+    def prepared_signals(self, prod_id_str):
+        """all prepared signals of one product
+
+        Those are the prepared signals of one basic product .
+
+        Args:
+            prod_id_str (str):  product id
+
+        Returns:
+            :obj:`list` of :obj:`Signals`: list of all signals related
+                                            to the product id
+
+        Raises:
+             NotFoundInStorage: if no signals for the given product id
+                are found in storage
+        """
+        try:
+            result = []
+            for ch_id in self.data.prepared_signals[prod_id_str]:
+                result.append(self.data.prepared_signals[prod_id_str][ch_id])
+            return result
+        except AttributeError:
+            logger.error('cannot find signals for product {0} '
+                         'in data storage'.format(prod_id_str))
+            raise NotFoundInStorage
+
     def prepared_signal(self, prod_id_str, ch_id_str):
         """one prepared signal
 

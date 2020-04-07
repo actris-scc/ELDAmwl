@@ -314,6 +314,16 @@ class Signals(Columns):
                          self.ds.mol_trasm_at_emission_wl / \
                          self.ds.mol_trasm_at_detection_wl
 
+    def prepare_for_extinction(self):
+        """ sig = ln(Sig_o / Rayl) = ln(b)
+            err_sig = err_sig_o * dSig/ dSig_o = err_sig_o * (dSig/db * db/dSig_o)
+                                                = err_sig_o * ( 1/b * 1/rayl )
+                                          = err_sig_o *  (Rayl/Sig_o * 1/Rayl)
+        err_sig = err_sig_o / Sig_o """
+
+        self.ds['err'] = self.rel_err
+        self.ds['data'] = np.log(self.ds.data / self.ds.mol_extinction)
+
     @property
     def range(self):
         """xarray.DataArray(dimensions = time, level): range axis in m
