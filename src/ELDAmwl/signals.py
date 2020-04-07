@@ -371,7 +371,7 @@ class Signals(Columns):
         return (self.pol_channel_geometry == REFLECTED).values
 
 
-class GetCombinedSignal(BaseOperation):
+class CombineDepolComponentsDefault(BaseOperation):
     """
     Calculates a combined signal from depol components
 
@@ -455,9 +455,9 @@ class CombineDepolComponents(BaseOperationFactory):
 
         return: always 'CombineDepolComponents' .
         """
-        return GetCombinedSignal.__class__.__name__
+        return CombineDepolComponentsDefault.__class__.__name__
 
 
 registry.register_class(CombineDepolComponents,
-                        GetCombinedSignal.__class__.__name__,
-                        GetCombinedSignal)
+                        CombineDepolComponentsDefault.__class__.__name__,
+                        CombineDepolComponentsDefault)

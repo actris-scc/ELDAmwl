@@ -73,7 +73,7 @@ class SlopeToExtinction(BaseOperationFactory):
     """
     Returns an instance of BaseOperation which calculates the particle
     extinction coefficient from signal slope. In this case, it
-    will be always an instance of getSlopeToExtinction().
+    will be always an instance of SlopeToExtinctionDefault().
     """
 
     name = 'SlopeToExtinction'
@@ -87,12 +87,12 @@ class SlopeToExtinction(BaseOperationFactory):
     def get_classname_from_db(self):
         """
 
-        return: always 'getSlopeToExtinction' .
+        return: always 'SlopeToExtinctionDefault' .
         """
-        return 'getSlopeToExtinction'
+        return 'SlopeToExtinctionDefault'
 
 
-class getSlopeToExtinction(BaseOperation):
+class SlopeToExtinctionDefault(BaseOperation):
     """
     Calculates particle extinction coefficient from signal slope.
     """
@@ -115,21 +115,18 @@ class getSlopeToExtinction(BaseOperation):
         return result
 
 
-registry.register_class(SlopeToExtinction, 'getSlopeToExtinction',
-                        getSlopeToExtinction)
 
-
-class Extinction(BaseOperationFactory):
+class ExtinctionFactory(BaseOperationFactory):
     """
 
     """
 
-    name = 'Extinction'
+    name = 'ExtinctionFactory'
 
     def __call__(self, **kwargs):
         assert 'data_storage' in kwargs
         assert 'ext_param' in kwargs
-        res = super(Extinction, self).__call__(**kwargs)
+        res = super(ExtinctionFactory, self).__call__(**kwargs)
         return res
 
 
@@ -138,10 +135,10 @@ class Extinction(BaseOperationFactory):
 
         return: always 'getExtinction' .
         """
-        return getExtinction.__class__.__name__
+        return ExtinctionFactoryDefault.__class__.__name__
 
 
-class getExtinction(BaseOperation):
+class ExtinctionFactoryDefault(BaseOperation):
     """
     derives particle extinction coefficient.
     """
@@ -165,10 +162,6 @@ class getExtinction(BaseOperation):
 
         return result
 
-
-registry.register_class(Extinction,
-                        getExtinction.__class__.__name__,
-                        getExtinction)
 
 
 class SignalSlope(BaseOperationFactory):
@@ -203,8 +196,6 @@ class WeightedLinFit(BaseOperation):
         LinFit(True)
 
 
-registry.register_class(SignalSlope, 'WeightedLinearFit', WeightedLinFit)
-
 
 class NonWeightedLinFit(BaseOperation):
     """
@@ -218,3 +209,14 @@ class NonWeightedLinFit(BaseOperation):
 
 
 registry.register_class(SignalSlope, 'NonWeightedLinearFit', NonWeightedLinFit)
+registry.register_class(SignalSlope, 'WeightedLinearFit', WeightedLinFit)
+
+
+registry.register_class(ExtinctionFactory,
+                        ExtinctionFactoryDefault.__class__.__name__,
+                        ExtinctionFactoryDefault)
+
+registry.register_class(SlopeToExtinction,
+                        SlopeToExtinctionDefault.__class__.__name__,
+                        SlopeToExtinctionDefault)
+

@@ -10,7 +10,7 @@ from ELDAmwl.log import logger
 from ELDAmwl.registry import registry
 from ELDAmwl.signals import Signals
 
-class DoPrepareBscSignals(BaseOperation):
+class PrepareBscSignalsDefault(BaseOperation):
     """prepare ELPP signals for extinction retrieval with the steps:
     1) normalization by number of shots
     2) combination of depol components (if needed)
@@ -74,10 +74,10 @@ class PrepareBscSignals(BaseOperationFactory):
 
         return: always 'DoPrepareBscSignals' .
         """
-        return DoPrepareBscSignals.__class__.__name__
+        return PrepareBscSignalsDefault.__class__.__name__
 
 
-class DoPrepareExtSignals(BaseOperation):
+class PrepareExtSignalsDefault(BaseOperation):
     """prepare ELPP signals for extinction retrieval with the steps:
     1) normalization by number of shots
     2) correction of atmospheric transmission due to molecular scattering
@@ -121,7 +121,7 @@ class PrepareExtSignals(BaseOperationFactory):
 
         return: always 'DoPrepareExtSignals' .
         """
-        return DoPrepareExtSignals.__class__.__name__
+        return PrepareExtSignalsDefault.__class__.__name__
 
 
 PREP_SIG_CLASSES = {EXT: PrepareExtSignals,
@@ -130,7 +130,7 @@ PREP_SIG_CLASSES = {EXT: PrepareExtSignals,
                     }
 
 
-class DoPrepareSignals(BaseOperation):
+class PrepareSignalsDefault(BaseOperation):
     """
     """
 
@@ -170,17 +170,17 @@ class PrepareSignals(BaseOperationFactory):
 
         return: always 'DoPrepareSignals' .
         """
-        return DoPrepareSignals.__class__.__name__
+        return PrepareSignalsDefault.__class__.__name__
 
 
 registry.register_class(PrepareSignals,
-                        DoPrepareSignals.__class__.__name__,
-                        DoPrepareSignals)
+                        PrepareSignalsDefault.__class__.__name__,
+                        PrepareSignalsDefault)
 
 registry.register_class(PrepareExtSignals,
-                        DoPrepareExtSignals.__class__.__name__,
-                        DoPrepareExtSignals)
+                        PrepareExtSignalsDefault.__class__.__name__,
+                        PrepareExtSignalsDefault)
 
 registry.register_class(PrepareBscSignals,
-                        DoPrepareBscSignals.__class__.__name__,
-                        DoPrepareBscSignals)
+                        PrepareBscSignalsDefault.__class__.__name__,
+                        PrepareBscSignalsDefault)

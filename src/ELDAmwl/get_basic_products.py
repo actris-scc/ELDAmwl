@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """Classes for getting basic products
 """
-from ELDAmwl.extinction_factories import Extinction
+from ELDAmwl.extinction_factories import ExtinctionFactory
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.registry import registry
 
 
-class DoGetBasicProducts(BaseOperation):
+class GetBasicProductsDefault(BaseOperation):
     """
     """
 
@@ -19,7 +19,7 @@ class DoGetBasicProducts(BaseOperation):
         self.product_params = self.kwargs['product_params']
 
         for ext_param in self.product_params.extinction_products():
-            extinction = Extinction()(
+            extinction = ExtinctionFactory()(
                 data_storage=self.data_storage,
                 ext_param=ext_param,
             ).get_product()
@@ -45,9 +45,9 @@ class GetBasicProducts(BaseOperationFactory):
 
         return: always 'DoPrepareSignals' .
         """
-        return DoGetBasicProducts.__class__.__name__
+        return GetBasicProductsDefault.__class__.__name__
 
 
 registry.register_class(GetBasicProducts,
-                        DoGetBasicProducts.__class__.__name__,
-                        DoGetBasicProducts)
+                        GetBasicProductsDefault.__class__.__name__,
+                        GetBasicProductsDefault)
