@@ -1,21 +1,44 @@
 # -*- coding: utf-8 -*-
 """base classes for products"""
+from copy import deepcopy
 
 from addict import Dict
 from ELDAmwl.base import Params
-from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES
+from ELDAmwl.configs.config_default import RANGE_BOUNDARY_KM
+from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, NC_FILL_BYTE, NC_FILL_INT
 from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import EXT
 from ELDAmwl.constants import MERGE_PRODUCT_USE_CASES
 from ELDAmwl.constants import RBSC
+from ELDAmwl.constants import UNITS
 from ELDAmwl.database.db_functions import get_general_params_query
 from ELDAmwl.log import logger
 from ELDAmwl.signals import Signals
 
 import numpy as np
+import xarray as xr
 
 
 class Products(Signals):
+
+    @classmethod
+    def from_signal(cls, signal, p_params):
+        """creates an instance of Products with from general data of signal.
+
+        data, err, qf, and binres have the same shape as signal,
+        but are filled with nan.
+
+        """
+        result = cls()
+        result.ds = deepcopy(signal.ds)
+        result.ds['data'][:] = np.nan
+        result.ds['err'][:] = np.nan
+        result.ds['qf'][:] = NC_FILL_BYTE
+        result.ds['binres'][:] = NC_FILL_INT
+
+        # todo: copy other general parameter
+
+        return result
 
     def save_to_netcdf(self):
         pass
@@ -34,6 +57,42 @@ class ProductParams(Params):
     @property
     def error_method(self):
         return self.general_params.error_method
+
+    @property
+    def det_limit_asDataArray(self):
+        return xr.DataArray(self.general_params.detection_limit,
+                            name='detection_limit',
+                            attrs={'long_name': 'detection limit',
+                                   'units': UNITS[self.general_params.product_type]})
+
+    @property
+    def error_threshold_low_asDataArray(self):
+        return xr.DataArray(self.general_params.error_threshold.low,
+                            name='error_threshold_low',
+                            attrs={'long_name': 'threshold for the '
+                                                'relative statistical error '
+                                                'below {0} km height'.
+                            format(RANGE_BOUNDARY_KM),
+                                   'units': '1'})
+
+    @property
+    def error_threshold_high_asDataArray(self):
+        return xr.DataArray(self.general_params.error_threshold.high,
+                            name='error_threshold_low',
+                            attrs={'long_name': 'threshold for the '
+                                                'relative statistical error '
+                                                'above {0} km height'.
+                            format(RANGE_BOUNDARY_KM),
+                                   'units': '1'})
+
+    @property
+    def smooth_params(self):
+        return Dict({'error_threshold_low': self.error_threshold_low_asDataArray,
+                     'error_threshold_high': self.error_threshold_high_asDataArray,
+                     'detection_limit': self.det_limit_asDataArray,
+                     })
+
+
 
     def assign_to_product_list(self, measurement_params):
         gen_params = self.general_params

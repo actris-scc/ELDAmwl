@@ -4,7 +4,7 @@
 from copy import deepcopy
 from ELDAmwl.base import DataPoint
 from ELDAmwl.columns import Columns
-from ELDAmwl.constants import ANALOG
+from ELDAmwl.constants import ANALOG, ALL_OK
 from ELDAmwl.constants import CROSS
 from ELDAmwl.constants import FAR_RANGE
 from ELDAmwl.constants import NC_FILL_BYTE
@@ -173,8 +173,20 @@ class Signals(Columns):
 
         result.ds = nc_ds.range_corrected_signal[idx_in_file].to_dataset(name='data')  # noqa E501
         result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file]  # noqa E501
-        result.ds['qf'] = xr.DataArray(np.zeros((nc_ds.dims['time'],
-                                                 nc_ds.dims['level'])).astype(np.int8),  # noqa E501
+
+        # initiate bin resolution with value 1
+        result.ds['binres'] = xr.DataArray(np.ones((nc_ds.dims['time'],
+                                                 nc_ds.dims['level'])).astype(np.int),  # noqa E501
+                                       coords=[nc_ds.time, nc_ds.level],
+                                       dims=['time', 'level'])
+        result.ds['binres'].attrs = {'long_name': 'vertical resolution',
+                                     'units': 'bins',
+                                     }
+
+        # initiate quality flag with values 'ALL_OK'
+        result.ds['qf'] = xr.DataArray(np.ones((nc_ds.dims['time'],
+                                                 nc_ds.dims['level'])).astype(np.int8)  # noqa E501
+                                       * ALL_OK,
                                        coords=[nc_ds.time, nc_ds.level],
                                        dims=['time', 'level'])
         result.ds['qf'].attrs = {'long_name': 'quality_flag',
@@ -457,9 +469,9 @@ class CombineDepolComponents(BaseOperationFactory):
 
         return: always 'CombineDepolComponents' .
         """
-        return CombineDepolComponentsDefault.__class__.__name__
+        return CombineDepolComponentsDefault.__name__
 
 
 registry.register_class(CombineDepolComponents,
-                        CombineDepolComponentsDefault.__class__.__name__,
+                        CombineDepolComponentsDefault.__name__,
                         CombineDepolComponentsDefault)

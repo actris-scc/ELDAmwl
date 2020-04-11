@@ -4,6 +4,8 @@
 import numpy as np
 import xarray as xr
 
+from ELDAmwl.constants import NC_FILL_INT, NC_FILL_BYTE
+
 
 class Columns(object):
     """
@@ -15,6 +17,7 @@ class Columns(object):
             {'data': (['time', 'level'], np.empty((0, 0))),
              'err': (['time', 'level'], np.empty((0, 0))),
              'qf': (['time', 'level'], np.empty((0, 0), dtype=np.int8)),
+             'binres': (['time', 'level'], np.empty((0, 0), dtype=np.int)),
              'time_bounds': (['time', 'nv'],
                              np.empty((0, 0), dtype=np.datetime64)),
              },
@@ -22,6 +25,15 @@ class Columns(object):
                     'level': (['level'], np.empty((0), dtype=np.int64)),
                     'altitude': (['time', 'level'], np.empty((0, 0)))})
         self.station_altitude = None
+
+    def set_invalid_point(self, time, level, qf):
+        self.ds['data'][time, level] = np.nan
+        self.ds['err'][time, level] = np.nan
+        self.ds['binres'][time, level] = NC_FILL_INT
+        if self.ds.qf[time, level] != NC_FILL_BYTE:
+            self.ds['qf'][time, level] = self.ds.qf[time, level] | qf
+        else:
+            self.ds['qf'][time, level] = qf
 
     def angle_to_time_dependent_var(self, angle_var, data_var):
         """

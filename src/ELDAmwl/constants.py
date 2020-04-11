@@ -24,6 +24,16 @@ PLDR = 14
 
 PRODUCT_TYPES = [RBSC, EXT, LR, EBSC, MWL, AE, CR, VLDR, PLDR]
 
+UNITS = {RBSC: '1/(m*sr)',
+         EBSC: '1/(m*sr)',
+         EXT: '1/m',
+         LR: 'sr',
+         AE: '1',
+         CR: '1',
+         VLDR: '1',
+         PLDR: '1',
+         }
+
 # todo: put info on USE_CASES in db tables
 COMBINE_DEPOL_USE_CASES = {RBSC: [7, 9, 10, 11, 12, 18, 17],
                            EBSC: [3, 4, 7, 8]}
@@ -83,4 +93,15 @@ ELAST_BSC_METHODS = [KF, IT]
 
 # ====== fill values ======
 NC_FILL_BYTE = -127
+NC_FILL_INT = -2147483647
 NC_FILL_STR = ''
+
+# ====== quality flags ======
+ALL_OK = 0
+NEG_DATA = 1
+BELOW_OVL = 2
+ABOVE_MAX_ALT = 4
+HAS_CLOUD = 8
+ABOVE_KLETT_REF = 16
+INVALID_DEPOL = 32
+BELOW_MIN_BSCR = 64

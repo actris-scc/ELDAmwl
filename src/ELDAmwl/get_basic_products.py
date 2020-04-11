@@ -22,6 +22,7 @@ class GetBasicProductsDefault(BaseOperation):
             extinction = ExtinctionFactory()(
                 data_storage=self.data_storage,
                 ext_param=ext_param,
+                autosmooth=True,
             ).get_product()
             self.data_storage.set_basic_product_auto_smooth(
                 ext_param.prod_id_str, extinction)
@@ -47,9 +48,9 @@ class GetBasicProducts(BaseOperationFactory):
 
         return: always 'DoPrepareSignals' .
         """
-        return GetBasicProductsDefault.__class__.__name__
+        return GetBasicProductsDefault.__name__
 
 
 registry.register_class(GetBasicProducts,
-                        GetBasicProductsDefault.__class__.__name__,
+                        GetBasicProductsDefault.__name__,
                         GetBasicProductsDefault)

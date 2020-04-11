@@ -77,7 +77,7 @@ class PrepareBscSignals(BaseOperationFactory):
 
         return: always 'DoPrepareBscSignals' .
         """
-        return PrepareBscSignalsDefault.__class__.__name__
+        return PrepareBscSignalsDefault.__name__
 
 
 class PrepareExtSignalsDefault(BaseOperation):
@@ -125,7 +125,7 @@ class PrepareExtSignals(BaseOperationFactory):
 
         return: always 'DoPrepareExtSignals' .
         """
-        return PrepareExtSignalsDefault.__class__.__name__
+        return PrepareExtSignalsDefault.__name__
 
 
 PREP_SIG_CLASSES = {EXT: PrepareExtSignals,
@@ -174,17 +174,17 @@ class PrepareSignals(BaseOperationFactory):
 
         return: always 'DoPrepareSignals' .
         """
-        return PrepareSignalsDefault.__class__.__name__
+        return PrepareSignalsDefault.__name__
 
 
 registry.register_class(PrepareSignals,
-                        PrepareSignalsDefault.__class__.__name__,
+                        PrepareSignalsDefault.__name__,
                         PrepareSignalsDefault)
 
 registry.register_class(PrepareExtSignals,
-                        PrepareExtSignalsDefault.__class__.__name__,
+                        PrepareExtSignalsDefault.__name__,
                         PrepareExtSignalsDefault)
 
 registry.register_class(PrepareBscSignals,
-                        PrepareBscSignalsDefault.__class__.__name__,
+                        PrepareBscSignalsDefault.__name__,
                         PrepareBscSignalsDefault)

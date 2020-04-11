@@ -2,7 +2,9 @@
 """Classes for extinction calculation"""
 from addict import Dict
 from copy import deepcopy
-from ELDAmwl.constants import MC
+
+from ELDAmwl.configs.config_default import RANGE_BOUNDARY
+from ELDAmwl.constants import MC, BELOW_OVL, ABOVE_MAX_ALT
 from ELDAmwl.constants import NC_FILL_STR
 from ELDAmwl.database.db_functions import read_extinction_algorithm
 from ELDAmwl.database.db_functions import read_extinction_params
@@ -50,6 +52,22 @@ class ExtinctionParams(ProductParams):
             logger.debug('channel {0} is no Raman signal'.
                          format(signal.channel_id_str))
 
+    @property
+    def ang_exp_asDataArray(self):
+        return xr.DataArray(self.angstroem,
+                            name='angstroem_exponent',
+                            attrs={'long_name': 'Angstroem exponent '
+                                                'for the extinction '
+                                                'retrieval'})
+    @property
+    def smooth_params(self):
+        res = super(ExtinctionParams, self).smooth_params
+        # todo: get bin resolutions from actual height resolution of the used algorithm
+        res.max_binres_low = 5
+        res.max_binres_high = 21
+        res.max_bin_delta = 2
+        return res
+
 
 class Extinctions(Products):
     """
@@ -57,18 +75,50 @@ class Extinctions(Products):
     """
     @classmethod
     def from_signal(cls, signal, p_params):
-        result = cls()
+        """calculates Extinctions from a Raman signal.
 
-        ae_da = xr.DataArray(p_params.angstroem,
-                             name='angstroem_exponent',
-                             attrs={'long_name': 'Angstroem exponent '
-                                                 'for the extinction '
-                                                 'retrieval'})
+        The signal was previously prepared by PrepareExtSignals .
+
+        Args:
+            signal (Signals): time series of signal profiles
+            p_params (ExtinctionParams)
+        """
+        result = super(Extinctions, cls).from_signal(signal, p_params)
 
         ext_params = Dict({'detection_wavelength': signal.detection_wavelength,
                            'emission_wavelength': signal.emission_wavelength,
-                           'angstroem': ae_da})
-        sig_slope = SignalSlope()(signal=signal.ds).run()
+                           'angstroem_exponent': p_params.ang_exp_asDataArray,
+                           })
+
+        num_times = signal.ds.dims['time']
+        num_levels = signal.ds.dims['level']
+
+        for t in range(num_times):
+            for l in range(num_levels):
+                window = int(signal.ds.binres[t, l])
+                half_win = window // 2
+
+                if l < half_win:
+                    result.set_invalid_point(t, l, BELOW_OVL)
+
+                elif l >= (num_levels-half_win):
+                    result.set_invalid_point(t, l, ABOVE_MAX_ALT)
+
+                else:
+                    fb = l - half_win
+                    lb = l + half_win
+                    level_idx = xr.DataArray(range(fb, lb+1), dims=['level'])
+                    window_data = signal.ds.isel(time=[t], level=level_idx)
+
+                    sig_slope = SignalSlope()(signal=window_data,
+                                          prod_id=p_params.prod_id_str).run()
+
+                    result.ds['data'][t,l] = sig_slope.data
+                    result.ds['err'][t,l] = sig_slope.err
+                    result.ds['qf'][t,l] = sig_slope.qf
+                    result.ds['binres'][t,l] = window
+
+
         result.ds = SlopeToExtinction()(slope=sig_slope,
                                         ext_params=ext_params).run()
 
@@ -102,6 +152,9 @@ class SlopeToExtinctionDefault(BaseOperation):
     """
     Calculates particle extinction coefficient from signal slope.
     """
+
+    name = 'SlopeToExtinctionDefault'
+
     def run(self):
         """
         """
@@ -110,7 +163,7 @@ class SlopeToExtinctionDefault(BaseOperation):
 
         det_wl = ext_params.detection_wavelength
         em_wl = ext_params.emission_wavelength
-        wl_dep = ext_params.wavelength_dependence
+        wl_dep = ext_params.angstroem_exponent
 
         wl_factor = 1 / (1 + pow((det_wl/em_wl), wl_dep))
 
@@ -119,6 +172,87 @@ class SlopeToExtinctionDefault(BaseOperation):
         result['err'] = slope.err * wl_factor
 
         return result
+
+
+class ExtinctionAutosmooth(BaseOperationFactory):
+    """
+    Args:
+        signal: xarray.Dataset with variables
+         * data
+         * err
+         * qf
+         and coordinates time and altitude
+        smooth_params: Dict with keys:
+         * error_threshold_low
+         * error_threshold_high
+         * detection_limit
+         each of them is xarray.DataArray
+    """
+    name = 'ExtinctionAutosmooth'
+
+    def __call__(self, **kwargs):
+        assert 'signal' in kwargs
+        assert 'smooth_params' in kwargs
+        res = super(ExtinctionAutosmooth, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """
+
+        return: always 'ExtinctionAutosmoothDefault' .
+        """
+        return ExtinctionAutosmoothDefault.__name__
+
+
+class ExtinctionAutosmoothDefault(BaseOperation):
+    """
+    derives optimum vertical resolution of the extinction retrieval.
+    """
+
+    name = 'ExtinctionAutosmoothDefault'
+
+    signal = None
+    smooth_params = None
+
+    def max_smooth(self):
+        smooth_res = self.signal['binres']
+
+        mbr_low = self.smooth_params.max_binres_low
+        mbr_high = self.smooth_params.max_binres_high
+        mb_delta = self.smooth_params.max_bin_delta
+
+        times = self.signal.dims['time']
+        levels = self.signal.dims['level']
+
+        for t in range(times):
+            low_bins = np.where(self.signal.altitude[t] < RANGE_BOUNDARY)
+
+            # use mbr_low for bins below RANGE_BOUNDARY
+            smooth_res[t, low_bins[0]] = mbr_low
+
+            # continuously increase bin resolution (transition zone)
+            b_inc = low_bins[0][-1] + 1
+            while (b_inc < levels -1) and \
+                    (smooth_res[t][b_inc-1] < mbr_high):
+                # (b_inc < levels -1 ) => not yet end of profile
+                # smooth_res[t][b_inc-1] < mbr_high => not yet binres of high altitudes
+
+                smooth_res[t][b_inc] = smooth_res[t][b_inc-1] + mb_delta
+                b_inc += 1
+
+            # use mbr_high for bins above transition zone
+            smooth_res[t][b_inc : ] = mbr_high
+
+        return smooth_res
+
+    def run(self):
+        self.signal = deepcopy(self.kwargs['signal'])
+        self.smooth_params = self.kwargs['smooth_params']
+
+        self.max_smooth()
+
+
+        return self.signal.binres
 
 
 class ExtinctionFactory(BaseOperationFactory):
@@ -131,21 +265,24 @@ class ExtinctionFactory(BaseOperationFactory):
     def __call__(self, **kwargs):
         assert 'data_storage' in kwargs
         assert 'ext_param' in kwargs
+        assert 'autosmooth' in kwargs
         res = super(ExtinctionFactory, self).__call__(**kwargs)
         return res
 
     def get_classname_from_db(self):
         """
 
-        return: always 'getExtinction' .
+        return: always 'ExtinctionFactoryDefault' .
         """
-        return ExtinctionFactoryDefault.__class__.__name__
+        return ExtinctionFactoryDefault.__name__
 
 
 class ExtinctionFactoryDefault(BaseOperation):
     """
     derives particle extinction coefficient.
     """
+
+    name = 'ExtinctionFactoryDefault'
 
     data_storage = None
 
@@ -157,7 +294,16 @@ class ExtinctionFactoryDefault(BaseOperation):
             raman_sig = self.data_storage.prepared_signal(
                 self.param.prod_id_str,
                 self.param.raman_sig_id)
-            result = Extinctions.from_signal(raman_sig, self.param)
+
+            if self.kwargs['autosmooth']:
+                smooth_res = ExtinctionAutosmooth()(
+                    signal=raman_sig.ds,
+                    smooth_params=self.param.smooth_params,
+                ).run()
+
+            smoothed_sig = deepcopy(raman_sig)
+            smoothed_sig.ds['binres'] = smooth_res
+            result = Extinctions.from_signal(smoothed_sig, self.param)
         else:
             # result = Extinctions.from_merged_signals()
             pass
@@ -174,9 +320,19 @@ class SignalSlope(BaseOperationFactory):
     """
 
     name = 'SignalSlope'
+    prod_id = NC_FILL_STR
+
+    def __call__(self, **kwargs):
+        assert 'prod_id' in kwargs
+        assert 'signal' in kwargs
+
+        self.prod_id = kwargs['prod_id']
+
+        res = super(SignalSlope, self).__call__(**kwargs)
+        return res
 
     def get_classname_from_db(self):
-        return read_extinction_algorithm(281)
+        return read_extinction_algorithm(self.prod_id)
 
 
 class LinFit(BaseOperation):
@@ -185,40 +341,75 @@ class LinFit(BaseOperation):
     """
     name = 'LinFit'
 
-    def __init__(self, weight):
-        super(LinFit, self).__init__()
-        # print('calculate linear fit with weight', weight)
+    data = None
+
+    def run(self):
+        self.data = self.kwargs['signal']
+
+        sig = np.array(self.data.data)[0]
+        range_axis = np.array(self.data.altitude * np.cos(np.deg2rad(self.data.laser_pointing_angle)))[0]
+        qf = np.array(self.data.qf)[0]
+
+        if self.kwargs['weight']:
+            weight = np.array(abs(self.data.data / self.data.err))[0]
+        else:
+            weight = None
+
+        fit = np.polyfit(range_axis, sig, 1, w=weight, cov=True)
+        # np.polyfit(x, y, deg, w=weight)
+        # weight: For gaussian uncertainties, use 1/sigma
+        #
+        # fit[0]: Polynomial coefficients, highest power first
+        # fit[1]: The covariance matrix of the polynomial
+        #           coefficient estimates. The diagonal of this
+        #           matrix are the variance estimates for
+        #           each coefficient
+
+        result = Dict({'data': fit[0][0],
+                       'err': fit[1][0,0],
+                       'qf': np.bitwise_or.reduce(qf),
+                       })
+
+        return result
 
 
-class WeightedLinFit(BaseOperation):
+
+class WeightedLinearFit(BaseOperation):
     """
 
     """
-    def __init__(self, str):
-        super(WeightedLinFit, self).__init__()
-        # print('WeightedLinFit sagt ', str)
-        LinFit(True)
+    name = 'WeightedLinearFit'
+
+    def run(self):
+        return LinFit(signal=self.kwargs['signal'], weight=True).run()
 
 
-class NonWeightedLinFit(BaseOperation):
+class NonWeightedLinearFit(BaseOperation):
     """
 
     """
+    name = 'NonWeightedLinearFit'
 
-    def __init__(self, str):
-        super(NonWeightedLinFit, self).__init__()
-        # print('NonWeightedLinFit sagt ', str)
-        LinFit(False)
+    def run(self):
+        return LinFit(signal=self.kwargs['signal'], weight=False).run()
 
 
-registry.register_class(SignalSlope, 'NonWeightedLinearFit', NonWeightedLinFit)
-registry.register_class(SignalSlope, 'WeightedLinearFit', WeightedLinFit)
+registry.register_class(SignalSlope,
+                        NonWeightedLinearFit.__name__,
+                        NonWeightedLinearFit)
 
+registry.register_class(SignalSlope,
+                        WeightedLinearFit.__name__,
+                        WeightedLinearFit)
 
 registry.register_class(ExtinctionFactory,
-                        ExtinctionFactoryDefault.__class__.__name__,
+                        ExtinctionFactoryDefault.__name__,
                         ExtinctionFactoryDefault)
 
+registry.register_class(ExtinctionAutosmooth,
+                        ExtinctionAutosmoothDefault.__name__,
+                        ExtinctionAutosmoothDefault)
+
 registry.register_class(SlopeToExtinction,
-                        SlopeToExtinctionDefault.__class__.__name__,
+                        SlopeToExtinctionDefault.__name__,
                         SlopeToExtinctionDefault)
