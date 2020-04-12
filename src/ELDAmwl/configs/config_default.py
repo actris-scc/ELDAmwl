@@ -63,8 +63,8 @@ MAX_SMOOTH_CHANGE = 3  # [bins] todo: change into m
 MAX_AVERAGE_TIME = 2 * 60 * 60  # 2h
 MIN_AVERAGE_TIME = 30 * 60  # 30min
 
-RANGE_BOUNDARY = 2000  # [m] different maximum allowable
-                       # smoothing lengths below and
-                       # above RANGE_BOUNDARY
+RANGE_BOUNDARY = 2000
+# [m] different maximum allowable smoothing
+# lengths below and above RANGE_BOUNDARY
 
 RANGE_BOUNDARY_KM = RANGE_BOUNDARY / 1000.

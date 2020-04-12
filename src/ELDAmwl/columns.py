@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
 
+from ELDAmwl.constants import NC_FILL_BYTE
+from ELDAmwl.constants import NC_FILL_INT
+
 import numpy as np
 import xarray as xr
-
-from ELDAmwl.constants import NC_FILL_INT, NC_FILL_BYTE
 
 
 class Columns(object):

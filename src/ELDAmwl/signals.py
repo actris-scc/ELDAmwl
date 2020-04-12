@@ -4,7 +4,8 @@
 from copy import deepcopy
 from ELDAmwl.base import DataPoint
 from ELDAmwl.columns import Columns
-from ELDAmwl.constants import ANALOG, ALL_OK
+from ELDAmwl.constants import ALL_OK
+from ELDAmwl.constants import ANALOG
 from ELDAmwl.constants import CROSS
 from ELDAmwl.constants import FAR_RANGE
 from ELDAmwl.constants import NC_FILL_BYTE

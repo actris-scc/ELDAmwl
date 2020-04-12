@@ -2,9 +2,10 @@
 """Classes for extinction calculation"""
 from addict import Dict
 from copy import deepcopy
-
 from ELDAmwl.configs.config_default import RANGE_BOUNDARY
-from ELDAmwl.constants import MC, BELOW_OVL, ABOVE_MAX_ALT
+from ELDAmwl.constants import ABOVE_MAX_ALT
+from ELDAmwl.constants import BELOW_OVL
+from ELDAmwl.constants import MC
 from ELDAmwl.constants import NC_FILL_STR
 from ELDAmwl.database.db_functions import read_extinction_algorithm
 from ELDAmwl.database.db_functions import read_extinction_params
@@ -14,6 +15,7 @@ from ELDAmwl.log import logger
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.registry import registry
+from math import sqrt
 
 import numpy as np
 import xarray as xr
@@ -59,10 +61,12 @@ class ExtinctionParams(ProductParams):
                             attrs={'long_name': 'Angstroem exponent '
                                                 'for the extinction '
                                                 'retrieval'})
+
     @property
     def smooth_params(self):
         res = super(ExtinctionParams, self).smooth_params
-        # todo: get bin resolutions from actual height resolution of the used algorithm
+        # todo: get bin resolutions from actual height
+        #  resolution of the used algorithm
         res.max_binres_low = 39
         res.max_binres_high = 155
         res.max_bin_delta = 2
@@ -94,31 +98,37 @@ class Extinctions(Products):
         num_levels = signal.ds.dims['level']
 
         slope_routine = SignalSlope()(prod_id=p_params.prod_id_str)
+        x_data = np.array(signal.range)
+        y_data = np.array(signal.ds.data)
+        yerr_data = np.array(signal.ds.err)
+        qf_data = np.array(signal.ds.qf)
 
         for t in range(num_times):
-            for l in range(num_levels):
-                window = int(signal.ds.binres[t, l])
+            for lev in range(num_levels):
+                window = int(signal.ds.binres[t, lev])
                 half_win = window // 2
 
-                if l < half_win:
-                    result.set_invalid_point(t, l, BELOW_OVL)
+                if lev < half_win:
+                    result.set_invalid_point(t, lev, BELOW_OVL)
 
-                elif l >= (num_levels-half_win):
-                    result.set_invalid_point(t, l, ABOVE_MAX_ALT)
+                elif lev >= (num_levels-half_win):
+                    result.set_invalid_point(t, lev, ABOVE_MAX_ALT)
 
                 else:
-                    fb = l - half_win
-                    lb = l + half_win
-                    level_idx = xr.DataArray(range(fb, lb+1), dims=['level'])
-                    window_data = signal.ds.isel(time=[t], level=level_idx)
+                    fb = lev - half_win
+                    lb = lev + half_win
+                    window_data = Dict({'x_data': x_data[t, fb:lb+1],
+                                        'y_data': y_data[t, fb:lb+1],
+                                        'yerr_data': yerr_data[t, fb:lb+1],
+                                        })
 
                     sig_slope = slope_routine.run(signal=window_data)
+                    qf = np.bitwise_or.reduce(qf_data[t, fb:lb+1])
 
-                    result.ds['data'][t,l] = sig_slope.data
-                    result.ds['err'][t,l] = sig_slope.err
-                    result.ds['qf'][t,l] = sig_slope.qf
-                    result.ds['binres'][t,l] = window
-
+                    result.ds['data'][t, lev] = sig_slope.slope
+                    result.ds['err'][t, lev] = sig_slope.slope_err
+                    result.ds['qf'][t, lev] = qf
+                    result.ds['binres'][t, lev] = window
 
         result.ds = SlopeToExtinction()(slope=result.ds,
                                         ext_params=ext_params).run()
@@ -233,16 +243,18 @@ class ExtinctionAutosmoothDefault(BaseOperation):
 
             # continuously increase bin resolution (transition zone)
             b_inc = low_bins[0][-1] + 1
-            while (b_inc < levels -1) and \
+            while (b_inc < levels - 1) and \
                     (smooth_res[t][b_inc-1] < mbr_high):
-                # (b_inc < levels -1 ) => not yet end of profile
-                # smooth_res[t][b_inc-1] < mbr_high => not yet binres of high altitudes
+                # (b_inc < levels -1 )
+                #           => not yet end of profile
+                # smooth_res[t][b_inc-1] < mbr_high
+                #           => not yet binres of high altitudes
 
                 smooth_res[t][b_inc] = smooth_res[t][b_inc-1] + mb_delta
                 b_inc += 1
 
             # use mbr_high for bins above transition zone
-            smooth_res[t][b_inc : ] = mbr_high
+            smooth_res[t][b_inc:] = mbr_high
 
         return smooth_res
 
@@ -251,7 +263,6 @@ class ExtinctionAutosmoothDefault(BaseOperation):
         self.smooth_params = self.kwargs['smooth_params']
 
         self.max_smooth()
-
 
         return self.signal.binres
 
@@ -343,22 +354,25 @@ class LinFit(BaseOperation):
     data = None
 
     def run(self, **kwargs):
+        """
+
+        Args:
+            **kwargs:
+            signal: addict.Dict with the keys 'x_data', 'y_data', 'yerr_data'
+            which are all np.array
+        Returns:
+
+        """
         assert 'signal' in kwargs
         self.data = kwargs['signal']
-        # data have dimensions (time, level), but the length
-        # of the time dimension is always 1. Therefore, use always
-        # the time slice with index 0
-
-        sig = np.array(self.data.data)[0]
-        range_axis = np.array(self.data.altitude * np.cos(np.deg2rad(self.data.laser_pointing_angle)))[0]
-        qf = np.array(self.data.qf)[0]
 
         if self.kwargs['weight']:
-            weight = np.array(1/self.data.err)[0]
+            weight = 1/self.data.yerr_data
         else:
             weight = None
 
-        fit = np.polyfit(range_axis, sig, 1, w=weight, cov='unscaled')
+        fit = np.polyfit(self.data.x_data, self.data.y_data,
+                         1, w=weight, cov='unscaled')
         # np.polyfit(x, y, deg, w=weight)
         # weight: For gaussian uncertainties, use 1/sigma.
         # These settings (w= 1/err, cov='unscaled')correspond
@@ -371,13 +385,11 @@ class LinFit(BaseOperation):
         #           matrix are the variance estimates for
         #           each coefficient
 
-        result = Dict({'data': fit[0][0],
-                       'err': np.sqrt(fit[1])[0,0],
-                       'qf': np.bitwise_or.reduce(qf),
+        result = Dict({'slope': fit[0][0],
+                       'slope_err': sqrt(fit[1][0, 0]),
                        })
 
         return result
-
 
 
 class WeightedLinearFit(BaseOperation):
