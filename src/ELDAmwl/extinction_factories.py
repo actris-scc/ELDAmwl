@@ -63,8 +63,8 @@ class ExtinctionParams(ProductParams):
     def smooth_params(self):
         res = super(ExtinctionParams, self).smooth_params
         # todo: get bin resolutions from actual height resolution of the used algorithm
-        res.max_binres_low = 5
-        res.max_binres_high = 21
+        res.max_binres_low = 39
+        res.max_binres_high = 155
         res.max_bin_delta = 2
         return res
 
@@ -93,6 +93,8 @@ class Extinctions(Products):
         num_times = signal.ds.dims['time']
         num_levels = signal.ds.dims['level']
 
+        slope_routine = SignalSlope()(prod_id=p_params.prod_id_str)
+
         for t in range(num_times):
             for l in range(num_levels):
                 window = int(signal.ds.binres[t, l])
@@ -110,8 +112,7 @@ class Extinctions(Products):
                     level_idx = xr.DataArray(range(fb, lb+1), dims=['level'])
                     window_data = signal.ds.isel(time=[t], level=level_idx)
 
-                    sig_slope = SignalSlope()(signal=window_data,
-                                          prod_id=p_params.prod_id_str).run()
+                    sig_slope = slope_routine.run(signal=window_data)
 
                     result.ds['data'][t,l] = sig_slope.data
                     result.ds['err'][t,l] = sig_slope.err
@@ -119,7 +120,7 @@ class Extinctions(Products):
                     result.ds['binres'][t,l] = window
 
 
-        result.ds = SlopeToExtinction()(slope=sig_slope,
+        result.ds = SlopeToExtinction()(slope=result.ds,
                                         ext_params=ext_params).run()
 
         return result
@@ -163,12 +164,12 @@ class SlopeToExtinctionDefault(BaseOperation):
 
         det_wl = ext_params.detection_wavelength
         em_wl = ext_params.emission_wavelength
-        wl_dep = ext_params.angstroem_exponent
+        ang_exp = ext_params.angstroem_exponent
 
-        wl_factor = 1 / (1 + pow((det_wl/em_wl), wl_dep))
+        wl_factor = 1. / (1. + pow((em_wl/det_wl), ang_exp))
 
         result = deepcopy(slope)
-        result['data'] = slope.data * wl_factor
+        result['data'] = -1. * slope.data * wl_factor
         result['err'] = slope.err * wl_factor
 
         return result
@@ -324,8 +325,6 @@ class SignalSlope(BaseOperationFactory):
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs
-        assert 'signal' in kwargs
-
         self.prod_id = kwargs['prod_id']
 
         res = super(SignalSlope, self).__call__(**kwargs)
@@ -343,21 +342,28 @@ class LinFit(BaseOperation):
 
     data = None
 
-    def run(self):
-        self.data = self.kwargs['signal']
+    def run(self, **kwargs):
+        assert 'signal' in kwargs
+        self.data = kwargs['signal']
+        # data have dimensions (time, level), but the length
+        # of the time dimension is always 1. Therefore, use always
+        # the time slice with index 0
 
         sig = np.array(self.data.data)[0]
         range_axis = np.array(self.data.altitude * np.cos(np.deg2rad(self.data.laser_pointing_angle)))[0]
         qf = np.array(self.data.qf)[0]
 
         if self.kwargs['weight']:
-            weight = np.array(abs(self.data.data / self.data.err))[0]
+            weight = np.array(1/self.data.err)[0]
         else:
             weight = None
 
-        fit = np.polyfit(range_axis, sig, 1, w=weight, cov=True)
+        fit = np.polyfit(range_axis, sig, 1, w=weight, cov='unscaled')
         # np.polyfit(x, y, deg, w=weight)
-        # weight: For gaussian uncertainties, use 1/sigma
+        # weight: For gaussian uncertainties, use 1/sigma.
+        # These settings (w= 1/err, cov='unscaled')correspond
+        # to the equations from numerical
+        # recipes which are implemented in the old ELDA
         #
         # fit[0]: Polynomial coefficients, highest power first
         # fit[1]: The covariance matrix of the polynomial
@@ -366,7 +372,7 @@ class LinFit(BaseOperation):
         #           each coefficient
 
         result = Dict({'data': fit[0][0],
-                       'err': fit[1][0,0],
+                       'err': np.sqrt(fit[1])[0,0],
                        'qf': np.bitwise_or.reduce(qf),
                        })
 
@@ -380,8 +386,14 @@ class WeightedLinearFit(BaseOperation):
     """
     name = 'WeightedLinearFit'
 
-    def run(self):
-        return LinFit(signal=self.kwargs['signal'], weight=True).run()
+    def __init__(self, **kwargs):
+        super(WeightedLinearFit, self).__init__(**kwargs)
+        self.fit = LinFit(weight=True)
+
+    def run(self, **kwargs):
+        assert 'signal' in kwargs
+
+        return self.fit.run(signal=kwargs['signal'])
 
 
 class NonWeightedLinearFit(BaseOperation):
@@ -390,8 +402,13 @@ class NonWeightedLinearFit(BaseOperation):
     """
     name = 'NonWeightedLinearFit'
 
-    def run(self):
-        return LinFit(signal=self.kwargs['signal'], weight=False).run()
+    def __init__(self, **kwargs):
+        super(NonWeightedLinearFit, self).__init__(**kwargs)
+        self.fit = LinFit(weight=False)
+
+    def run(self, **kwargs):
+        assert 'signal' in kwargs
+        return self.fit.run(signal=kwargs['signal'])
 
 
 registry.register_class(SignalSlope,
