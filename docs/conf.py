@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('../src'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'MWL'
+project = 'ELDAmwl'
 copyright = '2019, Ina Mattis'
 author = 'Ina Mattis'
 

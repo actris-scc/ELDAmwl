@@ -4,7 +4,7 @@
 from addict import Dict
 from ELDAmwl.backscatter_factories import BackscatterParams
 from ELDAmwl.base import Params
-from ELDAmwl.constants import EXT
+from ELDAmwl.constants import EXT, EBSC
 from ELDAmwl.constants import LR
 from ELDAmwl.constants import RBSC
 from ELDAmwl.data_storage import DataStorage
@@ -96,6 +96,37 @@ class MeasurementParams(Params):
         prod_df = self.measurement_params.product_table
         ids = prod_df['id'][prod_df.type == EXT]
         return self.filtered_list(ids)
+
+    def raman_bsc_products(self):
+        """list of parameters of all Raman backscatter products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all Raman backscatter products
+        """
+        prod_df = self.measurement_params.product_table
+        ids = prod_df['id'][prod_df.type == RBSC]
+        return self.filtered_list(ids)
+
+    def elast_bsc_products(self):
+        """list of parameters of all elastic backscatter products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all elastic backscatter products
+        """
+        prod_df = self.measurement_params.product_table
+        ids = prod_df['id'][prod_df.type == EBSC]
+        return self.filtered_list(ids)
+
+    def all_bsc_products(self):
+        """list of parameters of all backscatter products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all backscatter products
+        """
+        return self.raman_bsc_products() + self.elast_bsc_products()
 
     def filtered_list(self, filtered_ids):
         """ converts a filtered subset of the product_table

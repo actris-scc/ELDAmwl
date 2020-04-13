@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for getting basic products
 """
+from ELDAmwl.backscatter_factories import BackscatterFactory
 from ELDAmwl.extinction_factories import ExtinctionFactory
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
@@ -26,6 +27,16 @@ class GetBasicProductsDefault(BaseOperation):
             ).get_product()
             self.data_storage.set_basic_product_auto_smooth(
                 ext_param.prod_id_str, extinction)
+
+        for bsc_param in self.product_params.all_bsc_products():
+            pass
+            # bsc = BackscatterFactory()(
+            #     data_storage=self.data_storage,
+            #     bsc_param=bsc_param,
+            #     autosmooth=True,
+            # ).get_product()
+            # self.data_storage.set_basic_product_auto_smooth(
+            #     bsc_param.prod_id_str, bsc)
 
 
 class GetBasicProducts(BaseOperationFactory):
