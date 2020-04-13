@@ -31,7 +31,7 @@ class GetBasicProductsDefault(BaseOperation):
 class GetBasicProducts(BaseOperationFactory):
     """
     Args:
-        data_storage: global data storage (:class:`DataStorage`)
+        data_storage (ELDAmwl.data_storage.DataStorage): global data storage
         product_params: global MeasurementParams
     """
 

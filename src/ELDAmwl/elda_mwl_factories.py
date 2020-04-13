@@ -126,7 +126,7 @@ class MeasurementParams(Params):
         stored in the product_table (pandas.DataFrame).
         This table is used for search
         and filter operations.
-        The parameters (:class:`ProductParams`) itself are stored in
+        The parameters (:class:`ELDAmwl.products.ProductParams`) itself are stored in
         product_list (dict) from where
         they can be assessed by their product_id_str (str).
         """
