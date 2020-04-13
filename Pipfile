@@ -26,6 +26,8 @@ pandas = ">=0.24"
 sphinxcontrib-serializinghtml = "*"
 sphinxcontrib-qthelp = "*"
 Sphinx = "*"
+sphinx-rtd-theme = "*"
+autodocsumm = "*"
 
 [requires]
 python_version = "3.7"

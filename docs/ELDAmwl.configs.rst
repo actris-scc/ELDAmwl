@@ -4,14 +4,6 @@ ELDAmwl.configs package
 Submodules
 ----------
 
-ELDAmwl.configs.config module
------------------------------
-
-.. automodule:: ELDAmwl.configs.config
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 ELDAmwl.configs.config\_default module
 --------------------------------------
 

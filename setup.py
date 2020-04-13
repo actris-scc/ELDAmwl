@@ -34,6 +34,7 @@ setup(
     zip_safe=False,
     install_requires=[
         # -*- Extra requirements: -*-
+        'autodocsumm',
         'setuptools',
         'netcdf4',
         'sqlalchemy',
@@ -58,6 +59,9 @@ setup(
         'pytest-mock',
         'addict',
         'sphinx',
+        'sphinxcontrib-qthelp',
+        'sphinxcontrib-serializinghtml',
+        'sphinx-rtd-theme',
         'xarray'
     ],
     extras_require={

@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    ELDAmwl.configs
    ELDAmwl.database
@@ -89,6 +90,14 @@ ELDAmwl.factory module
 ----------------------
 
 .. automodule:: ELDAmwl.factory
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ELDAmwl.get\_basic\_products module
+-----------------------------------
+
+.. automodule:: ELDAmwl.get_basic_products
    :members:
    :undoc-members:
    :show-inheritance:
