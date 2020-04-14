@@ -21,10 +21,11 @@ with the ``override=True`` directive.
     # -*- coding: utf-8 -*-
     """plugin for preparation of ELPP for extinction retrieval"""
 
+    from ELDAmwl.factory import BaseOperation
     from ELDAmwl.prepare_signals import PrepareExtSignals
     from ELDAmwl.registry import registry
 
-    class PrepareExtSignalsBetter(object):
+    class PrepareExtSignalsBetter(BaseOperation):
 
         name = 'PrepareExtSignalsBetter'
 

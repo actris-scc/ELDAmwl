@@ -33,10 +33,11 @@ was provided in the database table.
     """plugin for calculation of slope with Savitzky-Golay method"""
 
     from ELDAmwl.extinction_factories import SignalSlope
+    from ELDAmwl.factory import BaseOperation
     from ELDAmwl.registry import registry
 
 
-    class SavGolaySlope(object):
+    class SavGolaySlope(BaseOperation):
 
         name = 'SavGolaySlope'
 

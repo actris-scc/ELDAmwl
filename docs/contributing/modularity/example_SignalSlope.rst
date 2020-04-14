@@ -1,5 +1,5 @@
 Example of an additional user-selectable algorithm subsystem
----------------------------------------------------------
+------------------------------------------------------------
 
 An example of user-selectable algorithm subsystems is the method for
 the calculation of the

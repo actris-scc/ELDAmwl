@@ -2,4 +2,4 @@
 """import of all plugins"""
 
 import ELDAmwl.plugins.SavitzkyGolaySlope
-import ELDAmwl.plugins.PrepareExtSignalsBetter
+#import ELDAmwl.plugins.PrepareExtSignalsBetter
