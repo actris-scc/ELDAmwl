@@ -48,9 +48,6 @@ class BaseOperation(object):
     """
 
     def __init__(self, **kwargs):
-        """
-        Initialize the params, input and result storage
-        """
         self.kwargs = kwargs
 
     @property

@@ -24,7 +24,6 @@ the addition and replacement of algorithm components.
 
 .. toctree::
     :caption: ELDAmwl Documentation
-    :maxdepth: 2
 
     installing/installing
     algorithms/algorithms

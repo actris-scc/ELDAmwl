@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
-"""example plugin"""
+"""import of all plugins"""
 
-# import ELDAmwl.plugins.SavitzkyGolaySlope
+import ELDAmwl.plugins.SavitzkyGolaySlope
+import ELDAmwl.plugins.PrepareExtSignalsBetter

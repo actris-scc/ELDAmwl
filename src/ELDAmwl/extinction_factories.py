@@ -328,7 +328,10 @@ class ExtinctionFactoryDefault(BaseOperation):
 
 class SignalSlope(BaseOperationFactory):
     """
-    Calculates signal slope.
+    Creates a Class for the calculation of signal slope.
+
+    Keyword Args:
+        prod_id (str): id of the product
     """
 
     name = 'SignalSlope'
@@ -342,6 +345,10 @@ class SignalSlope(BaseOperationFactory):
         return res
 
     def get_classname_from_db(self):
+        """ reads from SCC db which slope algorithm to use
+
+        Returns: name of the class for the slope calculation
+        """
         return read_extinction_algorithm(self.prod_id)
 
 
@@ -356,11 +363,11 @@ class LinFit(BaseOperation):
     def run(self, **kwargs):
         """
 
-        Args:
-            **kwargs:
+        Keyword Args:
             signal: addict.Dict with the keys 'x_data', 'y_data', 'yerr_data'
             which are all np.array
         Returns:
+            addict.Dict with keys 'slope' and 'slope_err'
 
         """
         assert 'signal' in kwargs
@@ -394,6 +401,7 @@ class LinFit(BaseOperation):
 
 class WeightedLinearFit(BaseOperation):
     """
+    calculates a weighted linear fit
 
     """
     name = 'WeightedLinearFit'
@@ -403,6 +411,17 @@ class WeightedLinearFit(BaseOperation):
         self.fit = LinFit(weight=True)
 
     def run(self, **kwargs):
+        """
+        starts the fit
+
+        Keyword Args:
+            signal: addict.Dict with the keys 'x_data', 'y_data', \
+            'yerr_data' which are all np.array
+
+        Returns:
+            addict.Dict with keys 'slope' and 'slope_err'
+
+        """
         assert 'signal' in kwargs
 
         return self.fit.run(signal=kwargs['signal'])
@@ -410,6 +429,7 @@ class WeightedLinearFit(BaseOperation):
 
 class NonWeightedLinearFit(BaseOperation):
     """
+    calculates a non-weighted linear fit
 
     """
     name = 'NonWeightedLinearFit'
@@ -419,6 +439,17 @@ class NonWeightedLinearFit(BaseOperation):
         self.fit = LinFit(weight=False)
 
     def run(self, **kwargs):
+        """
+        starts the fit
+
+        Keyword Args:
+            signal: addict.Dict with the keys 'x_data', \
+            'y_data', 'yerr_data' which are all np.array
+
+        Returns:
+            addict.Dict with keys 'slope' and 'slope_err'
+
+        """
         assert 'signal' in kwargs
         return self.fit.run(signal=kwargs['signal'])
 

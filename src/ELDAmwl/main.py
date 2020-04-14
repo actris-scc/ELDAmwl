@@ -4,6 +4,7 @@ from ELDAmwl.constants import ELDA_MWL_VERSION
 from ELDAmwl.elda_mwl_factories import RunELDAmwl
 from ELDAmwl.log import create_logger
 from ELDAmwl.log import logger
+from ELDAmwl.plugins import plugin
 
 
 try:

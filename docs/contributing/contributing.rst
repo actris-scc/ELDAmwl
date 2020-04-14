@@ -7,9 +7,11 @@ with additional optional algorithm components or to replace
 parts of the program completely by other algorithm components.
 
 .. toctree::
-    :maxdepth: 2
+    :includehidden:
+    :maxdepth: 1
 
-    modularity
+    global data structures <global_instances>
+    modularity/modularity
     testing
 
 
