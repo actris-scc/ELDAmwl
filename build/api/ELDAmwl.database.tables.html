@@ -1,0 +1,1520 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ELDAmwl.database.tables package &mdash; ELDAmwl 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ELDAmwl.tests package" href="ELDAmwl.tests.html" />
+    <link rel="prev" title="ELDAmwl.database package" href="ELDAmwl.database.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ELDAmwl
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modindex.html">Module Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ELDAmwl</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ELDAmwl.html">ELDAmwl package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ELDAmwl.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.configs.html">ELDAmwl.configs package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="ELDAmwl.database.html">ELDAmwl.database package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.html">ELDAmwl.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.backscatter_factories">ELDAmwl.backscatter_factories module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.base">ELDAmwl.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.columns">ELDAmwl.columns module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.constants">ELDAmwl.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.data_storage">ELDAmwl.data_storage module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.elda_mwl_factories">ELDAmwl.elda_mwl_factories module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.error_codes">ELDAmwl.error_codes module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.exceptions">ELDAmwl.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.extinction_factories">ELDAmwl.extinction_factories module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.factory">ELDAmwl.factory module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.get_basic_products">ELDAmwl.get_basic_products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.lidar_ratio_factories">ELDAmwl.lidar_ratio_factories module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.log">ELDAmwl.log module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.main">ELDAmwl.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.prepare_signals">ELDAmwl.prepare_signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.products">ELDAmwl.products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.registry">ELDAmwl.registry module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.signals">ELDAmwl.signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ELDAmwl</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">ELDAmwl</a> &raquo;</li>
+        
+          <li><a href="ELDAmwl.html">ELDAmwl package</a> &raquo;</li>
+        
+          <li><a href="ELDAmwl.database.html">ELDAmwl.database package</a> &raquo;</li>
+        
+      <li>ELDAmwl.database.tables package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/ELDAmwl.database.tables.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="eldamwl-database-tables-package">
+<h1>ELDAmwl.database.tables package<a class="headerlink" href="#eldamwl-database-tables-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.database.tables.backscatter">
+<span id="eldamwl-database-tables-backscatter-module"></span><h2>ELDAmwl.database.tables.backscatter module<a class="headerlink" href="#module-ELDAmwl.database.tables.backscatter" title="Permalink to this headline">¶</a></h2>
+<p>Classes for backscatter related db tables</p>
+<p><strong>Classes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption" title="ELDAmwl.database.tables.backscatter.BscCalibrOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BscCalibrOption</span></code></a>(**kwargs)</p></td>
+<td><p>content of the db table bsc_calibr_options</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.ElastBackscatterOption" title="ELDAmwl.database.tables.backscatter.ElastBackscatterOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBackscatterOption</span></code></a>(**kwargs)</p></td>
+<td><p>content of the db table elast_backscatter_options</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.RamanBackscatterOption" title="ELDAmwl.database.tables.backscatter.RamanBackscatterOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RamanBackscatterOption</span></code></a>(**kwargs)</p></td>
+<td><p>content of the db table raman_backscatter_options</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.backscatter.BscCalibrOption">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.backscatter.</code><code class="sig-name descname">BscCalibrOption</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>content of the db table bsc_calibr_options</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption.ID" title="ELDAmwl.database.tables.backscatter.BscCalibrOption.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption.LowestHeight" title="ELDAmwl.database.tables.backscatter.BscCalibrOption.LowestHeight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LowestHeight</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption.TopHeight" title="ELDAmwl.database.tables.backscatter.BscCalibrOption.TopHeight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TopHeight</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption.WindowWidth" title="ELDAmwl.database.tables.backscatter.BscCalibrOption.WindowWidth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WindowWidth</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption.calValue" title="ELDAmwl.database.tables.backscatter.BscCalibrOption.calValue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calValue</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.backscatter.BscCalibrOption.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.backscatter.BscCalibrOption.LowestHeight">
+<code class="sig-name descname">LowestHeight</code><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption.LowestHeight" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.backscatter.BscCalibrOption.TopHeight">
+<code class="sig-name descname">TopHeight</code><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption.TopHeight" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.backscatter.BscCalibrOption.WindowWidth">
+<code class="sig-name descname">WindowWidth</code><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption.WindowWidth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.backscatter.BscCalibrOption.calValue">
+<code class="sig-name descname">calValue</code><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption.calValue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.backscatter.ElastBackscatterOption">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.backscatter.</code><code class="sig-name descname">ElastBackscatterOption</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.ElastBackscatterOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>content of the db table elast_backscatter_options</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.ElastBackscatterOption.ID" title="ELDAmwl.database.tables.backscatter.ElastBackscatterOption.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.ElastBackscatterOption.fixed_lr" title="ELDAmwl.database.tables.backscatter.ElastBackscatterOption.fixed_lr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fixed_lr</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.ElastBackscatterOption.fixed_lr_error" title="ELDAmwl.database.tables.backscatter.ElastBackscatterOption.fixed_lr_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fixed_lr_error</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.backscatter.ElastBackscatterOption.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.ElastBackscatterOption.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.backscatter.ElastBackscatterOption.fixed_lr">
+<code class="sig-name descname">fixed_lr</code><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.ElastBackscatterOption.fixed_lr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.backscatter.ElastBackscatterOption.fixed_lr_error">
+<code class="sig-name descname">fixed_lr_error</code><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.ElastBackscatterOption.fixed_lr_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.backscatter.RamanBackscatterOption">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.backscatter.</code><code class="sig-name descname">RamanBackscatterOption</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.RamanBackscatterOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>content of the db table raman_backscatter_options</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.RamanBackscatterOption.ID" title="ELDAmwl.database.tables.backscatter.RamanBackscatterOption.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.backscatter.RamanBackscatterOption.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.backscatter.RamanBackscatterOption.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.database.tables.db_base">
+<span id="eldamwl-database-tables-db-base-module"></span><h2>ELDAmwl.database.tables.db_base module<a class="headerlink" href="#module-ELDAmwl.database.tables.db_base" title="Permalink to this headline">¶</a></h2>
+<p><strong>Classes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.db_base.ElastBscMethod" title="ELDAmwl.database.tables.db_base.ElastBscMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBscMethod</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.db_base.ErrorMethod" title="ELDAmwl.database.tables.db_base.ErrorMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorMethod</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.db_base.ElastBscMethod">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.db_base.</code><code class="sig-name descname">ElastBscMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.db_base.ElastBscMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.db_base.ElastBscMethod.ID" title="ELDAmwl.database.tables.db_base.ElastBscMethod.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.db_base.ElastBscMethod.method" title="ELDAmwl.database.tables.db_base.ElastBscMethod.method"><code class="xref py py-obj docutils literal notranslate"><span class="pre">method</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.db_base.ElastBscMethod.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.db_base.ElastBscMethod.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.db_base.ElastBscMethod.method">
+<code class="sig-name descname">method</code><a class="headerlink" href="#ELDAmwl.database.tables.db_base.ElastBscMethod.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.db_base.ErrorMethod">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.db_base.</code><code class="sig-name descname">ErrorMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.db_base.ErrorMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.db_base.ErrorMethod.id" title="ELDAmwl.database.tables.db_base.ErrorMethod.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.db_base.ErrorMethod.method" title="ELDAmwl.database.tables.db_base.ErrorMethod.method"><code class="xref py py-obj docutils literal notranslate"><span class="pre">method</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.db_base.ErrorMethod.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#ELDAmwl.database.tables.db_base.ErrorMethod.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.db_base.ErrorMethod.method">
+<code class="sig-name descname">method</code><a class="headerlink" href="#ELDAmwl.database.tables.db_base.ErrorMethod.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.database.tables.extinction">
+<span id="eldamwl-database-tables-extinction-module"></span><h2>ELDAmwl.database.tables.extinction module<a class="headerlink" href="#module-ELDAmwl.database.tables.extinction" title="Permalink to this headline">¶</a></h2>
+<p>Classes for extinction related db tables</p>
+<p><strong>Classes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtMethod" title="ELDAmwl.database.tables.extinction.ExtMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtMethod</span></code></a>(**kwargs)</p></td>
+<td><p>content of the db table _ext_methods</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtinctionOption" title="ELDAmwl.database.tables.extinction.ExtinctionOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtinctionOption</span></code></a>(**kwargs)</p></td>
+<td><p>content of the db table extinction_options</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.OverlapFile" title="ELDAmwl.database.tables.extinction.OverlapFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OverlapFile</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.extinction.ExtMethod">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.extinction.</code><code class="sig-name descname">ExtMethod</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.extinction.ExtMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>content of the db table _ext_methods</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtMethod.ID" title="ELDAmwl.database.tables.extinction.ExtMethod.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtMethod.method" title="ELDAmwl.database.tables.extinction.ExtMethod.method"><code class="xref py py-obj docutils literal notranslate"><span class="pre">method</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtMethod.python_classname" title="ELDAmwl.database.tables.extinction.ExtMethod.python_classname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">python_classname</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.ExtMethod.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.ExtMethod.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.ExtMethod.method">
+<code class="sig-name descname">method</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.ExtMethod.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.ExtMethod.python_classname">
+<code class="sig-name descname">python_classname</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.ExtMethod.python_classname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.extinction.ExtinctionOption">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.extinction.</code><code class="sig-name descname">ExtinctionOption</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.extinction.ExtinctionOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>content of the db table extinction_options</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtinctionOption.ID" title="ELDAmwl.database.tables.extinction.ExtinctionOption.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtinctionOption.angstroem" title="ELDAmwl.database.tables.extinction.ExtinctionOption.angstroem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angstroem</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.ExtinctionOption.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.ExtinctionOption.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.ExtinctionOption.angstroem">
+<code class="sig-name descname">angstroem</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.ExtinctionOption.angstroem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.extinction.OverlapFile">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.extinction.</code><code class="sig-name descname">OverlapFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.extinction.OverlapFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.OverlapFile.ID" title="ELDAmwl.database.tables.extinction.OverlapFile.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.OverlapFile.filename" title="ELDAmwl.database.tables.extinction.OverlapFile.filename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filename</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.OverlapFile.start" title="ELDAmwl.database.tables.extinction.OverlapFile.start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.OverlapFile.status" title="ELDAmwl.database.tables.extinction.OverlapFile.status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">status</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.OverlapFile.stop" title="ELDAmwl.database.tables.extinction.OverlapFile.stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.OverlapFile.submission_date" title="ELDAmwl.database.tables.extinction.OverlapFile.submission_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">submission_date</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.OverlapFile.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.OverlapFile.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.OverlapFile.filename">
+<code class="sig-name descname">filename</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.OverlapFile.filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.OverlapFile.start">
+<code class="sig-name descname">start</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.OverlapFile.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.OverlapFile.status">
+<code class="sig-name descname">status</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.OverlapFile.status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.OverlapFile.stop">
+<code class="sig-name descname">stop</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.OverlapFile.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.extinction.OverlapFile.submission_date">
+<code class="sig-name descname">submission_date</code><a class="headerlink" href="#ELDAmwl.database.tables.extinction.OverlapFile.submission_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.database.tables.lidar_ratio">
+<span id="eldamwl-database-tables-lidar-ratio-module"></span><h2>ELDAmwl.database.tables.lidar_ratio module<a class="headerlink" href="#module-ELDAmwl.database.tables.lidar_ratio" title="Permalink to this headline">¶</a></h2>
+<p>Classes for lidar ratio related db tables</p>
+<p><strong>Classes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.lidar_ratio.ExtBscOption" title="ELDAmwl.database.tables.lidar_ratio.ExtBscOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtBscOption</span></code></a>(**kwargs)</p></td>
+<td><p>content of the db table ext_bsc_options</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.lidar_ratio.ExtBscOption">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.lidar_ratio.</code><code class="sig-name descname">ExtBscOption</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.lidar_ratio.ExtBscOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>content of the db table ext_bsc_options</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.lidar_ratio.ExtBscOption.ID" title="ELDAmwl.database.tables.lidar_ratio.ExtBscOption.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.lidar_ratio.ExtBscOption.min_BscRatio_for_LR" title="ELDAmwl.database.tables.lidar_ratio.ExtBscOption.min_BscRatio_for_LR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_BscRatio_for_LR</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.lidar_ratio.ExtBscOption.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.lidar_ratio.ExtBscOption.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.lidar_ratio.ExtBscOption.min_BscRatio_for_LR">
+<code class="sig-name descname">min_BscRatio_for_LR</code><a class="headerlink" href="#ELDAmwl.database.tables.lidar_ratio.ExtBscOption.min_BscRatio_for_LR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.database.tables.measurements">
+<span id="eldamwl-database-tables-measurements-module"></span><h2>ELDAmwl.database.tables.measurements module<a class="headerlink" href="#module-ELDAmwl.database.tables.measurements" title="Permalink to this headline">¶</a></h2>
+<p>Classes for measurement related db tables</p>
+<p><strong>Classes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements" title="ELDAmwl.database.tables.measurements.Measurements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Measurements</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.measurements.Measurements">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.measurements.</code><code class="sig-name descname">Measurements</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.ID" title="ELDAmwl.database.tables.measurements.Measurements.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.calipso" title="ELDAmwl.database.tables.measurements.Measurements.calipso"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calipso</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.cirrus" title="ELDAmwl.database.tables.measurements.Measurements.cirrus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cirrus</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.climatol" title="ELDAmwl.database.tables.measurements.Measurements.climatol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">climatol</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.cloudmask" title="ELDAmwl.database.tables.measurements.Measurements.cloudmask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cloudmask</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.cloudmask_current_product_id" title="ELDAmwl.database.tables.measurements.Measurements.cloudmask_current_product_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cloudmask_current_product_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.cloudmask_return_code" title="ELDAmwl.database.tables.measurements.Measurements.cloudmask_return_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cloudmask_return_code</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.comment" title="ELDAmwl.database.tables.measurements.Measurements.comment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">comment</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.creation_auth_user_ID" title="ELDAmwl.database.tables.measurements.Measurements.creation_auth_user_ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">creation_auth_user_ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.creation_date" title="ELDAmwl.database.tables.measurements.Measurements.creation_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">creation_date</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.dicycles" title="ELDAmwl.database.tables.measurements.Measurements.dicycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dicycles</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elda" title="ELDAmwl.database.tables.measurements.Measurements.elda"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elda</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elda_current_product_id" title="ELDAmwl.database.tables.measurements.Measurements.elda_current_product_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elda_current_product_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elda_return_code" title="ELDAmwl.database.tables.measurements.Measurements.elda_return_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elda_return_code</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.eldec" title="ELDAmwl.database.tables.measurements.Measurements.eldec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eldec</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.eldec_current_product_id" title="ELDAmwl.database.tables.measurements.Measurements.eldec_current_product_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eldec_current_product_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.eldec_return_code" title="ELDAmwl.database.tables.measurements.Measurements.eldec_return_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eldec_return_code</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elic" title="ELDAmwl.database.tables.measurements.Measurements.elic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elic</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elic_current_product_id" title="ELDAmwl.database.tables.measurements.Measurements.elic_current_product_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elic_current_product_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elic_return_code" title="ELDAmwl.database.tables.measurements.Measurements.elic_return_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elic_return_code</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elpp" title="ELDAmwl.database.tables.measurements.Measurements.elpp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elpp</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elpp_current_product_id" title="ELDAmwl.database.tables.measurements.Measurements.elpp_current_product_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elpp_current_product_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elpp_return_code" title="ELDAmwl.database.tables.measurements.Measurements.elpp_return_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elpp_return_code</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elquick" title="ELDAmwl.database.tables.measurements.Measurements.elquick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elquick</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elquick_current_product_id" title="ELDAmwl.database.tables.measurements.Measurements.elquick_current_product_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elquick_current_product_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.elquick_return_code" title="ELDAmwl.database.tables.measurements.Measurements.elquick_return_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elquick_return_code</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.etna" title="ELDAmwl.database.tables.measurements.Measurements.etna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">etna</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.forfires" title="ELDAmwl.database.tables.measurements.Measurements.forfires"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forfires</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.hirelpp" title="ELDAmwl.database.tables.measurements.Measurements.hirelpp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hirelpp</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.hirelpp_current_product_id" title="ELDAmwl.database.tables.measurements.Measurements.hirelpp_current_product_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hirelpp_current_product_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.hirelpp_return_code" title="ELDAmwl.database.tables.measurements.Measurements.hirelpp_return_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hirelpp_return_code</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.interface_return_code" title="ELDAmwl.database.tables.measurements.Measurements.interface_return_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interface_return_code</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.lidar_ratio_file_id" title="ELDAmwl.database.tables.measurements.Measurements.lidar_ratio_file_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lidar_ratio_file_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.meas_id" title="ELDAmwl.database.tables.measurements.Measurements.meas_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meas_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.overlap_file_id" title="ELDAmwl.database.tables.measurements.Measurements.overlap_file_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlap_file_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.photosmog" title="ELDAmwl.database.tables.measurements.Measurements.photosmog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photosmog</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.rurban" title="ELDAmwl.database.tables.measurements.Measurements.rurban"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rurban</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.sahadust" title="ELDAmwl.database.tables.measurements.Measurements.sahadust"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sahadust</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.sounding_file_id" title="ELDAmwl.database.tables.measurements.Measurements.sounding_file_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sounding_file_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.start" title="ELDAmwl.database.tables.measurements.Measurements.start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.stop" title="ELDAmwl.database.tables.measurements.Measurements.stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.stratos" title="ELDAmwl.database.tables.measurements.Measurements.stratos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stratos</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.update_auth_user_ID" title="ELDAmwl.database.tables.measurements.Measurements.update_auth_user_ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_auth_user_ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.updated_date" title="ELDAmwl.database.tables.measurements.Measurements.updated_date"><code class="xref py py-obj docutils literal notranslate"><span class="pre">updated_date</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements.upload" title="ELDAmwl.database.tables.measurements.Measurements.upload"><code class="xref py py-obj docutils literal notranslate"><span class="pre">upload</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.calipso">
+<code class="sig-name descname">calipso</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.calipso" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.cirrus">
+<code class="sig-name descname">cirrus</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.cirrus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.climatol">
+<code class="sig-name descname">climatol</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.climatol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.cloudmask">
+<code class="sig-name descname">cloudmask</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.cloudmask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.cloudmask_current_product_id">
+<code class="sig-name descname">cloudmask_current_product_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.cloudmask_current_product_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.cloudmask_return_code">
+<code class="sig-name descname">cloudmask_return_code</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.cloudmask_return_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.comment">
+<code class="sig-name descname">comment</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.comment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.creation_auth_user_ID">
+<code class="sig-name descname">creation_auth_user_ID</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.creation_auth_user_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.creation_date">
+<code class="sig-name descname">creation_date</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.creation_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.dicycles">
+<code class="sig-name descname">dicycles</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.dicycles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elda">
+<code class="sig-name descname">elda</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elda" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elda_current_product_id">
+<code class="sig-name descname">elda_current_product_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elda_current_product_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elda_return_code">
+<code class="sig-name descname">elda_return_code</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elda_return_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.eldec">
+<code class="sig-name descname">eldec</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.eldec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.eldec_current_product_id">
+<code class="sig-name descname">eldec_current_product_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.eldec_current_product_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.eldec_return_code">
+<code class="sig-name descname">eldec_return_code</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.eldec_return_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elic">
+<code class="sig-name descname">elic</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elic_current_product_id">
+<code class="sig-name descname">elic_current_product_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elic_current_product_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elic_return_code">
+<code class="sig-name descname">elic_return_code</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elic_return_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elpp">
+<code class="sig-name descname">elpp</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elpp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elpp_current_product_id">
+<code class="sig-name descname">elpp_current_product_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elpp_current_product_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elpp_return_code">
+<code class="sig-name descname">elpp_return_code</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elpp_return_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elquick">
+<code class="sig-name descname">elquick</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elquick" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elquick_current_product_id">
+<code class="sig-name descname">elquick_current_product_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elquick_current_product_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.elquick_return_code">
+<code class="sig-name descname">elquick_return_code</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.elquick_return_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.etna">
+<code class="sig-name descname">etna</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.etna" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.forfires">
+<code class="sig-name descname">forfires</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.forfires" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.hirelpp">
+<code class="sig-name descname">hirelpp</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.hirelpp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.hirelpp_current_product_id">
+<code class="sig-name descname">hirelpp_current_product_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.hirelpp_current_product_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.hirelpp_return_code">
+<code class="sig-name descname">hirelpp_return_code</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.hirelpp_return_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.interface_return_code">
+<code class="sig-name descname">interface_return_code</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.interface_return_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.lidar_ratio_file_id">
+<code class="sig-name descname">lidar_ratio_file_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.lidar_ratio_file_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.meas_id">
+<code class="sig-name descname">meas_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.meas_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.overlap_file_id">
+<code class="sig-name descname">overlap_file_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.overlap_file_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.photosmog">
+<code class="sig-name descname">photosmog</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.photosmog" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.rurban">
+<code class="sig-name descname">rurban</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.rurban" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.sahadust">
+<code class="sig-name descname">sahadust</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.sahadust" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.sounding_file_id">
+<code class="sig-name descname">sounding_file_id</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.sounding_file_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.start">
+<code class="sig-name descname">start</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.stop">
+<code class="sig-name descname">stop</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.stratos">
+<code class="sig-name descname">stratos</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.stratos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.update_auth_user_ID">
+<code class="sig-name descname">update_auth_user_ID</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.update_auth_user_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.updated_date">
+<code class="sig-name descname">updated_date</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.updated_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.measurements.Measurements.upload">
+<code class="sig-name descname">upload</code><a class="headerlink" href="#ELDAmwl.database.tables.measurements.Measurements.upload" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.database.tables.system_product">
+<span id="eldamwl-database-tables-system-product-module"></span><h2>ELDAmwl.database.tables.system_product module<a class="headerlink" href="#module-ELDAmwl.database.tables.system_product" title="Permalink to this headline">¶</a></h2>
+<p>Classes for measurement system-product related db tables</p>
+<p><strong>Classes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ErrorThresholds" title="ELDAmwl.database.tables.system_product.ErrorThresholds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorThresholds</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.MWLproductProduct" title="ELDAmwl.database.tables.system_product.MWLproductProduct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MWLproductProduct</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.PreparedSignalFile" title="ELDAmwl.database.tables.system_product.PreparedSignalFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreparedSignalFile</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions" title="ELDAmwl.database.tables.system_product.ProductOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductOptions</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes" title="ELDAmwl.database.tables.system_product.ProductTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductTypes</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.Products" title="ELDAmwl.database.tables.system_product.Products"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Products</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.SystemProduct" title="ELDAmwl.database.tables.system_product.SystemProduct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SystemProduct</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.system_product.ErrorThresholds">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">ErrorThresholds</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ErrorThresholds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ErrorThresholds.ID" title="ELDAmwl.database.tables.system_product.ErrorThresholds.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ErrorThresholds.name" title="ELDAmwl.database.tables.system_product.ErrorThresholds.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ErrorThresholds.value" title="ELDAmwl.database.tables.system_product.ErrorThresholds.value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">value</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ErrorThresholds.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ErrorThresholds.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ErrorThresholds.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ErrorThresholds.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ErrorThresholds.value">
+<code class="sig-name descname">value</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ErrorThresholds.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.system_product.MWLproductProduct">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">MWLproductProduct</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.MWLproductProduct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.MWLproductProduct.ID" title="ELDAmwl.database.tables.system_product.MWLproductProduct.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.MWLproductProduct.create_with_hr" title="ELDAmwl.database.tables.system_product.MWLproductProduct.create_with_hr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_with_hr</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.MWLproductProduct.create_with_lr" title="ELDAmwl.database.tables.system_product.MWLproductProduct.create_with_lr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_with_lr</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.MWLproductProduct.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.MWLproductProduct.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.MWLproductProduct.create_with_hr">
+<code class="sig-name descname">create_with_hr</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.MWLproductProduct.create_with_hr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.MWLproductProduct.create_with_lr">
+<code class="sig-name descname">create_with_lr</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.MWLproductProduct.create_with_lr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.system_product.PreparedSignalFile">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">PreparedSignalFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.PreparedSignalFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.PreparedSignalFile.ID" title="ELDAmwl.database.tables.system_product.PreparedSignalFile.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.PreparedSignalFile.filename" title="ELDAmwl.database.tables.system_product.PreparedSignalFile.filename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filename</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.PreparedSignalFile.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.PreparedSignalFile.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.PreparedSignalFile.filename">
+<code class="sig-name descname">filename</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.PreparedSignalFile.filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">ProductOptions</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.ID" title="ELDAmwl.database.tables.system_product.ProductOptions.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.detection_limit" title="ELDAmwl.database.tables.system_product.ProductOptions.detection_limit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detection_limit</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.interpolation_id" title="ELDAmwl.database.tables.system_product.ProductOptions.interpolation_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolation_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.max_height" title="ELDAmwl.database.tables.system_product.ProductOptions.max_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_height</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.min_height" title="ELDAmwl.database.tables.system_product.ProductOptions.min_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_height</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_integration_time" title="ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">preprocessing_integration_time</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_vertical_resolution" title="ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_vertical_resolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">preprocessing_vertical_resolution</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.detection_limit">
+<code class="sig-name descname">detection_limit</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.detection_limit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.interpolation_id">
+<code class="sig-name descname">interpolation_id</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.interpolation_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.max_height">
+<code class="sig-name descname">max_height</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.max_height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.min_height">
+<code class="sig-name descname">min_height</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.min_height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_integration_time">
+<code class="sig-name descname">preprocessing_integration_time</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_integration_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_vertical_resolution">
+<code class="sig-name descname">preprocessing_vertical_resolution</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_vertical_resolution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.system_product.ProductTypes">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">ProductTypes</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes.ID" title="ELDAmwl.database.tables.system_product.ProductTypes.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes.better_name" title="ELDAmwl.database.tables.system_product.ProductTypes.better_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">better_name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes.is_basic_product" title="ELDAmwl.database.tables.system_product.ProductTypes.is_basic_product"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_basic_product</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes.is_in_mwl_products" title="ELDAmwl.database.tables.system_product.ProductTypes.is_in_mwl_products"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_in_mwl_products</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes.is_mwl_only_product" title="ELDAmwl.database.tables.system_product.ProductTypes.is_mwl_only_product"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_mwl_only_product</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes.nc_file_id" title="ELDAmwl.database.tables.system_product.ProductTypes.nc_file_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nc_file_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes.processor_ID" title="ELDAmwl.database.tables.system_product.ProductTypes.processor_ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">processor_ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes.product_type" title="ELDAmwl.database.tables.system_product.ProductTypes.product_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">product_type</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductTypes.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductTypes.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductTypes.better_name">
+<code class="sig-name descname">better_name</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductTypes.better_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductTypes.is_basic_product">
+<code class="sig-name descname">is_basic_product</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductTypes.is_basic_product" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductTypes.is_in_mwl_products">
+<code class="sig-name descname">is_in_mwl_products</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductTypes.is_in_mwl_products" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductTypes.is_mwl_only_product">
+<code class="sig-name descname">is_mwl_only_product</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductTypes.is_mwl_only_product" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductTypes.nc_file_id">
+<code class="sig-name descname">nc_file_id</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductTypes.nc_file_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductTypes.processor_ID">
+<code class="sig-name descname">processor_ID</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductTypes.processor_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductTypes.product_type">
+<code class="sig-name descname">product_type</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductTypes.product_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.system_product.Products">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">Products</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.Products" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.Products.ID" title="ELDAmwl.database.tables.system_product.Products.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.Products.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.Products.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.database.tables.system_product.SystemProduct">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">SystemProduct</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.SystemProduct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.SystemProduct.ID" title="ELDAmwl.database.tables.system_product.SystemProduct.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.SystemProduct.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.SystemProduct.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="eldamwl-database-tables-volkers-db-functions-module">
+<h2>ELDAmwl.database.tables.volkers_db_functions module<a class="headerlink" href="#eldamwl-database-tables-volkers-db-functions-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.database.tables">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl.database.tables" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ELDAmwl.tests.html" class="btn btn-neutral float-right" title="ELDAmwl.tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ELDAmwl.database.html" class="btn btn-neutral float-left" title="ELDAmwl.database package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Ina Mattis
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
