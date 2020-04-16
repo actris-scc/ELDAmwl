@@ -303,7 +303,7 @@ def read_system_id(measurement_id):
 
         """
     sys_id = dbutils.session.query(Measurements)\
-        .filter(Measurements.meas_id == measurement_id)
+        .filter(Measurements.ID == measurement_id)
 
     if sys_id.count() == 1:
         return sys_id.value('_hoi_system_ID')
