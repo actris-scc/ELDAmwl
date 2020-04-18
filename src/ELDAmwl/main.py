@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import argparse
+import importlib
 
 from ELDAmwl.constants import ELDA_MWL_VERSION
 from ELDAmwl.elda_mwl_factories import RunELDAmwl
@@ -15,7 +17,7 @@ except ModuleNotFoundError:
 # registry.status()
 
 
-meas_id = '20181017oh00'
+# meas_id = '20181017oh00'
 # hoi_system_id =182 (RALPH Bauhof night)
 # products=
 #   328: Rbsc&Depol 532 (RBsc pid = 324), uc7 (without depol combination)
@@ -32,8 +34,51 @@ meas_id = '20181017oh00'
 #   380: Ext 532
 #   598: mwl (378 + 379 + 328)
 
+def handle_args():
+    parser = argparse.ArgumentParser(description='EARLINET Lidar Data Analyzer for \
+                       multi-wavelengths measurements')
 
-def main():
+    parser.add_argument('meas_id', metavar='meas_id', type=str,
+                        help='the id of a measurement')
+
+    parser.add_argument('-i', dest='proc_inst', default=None, type=str,
+                        help='processing_inst: name of the institution \
+                            at which this code is running')
+
+    parser.add_argument('-c', dest='config_file', default=None, type=str,
+                        help='name of config_file. It must be located in the path '
+                             'ELDAmwl/src/configs, has the extension .py, and follow the'
+                             'structure of config_default.py in this directory')
+
+    parser.add_argument('-l', dest='ll_file', default='DEBUG', type=str,
+                        choices=['QUIET', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG'],
+                        help='how many output is written to the log file. default = debug')
+
+    #    parser.add_argument('-L', dest='ll_db', default='QUIET', type=str,
+    #                        choices=['QUIET', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG'],
+    #                        help='how many output is written to the SCC database. default = info')
+
+    args = parser.parse_args()
+
+    if args.config_file:
+        try:
+            conf_file = 'configs.' + args.config_file[:-3]
+            cfg = importlib.import_module(conf_file)
+        except ModuleNotFoundError:
+            logger.error('cannot find config file {0} in path'
+                         'ELDAmwl/src/configs'.format(args.config_file[:-3] + '.py'))
+            import ELDAmwl.configs.config as cfg
+
+    if args.ll_file:
+        if args.ll_file == 'QUIET':
+            logger.disabled = True
+        else:
+            logger.setLevel(args.ll_file)
+
+    return args.meas_id
+
+
+def main(meas_id):
     # ext_id = 377
 
     create_logger(meas_id)
@@ -53,4 +98,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    meas_id = handle_args()
+
+    main(meas_id)
