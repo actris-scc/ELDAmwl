@@ -76,7 +76,7 @@ class BackscatterParams(ProductParams):
 
 class Backscatters(Products):
     """
-    time series of extinction profiles
+    time series of backscatter profiles
     """
     @classmethod
     def from_signal(cls, signal, p_params):
@@ -151,6 +151,39 @@ class BackscatterFactoryDefault(BaseOperation):
             pass
 
         return result
+
+
+class CalcRamanBscProfile(BaseOperationFactory):
+    """calculates Raman bsc profile from elast and Raman signals and calibration window"""
+
+    def get_classname_from_db(self):
+        """ reads from SCC db which algorithm to use for bsc calculation
+
+        Returns: name of the class for the bsc calculation
+        """
+        return read_extinction_algorithm(self.prod_id)
+
+    pass
+
+
+class CalcRamanBscProfileViaBR(BaseOperation):
+    """calculates Raman backscatter profile via BR"""
+    pass
+
+
+class CalcElastBscProfile(BaseOperationFactory):
+    """calculates bsc profiles from signal and calibration window"""
+    pass
+
+
+class CalcBscProfileKF(BaseOperation):
+    """calculates bsc profiles with Klett-Fernal method"""
+    pass
+
+
+class CalcBscProfileIter(BaseOperation):
+    """calculates bsc profiles with iterative method"""
+    pass
 
 registry.register_class(BackscatterFactory,
                         BackscatterFactoryDefault.__name__,

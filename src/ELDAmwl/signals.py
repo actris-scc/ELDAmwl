@@ -4,7 +4,7 @@
 from copy import deepcopy
 from ELDAmwl.base import DataPoint
 from ELDAmwl.columns import Columns
-from ELDAmwl.constants import ALL_OK
+from ELDAmwl.constants import ALL_OK, EBSC
 from ELDAmwl.constants import ANALOG
 from ELDAmwl.constants import CROSS
 from ELDAmwl.constants import FAR_RANGE
@@ -263,6 +263,16 @@ class Signals(Columns):
                 pol_calibr_idx = int(nc_ds.depolarization_calibration_index[idx_in_file])  # noqa E501
                 result.pol_calibr = DepolarizationCalibration.from_nc_file(nc_ds,  # noqa E501
                                                                            pol_calibr_idx)  # noqa E501
+
+        if 'assumed_particle_lidar_ratio' in nc_ds:
+            lidar_ratio = nc_ds.assumed_particle_lidar_ratio
+            lidar_ratio_err = nc_ds.assumed_particle_lidar_ratio_error
+            result.ds['assumed_particle_lidar_ratio'] = \
+                result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,
+                                                   lidar_ratio)
+            result.ds['assumed_particle_lidar_ratio_error'] = \
+                result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,
+                                       lidar_ratio_err)
 
         return result
 

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """functions for db handling"""
 
-from ELDAmwl.constants import EBSC
+from ELDAmwl.constants import EBSC, PROFILE
 from ELDAmwl.constants import MWL
 from ELDAmwl.constants import RBSC
 from ELDAmwl.database.db import DBUtils
-from ELDAmwl.database.tables.backscatter import BscCalibrOption
+from ELDAmwl.database.tables.backscatter import BscCalibrOption, RamanBscMethod, LRFile, IterBackscatterOption
 from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.extinction import ExtinctionOption
@@ -92,7 +92,6 @@ def read_lidar_ratio_params(product_id):
         logger.error('wrong number of lidar ratio options ({0})'
                      .format(options.count()))
 
-
 def read_extinction_params(product_id):
     """ function to read options of an extinction product from db.
 
@@ -100,7 +99,7 @@ def read_extinction_params(product_id):
         extinction product shall be derived.
 
         Args:
-            product_id (int): the id of the actual extinction product
+            product_id (str): the id of the actual extinction product
 
         Returns:
             ??: options
@@ -233,6 +232,95 @@ def get_general_params_query(prod_id):
         logger.error('wrong number of product options ({0})'
                      .format(options.count()))
 
+
+def read_elast_bsc_params(product_id):
+    """ function to read options of an elast bsc product from db.
+
+        This function reads from db with which parameters an
+        elast bsc product shall be derived.
+
+        Args:
+            product_id (str): the id of the actual elast bsc product
+
+        Returns:
+            options : {'elast_bsc_method', 'lr_input_method'}
+
+        """
+    options = dbutils.session.query(ElastBackscatterOption)\
+        .filter(ElastBackscatterOption._product_ID == product_id)
+
+    if options.count() == 1:
+        result = {'elast_bsc_method': options.value('_elast_bsc_method_ID'),
+                  'lr_input_method': options.value('_lr_input_method_id'),
+                  }
+
+        # if options.value('_lr_input_method_id') == PROFILE:
+        #     lr_file = dbutils.session.query(LRFile) \
+        #         .filter(LRFile.ID == ElastBackscatterOption._lr_file_ID) \
+        #         .filter(ElastBackscatterOption._product_ID == product_id)
+        #     if lr_file.count() == 1:
+        #         result['lr_file'] = lr_file
+        #     else:
+        #         logger.error('cannot find lidar ratio file with id {0} in db'
+        #                      .format(options('_lr_file_ID')))
+
+        return result
+    else:
+        logger.error('wrong number of elast bsc options ({0})'
+                     .format(options.count()))
+
+def read_iter_bsc_params(product_id):
+    """ function to read options of an iterative bsc product from db.
+
+        This function reads from db with which parameters an
+        iterative bsc product shall be derived.
+
+        Args:
+            product_id (str): the id of the actual iterative bsc product
+
+        Returns:
+            options : {'conv_crit', 'max_iteration_count', 'ram_bsc_method'}
+
+        """
+    options = dbutils.session.query(IterBackscatterOption,
+                                    ElastBackscatterOption)\
+        .filter(ElastBackscatterOption._product_ID == product_id)\
+        .filter(ElastBackscatterOption._iter_bsc_options_id == IterBackscatterOption.ID)
+
+    if options.count() == 1:
+        result = {'conv_crit': options.value('iter_conv_crit'),
+                  'max_iteration_count': options.value('max_iteration_count'),
+                  'ram_bsc_method': options('_ram_bsc_method_id'),
+                  }
+
+        return result
+    else:
+        logger.error('wrong number of iterative bsc options ({0})'
+                     .format(options.count()))
+
+def read_raman_bsc_params(product_id):
+    """ function to read options of a Raman bsc product from db.
+
+        This function reads from db with which parameters a
+        Raman bsc product shall be derived.
+
+        Args:
+            product_id (str): the id of the actual Raman bsc product
+
+        Returns:
+            options : {'ram_bsc_method'}
+
+        """
+    options = dbutils.session.query(RamanBackscatterOption)\
+        .filter(RamanBackscatterOption._product_ID == product_id)
+
+    if options.count() == 1:
+        result = {'ram_bsc_method': options.value('_ram_bsc_method_ID'),
+                  }
+        return result
+    else:
+        logger.error('wrong number of Raman bsc options ({0})'
+                     .format(options.count()))
 
 def get_bsc_cal_params_query(bsc_prod_id, bsc_type):
     """ read from db which shall be used to get the calibration of a sc product.

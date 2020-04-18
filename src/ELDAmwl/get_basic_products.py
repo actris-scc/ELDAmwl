@@ -19,15 +19,6 @@ class GetBasicProductsDefault(BaseOperation):
         self.data_storage = self.kwargs['data_storage']
         self.product_params = self.kwargs['product_params']
 
-        for ext_param in self.product_params.extinction_products():
-            extinction = ExtinctionFactory()(
-                data_storage=self.data_storage,
-                ext_param=ext_param,
-                autosmooth=True,
-            ).get_product()
-            self.data_storage.set_basic_product_auto_smooth(
-                ext_param.prod_id_str, extinction)
-
         for bsc_param in self.product_params.all_bsc_products():
             pass
             # bsc = BackscatterFactory()(
@@ -37,6 +28,16 @@ class GetBasicProductsDefault(BaseOperation):
             # ).get_product()
             # self.data_storage.set_basic_product_auto_smooth(
             #     bsc_param.prod_id_str, bsc)
+
+        for ext_param in self.product_params.extinction_products():
+            extinction = ExtinctionFactory()(
+                data_storage=self.data_storage,
+                ext_param=ext_param,
+                autosmooth=True,
+            ).get_product()
+            self.data_storage.set_basic_product_auto_smooth(
+                ext_param.prod_id_str, extinction)
+
 
 
 class GetBasicProducts(BaseOperationFactory):

@@ -91,6 +91,18 @@ IT = 1  # iterative
 
 ELAST_BSC_METHODS = [KF, IT]
 
+# ====== lidar ratio input methods ======
+PROFILE = 0
+FIXED = 1
+
+LR_INPUT_METHODS = [PROFILE, FIXED]
+
+# ====== Raman bsc methods ======
+ANSM = 0  # Ansmann
+BR = 1  # via backscatter ratio
+
+RAMAN_BSC_METHODS = [ANSM, BR]
+
 # ====== fill values ======
 NC_FILL_BYTE = -127
 NC_FILL_INT = -2147483647

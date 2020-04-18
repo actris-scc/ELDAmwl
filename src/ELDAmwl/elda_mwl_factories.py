@@ -18,6 +18,7 @@ from ELDAmwl.lidar_ratio_factories import LidarRatioParams
 from ELDAmwl.log import logger
 from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams
+from ELDAmwl.raman_bsc_factories import RamanBscParams
 from ELDAmwl.signals import ElppData
 
 import pandas as pd
@@ -28,7 +29,8 @@ try:
 except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg  # noqa E401
 
-PARAM_CLASSES = {RBSC: BackscatterParams,
+PARAM_CLASSES = {RBSC: RamanBscParams,
+                 EBSC: BackscatterParams,
                  EXT: ExtinctionParams,
                  LR: LidarRatioParams}
 
@@ -146,7 +148,7 @@ class MeasurementParams(Params):
                 result.append(self.measurement_params.product_list[idx])
             return result
         else:
-            return None
+            return []
 
     def read_product_list(self):
         """Reads the parameter of all products of this measurement from database.
