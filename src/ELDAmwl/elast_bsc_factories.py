@@ -19,7 +19,7 @@ class ElastBscParams(BackscatterParams):
 
     @classmethod
     def from_db(cls, general_params):
-        result = super(ElastBscParams, cls)
+        result = super(ElastBscParams, cls).from_db(general_params)
 
         ebp = read_elast_bsc_params(general_params.prod_id)
 

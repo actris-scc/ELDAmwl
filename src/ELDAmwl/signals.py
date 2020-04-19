@@ -157,6 +157,34 @@ class Signals(Columns):
     pol_calibr = None
 
     @classmethod
+    def from_sig_ratio(cls, enumerator, denominator):
+        """creates a Signals instance from the ratio of two Signals
+
+        Args:
+            enumerator (::class:`Signals`): nominator
+            denominator (::class:`Signals`): denominator
+
+        Returns: Signals
+
+        """
+        result = deepcopy(enumerator)
+
+        result.ds['data'] = enumerator.ds.data / denominator.ds.data
+        result.ds['err'] = result.ds.data * np.sqrt(np.square(enumerator.rel_err) +
+                                                    np.square(denominator.rel_err))
+        result.ds['qf'] = enumerator.ds.qf | denominator.ds.qf
+
+
+        result.channel_id = xr.concat([enumerator.channel_id,
+                                       denominator.channel_id],
+                                      dim='nc')
+
+        # todo: combine other attributes, e.g. detection type etc.
+
+        return result
+
+
+    @classmethod
     def from_nc_file(cls, nc_ds, idx_in_file):
         """creates a Signals instance from the content of a NetCDF file
 
@@ -286,8 +314,8 @@ class Signals(Columns):
         Sig_total = etaS/K*HR*sig_transm - HT*Sig_refl/(HR*GT - HT*GR)
 
         Args:
-            transm_sig (Signals):   the transmitted signal component
-            refl_sig (Signals):     the reflected signal component
+            transm_sig (::class:`Signals`):   the transmitted signal component
+            refl_sig (::class:`Signals`):     the reflected signal component
 
         Returns: Signals
         """

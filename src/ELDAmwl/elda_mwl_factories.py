@@ -11,6 +11,7 @@ from ELDAmwl.data_storage import DataStorage
 from ELDAmwl.database.db_functions import get_products_query
 from ELDAmwl.database.db_functions import read_mwl_product_id
 from ELDAmwl.database.db_functions import read_system_id
+from ELDAmwl.elast_bsc_factories import ElastBscParams
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.get_basic_products import GetBasicProducts
@@ -30,7 +31,7 @@ except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg  # noqa E401
 
 PARAM_CLASSES = {RBSC: RamanBscParams,
-                 EBSC: BackscatterParams,
+                 EBSC: ElastBscParams,
                  EXT: ExtinctionParams,
                  LR: LidarRatioParams}
 

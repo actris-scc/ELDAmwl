@@ -39,44 +39,6 @@ class BscCalibrOption(Base):
                                       server_default=text("'-1'"))
 
 
-class ElastBackscatterOption(Base):
-    """content of the db table elast_backscatter_options
-
-    """
-
-    __tablename__ = 'elast_backscatter_options'
-
-    ID = Column(INTEGER, primary_key=True)
-    _product_ID = Column(INTEGER,
-                         nullable=False,
-                         server_default=text("'-1'"))
-    _elast_bsc_method_ID = Column(INTEGER,
-                                  nullable=False,
-                                  index=True,
-                                  server_default=text("'-1'"))
-    _bsc_calibr_options_ID = Column(INTEGER,
-                                    nullable=False,
-                                    index=True,
-                                    server_default=text("'-1'"))
-    _error_method_ID = Column(INTEGER,
-                              nullable=False,
-                              index=True,
-                              server_default=text("'-1'"))
-    _lr_input_method_id = Column(INTEGER,
-                                 nullable=False,
-                                 index=True,
-                                 server_default=text("'-1'"))
-    fixed_lr = Column(DECIMAL(10, 4),
-                      nullable=False,
-                      server_default=text("'50.0000'"))
-    fixed_lr_error = Column(DECIMAL(10, 4),
-                            nullable=False,
-                            server_default=text("'0.0000'"))
-    _iter_bsc_options_id = Column(INTEGER,
-                                  nullable=False,
-                                  index=True,
-                                  server_default=text("'-1'"))
-
 class RamanBscMethod(Base):
     """content of the db table _ram_bsc_methods
 
@@ -160,9 +122,6 @@ class IterBackscatterOption(Base):
     __tablename__ = 'iter_backscatter_options'
 
     ID = Column(INTEGER, primary_key=True)
-    _product_ID = Column(INTEGER,
-                         nullable=False,
-                         server_default=text("'-1'"))
     iter_conv_crit = Column(DECIMAL,
                                 nullable=False,
                                 index=True,

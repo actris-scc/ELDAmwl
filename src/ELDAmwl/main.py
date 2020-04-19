@@ -45,11 +45,11 @@ def handle_args():
                         help='processing_inst: name of the institution \
                             at which this code is running')
 
-    parser.add_argument('-c', dest='config_file', default=None, type=str,
-                        help='name of config_file. It must be located in the path '
-                             'ELDAmwl/src/configs, has the extension .py, and follow the'
-                             'structure of config_default.py in this directory')
-
+    # parser.add_argument('-c', dest='config_file', default=None, type=str,
+    #                     help='name of config_file. It must be located in the path '
+    #                          'ELDAmwl/src/configs, has the extension .py, and follow the'
+    #                          'structure of config_default.py in this directory')
+    #
     parser.add_argument('-l', dest='ll_file', default='DEBUG', type=str,
                         choices=['QUIET', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG'],
                         help='how many output is written to the log file. default = debug')
@@ -60,14 +60,14 @@ def handle_args():
 
     args = parser.parse_args()
 
-    if args.config_file:
-        try:
-            conf_file = 'configs.' + args.config_file[:-3]
-            cfg = importlib.import_module(conf_file)
-        except ModuleNotFoundError:
-            logger.error('cannot find config file {0} in path'
-                         'ELDAmwl/src/configs'.format(args.config_file[:-3] + '.py'))
-            import ELDAmwl.configs.config as cfg
+    # if args.config_file:
+    #     try:
+    #         conf_file = 'configs.' + args.config_file[:-3]
+    #         cfg = importlib.import_module(conf_file)
+    #     except ModuleNotFoundError:
+    #         logger.error('cannot find config file {0} in path'
+    #                      'ELDAmwl/src/configs'.format(args.config_file[:-3] + '.py'))
+    #         import ELDAmwl.configs.config as cfg
 
     if args.ll_file:
         if args.ll_file == 'QUIET':

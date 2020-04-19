@@ -6,6 +6,7 @@ from ELDAmwl.constants import ERROR_METHODS
 from ELDAmwl.database.db_functions import read_lidar_ratio_params
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.products import ProductParams
+from ELDAmwl.raman_bsc_factories import RamanBscParams
 
 
 class LidarRatioParams(ProductParams):
@@ -32,7 +33,7 @@ class LidarRatioParams(ProductParams):
         result.min_BscRatio_for_LR = query.min_BscRatio_for_LR
 
         bsc_general_params = result.from_id(result.bsc_prod_id)
-        result.backscatter_params = BackscatterParams.from_db(bsc_general_params)  # noqa E501
+        result.backscatter_params = RamanBscParams.from_db(bsc_general_params)  # noqa E501
         result.backscatter_params.general_params.calc_with_lr = True
         result.backscatter_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
 

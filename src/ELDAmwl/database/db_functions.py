@@ -290,7 +290,7 @@ def read_iter_bsc_params(product_id):
     if options.count() == 1:
         result = {'conv_crit': options.value('iter_conv_crit'),
                   'max_iteration_count': options.value('max_iteration_count'),
-                  'ram_bsc_method': options('_ram_bsc_method_id'),
+                  'ram_bsc_method': options.value('_ram_bsc_method_id'),
                   }
 
         return result
