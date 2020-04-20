@@ -44,3 +44,19 @@ class NoValidDataPointsForCalibration(Exception):
     Raised if a backscatter calibration value cannot be
     calculated within the requested uncertainty.
     """
+    # return value = 13
+
+class UseCaseNotImplemented(Exception):
+    """Raised if a usecase or BaseOperation is called but not yet implemented
+    """
+    # return value = 7
+
+
+class CalRangeHigherThanValid(Exception):
+    """raised when the range for finding the calibration window is higher
+    than vertical range for product calculation"""
+    # return value = 11
+
+
+class BscCalParamsNotEqual(Exception):
+    """raised when calibration params of backscatter products are not equal"""

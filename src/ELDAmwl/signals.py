@@ -19,6 +19,7 @@ from ELDAmwl.constants import WATER_VAPOR
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.registry import registry
+from ELDAmwl.log import logger
 
 import numpy as np
 import os
@@ -344,6 +345,84 @@ class Signals(Columns):
         result.pol_channel_geometry.values = TRANSMITTED + REFLECTED
 
         return result
+
+    def heights_to_levels(self, heights):
+        """converts a height value into a series of level (dim=time)
+        Args: heights (np.ndarray): a requested height for each time, in m
+        Returns: first level above the requested height
+        """
+        times = self.ds.dims['time']
+        if heights.shape[0] != times:
+            logger.error('dataset and heights have different lenghts (time dimension)')
+            return None
+
+        result = []
+        for t in range(times):
+            result.append(np.where(self.height[t] > heights[t])[0][0])
+
+        return np.array(result)
+
+    def height_to_levels(self, height):
+        """converts a height value into a series of level (dim=time)
+        Args: height (float): one requested height for all times, in m
+        Returns: first level above the requested height
+        """
+        times = self.ds.dims['time']
+        result = []
+        for t in range(times):
+            result.append(np.where(self.height[t] > height)[0][0])
+
+        return np.array(result)
+
+
+    def data_in_vertical_range(self, v_range, boundaries=None):
+        """data in vertical range
+
+        Args:
+            v_range(addict.Dict): with keys 'min_height' and \
+                    'max_height' which are heights in m)
+            boundaries (str): 'extend_with_binres' or 'clip_with_binres' or None. default = None
+        Returns:
+            subset of the dataset in the vertical range.
+            *   if boundaries == None (default) => returns range between
+                    (begin of vertical range) and (end of vertical range)
+            *   if boundaries == 'extend_with_binres' => returns range between \
+                    (begin of vertical range - half binres at this height)
+                    and
+                    (end of vertical range + half binres at this height)
+            *   if boundaries == 'clip_with_binres' => returns range between \
+                    (begin of vertical range + half binres at this height)
+                    and
+                    (end of vertical range - half binres at this height)
+        """
+        assert (boundaries == None) or \
+               (boundaries == 'extend_with_binres') or \
+               (boundaries == 'clip_with_binres')
+
+        min_h = v_range.min_height
+        max_h = v_range.max_height
+
+        if boundaries == None:
+            min_alt = min_h + self.station_altitude.values
+            max_alt = max_h + self.station_altitude.values
+
+            return self.ds.where((self.ds.altitude > min_alt) &
+                                 (self.ds.altitude < max_alt),
+                                 drop=True)
+        else:
+            # first valid level
+            fvl = self.height_to_level(min_h)
+            # last valid level
+            lvl = self.height_to_level(max_h)
+
+            if boundaries == 'extend_with_binres':
+                fvl = max(fvl - self.ds.binres[fvl] // 2, 0)
+                lvl = min(lvl + self.ds.binres[lvl] // 2, self.ds.dims.level)
+            else: # boundaries == 'clip_with_binres'
+                fvl = max(fvl + self.ds.binres[fvl] // 2, 0)
+                lvl = min(lvl - self.ds.binres[lvl] // 2, self.ds.dims.level)
+
+            return self.ds.isel({'level': range(fvl, lvl)})
 
     @property
     def channel_id_str(self):

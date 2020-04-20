@@ -7,7 +7,7 @@ from ELDAmwl.backscatter_factories import BackscatterParams, Backscatters, Backs
 from ELDAmwl.base import DataPoint
 from ELDAmwl.constants import RAYL_LR, NC_FILL_STR
 from ELDAmwl.database.db_functions import read_raman_bsc_params, read_raman_bsc_algorithm
-from ELDAmwl.exceptions import NoValidDataPointsForCalibration
+from ELDAmwl.exceptions import NoValidDataPointsForCalibration, UseCaseNotImplemented
 from ELDAmwl.factory import BaseOperationFactory, BaseOperation
 from ELDAmwl.signals import Signals
 from ELDAmwl.registry import registry
@@ -47,25 +47,24 @@ class RamanBackscatters(Backscatters):
         Args:
             sigratio (::class:`Signals`): time series of signal ratio profiles
             p_params (::class:`RamanBackscatterParams`): calculation params of the backscatter product
-            calibr_window (tuple): first and last height of the calibration window [m]
+            calibr_window (xarray.DataArray): variable 'backscatter_calibration_range' (time, nv: 2)
         """
         result = super(RamanBackscatters, cls).from_signal(sigratio, p_params, calibr_window)
 
         times = sigratio.ds.dims['time']
-        all_idx = np.where(sigratio.height > calibr_window[:,0])[1]
-        cal_first_idx = np.reshape(all_idx, (times, all_idx.shape[0] // times))[:,0]
-        all_idx = np.where(sigratio.height > calibr_window[:,1])[1]
-        cal_last_idx = np.reshape(all_idx, (times, all_idx.shape[0] // times))[:,0]
+        cal_first_lev = sigratio.heights_to_levels(calibr_window[:,0].values)
+        cal_last_lev = sigratio.heights_to_levels(calibr_window[:,1].values)
 
         error_params = Dict({'err_threshold': p_params.general_params.error_threshold,
                              })
 
         calibr_value = DataPoint.from_data(p_params.calibration_params.CalValue, 0, 0)
-        cal_params = Dict({'cal_first_idx': cal_first_idx,
-                           'cal_last_idx': cal_last_idx,
+        cal_params = Dict({'cal_first_lev': cal_first_lev,
+                           'cal_last_lev': cal_last_lev,
                            'calibr_value': calibr_value})
 
         calc_routine = CalcRamanBscProfile()(prod_id=p_params.prod_id_str)
+
         result.ds = calc_routine.run(sigratio=sigratio.ds,
                                          error_params=error_params,
                                          calibration=cal_params)
@@ -156,7 +155,7 @@ class CalcRamanBscProfileViaBR(BaseOperation):
                 sigratio (xarray.DataSet): already smoothed signal ratio with \
                                         variables 'data', 'error', 'qf', 'binres', 'mol_extinction'
                 error_params (addict.Dict): with keys 'low' and 'high' = maximum allowable relative statistical error
-                calibration (addict.Dict): with keys 'cal_first_idx', 'cal_last_idx', and 'calibr_value'
+                calibration (addict.Dict): with keys 'cal_first_lev', 'cal_last_lev', and 'calibr_value'
         """
         assert 'sigratio' in kwargs
         assert 'error_params' in kwargs
@@ -176,8 +175,8 @@ class CalcRamanBscProfileViaBR(BaseOperation):
 
 
         for t in range(times):
-            df = sigratio.data.isel({'level': range(calibration['cal_first_idx'][t],
-                                                    calibration['cal_last_idx'][t]),
+            df = sigratio.data.isel({'level': range(calibration['cal_first_lev'][t],
+                                                    calibration['cal_last_lev'][t]),
                                      'time': t})\
                 .to_dataframe()
             mean = df.data.mean()
@@ -214,6 +213,10 @@ class CalcRamanBscProfileAsAnsmann(BaseOperation):
     """calculates Raman backscatter profile like in ansmann et al 1992"""
 
     name = 'CalcRamanBscProfileAsAnsmann'
+    def run(self, **kwargs):
+        logger.error('This Raman bsc method is not yet implemented. '
+                     'Use viaBR (id = 1) instead.')
+        raise UseCaseNotImplemented()
 
 
 
