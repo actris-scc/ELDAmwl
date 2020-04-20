@@ -10,7 +10,8 @@ from ELDAmwl.log import logger
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.registry import registry
-
+import xarray as xr
+import numpy as np
 
 class BscCalibrationParams(Params):
 
@@ -78,23 +79,29 @@ class Backscatters(Products):
     """
     time series of backscatter profiles
     """
+
+    calibr_window = None
+
     @classmethod
-    def from_signal(cls, signal, p_params):
+    def from_signal(cls, signal, p_params, calibr_window):
         """calculates Backscatters from an elastic signal.
 
         The signal was previously prepared by PrepareBscSignals .
 
         Args:
-            signal (Signals): time series of signal profiles
-            p_params (BackscatterParams)
+            signal (::class:`Signals`): time series of signal profiles
+            p_params (::class:`BackscatterParams`): calculation params of the backscatter product
+            calibr_window (tuple): first and last height of the calibration window [m]
         """
         result = super(Backscatters, cls).from_signal(signal, p_params)
+        cls.calibr_window = calibr_window
+
         return result
 
 
 class BackscatterFactory(BaseOperationFactory):
     """
-
+    derives a single instance of ::class:`Backscatters`.
     """
 
     name = 'BackscatterFactory'
@@ -103,88 +110,89 @@ class BackscatterFactory(BaseOperationFactory):
         assert 'data_storage' in kwargs
         assert 'bsc_param' in kwargs
         assert 'autosmooth' in kwargs
+        assert 'calibr_window' in kwargs
         res = super(BackscatterFactory, self).__call__(**kwargs)
         return res
 
     def get_classname_from_db(self):
-        """
-
-        return: always 'BackscatterFactoryDefault' .
-        """
-        return BackscatterFactoryDefault.__name__
+        pass
 
 
 class BackscatterFactoryDefault(BaseOperation):
     """
-    derives particle backscatter coefficients.
+    derives a single instance of ::class:`Backscatters`.
     """
 
     name = 'BackscatterFactoryDefault'
 
     data_storage = None
     elast_sig = None
+    calibr_window = None
 
     def get_product(self):
         self.data_storage = self.kwargs['data_storage']
         self.param = self.kwargs['bsc_param']
+        self.calibr_window = self.kwargs['calibr_window']
 
         if not self.param.includes_product_merging():
             self.elast_sig = self.data_storage.prepared_signal(
                 self.param.prod_id_str,
                 self.param.total_sig_id)
 
-            if self.kwargs['autosmooth']:
-                pass
-                # smooth_res = ExtinctionAutosmooth()(
-                #     signal=raman_sig.ds,
-                #     smooth_params=self.param.smooth_params,
-                # ).run()
 
-            # smoothed_sig = deepcopy(raman_sig)
-            # smoothed_sig.ds['binres'] = smooth_res
-            # result = Backscatters.from_signal(smoothed_sig, self.param)
-        else:
-            # result = Extinctions.from_merged_signals()
-            pass
+class FindCommonBscCalibrWindow(BaseOperationFactory):
+    """ fins a common calibration window for all bsc products
 
-        if self.param.error_method == MC:
-            pass
+    Keyword Args:
+        data_storage
+        bsc_params (list of ::class:`BackscatterParams`): \
+                list of params of all backscatter products
+    """
+    name = 'FindCommonBscCalibrWindow'
 
-        return result
-
-
-class CalcRamanBscProfile(BaseOperationFactory):
-    """calculates Raman bsc profile from elast and Raman signals and calibration window"""
+    def __call__(self, **kwargs):
+        assert 'data_storage' in kwargs
+        assert 'bsc_params' in kwargs
+        res = super(FindCommonBscCalibrWindow, self).__call__(**kwargs)
+        return res
 
     def get_classname_from_db(self):
-        """ reads from SCC db which algorithm to use for bsc calculation
-
-        Returns: name of the class for the bsc calculation
-        """
-        return read_extinction_algorithm(self.prod_id)
-
-    pass
+        return FindCommonBscCalibrWindowDefault.__name__
 
 
-class CalcRamanBscProfileViaBR(BaseOperation):
-    """calculates Raman backscatter profile via BR"""
-    pass
+class FindCommonBscCalibrWindowDefault(BaseOperation):
+
+    name = 'FindCommonBscCalibrWindowDefault'
+
+    data_storage = None
+    bsc_params = None
+
+    def run(self):
+        self.data_storage = self.kwargs['data_storage']
+        self.bsc_params = self.kwargs['bsc_params']
+
+        # todo: these are fake values => implement real algorithm
+
+        sig = self.data_storage.prepared_signal(self.bsc_params[0].prod_id_str,
+                                                self.bsc_params[0].total_sig_id).ds
+        da = xr.DataArray(np.zeros((sig.dims['time'], sig.dims['nv'])),
+                              coords= [sig.time, sig.nv],
+                              dims=['time', 'nv'])
+        da.name = 'backscatter_calibration_range'
+        da.attrs = {'long_name': 'height range where calibration was calculated',
+                                     'units': 'm'}
+        da[:,0] = 11000.
+        da[:,1] = 12000.
+
+        return da
 
 
-class CalcElastBscProfile(BaseOperationFactory):
-    """calculates bsc profiles from signal and calibration window"""
-    pass
+registry.register_class(FindCommonBscCalibrWindow,
+                        FindCommonBscCalibrWindowDefault.__name__,
+                        FindCommonBscCalibrWindowDefault)
 
+# these are virtual classes, therefore, they need no registration
+# registry.register_class(BackscatterFactory,
+#                         BackscatterFactoryDefault.__name__,
+#                         BackscatterFactoryDefault)
 
-class CalcBscProfileKF(BaseOperation):
-    """calculates bsc profiles with Klett-Fernal method"""
-    pass
-
-
-class CalcBscProfileIter(BaseOperation):
-    """calculates bsc profiles with iterative method"""
-    pass
-
-registry.register_class(BackscatterFactory,
-                        BackscatterFactoryDefault.__name__,
-                        BackscatterFactoryDefault)

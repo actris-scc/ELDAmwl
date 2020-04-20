@@ -7,6 +7,9 @@ from ELDAmwl.constants import IT, NC_FILL_INT
 from ELDAmwl.database.db_functions import read_elast_bsc_params, read_iter_bsc_params
 import numpy as np
 
+from ELDAmwl.factory import BaseOperationFactory, BaseOperation
+
+
 class ElastBscParams(BackscatterParams):
 
     def __init__(self):
@@ -48,3 +51,19 @@ class IterBscParams(Params):
         result.ram_bsc_method = ibp['ram_bsc_method']
 
         return result
+
+
+class CalcElastBscProfile(BaseOperationFactory):
+    """calculates bsc profiles from signal and calibration window"""
+    pass
+
+
+class CalcBscProfileKF(BaseOperation):
+    """calculates bsc profiles with Klett-Fernal method"""
+    pass
+
+
+class CalcBscProfileIter(BaseOperation):
+    """calculates bsc profiles with iterative method"""
+    pass
+

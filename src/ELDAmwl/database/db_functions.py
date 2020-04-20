@@ -6,7 +6,7 @@ from ELDAmwl.constants import MWL
 from ELDAmwl.constants import RBSC
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.backscatter import BscCalibrOption, RamanBscMethod, LRFile, IterBackscatterOption
-from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
+from ELDAmwl.database.tables.backscatter import ElastBackscatterOption, ElastBscMethod
 from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
@@ -69,6 +69,51 @@ def read_extinction_algorithm(product_id):
         logger.error('wrong number of extinction options ({0})'
                      .format(options.count()))
 
+def read_raman_bsc_algorithm(product_id):
+    """ read from db which algorithm shall be used for
+        calculation in Raman backscatter retrievals.
+
+        Args:
+            product_id (int): the id of the actual Raman bsc product
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    options = dbutils.session.query(RamanBscMethod,
+                                    RamanBackscatterOption)\
+        .filter(RamanBscMethod.ID == RamanBackscatterOption._ram_bsc_method_ID)\
+        .filter(RamanBackscatterOption._product_ID == product_id)
+
+    if options.count() == 1:
+        result = options.value('python_classname')
+        return result
+    else:
+        logger.error('wrong number of Raman bsc options ({0})'
+                     .format(options.count()))
+
+def read_elast_bsc_algorithm(product_id):
+    """ read from db which algorithm shall be used for
+        calculation in elastic backscatter retrievals.
+
+        Args:
+            product_id (int): the id of the actual elastic bsc product
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    options = dbutils.session.query(ElastBscMethod,
+                                    ElastBackscatterOption)\
+        .filter(ElastBscMethod.ID == ElastBackscatterOption._ext_method_ID)\
+        .filter(ElastBackscatterOption._product_ID == product_id)
+
+    if options.count() == 1:
+        result = options.value('python_classname')
+        return result
+    else:
+        logger.error('wrong number of Raman bsc options ({0})'
+                     .format(options.count()))
 
 def read_lidar_ratio_params(product_id):
     """ function to read options of an lidar ratio product from db.

@@ -157,7 +157,7 @@ class Signals(Columns):
     pol_calibr = None
 
     @classmethod
-    def from_sig_ratio(cls, enumerator, denominator):
+    def as_sig_ratio(cls, enumerator, denominator):
         """creates a Signals instance from the ratio of two Signals
 
         Args:

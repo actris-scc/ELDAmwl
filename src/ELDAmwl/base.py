@@ -39,6 +39,17 @@ class DataPoint(object):
         self.data = xr.Dataset()
 
     @classmethod
+    def from_data(cls, value, stat_err, sys_err):
+        result = cls()
+
+        dummy = xr.Dataset()
+        result.data = dummy.assign({'value': value,
+                                    'statistical_error': stat_err,
+                                    'systematic_error': sys_err,
+                                    })
+        return result
+
+    @classmethod
     def from_nc_file(cls, nc_ds, variable_name, idx_in_file):
         result = cls()
 
@@ -49,9 +60,22 @@ class DataPoint(object):
         stat_err = nc_ds.data_vars[stat_err_name][idx_in_file]
         sys_err = nc_ds.data_vars[sys_err_name][idx_in_file]
 
-        dummy = xr.Dataset()
-        result.data = dummy.assign({'value': value,
-                                    'statistical_error': stat_err,
-                                    'systematic_error': sys_err,
-                                    })
+        result = cls.from_data(value, stat_err, sys_err)
+
         return result
+
+    @property
+    def rel_error(self):
+        return self.stat_error / self.value
+
+    @property
+    def value(self):
+        return float(self.data.value)
+
+    @property
+    def stat_error(self):
+        return float(self.data.statistical_error)
+
+    @property
+    def sys_error(self):
+        return float(self.data.systematic_error_error)

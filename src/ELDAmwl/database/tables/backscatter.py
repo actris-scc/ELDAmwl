@@ -56,6 +56,23 @@ class RamanBscMethod(Base):
                               nullable=False,
                               server_default=text("''"))
 
+class ElastBscMethod(Base):
+    """content of the db table _elast_bsc_methods
+
+    """
+
+    __tablename__ = '_elast_bsc_methods'
+
+    ID = Column(INTEGER,
+                primary_key=True,
+                server_default=text("'0'"))
+    method = Column(String(100),
+                    nullable=False,
+                    server_default=text("''"))
+    python_classname = Column(String(100),
+                              nullable=False,
+                              server_default=text("''"))
+
 
 
 class RamanBackscatterOption(Base):

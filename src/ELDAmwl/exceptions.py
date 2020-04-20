@@ -38,3 +38,9 @@ class DifferentHeaderExists(Exception):
     Raised if a header shall be written to the data storage
     but the existing one is different from the new one
     """
+
+class NoValidDataPointsForCalibration(Exception):
+    """
+    Raised if a backscatter calibration value cannot be
+    calculated within the requested uncertainty.
+    """

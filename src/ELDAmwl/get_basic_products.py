@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """Classes for getting basic products
 """
-from ELDAmwl.backscatter_factories import BackscatterFactory
+from ELDAmwl.backscatter_factories import BackscatterFactory, FindCommonBscCalibrWindow
 from ELDAmwl.extinction_factories import ExtinctionFactory
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
+from ELDAmwl.raman_bsc_factories import RamanBackscatterFactory
 from ELDAmwl.registry import registry
 
 
@@ -19,13 +20,17 @@ class GetBasicProductsDefault(BaseOperation):
         self.data_storage = self.kwargs['data_storage']
         self.product_params = self.kwargs['product_params']
 
-        for bsc_param in self.product_params.all_bsc_products():
-            pass
-            # bsc = BackscatterFactory()(
-            #     data_storage=self.data_storage,
-            #     bsc_param=bsc_param,
-            #     autosmooth=True,
-            # ).get_product()
+        bsc_calibr_window = FindCommonBscCalibrWindow()(
+            data_storage=self.data_storage,
+            bsc_params=self.product_params.all_bsc_products()
+            ).run()
+        for bsc_param in self.product_params.raman_bsc_products():
+            bsc = RamanBackscatterFactory()(
+                data_storage=self.data_storage,
+                bsc_param=bsc_param,
+                calibr_window=bsc_calibr_window,
+                autosmooth=True,
+             ).get_product()
             # self.data_storage.set_basic_product_auto_smooth(
             #     bsc_param.prod_id_str, bsc)
 
