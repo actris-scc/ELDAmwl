@@ -51,6 +51,9 @@ class RamanBackscatters(Backscatters):
         """
         result = super(RamanBackscatters, cls).from_signal(sigratio, p_params, calibr_window)
 
+        if calibr_window ==None:
+            calibr_window = p_params.calibr_window
+
         times = sigratio.ds.dims['time']
         cal_first_lev = sigratio.heights_to_levels(calibr_window[:,0].values)
         cal_last_lev = sigratio.heights_to_levels(calibr_window[:,1].values)

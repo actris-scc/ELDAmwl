@@ -156,6 +156,7 @@ class Signals(Columns):
     pol_channel_conf = np.nan
     scale_factor_shots = None
     pol_calibr = None
+    raw_heightres = np.nan
 
     @classmethod
     def as_sig_ratio(cls, enumerator, denominator):
@@ -303,6 +304,8 @@ class Signals(Columns):
                 result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,
                                        lidar_ratio_err)
 
+        result.get_raw_heightres()
+
         return result
 
     @classmethod
@@ -345,6 +348,17 @@ class Signals(Columns):
         result.pol_channel_geometry.values = TRANSMITTED + REFLECTED
 
         return result
+
+    def get_raw_heightres(self):
+        diff = np.diff(self.height, axis=1)
+
+        d0 = diff[:, 0].reshape(2, 1)
+        # reshape is needed to allow broadcasting of the 2 arrays
+
+        if np.all(abs(diff[:] - d0) < 1e-10):
+            self.raw_heightres = d0
+        else:
+            logger.error('height axis is not equidistant')
 
     def heights_to_levels(self, heights):
         """converts a height value into a series of level (dim=time)
