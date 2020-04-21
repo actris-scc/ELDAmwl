@@ -58,6 +58,7 @@ setup(
         'pytest',
         'pytest-mock',
         'addict',
+        'scipy',
         'sphinx',
         'sphinxcontrib-qthelp',
         'sphinxcontrib-serializinghtml',

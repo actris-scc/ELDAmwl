@@ -28,6 +28,7 @@ sphinxcontrib-qthelp = "*"
 Sphinx = "*"
 sphinx-rtd-theme = "*"
 autodocsumm = "*"
+scipy = "*"
 
 [requires]
 python_version = "3.7"
