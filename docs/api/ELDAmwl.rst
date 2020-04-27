@@ -54,6 +54,14 @@ ELDAmwl.data\_storage module
    :undoc-members:
    :show-inheritance:
 
+ELDAmwl.elast\_bsc\_factories module
+------------------------------------
+
+.. automodule:: ELDAmwl.elast_bsc_factories
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 ELDAmwl.elda\_mwl\_factories module
 -----------------------------------
 
@@ -138,6 +146,14 @@ ELDAmwl.products module
 -----------------------
 
 .. automodule:: ELDAmwl.products
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ELDAmwl.raman\_bsc\_factories module
+------------------------------------
+
+.. automodule:: ELDAmwl.raman_bsc_factories
    :members:
    :undoc-members:
    :show-inheritance:

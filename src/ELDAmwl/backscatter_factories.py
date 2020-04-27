@@ -123,8 +123,8 @@ class Backscatters(Products):
         The signal was previously prepared by PrepareBscSignals .
 
         Args:
-            signal (::class:`Signals`): time series of signal profiles
-            p_params (::class:`BackscatterParams`):
+            signal (:class:`Signals`): time series of signal profiles
+            p_params (:class:`BackscatterParams`):
                         calculation params of the backscatter product
             calibr_window (tuple):
                         first and last height of the calibration window [m]
@@ -137,7 +137,7 @@ class Backscatters(Products):
 
 class BackscatterFactory(BaseOperationFactory):
     """
-    derives a single instance of ::class:`Backscatters`.
+    derives a single instance of :class:`Backscatters`.
     """
 
     name = 'BackscatterFactory'
@@ -156,7 +156,7 @@ class BackscatterFactory(BaseOperationFactory):
 
 class BackscatterFactoryDefault(BaseOperation):
     """
-    derives a single instance of ::class:`Backscatters`.
+    derives a single instance of :class:`Backscatters`.
     """
 
     name = 'BackscatterFactoryDefault'
@@ -181,7 +181,7 @@ class FindCommonBscCalibrWindow(BaseOperationFactory):
 
     Keyword Args:
         data_storage
-        bsc_params (list of ::class:`BackscatterParams`): \
+        bsc_params (list of :class:`BackscatterParams`): \
                 list of params of all backscatter products
     """
     name = 'FindCommonBscCalibrWindow'

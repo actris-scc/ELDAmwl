@@ -53,9 +53,9 @@ class RamanBackscatters(Backscatters):
         The signals were previously prepared by PrepareBscSignals .
 
         Args:
-            sigratio (::class:`Signals`): time series
+            sigratio (:class:`Signals`): time series
                                         of signal ratio profiles
-            p_params (::class:`RamanBackscatterParams`):
+            p_params (:class:`RamanBackscatterParams`):
                                     calculation params
                                     of the backscatter product
             calibr_window (xarray.DataArray): variable
@@ -106,7 +106,7 @@ class RamanBackscatterFactory(BackscatterFactory):
 
 class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
     """
-    derives a single instance of ::class:`RamanBackscatters`.
+    derives a single instance of :class:`RamanBackscatters`.
     """
 
     name = 'RamanBackscatterFactoryDefault'

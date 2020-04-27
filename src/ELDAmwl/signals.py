@@ -163,8 +163,8 @@ class Signals(Columns):
         """creates a Signals instance from the ratio of two Signals
 
         Args:
-            enumerator (::class:`Signals`): nominator
-            denominator (::class:`Signals`): denominator
+            enumerator (:class:`Signals`): nominator
+            denominator (:class:`Signals`): denominator
 
         Returns: Signals
 
@@ -319,8 +319,8 @@ class Signals(Columns):
         Sig_total = etaS/K*HR*sig_transm - HT*Sig_refl/(HR*GT - HT*GR)
 
         Args:
-            transm_sig (::class:`Signals`):   the transmitted signal component
-            refl_sig (::class:`Signals`):     the reflected signal component
+            transm_sig (:class:`Signals`):   the transmitted signal component
+            refl_sig (:class:`Signals`):     the reflected signal component
 
         Returns: Signals
         """

@@ -108,6 +108,7 @@
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.columns">ELDAmwl.columns module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.constants">ELDAmwl.constants module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.data_storage">ELDAmwl.data_storage module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.elast_bsc_factories">ELDAmwl.elast_bsc_factories module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.elda_mwl_factories">ELDAmwl.elda_mwl_factories module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.error_codes">ELDAmwl.error_codes module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.exceptions">ELDAmwl.exceptions module</a></li>
@@ -119,6 +120,7 @@
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.main">ELDAmwl.main module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.prepare_signals">ELDAmwl.prepare_signals module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.products">ELDAmwl.products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.raman_bsc_factories">ELDAmwl.raman_bsc_factories module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.registry">ELDAmwl.registry module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.signals">ELDAmwl.signals module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl">Module contents</a></li>
@@ -291,26 +293,41 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.get_products_query" title="ELDAmwl.database.db_functions.get_products_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_products_query</span></code></a>(mwl_prod_id, measurement_id)</p></td>
 <td><p>read from db which of the products correlated to</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_elast_bsc_algorithm" title="ELDAmwl.database.db_functions.read_elast_bsc_algorithm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_elast_bsc_algorithm</span></code></a>(product_id)</p></td>
+<td><p>read from db which algorithm shall be used for</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_elast_bsc_params" title="ELDAmwl.database.db_functions.read_elast_bsc_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_elast_bsc_params</span></code></a>(product_id)</p></td>
+<td><p>function to read options of an elast bsc product from db.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_extinction_algorithm" title="ELDAmwl.database.db_functions.read_extinction_algorithm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_extinction_algorithm</span></code></a>(product_id)</p></td>
 <td><p>read from db which algorithm shall be used for the slope</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_extinction_params" title="ELDAmwl.database.db_functions.read_extinction_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_extinction_params</span></code></a>(product_id)</p></td>
 <td><p>function to read options of an extinction product from db.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_lidar_ratio_params" title="ELDAmwl.database.db_functions.read_lidar_ratio_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lidar_ratio_params</span></code></a>(product_id)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_iter_bsc_params" title="ELDAmwl.database.db_functions.read_iter_bsc_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_iter_bsc_params</span></code></a>(product_id)</p></td>
+<td><p>function to read options of an iterative bsc product from db.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_lidar_ratio_params" title="ELDAmwl.database.db_functions.read_lidar_ratio_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lidar_ratio_params</span></code></a>(product_id)</p></td>
 <td><p>function to read options of an lidar ratio product from db.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_mwl_product_id" title="ELDAmwl.database.db_functions.read_mwl_product_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_mwl_product_id</span></code></a>(system_id)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_mwl_product_id" title="ELDAmwl.database.db_functions.read_mwl_product_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_mwl_product_id</span></code></a>(system_id)</p></td>
 <td><p>read from db which of the products correlated</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_signal_filenames" title="ELDAmwl.database.db_functions.read_signal_filenames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_signal_filenames</span></code></a>(measurement_id)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_raman_bsc_algorithm" title="ELDAmwl.database.db_functions.read_raman_bsc_algorithm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_raman_bsc_algorithm</span></code></a>(product_id)</p></td>
+<td><p>read from db which algorithm shall be used for</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_raman_bsc_params" title="ELDAmwl.database.db_functions.read_raman_bsc_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_raman_bsc_params</span></code></a>(product_id)</p></td>
+<td><p>function to read options of a Raman bsc product from db.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_signal_filenames" title="ELDAmwl.database.db_functions.read_signal_filenames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_signal_filenames</span></code></a>(measurement_id)</p></td>
 <td><p><dl class="field-list simple">
 <dt class="field-odd">param measurement_id</dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_system_id" title="ELDAmwl.database.db_functions.read_system_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_system_id</span></code></a>(measurement_id)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_system_id" title="ELDAmwl.database.db_functions.read_system_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_system_id</span></code></a>(measurement_id)</p></td>
 <td><p>function to read from db which products shall be derived .</p></td>
 </tr>
 </tbody>
@@ -365,6 +382,43 @@ this system is the mwl product.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ELDAmwl.database.db_functions.read_elast_bsc_algorithm">
+<code class="sig-prename descclassname">ELDAmwl.database.db_functions.</code><code class="sig-name descname">read_elast_bsc_algorithm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.db_functions.read_elast_bsc_algorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>read from db which algorithm shall be used for
+calculation in elastic backscatter retrievals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>product_id</strong> (<em>int</em>) – the id of the actual elastic bsc product</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>name of the BaseOperation class to be used</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.database.db_functions.read_elast_bsc_params">
+<code class="sig-prename descclassname">ELDAmwl.database.db_functions.</code><code class="sig-name descname">read_elast_bsc_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.db_functions.read_elast_bsc_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>function to read options of an elast bsc product from db.</p>
+<p>This function reads from db with which parameters an
+elast bsc product shall be derived.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>product_id</strong> (<em>str</em>) – the id of the actual elast bsc product</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>{‘elast_bsc_method’, ‘lr_input_method’}</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>options</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ELDAmwl.database.db_functions.read_extinction_algorithm">
 <code class="sig-prename descclassname">ELDAmwl.database.db_functions.</code><code class="sig-name descname">read_extinction_algorithm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.db_functions.read_extinction_algorithm" title="Permalink to this definition">¶</a></dt>
 <dd><p>read from db which algorithm shall be used for the slope
@@ -390,7 +444,7 @@ calculation in extinction retrievals.</p>
 extinction product shall be derived.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>product_id</strong> (<em>int</em>) – the id of the actual extinction product</p>
+<dd class="field-odd"><p><strong>product_id</strong> (<em>str</em>) – the id of the actual extinction product</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>options</p>
@@ -398,6 +452,25 @@ extinction product shall be derived.</p>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><p>??</p>
 </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.database.db_functions.read_iter_bsc_params">
+<code class="sig-prename descclassname">ELDAmwl.database.db_functions.</code><code class="sig-name descname">read_iter_bsc_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.db_functions.read_iter_bsc_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>function to read options of an iterative bsc product from db.</p>
+<p>This function reads from db with which parameters an
+iterative bsc product shall be derived.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>product_id</strong> (<em>str</em>) – the id of the actual iterative bsc product</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>{‘conv_crit’, ‘max_iteration_count’, ‘ram_bsc_method’}</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>options</p>
 </dd>
 </dl>
 </dd></dl>
@@ -433,6 +506,43 @@ to this system is the mwl product.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>product id of mwl product</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.database.db_functions.read_raman_bsc_algorithm">
+<code class="sig-prename descclassname">ELDAmwl.database.db_functions.</code><code class="sig-name descname">read_raman_bsc_algorithm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.db_functions.read_raman_bsc_algorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>read from db which algorithm shall be used for
+calculation in Raman backscatter retrievals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>product_id</strong> (<em>int</em>) – the id of the actual Raman bsc product</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>name of the BaseOperation class to be used</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.database.db_functions.read_raman_bsc_params">
+<code class="sig-prename descclassname">ELDAmwl.database.db_functions.</code><code class="sig-name descname">read_raman_bsc_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">product_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.db_functions.read_raman_bsc_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>function to read options of a Raman bsc product from db.</p>
+<p>This function reads from db with which parameters a
+Raman bsc product shall be derived.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>product_id</strong> (<em>str</em>) – the id of the actual Raman bsc product</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>{‘ram_bsc_method’}</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>options</p>
 </dd>
 </dl>
 </dd></dl>
