@@ -11,6 +11,7 @@ from ELDAmwl.database.tables.backscatter import ElastBscMethod
 from ELDAmwl.database.tables.backscatter import IterBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBscMethod
+from ELDAmwl.database.tables.channels import ProductChannels, Channels
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
@@ -217,6 +218,8 @@ def get_products_query(mwl_prod_id, measurement_id):
         ErrorThresholdsLow,
         ErrorThresholdsHigh,
         PreparedSignalFile,
+        ProductChannels,
+        Channels
     ).filter(
         MWLproductProduct._mwl_product_ID == mwl_prod_id,
     ).filter(
@@ -232,10 +235,14 @@ def get_products_query(mwl_prod_id, measurement_id):
     ).filter(
         ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
     ).filter(
+        ProductChannels._prod_ID == Products.ID,
+    ).filter(
+        ProductChannels._channel_ID == Channels.ID,
+    ).filter(
         PreparedSignalFile._Product_ID == Products.ID,
     ).filter(
         PreparedSignalFile._measurements_ID == measurement_id,
-    )
+    ).group_by(Products.ID)
 
     if products.count() > 0:
         return products
@@ -265,6 +272,8 @@ def get_general_params_query(prod_id):
         ProductOptions,
         ErrorThresholdsLow,
         ErrorThresholdsHigh,
+        ProductChannels,
+        Channels
     ).filter(
         ProductOptions._product_ID == Products.ID,
     ).filter(
@@ -276,8 +285,12 @@ def get_general_params_query(prod_id):
     ).filter(
         ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
     ).filter(
+        ProductChannels._prod_ID == Products.ID,
+    ).filter(
+        ProductChannels._channel_ID == Channels.ID,
+    ).filter(
         Products.ID == prod_id,
-    )
+    ).group_by(Products.ID)
 
     if options.count() == 1:
         return options[0]

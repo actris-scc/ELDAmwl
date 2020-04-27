@@ -9,6 +9,8 @@ Overview on modularized algorithm subsystems
       - :class:`~ELDAmwl.elda_mwl_factories.RunELDAmwl`
     * - :class:`~ELDAmwl.get_basic_products.GetBasicProducts`
       - :class:`~ELDAmwl.get_basic_products.GetBasicProductsDefault`
+    * - :class:`~ELDAmwl.rayleigh.RayleighLidarRatio`
+      - :class:`~ELDAmwl.rayleigh.RayleighLidarRatioFromConst`
     * - :class:`~ELDAmwl.prepare_signals.PrepareSignals`
       - :class:`~ELDAmwl.prepare_signals.PrepareSignalsDefault`
     * - :class:`~ELDAmwl.prepare_signals.PrepareBscSignals`

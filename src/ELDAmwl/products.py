@@ -14,6 +14,7 @@ from ELDAmwl.constants import RBSC
 from ELDAmwl.constants import UNITS
 from ELDAmwl.database.db_functions import get_general_params_query
 from ELDAmwl.log import logger
+from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.signals import Signals
 
 import numpy as np
@@ -107,7 +108,7 @@ class ProductParams(Params):
             params_list[self.prod_id_str] = self
             params_table.loc[len(params_table.index)] = \
                 {'id': self.prod_id_str,
-                 'wl': np.nan,
+                 'wl': gen_params.emission_wavelength,
                  'type': gen_params.product_type,
                  'basic': gen_params.is_basic_product,
                  'derived': gen_params.is_derived_product,
@@ -116,9 +117,9 @@ class ProductParams(Params):
                  'elpp_file': gen_params.elpp_file}
         else:
             df = params_table[(params_table.id == self.prod_id_str)]
-
-            hres = df.hres[0] or gen_params.calc_with_hr
-            lres = df.lres[0] or gen_params.calc_with_lr
+            idx = df.index[0]
+            hres = df.hres[idx] or gen_params.calc_with_hr
+            lres = df.lres[idx] or gen_params.calc_with_lr
 
             params_table.loc[params_table.id == self.prod_id_str, 'hres'] = hres  # noqa E501
             params_table.loc[params_table.id == self.prod_id_str, 'lres'] = lres  # noqa E501
@@ -164,6 +165,8 @@ class GeneralProductParams(Params):
         self.prod_id = None
         self.product_type = None
         self.usecase = None
+        self.emission_wavelength = None
+        self.rayl_lr = None
 
         self.is_basic_product = False
         self.is_derived_product = False
@@ -190,6 +193,7 @@ class GeneralProductParams(Params):
         result.prod_id = query.Products.ID
         result.product_type = query.Products._prod_type_ID
         result.usecase = query.Products._usecase_ID
+        result.emission_wavelength = float(query.Channels.emission_wavelength)
 
         result.is_basic_product = query.ProductTypes.is_basic_product == 1
         result.is_derived_product = not result.is_basic_product
@@ -211,6 +215,9 @@ class GeneralProductParams(Params):
             result.elpp_file = query.PreparedSignalFile.filename
         except AttributeError:
             pass
+
+        result.rayl_lr = RayleighLidarRatio()(
+                wavelength=result.emission_wavelength).run()
 
         return result
 

@@ -252,7 +252,8 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
                     bp.calibration_params.cal_interval)
 
             # calculate rolling means, std errs of mean, and rel sem
-            # if all window_width are equal, get means and sems at once
+            # if window_width are equal for all time slices,
+            # get means and sems at once
             if np.all(w_width == ww0):
                 means = ds.data.rolling(level=ww0).reduce(np.mean)
                 sems = ds.data.rolling(level=ww0).reduce(sem)

@@ -267,10 +267,10 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter_factories.BackscatterFactory" title="ELDAmwl.backscatter_factories.BackscatterFactory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BackscatterFactory</span></code></a>()</p></td>
-<td><p>derives a single instance of :<a class="reference internal" href="#ELDAmwl.backscatter_factories.Backscatters" title="ELDAmwl.backscatter_factories.Backscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backscatters</span></code></a>.</p></td>
+<td><p>derives a single instance of <a class="reference internal" href="#ELDAmwl.backscatter_factories.Backscatters" title="ELDAmwl.backscatter_factories.Backscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backscatters</span></code></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter_factories.BackscatterFactoryDefault" title="ELDAmwl.backscatter_factories.BackscatterFactoryDefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BackscatterFactoryDefault</span></code></a>(**kwargs)</p></td>
-<td><p>derives a single instance of :<a class="reference internal" href="#ELDAmwl.backscatter_factories.Backscatters" title="ELDAmwl.backscatter_factories.Backscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backscatters</span></code></a>.</p></td>
+<td><p>derives a single instance of <a class="reference internal" href="#ELDAmwl.backscatter_factories.Backscatters" title="ELDAmwl.backscatter_factories.Backscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backscatters</span></code></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter_factories.BackscatterParams" title="ELDAmwl.backscatter_factories.BackscatterParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BackscatterParams</span></code></a>()</p></td>
 <td><p></p></td>
@@ -293,7 +293,7 @@
 <dt id="ELDAmwl.backscatter_factories.BackscatterFactory">
 <em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.backscatter_factories.</code><code class="sig-name descname">BackscatterFactory</code><a class="headerlink" href="#ELDAmwl.backscatter_factories.BackscatterFactory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ELDAmwl.factory.BaseOperationFactory" title="ELDAmwl.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.factory.BaseOperationFactory</span></code></a></p>
-<p>derives a single instance of :<a class="reference internal" href="#ELDAmwl.backscatter_factories.Backscatters" title="ELDAmwl.backscatter_factories.Backscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backscatters</span></code></a>.</p>
+<p>derives a single instance of <a class="reference internal" href="#ELDAmwl.backscatter_factories.Backscatters" title="ELDAmwl.backscatter_factories.Backscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backscatters</span></code></a>.</p>
 <p><strong>Methods</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -334,7 +334,7 @@
 <dt id="ELDAmwl.backscatter_factories.BackscatterFactoryDefault">
 <em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.backscatter_factories.</code><code class="sig-name descname">BackscatterFactoryDefault</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter_factories.BackscatterFactoryDefault" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ELDAmwl.factory.BaseOperation" title="ELDAmwl.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.factory.BaseOperation</span></code></a></p>
-<p>derives a single instance of :<a class="reference internal" href="#ELDAmwl.backscatter_factories.Backscatters" title="ELDAmwl.backscatter_factories.Backscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backscatters</span></code></a>.</p>
+<p>derives a single instance of <a class="reference internal" href="#ELDAmwl.backscatter_factories.Backscatters" title="ELDAmwl.backscatter_factories.Backscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backscatters</span></code></a>.</p>
 <p><strong>Attributes</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -447,9 +447,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>(</strong> (<em>p_params</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code>): time series of signal profiles</p></li>
-<li><p><strong>(</strong> – <a class="reference internal" href="#ELDAmwl.backscatter_factories.BackscatterParams" title="ELDAmwl.backscatter_factories.BackscatterParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackscatterParams</span></code></a>):
-calculation params of the backscatter product</p></li>
+<li><p><strong>signal</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code>) – time series of signal profiles</p></li>
+<li><p><strong>p_params</strong> (<a class="reference internal" href="#ELDAmwl.backscatter_factories.BackscatterParams" title="ELDAmwl.backscatter_factories.BackscatterParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackscatterParams</span></code></a>) – calculation params of the backscatter product</p></li>
 <li><p><strong>calibr_window</strong> (<em>tuple</em>) – first and last height of the calibration window [m]</p></li>
 </ul>
 </dd>
@@ -557,7 +556,7 @@ BackscatterParams.calibr_window</p></li>
 <dt class="field-odd">Keyword Arguments</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_storage</strong> – </p></li>
-<li><p><strong>(</strong><strong>list of</strong> (<a class="reference internal" href="#ELDAmwl.backscatter_factories.FindBscCalibrWindowAsInELDA.bsc_params" title="ELDAmwl.backscatter_factories.FindBscCalibrWindowAsInELDA.bsc_params"><em>bsc_params</em></a>) – <a class="reference internal" href="#ELDAmwl.backscatter_factories.BackscatterParams" title="ELDAmwl.backscatter_factories.BackscatterParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackscatterParams</span></code></a>):                 list of params of all backscatter products</p></li>
+<li><p><strong>bsc_params</strong> (list of <a class="reference internal" href="#ELDAmwl.backscatter_factories.BackscatterParams" title="ELDAmwl.backscatter_factories.BackscatterParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackscatterParams</span></code></a>) – list of params of all backscatter products</p></li>
 </ul>
 </dd>
 </dl>
@@ -3014,7 +3013,7 @@ but are filled with nan.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.raman_bsc_factories.RamanBackscatterFactoryDefault" title="ELDAmwl.raman_bsc_factories.RamanBackscatterFactoryDefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RamanBackscatterFactoryDefault</span></code></a>(**kwargs)</p></td>
-<td><p>derives a single instance of :<a class="reference internal" href="#ELDAmwl.raman_bsc_factories.RamanBackscatters" title="ELDAmwl.raman_bsc_factories.RamanBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">RamanBackscatters</span></code></a>.</p></td>
+<td><p>derives a single instance of <a class="reference internal" href="#ELDAmwl.raman_bsc_factories.RamanBackscatters" title="ELDAmwl.raman_bsc_factories.RamanBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">RamanBackscatters</span></code></a>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.raman_bsc_factories.RamanBackscatters" title="ELDAmwl.raman_bsc_factories.RamanBackscatters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RamanBackscatters</span></code></a>()</p></td>
 <td><p></p></td>
@@ -3243,7 +3242,7 @@ and calibration window</p>
 <dt id="ELDAmwl.raman_bsc_factories.RamanBackscatterFactoryDefault">
 <em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.raman_bsc_factories.</code><code class="sig-name descname">RamanBackscatterFactoryDefault</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.raman_bsc_factories.RamanBackscatterFactoryDefault" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ELDAmwl.backscatter_factories.BackscatterFactoryDefault" title="ELDAmwl.backscatter_factories.BackscatterFactoryDefault"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter_factories.BackscatterFactoryDefault</span></code></a></p>
-<p>derives a single instance of :<a class="reference internal" href="#ELDAmwl.raman_bsc_factories.RamanBackscatters" title="ELDAmwl.raman_bsc_factories.RamanBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">RamanBackscatters</span></code></a>.</p>
+<p>derives a single instance of <a class="reference internal" href="#ELDAmwl.raman_bsc_factories.RamanBackscatters" title="ELDAmwl.raman_bsc_factories.RamanBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">RamanBackscatters</span></code></a>.</p>
 <p><strong>Methods</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -3909,7 +3908,7 @@ from an ELPP file and put into the data_storage</p>
 <p class="system-message-title">System Message: WARNING/2 (<span class="docutils literal"></span>)</p>
 <p>dvipng exited with error
 [stderr]
-C:\Users\INAMAT~1\AppData\Local\Temp\tmpy6mkoon_\math.dvi: No such file or directory
+C:\Users\INAMAT~1\AppData\Local\Temp\tmpahmev27m\math.dvi: No such file or directory
 
 [stdout]
 This is dvipng 1.16 Copyright 2002-2015, 2019 Jan-Ake Larsson
@@ -3934,8 +3933,8 @@ This is dvipng 1.16 Copyright 2002-2015, 2019 Jan-Ake Larsson
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>(</strong> (<em>denominator</em>) – <a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>): nominator</p></li>
-<li><p><strong>(</strong> – <a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>): denominator</p></li>
+<li><p><strong>enumerator</strong> (<a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>) – nominator</p></li>
+<li><p><strong>denominator</strong> (<a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>) – denominator</p></li>
 </ul>
 </dd>
 </dl>
@@ -4020,8 +4019,8 @@ Sig_total = etaS/K*HR*sig_transm - HT*Sig_refl/(HR*GT - HT*GR)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>(</strong> (<em>refl_sig</em>) – <a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>):   the transmitted signal component</p></li>
-<li><p><strong>(</strong> – <a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>):     the reflected signal component</p></li>
+<li><p><strong>transm_sig</strong> (<a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>) – the transmitted signal component</p></li>
+<li><p><strong>refl_sig</strong> (<a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>) – the reflected signal component</p></li>
 </ul>
 </dd>
 </dl>

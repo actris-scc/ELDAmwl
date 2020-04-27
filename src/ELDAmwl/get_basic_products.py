@@ -6,6 +6,7 @@ from ELDAmwl.extinction_factories import ExtinctionFactory
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.raman_bsc_factories import RamanBackscatterFactory
+from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.registry import registry
 
 
