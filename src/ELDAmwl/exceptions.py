@@ -39,12 +39,14 @@ class DifferentHeaderExists(Exception):
     but the existing one is different from the new one
     """
 
+
 class NoValidDataPointsForCalibration(Exception):
     """
     Raised if a backscatter calibration value cannot be
     calculated within the requested uncertainty.
     """
     # return value = 13
+
 
 class UseCaseNotImplemented(Exception):
     """Raised if a usecase or BaseOperation is called but not yet implemented

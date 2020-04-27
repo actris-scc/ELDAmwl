@@ -60,8 +60,10 @@ class PrepareBscSignalsDefault(BaseOperation):
 class PrepareBscSignals(BaseOperationFactory):
     """
     Args:
-        data_storage (:class:`ELDAmwl.data_storage.DataStorage`): global data storage
-        prod_param (:class:`ELDAmwl.products.ProductParams`): params of the product
+        data_storage (:class:`ELDAmwl.data_storage.DataStorage`):
+                            global data storage
+        prod_param (:class:`ELDAmwl.products.ProductParams`):
+                            params of the product
     """
 
     name = 'PrepareBscSignals'
@@ -108,8 +110,10 @@ class PrepareExtSignalsDefault(BaseOperation):
 class PrepareExtSignals(BaseOperationFactory):
     """
     Args:
-        data_storage (:class:`ELDAmwl.data_storage.DataStorage`): global data storage
-        prod_param (:class:`ELDAmwl.products.ProductParams`): params of the product
+        data_storage (:class:`ELDAmwl.data_storage.DataStorage`):
+                            global data storage
+        prod_param (:class:`ELDAmwl.products.ProductParams`):
+                            params of the product
     """
 
     name = 'PrepareExtSignals'
@@ -155,7 +159,8 @@ class PrepareSignalsDefault(BaseOperation):
 class PrepareSignals(BaseOperationFactory):
     """
     Args:
-        data_storage: global data storage (:class:`ELDAmwl.data_storage.DataStorage`)
+        data_storage: global data storage
+                (:class:`ELDAmwl.data_storage.DataStorage`)
         products: list of parameters of all basic
                 products (list of :class:
                 `ELDAmwl.products.ProductParams`)

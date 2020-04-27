@@ -4,7 +4,7 @@
 from copy import deepcopy
 from ELDAmwl.base import DataPoint
 from ELDAmwl.columns import Columns
-from ELDAmwl.constants import ALL_OK, EBSC
+from ELDAmwl.constants import ALL_OK
 from ELDAmwl.constants import ANALOG
 from ELDAmwl.constants import CROSS
 from ELDAmwl.constants import FAR_RANGE
@@ -18,8 +18,8 @@ from ELDAmwl.constants import TRANSMITTED
 from ELDAmwl.constants import WATER_VAPOR
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.registry import registry
 from ELDAmwl.log import logger
+from ELDAmwl.registry import registry
 
 import numpy as np
 import os
@@ -172,10 +172,10 @@ class Signals(Columns):
         result = deepcopy(enumerator)
 
         result.ds['data'] = enumerator.ds.data / denominator.ds.data
-        result.ds['err'] = result.ds.data * np.sqrt(np.square(enumerator.rel_err) +
-                                                    np.square(denominator.rel_err))
+        result.ds['err'] = result.ds.data * \
+            np.sqrt(np.square(enumerator.rel_err) +
+                    np.square(denominator.rel_err))
         result.ds['qf'] = enumerator.ds.qf | denominator.ds.qf
-
 
         result.channel_id = xr.concat([enumerator.channel_id,
                                        denominator.channel_id],
@@ -184,7 +184,6 @@ class Signals(Columns):
         # todo: combine other attributes, e.g. detection type etc.
 
         return result
-
 
     @classmethod
     def from_nc_file(cls, nc_ds, idx_in_file):
@@ -298,11 +297,13 @@ class Signals(Columns):
             lidar_ratio = nc_ds.assumed_particle_lidar_ratio
             lidar_ratio_err = nc_ds.assumed_particle_lidar_ratio_error
             result.ds['assumed_particle_lidar_ratio'] = \
-                result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,
-                                                   lidar_ratio)
+                result.angle_to_time_dependent_var(
+                    laser_pointing_angle_of_profiles,
+                    lidar_ratio)
             result.ds['assumed_particle_lidar_ratio_error'] = \
-                result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,
-                                       lidar_ratio_err)
+                result.angle_to_time_dependent_var(
+                    laser_pointing_angle_of_profiles,
+                    lidar_ratio_err)
 
         result.get_raw_heightres()
 
@@ -367,7 +368,8 @@ class Signals(Columns):
         """
         times = self.ds.dims['time']
         if heights.shape[0] != times:
-            logger.error('dataset and heights have different lenghts (time dimension)')
+            logger.error('dataset and heights have '
+                         'different lenghts (time dimension)')
             return None
 
         result = []
@@ -388,35 +390,36 @@ class Signals(Columns):
 
         return np.array(result)
 
-
     def data_in_vertical_range(self, v_range, boundaries=None):
         """data in vertical range
 
         Args:
             v_range(addict.Dict): with keys 'min_height' and \
                     'max_height' which are heights in m)
-            boundaries (str): 'extend_with_binres' or 'clip_with_binres' or None. default = None
+            boundaries (str): 'extend_with_binres' or
+            'clip_with_binres' or None. default = None
         Returns:
             subset of the dataset in the vertical range.
             *   if boundaries == None (default) => returns range between
                     (begin of vertical range) and (end of vertical range)
-            *   if boundaries == 'extend_with_binres' => returns range between \
-                    (begin of vertical range - half binres at this height)
-                    and
+            *   if boundaries == 'extend_with_binres' => returns range \
+                    between \
+                    (begin of vertical range - half binres at this height) \
+                    and \
                     (end of vertical range + half binres at this height)
             *   if boundaries == 'clip_with_binres' => returns range between \
                     (begin of vertical range + half binres at this height)
                     and
                     (end of vertical range - half binres at this height)
         """
-        assert (boundaries == None) or \
+        assert (boundaries is None) or \
                (boundaries == 'extend_with_binres') or \
                (boundaries == 'clip_with_binres')
 
         min_h = v_range.min_height
         max_h = v_range.max_height
 
-        if boundaries == None:
+        if boundaries is None:
             min_alt = min_h + self.station_altitude.values
             max_alt = max_h + self.station_altitude.values
 
@@ -432,7 +435,7 @@ class Signals(Columns):
             if boundaries == 'extend_with_binres':
                 fvl = max(fvl - self.ds.binres[fvl] // 2, 0)
                 lvl = min(lvl + self.ds.binres[lvl] // 2, self.ds.dims.level)
-            else: # boundaries == 'clip_with_binres'
+            else:  # boundaries == 'clip_with_binres'
                 fvl = max(fvl + self.ds.binres[fvl] // 2, 0)
                 lvl = min(lvl - self.ds.binres[lvl] // 2, self.ds.dims.level)
 

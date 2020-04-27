@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for getting basic products
 """
-from ELDAmwl.backscatter_factories import BackscatterFactory, FindCommonBscCalibrWindow
+from ELDAmwl.backscatter_factories import FindCommonBscCalibrWindow
 from ELDAmwl.extinction_factories import ExtinctionFactory
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
@@ -22,7 +22,7 @@ class GetBasicProductsDefault(BaseOperation):
 
         bsc_calibr_window = FindCommonBscCalibrWindow()(
             data_storage=self.data_storage,
-            bsc_params=self.product_params.all_bsc_products()
+            bsc_params=self.product_params.all_bsc_products(),
             ).run()
         for bsc_param in self.product_params.raman_bsc_products():
             bsc = RamanBackscatterFactory()(
@@ -42,7 +42,6 @@ class GetBasicProductsDefault(BaseOperation):
             ).get_product()
             self.data_storage.set_basic_product_auto_smooth(
                 ext_param.prod_id_str, extinction)
-
 
 
 class GetBasicProducts(BaseOperationFactory):

@@ -2,16 +2,23 @@
 """Classes for Raman backscatter calculation"""
 from addict import Dict
 from copy import deepcopy
-
-from ELDAmwl.backscatter_factories import BackscatterParams, Backscatters, BackscatterFactory, BackscatterFactoryDefault
+from ELDAmwl.backscatter_factories import BackscatterFactory
+from ELDAmwl.backscatter_factories import BackscatterFactoryDefault
+from ELDAmwl.backscatter_factories import BackscatterParams
+from ELDAmwl.backscatter_factories import Backscatters
 from ELDAmwl.base import DataPoint
-from ELDAmwl.constants import RAYL_LR, NC_FILL_STR
-from ELDAmwl.database.db_functions import read_raman_bsc_params, read_raman_bsc_algorithm
-from ELDAmwl.exceptions import NoValidDataPointsForCalibration, UseCaseNotImplemented
-from ELDAmwl.factory import BaseOperationFactory, BaseOperation
-from ELDAmwl.signals import Signals
-from ELDAmwl.registry import registry
+from ELDAmwl.constants import NC_FILL_STR
+from ELDAmwl.constants import RAYL_LR
+from ELDAmwl.database.db_functions import read_raman_bsc_algorithm
+from ELDAmwl.database.db_functions import read_raman_bsc_params
+from ELDAmwl.exceptions import NoValidDataPointsForCalibration
+from ELDAmwl.exceptions import UseCaseNotImplemented
+from ELDAmwl.factory import BaseOperation
+from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
+from ELDAmwl.registry import registry
+from ELDAmwl.signals import Signals
+
 import numpy as np
 import xarray as xr
 
@@ -36,6 +43,7 @@ class RamanBscParams(BackscatterParams):
         if signal.is_Raman_sig:
             self.raman_sig_id = signal.channel_id_str
 
+
 class RamanBackscatters(Backscatters):
 
     @classmethod
@@ -45,23 +53,34 @@ class RamanBackscatters(Backscatters):
         The signals were previously prepared by PrepareBscSignals .
 
         Args:
-            sigratio (::class:`Signals`): time series of signal ratio profiles
-            p_params (::class:`RamanBackscatterParams`): calculation params of the backscatter product
-            calibr_window (xarray.DataArray): variable 'backscatter_calibration_range' (time, nv: 2)
+            sigratio (::class:`Signals`): time series
+                                        of signal ratio profiles
+            p_params (::class:`RamanBackscatterParams`):
+                                    calculation params
+                                    of the backscatter product
+            calibr_window (xarray.DataArray): variable
+                                    'backscatter_calibration_range'
+                                    (time, nv: 2)
         """
-        result = super(RamanBackscatters, cls).from_signal(sigratio, p_params, calibr_window)
+        result = super(RamanBackscatters, cls).from_signal(sigratio,
+                                                           p_params,
+                                                           calibr_window)
 
-        if calibr_window ==None:
+        if calibr_window is None:
             calibr_window = p_params.calibr_window
 
-        times = sigratio.ds.dims['time']
-        cal_first_lev = sigratio.heights_to_levels(calibr_window[:,0].values)
-        cal_last_lev = sigratio.heights_to_levels(calibr_window[:,1].values)
+        # times = sigratio.ds.dims['time']
+        cal_first_lev = sigratio.heights_to_levels(
+            calibr_window[:, 0].values)
+        cal_last_lev = sigratio.heights_to_levels(
+            calibr_window[:, 1].values)
 
-        error_params = Dict({'err_threshold': p_params.general_params.error_threshold,
+        error_params = Dict({'err_threshold':
+                            p_params.general_params.error_threshold,
                              })
 
-        calibr_value = DataPoint.from_data(p_params.calibration_params.CalValue, 0, 0)
+        calibr_value = DataPoint.from_data(
+            p_params.calibration_params.CalValue, 0, 0)
         cal_params = Dict({'cal_first_lev': cal_first_lev,
                            'cal_last_lev': cal_last_lev,
                            'calibr_value': calibr_value})
@@ -69,8 +88,8 @@ class RamanBackscatters(Backscatters):
         calc_routine = CalcRamanBscProfile()(prod_id=p_params.prod_id_str)
 
         result.ds = calc_routine.run(sigratio=sigratio.ds,
-                                         error_params=error_params,
-                                         calibration=cal_params)
+                                     error_params=error_params,
+                                     calibration=cal_params)
         return result
 
 
@@ -114,13 +133,16 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
 
             smoothed_sigratio = deepcopy(sig_ratio)
             # smoothed_sigratio.ds['binres'] = smooth_res
-            result = RamanBackscatters.from_sigratio(smoothed_sigratio, self.param, self.calibr_window)
+            result = RamanBackscatters.from_sigratio(
+                smoothed_sigratio, self.param, self.calibr_window)
 
         return result
 
 
 class CalcRamanBscProfile(BaseOperationFactory):
-    """calculates Raman bsc profile from elast and Raman signals and calibration window
+    """calculates Raman bsc profile from elast
+    and Raman signals and calibration window
+
         Keyword Args:
             prod_id (str): id of the product
     """
@@ -153,12 +175,20 @@ class CalcRamanBscProfileViaBR(BaseOperation):
     calibration = None
 
     def run(self, **kwargs):
-        """calculates Raman bsc profile from elast and Raman signals and calibration window
+        """calculates Raman bsc profile from elast and Raman signals
+        and calibration window
+
             Keyword Args:
-                sigratio (xarray.DataSet): already smoothed signal ratio with \
-                                        variables 'data', 'error', 'qf', 'binres', 'mol_extinction'
-                error_params (addict.Dict): with keys 'low' and 'high' = maximum allowable relative statistical error
-                calibration (addict.Dict): with keys 'cal_first_lev', 'cal_last_lev', and 'calibr_value'
+                sigratio (xarray.DataSet):
+                    already smoothed signal ratio with \
+                    variables 'data', 'error', 'qf',
+                    'binres', 'mol_extinction'
+                error_params (addict.Dict):
+                    with keys 'low' and 'high' =
+                        maximum allowable relative statistical error
+                calibration (addict.Dict):
+                    with keys 'cal_first_lev',
+                    'cal_last_lev', and 'calibr_value'
         """
         assert 'sigratio' in kwargs
         assert 'error_params' in kwargs
@@ -167,7 +197,8 @@ class CalcRamanBscProfileViaBR(BaseOperation):
         sigratio = kwargs['sigratio']
         calibration = kwargs['calibration']
         error_params = kwargs['error_params']
-        rayl_bsc = sigratio.mol_extinction / RAYL_LR  # todo: make BaseOperation for RAYL_LR
+        rayl_bsc = sigratio.mol_extinction / RAYL_LR
+        # todo: make BaseOperation for RAYL_LR
 
         # 1) calculate calibration factor
 
@@ -176,10 +207,10 @@ class CalcRamanBscProfileViaBR(BaseOperation):
         calibr_factor_err = np.ones(times) * np.nan
         sqr_rel_calibr_err = np.ones(times) * np.nan
 
-
         for t in range(times):
-            df = sigratio.data.isel({'level': range(calibration['cal_first_lev'][t],
-                                                    calibration['cal_last_lev'][t]),
+            df = sigratio.data.isel({'level':
+                                    range(calibration['cal_first_lev'][t],
+                                          calibration['cal_last_lev'][t]),
                                      'time': t})\
                 .to_dataframe()
             mean = df.data.mean()
@@ -191,19 +222,27 @@ class CalcRamanBscProfileViaBR(BaseOperation):
                 raise NoValidDataPointsForCalibration
             else:
                 calibr_factor[t] = calibration.calibr_value.value / mean
-                calibr_factor_err[t] = calibr_factor[t] * np.sqrt(np.square(rel_sem) +
-                                                            np.square(calibration.calibr_value.rel_error))
-                sqr_rel_calibr_err[t] = np.square(calibr_factor_err[t] / calibr_factor[t])
+                calibr_factor_err[t] = calibr_factor[t] * \
+                    np.sqrt(np.square(rel_sem) +
+                            np.square(calibration.calibr_value.rel_error))
+                sqr_rel_calibr_err[t] = np.square(calibr_factor_err[t] /
+                                                  calibr_factor[t])
 
-        cf = xr.DataArray(calibr_factor, dims=['time'], coords=[sigratio.time])
-        cf_err = xr.DataArray(calibr_factor_err, dims=['time'], coords=[sigratio.time])
-        sqr_cf_err = xr.DataArray(sqr_rel_calibr_err, dims=['time'], coords=[sigratio.time])
+        cf = xr.DataArray(calibr_factor,
+                          dims=['time'],
+                          coords=[sigratio.time])
+        # cf_err = xr.DataArray(calibr_factor_err,
+        #                       dims=['time'],
+        #                       coords=[sigratio.time])
+        sqr_cf_err = xr.DataArray(sqr_rel_calibr_err,
+                                  dims=['time'],
+                                  coords=[sigratio.time])
 
         # 2) calculate backscatter ratio
         bsc = deepcopy(sigratio)
         bsc['data'] = sigratio.data * cf
         bsc['error'] = bsc.data * np.sqrt(np.square(sigratio.err/sigratio.data)
-                                                          + sqr_cf_err)
+                                          + sqr_cf_err)
 
         # 3) calculate backscatter coefficient
         bsc['data'] = (bsc.data - 1.) * rayl_bsc
@@ -216,11 +255,11 @@ class CalcRamanBscProfileAsAnsmann(BaseOperation):
     """calculates Raman backscatter profile like in ansmann et al 1992"""
 
     name = 'CalcRamanBscProfileAsAnsmann'
+
     def run(self, **kwargs):
         logger.error('This Raman bsc method is not yet implemented. '
                      'Use viaBR (id = 1) instead.')
         raise UseCaseNotImplemented()
-
 
 
 registry.register_class(CalcRamanBscProfile,

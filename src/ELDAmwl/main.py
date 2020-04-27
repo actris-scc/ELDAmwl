@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-import argparse
-import importlib
-
 from ELDAmwl.constants import ELDA_MWL_VERSION
 from ELDAmwl.elda_mwl_factories import RunELDAmwl
 from ELDAmwl.log import create_logger
 from ELDAmwl.log import logger
-from ELDAmwl.plugins import plugin
+from ELDAmwl.plugins import plugin  # noqa F401
 
+import argparse
+
+
+# ELDAmwl.plugins module needs to be imported.
+# Otherwise ELDAmwl does not know the plugins.
 
 try:
     import ELDAmwl.configs.config as cfg  # noqa E401
@@ -46,17 +48,24 @@ def handle_args():
                             at which this code is running')
 
     # parser.add_argument('-c', dest='config_file', default=None, type=str,
-    #                     help='name of config_file. It must be located in the path '
-    #                          'ELDAmwl/src/configs, has the extension .py, and follow the'
-    #                          'structure of config_default.py in this directory')
+    #                     help='name of config_file. It must be
+    #                     located in the path '
+    #                          'ELDAmwl/src/configs, has the extension .py, '
+    #                          ' and follow the'
+    #                          'structure of config_default.py in
+    #                          this directory')
     #
     parser.add_argument('-l', dest='ll_file', default='DEBUG', type=str,
-                        choices=['QUIET', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG'],
-                        help='how many output is written to the log file. default = debug')
+                        choices=['QUIET', 'CRITICAL', 'ERROR',
+                                 'WARNING', 'INFO', 'DEBUG'],
+                        help='how many output is written to the '
+                             'log file. default = debug')
 
     #    parser.add_argument('-L', dest='ll_db', default='QUIET', type=str,
-    #                        choices=['QUIET', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG'],
-    #                        help='how many output is written to the SCC database. default = info')
+    #                        choices=['QUIET', 'CRITICAL', 'ERROR',
+    #                        'WARNING', 'INFO', 'DEBUG'],
+    #                        help='how many output is written to the
+    #                        SCC database. default = info')
 
     args = parser.parse_args()
 
@@ -66,7 +75,8 @@ def handle_args():
     #         cfg = importlib.import_module(conf_file)
     #     except ModuleNotFoundError:
     #         logger.error('cannot find config file {0} in path'
-    #                      'ELDAmwl/src/configs'.format(args.config_file[:-3] + '.py'))
+    #                      'ELDAmwl/src/configs'.format(
+    #                      args.config_file[:-3] + '.py'))
     #         import ELDAmwl.configs.config as cfg
 
     if args.ll_file:

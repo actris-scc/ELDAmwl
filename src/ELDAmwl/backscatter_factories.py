@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 """Classes for backscatter calculation"""
-from copy import deepcopy
 from addict import Dict
 from ELDAmwl.base import Params
-from ELDAmwl.constants import MC, RBSC
+from ELDAmwl.constants import RBSC
 from ELDAmwl.database.db_functions import get_bsc_cal_params_query
-from ELDAmwl.exceptions import CalRangeHigherThanValid, BscCalParamsNotEqual
-from ELDAmwl.factory import BaseOperationFactory, BaseOperation
+from ELDAmwl.exceptions import BscCalParamsNotEqual
+from ELDAmwl.exceptions import CalRangeHigherThanValid
+from ELDAmwl.factory import BaseOperation
+from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.registry import registry
-import xarray as xr
-import numpy as np
+from ELDAmwl.signals import Signals
 from scipy.stats import sem
 
-from ELDAmwl.signals import Signals
+import numpy as np
+import xarray as xr
 
 
 class BscCalibrationParams(Params):
@@ -35,21 +36,28 @@ class BscCalibrationParams(Params):
         query = get_bsc_cal_params_query(general_params.prod_id,
                                          general_params.product_type)
 
-        result.cal_range_search_method = query.BscCalibrOption._calRangeSearchMethod_ID  # noqa E501
-        result.window_width = float(query.BscCalibrOption.WindowWidth)
-        result.cal_value = float(query.BscCalibrOption.calValue)
-        result.cal_interval['min_height'] = float(query.BscCalibrOption.LowestHeight)
-        result.cal_interval['max_height'] = float(query.BscCalibrOption.TopHeight)
+        result.cal_range_search_method = \
+            query.BscCalibrOption._calRangeSearchMethod_ID
+        result.window_width = \
+            float(query.BscCalibrOption.WindowWidth)
+        result.cal_value = \
+            float(query.BscCalibrOption.calValue)
+        result.cal_interval['min_height'] = \
+            float(query.BscCalibrOption.LowestHeight)
+        result.cal_interval['max_height'] = \
+            float(query.BscCalibrOption.TopHeight)
 
         return result
 
     def equal(self, other):
         result = True
         if (self.cal_interval.min_height != other.cal_interval.min_height) or \
-            (self.cal_interval.max_height != other.cal_interval.max_height) or \
-            (self.window_width != other.window_width) or \
-            (self.cal_value != other.cal_value) or \
-            (self.cal_range_search_method != other.cal_range_search_method):
+                (self.cal_interval.max_height !=
+                 other.cal_interval.max_height) or \
+                (self.window_width != other.window_width) or \
+                (self.cal_value != other.cal_value) or \
+                (self.cal_range_search_method !=
+                 other.cal_range_search_method):
             result = False
 
         return result
@@ -75,8 +83,10 @@ class BackscatterParams(ProductParams):
         result.calibration_params = BscCalibrationParams.from_db(general_params)  # noqa E501
         if result.calibration_params.cal_interval.max_height > \
                 result.general_params.valid_alt_range.max_height:
-            logger.error('the height interval for searching the calibration window is '
-                         'higher than the vertical range for product calculation')
+            logger.error('the height interval for searching '
+                         'the calibration window is '
+                         'higher than the vertical range '
+                         'for product calculation')
             raise CalRangeHigherThanValid
 
         return result
@@ -114,8 +124,10 @@ class Backscatters(Products):
 
         Args:
             signal (::class:`Signals`): time series of signal profiles
-            p_params (::class:`BackscatterParams`): calculation params of the backscatter product
-            calibr_window (tuple): first and last height of the calibration window [m]
+            p_params (::class:`BackscatterParams`):
+                        calculation params of the backscatter product
+            calibr_window (tuple):
+                        first and last height of the calibration window [m]
         """
         result = super(Backscatters, cls).from_signal(signal, p_params)
         cls.calibr_window = calibr_window
@@ -213,24 +225,31 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
 
         # check whether all calibration params are equal
         for bp in self.bsc_params[1:]:
-            if not self.bsc_params[0].calibration_params.equal(bp.calibration_params):
+            if not self.bsc_params[0].calibration_params.equal(
+                    bp.calibration_params):
                 logger.error('calibration params of products {0} and {1} '
-                             'are not equal.'.format(self.bsc_params[0].prod_id, bp.prod_id))
+                             'are not equal.'.format(
+                                self.bsc_params[0].prod_id,
+                                bp.prod_id))
                 raise BscCalParamsNotEqual
 
         for bp in self.bsc_params:
-            el_sig = self.data_storage.prepared_signal(bp.prod_id_str, bp.total_sig_id)
+            el_sig = self.data_storage.prepared_signal(bp.prod_id_str,
+                                                       bp.total_sig_id)
             error_threshold = bp.general_params.error_threshold.high
             w_width = (bp.calibration_params.window_width //
                        el_sig.raw_heightres).astype(int)
-            ww0 = w_width[0,0]
+            ww0 = w_width[0, 0]
 
             if bp.general_params.product_type == RBSC:
-                r_sig = self.data_storage.prepared_signal(bp.prod_id_str, bp.raman_sig_id)
+                r_sig = self.data_storage.prepared_signal(
+                    bp.prod_id_str, bp.raman_sig_id)
                 sigratio = Signals.as_sig_ratio(el_sig, r_sig)
-                ds = sigratio.data_in_vertical_range(bp.calibration_params.cal_interval)
+                ds = sigratio.data_in_vertical_range(
+                    bp.calibration_params.cal_interval)
             else:
-                ds = el_sig.data_in_vertical_range(bp.calibration_params.cal_interval)
+                ds = el_sig.data_in_vertical_range(
+                    bp.calibration_params.cal_interval)
 
             # calculate rolling means, std errs of mean, and rel sem
             # if all window_width are equal, get means and sems at once
@@ -243,8 +262,10 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
                 m_list = []
                 s_list = []
                 for t in range(ds.dims.time):
-                    m_list.append(ds.data[t].rolling(level=w_width[t, 0]).reduce(np.mean))
-                    s_list.append(ds.data[t].rolling(level=w_width[t, 0]).reduce(sem))
+                    m_list.append(ds.data[t].rolling(level=w_width[t, 0]).
+                                  reduce(np.mean))
+                    s_list.append(ds.data[t].rolling(level=w_width[t, 0]).
+                                  reduce(sem))
 
                 means = xr.concat(m_list, 'time')
                 sems = xr.concat(s_list, 'time')
@@ -252,21 +273,25 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
             rel_sem = sems / means
 
             # find all means with rel_sem < error threshold:
-            # rel_sem.where(rel_sem.data < error_threshold) => rel_sem values and nans
-            # rel_sem.where(rel_sem.data < error_threshold) / rel_sem => ones and nans
+            # rel_sem.where(rel_sem.data < error_threshold)
+            #           => rel_sem values and nans
+            # rel_sem.where(rel_sem.data < error_threshold) / rel_sem
+            #           => ones and nans
             # valid_means = means and nans
-            valid_means = (rel_sem.where(rel_sem.data < error_threshold) / rel_sem * means)
+            valid_means = (rel_sem.where(rel_sem.data < error_threshold) /
+                           rel_sem * means)
 
             # find pos of minima, pos is the beginning of rolling window
             min_pos = np.argmin(valid_means, axis=1)
             max_pos = (min_pos[:] + w_width[:, 0])
 
             da = xr.DataArray(np.zeros((ds.dims['time'], ds.dims['nv'])),
-                                  coords=[ds.time, ds.nv],
-                                  dims=['time', 'nv'])
+                              coords=[ds.time, ds.nv],
+                              dims=['time', 'nv'])
             da.name = 'backscatter_calibration_range'
-            da.attrs = {'long_name': 'height range where calibration was calculated',
-                                         'units': 'm'}
+            da.attrs = {'long_name': 'height range where '
+                                     'calibration was calculated',
+                        'units': 'm'}
             da[:, 0] = el_sig.height[:, min_pos[:]].values
             da[:, 1] = el_sig.height[:, max_pos[:]].values
 
@@ -283,4 +308,3 @@ registry.register_class(FindCommonBscCalibrWindow,
 # registry.register_class(BackscatterFactory,
 #                         BackscatterFactoryDefault.__name__,
 #                         BackscatterFactoryDefault)
-

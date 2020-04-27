@@ -2,9 +2,9 @@
 """ELDAmwl factories"""
 
 from addict import Dict
-from ELDAmwl.backscatter_factories import BackscatterParams
 from ELDAmwl.base import Params
-from ELDAmwl.constants import EXT, EBSC
+from ELDAmwl.constants import EBSC
+from ELDAmwl.constants import EXT
 from ELDAmwl.constants import LR
 from ELDAmwl.constants import RBSC
 from ELDAmwl.data_storage import DataStorage
@@ -160,7 +160,8 @@ class MeasurementParams(Params):
         stored in the product_table (pandas.DataFrame).
         This table is used for search
         and filter operations.
-        The parameters (:class:`ELDAmwl.products.ProductParams`) itself are stored in
+        The parameters (:class:`ELDAmwl.products.ProductParams`)
+        itself are stored in
         product_list (dict) from where
         they can be assessed by their product_id_str (str).
         """

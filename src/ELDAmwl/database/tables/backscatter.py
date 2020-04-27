@@ -2,8 +2,8 @@
 """Classes for backscatter related db tables"""
 
 from sqlalchemy import CHAR
-from sqlalchemy import DateTime
 from sqlalchemy import Column
+from sqlalchemy import DateTime
 from sqlalchemy import DECIMAL
 from sqlalchemy import INTEGER
 from sqlalchemy import String
@@ -56,6 +56,7 @@ class RamanBscMethod(Base):
                               nullable=False,
                               server_default=text("''"))
 
+
 class ElastBscMethod(Base):
     """content of the db table _elast_bsc_methods
 
@@ -72,7 +73,6 @@ class ElastBscMethod(Base):
     python_classname = Column(String(100),
                               nullable=False,
                               server_default=text("''"))
-
 
 
 class RamanBackscatterOption(Base):
@@ -99,6 +99,7 @@ class RamanBackscatterOption(Base):
                               index=True,
                               server_default=text("'-1'"))
 
+
 class ElastBackscatterOption(Base):
     """content of the db table elast_backscatter_options
 
@@ -111,9 +112,9 @@ class ElastBackscatterOption(Base):
                          nullable=False,
                          server_default=text("'-1'"))
     _elast_bsc_method_ID = Column(INTEGER,
-                                nullable=False,
-                                index=True,
-                                server_default=text("'-1'"))
+                                  nullable=False,
+                                  index=True,
+                                  server_default=text("'-1'"))
     _bsc_calibr_options_ID = Column(INTEGER,
                                     nullable=False,
                                     index=True,
@@ -123,13 +124,14 @@ class ElastBackscatterOption(Base):
                               index=True,
                               server_default=text("'-1'"))
     _lr_input_method_id = Column(INTEGER,
-                              nullable=False,
-                              index=True,
-                              server_default=text("'-1'"))
+                                 nullable=False,
+                                 index=True,
+                                 server_default=text("'-1'"))
     _iter_bsc_options_id = Column(INTEGER,
-                              nullable=False,
-                              index=True,
-                              server_default=text("'-1'"))
+                                  nullable=False,
+                                  index=True,
+                                  server_default=text("'-1'"))
+
 
 class IterBackscatterOption(Base):
     """content of the db table iter_backscatter_options
@@ -140,17 +142,18 @@ class IterBackscatterOption(Base):
 
     ID = Column(INTEGER, primary_key=True)
     iter_conv_crit = Column(DECIMAL,
-                                nullable=False,
-                                index=True,
-                                server_default=text("'0.0100'"))
+                            nullable=False,
+                            index=True,
+                            server_default=text("'0.0100'"))
     _ram_bsc_method_id = Column(INTEGER,
                                 nullable=False,
                                 index=True,
                                 server_default=text("'-1'"))
     max_iteration_count = Column(INTEGER,
-                                    nullable=False,
-                                    index=True,
-                                    server_default=text("'10'"))
+                                 nullable=False,
+                                 index=True,
+                                 server_default=text("'10'"))
+
 
 class LRFile(Base):
     """content of the db table lidarratio_files

@@ -3,11 +3,14 @@
 
 from ELDAmwl.backscatter_factories import BackscatterParams
 from ELDAmwl.base import Params
-from ELDAmwl.constants import IT, NC_FILL_INT
-from ELDAmwl.database.db_functions import read_elast_bsc_params, read_iter_bsc_params
-import numpy as np
+from ELDAmwl.constants import IT
+from ELDAmwl.constants import NC_FILL_INT
+from ELDAmwl.database.db_functions import read_elast_bsc_params
+from ELDAmwl.database.db_functions import read_iter_bsc_params
+from ELDAmwl.factory import BaseOperation
+from ELDAmwl.factory import BaseOperationFactory
 
-from ELDAmwl.factory import BaseOperationFactory, BaseOperation
+import numpy as np
 
 
 class ElastBscParams(BackscatterParams):
@@ -33,6 +36,7 @@ class ElastBscParams(BackscatterParams):
         result.lr_input_method = ebp['lr_input_method']
 
         return result
+
 
 class IterBscParams(Params):
 
@@ -66,4 +70,3 @@ class CalcBscProfileKF(BaseOperation):
 class CalcBscProfileIter(BaseOperation):
     """calculates bsc profiles with iterative method"""
     pass
-

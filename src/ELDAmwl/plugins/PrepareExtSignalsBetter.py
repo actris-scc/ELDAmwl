@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 """plugin for preparation of ELPP for extinction retrieval"""
 from ELDAmwl.factory import BaseOperation
+from ELDAmwl.log import logger
 from ELDAmwl.prepare_signals import PrepareExtSignals
 from ELDAmwl.registry import registry
+
 
 class PrepareExtSignalsBetter(BaseOperation):
 
     name = 'PrepareExtSignalsBetter'
 
     def __init__(self, **kwargs):
-        print('create PrepareExtSignalsBetter ')
+        logger.debug('create PrepareExtSignalsBetter ')
 
     def run(self, **kwargs):
-        print('run PrepareExtSignalsBetter ')
+        logger.debug('run PrepareExtSignalsBetter ')
 
 
 registry.register_class(PrepareExtSignals,

@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 """functions for db handling"""
 
-from ELDAmwl.constants import EBSC, PROFILE
+from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import MWL
 from ELDAmwl.constants import RBSC
 from ELDAmwl.database.db import DBUtils
-from ELDAmwl.database.tables.backscatter import BscCalibrOption, RamanBscMethod, LRFile, IterBackscatterOption
-from ELDAmwl.database.tables.backscatter import ElastBackscatterOption, ElastBscMethod
+from ELDAmwl.database.tables.backscatter import BscCalibrOption
+from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
+from ELDAmwl.database.tables.backscatter import ElastBscMethod
+from ELDAmwl.database.tables.backscatter import IterBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
+from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
@@ -69,6 +72,7 @@ def read_extinction_algorithm(product_id):
         logger.error('wrong number of extinction options ({0})'
                      .format(options.count()))
 
+
 def read_raman_bsc_algorithm(product_id):
     """ read from db which algorithm shall be used for
         calculation in Raman backscatter retrievals.
@@ -82,7 +86,8 @@ def read_raman_bsc_algorithm(product_id):
         """
     options = dbutils.session.query(RamanBscMethod,
                                     RamanBackscatterOption)\
-        .filter(RamanBscMethod.ID == RamanBackscatterOption._ram_bsc_method_ID)\
+        .filter(RamanBscMethod.ID ==
+                RamanBackscatterOption._ram_bsc_method_ID)\
         .filter(RamanBackscatterOption._product_ID == product_id)
 
     if options.count() == 1:
@@ -91,6 +96,7 @@ def read_raman_bsc_algorithm(product_id):
     else:
         logger.error('wrong number of Raman bsc options ({0})'
                      .format(options.count()))
+
 
 def read_elast_bsc_algorithm(product_id):
     """ read from db which algorithm shall be used for
@@ -115,6 +121,7 @@ def read_elast_bsc_algorithm(product_id):
         logger.error('wrong number of Raman bsc options ({0})'
                      .format(options.count()))
 
+
 def read_lidar_ratio_params(product_id):
     """ function to read options of an lidar ratio product from db.
 
@@ -136,6 +143,7 @@ def read_lidar_ratio_params(product_id):
     else:
         logger.error('wrong number of lidar ratio options ({0})'
                      .format(options.count()))
+
 
 def read_extinction_params(product_id):
     """ function to read options of an extinction product from db.
@@ -314,6 +322,7 @@ def read_elast_bsc_params(product_id):
         logger.error('wrong number of elast bsc options ({0})'
                      .format(options.count()))
 
+
 def read_iter_bsc_params(product_id):
     """ function to read options of an iterative bsc product from db.
 
@@ -330,7 +339,8 @@ def read_iter_bsc_params(product_id):
     options = dbutils.session.query(IterBackscatterOption,
                                     ElastBackscatterOption)\
         .filter(ElastBackscatterOption._product_ID == product_id)\
-        .filter(ElastBackscatterOption._iter_bsc_options_id == IterBackscatterOption.ID)
+        .filter(ElastBackscatterOption._iter_bsc_options_id ==
+                IterBackscatterOption.ID)
 
     if options.count() == 1:
         result = {'conv_crit': options.value('iter_conv_crit'),
@@ -342,6 +352,7 @@ def read_iter_bsc_params(product_id):
     else:
         logger.error('wrong number of iterative bsc options ({0})'
                      .format(options.count()))
+
 
 def read_raman_bsc_params(product_id):
     """ function to read options of a Raman bsc product from db.
@@ -366,6 +377,7 @@ def read_raman_bsc_params(product_id):
     else:
         logger.error('wrong number of Raman bsc options ({0})'
                      .format(options.count()))
+
 
 def get_bsc_cal_params_query(bsc_prod_id, bsc_type):
     """ read from db which shall be used to get the calibration of a sc product.
