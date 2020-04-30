@@ -11,6 +11,7 @@ from sys import stdout
 import os
 import sys
 
+from ELDAmwl.exceptions import LogPathNotExists
 
 try:
     import ELDAmwl.configs.config as cfg
@@ -58,7 +59,7 @@ def create_logger(meas_id):
         log(ERROR,
             'Log file directory does not exists {path}, please create it '.
             format(path=cfg.LOG_PATH))
-        sys.exit(ERROR_LOG_DIR_NOT_EXISTS)
+        raise(LogPathNotExists)
 
     file_handler = FileHandler(os.path.join(cfg.LOG_PATH,
                                             '{id}.log'.format(id=meas_id)))

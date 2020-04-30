@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+import sys
+
 from ELDAmwl.constants import ELDA_MWL_VERSION
 from ELDAmwl.elda_mwl_factories import RunELDAmwl
+from ELDAmwl.error_codes import NO_ERROR
+from ELDAmwl.exceptions import ELDAmwlException, UNKNOWN_EXCEPTION, WrongCommandLineParameter
 from ELDAmwl.log import create_logger
 from ELDAmwl.log import logger
 from ELDAmwl.plugins import plugin  # noqa F401
@@ -47,14 +51,6 @@ def handle_args():
                         help='processing_inst: name of the institution \
                             at which this code is running')
 
-    # parser.add_argument('-c', dest='config_file', default=None, type=str,
-    #                     help='name of config_file. It must be
-    #                     located in the path '
-    #                          'ELDAmwl/src/configs, has the extension .py, '
-    #                          ' and follow the'
-    #                          'structure of config_default.py in
-    #                          this directory')
-    #
     parser.add_argument('-l', dest='ll_file', default='DEBUG', type=str,
                         choices=['QUIET', 'CRITICAL', 'ERROR',
                                  'WARNING', 'INFO', 'DEBUG'],
@@ -69,16 +65,6 @@ def handle_args():
 
     args = parser.parse_args()
 
-    # if args.config_file:
-    #     try:
-    #         conf_file = 'configs.' + args.config_file[:-3]
-    #         cfg = importlib.import_module(conf_file)
-    #     except ModuleNotFoundError:
-    #         logger.error('cannot find config file {0} in path'
-    #                      'ELDAmwl/src/configs'.format(
-    #                      args.config_file[:-3] + '.py'))
-    #         import ELDAmwl.configs.config as cfg
-
     if args.ll_file:
         if args.ll_file == 'QUIET':
             logger.disabled = True
@@ -88,26 +74,40 @@ def handle_args():
     return args.meas_id
 
 
-def main(meas_id):
-    # ext_id = 377
+def main():
 
-    create_logger(meas_id)
+    try:
+        try:
+            meas_id = handle_args()
+        except Exception as e:
+            raise (WrongCommandLineParameter)
 
-    logger.info('welcome to the EARLINET Lidar Data Analyzer for \
-               multi-wavelengths measurements (ELDAmwl)')
-    logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
-    logger.info('analyze measurement number: ' + meas_id)
+        create_logger(meas_id)
 
-    elda_mwl = RunELDAmwl(meas_id)
-    elda_mwl.read_tasks()
-    elda_mwl.read_elpp_data()
-    elda_mwl.prepare_signals()
-    elda_mwl.get_basic_products()
+        logger.info('welcome to the EARLINET Lidar Data Analyzer for \
+                   multi-wavelengths measurements (ELDAmwl)')
+        logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
+        logger.info('analyze measurement number: ' + meas_id)
 
-    logger.info('the end')
+        elda_mwl = RunELDAmwl(meas_id)
+        elda_mwl.read_tasks()
+        elda_mwl.read_elpp_data()
+        elda_mwl.prepare_signals()
+        elda_mwl.get_basic_products()
+
+        logger.info('the end')
+
+        sys.exit(NO_ERROR)
+
+    except ELDAmwlException as e:
+        logger.error('exception raised {0} {1}'.format(e.return_value, e))
+        sys.exit(e.return_value)
+
+    except Exception as e:
+        logger.error('unknown exception raised {0}'.format(e))
+        sys.exit(UNKNOWN_EXCEPTION)
 
 
 if __name__ == '__main__':
-    meas_id = handle_args()
 
-    main(meas_id)
+    main()

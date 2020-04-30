@@ -236,3 +236,8 @@ class GeneralProductParams(Params):
         query = get_general_params_query(prod_id)
         result = cls.from_query(query)
         return result
+
+
+class MCOptions(Params):
+    # raise(NotEnoughMCIterations)
+    pass
