@@ -66,9 +66,8 @@ class DataStorage(object):
                 result.append(self.data.elpp_signals[prod_id_str][ch_id])
             return result
         except AttributeError:
-            logger.error('cannot find signals for product {0} '
-                         'in data storage'.format(prod_id_str))
-            raise NotFoundInStorage
+            raise NotFoundInStorage('ELPP signals',
+                                    'product {0}'.format(prod_id_str))
 
     def elpp_signal(self, prod_id_str, ch_id_str):
         """one ELPP signal
@@ -87,9 +86,8 @@ class DataStorage(object):
         try:
             return self.data.elpp_signals[prod_id_str][ch_id_str]
         except AttributeError:
-            logger.error('cannot find signal {0} for product {1} '
-                         'in data storage'.format(ch_id_str, prod_id_str))
-            raise NotFoundInStorage
+            raise NotFoundInStorage('ELPP signal {0}'.format(ch_id_str),
+                                    'product {0}'.format(prod_id_str))
 
     def prepared_signals(self, prod_id_str):
         """all prepared signals of one product
@@ -113,9 +111,8 @@ class DataStorage(object):
                 result.append(self.data.prepared_signals[prod_id_str][ch_id])
             return result
         except AttributeError:
-            logger.error('cannot find signals for product {0} '
-                         'in data storage'.format(prod_id_str))
-            raise NotFoundInStorage
+            raise NotFoundInStorage('prepared signals',
+                                    'product {0}'.format(prod_id_str))
 
     def prepared_signal(self, prod_id_str, ch_id_str):
         """one prepared signal
@@ -138,9 +135,8 @@ class DataStorage(object):
         try:
             return self.data.prepared_signals[prod_id_str][ch_id_str]
         except AttributeError:
-            logger.error('cannot find signal {0} for product {1} '
-                         'in data storage'.format(ch_id_str, prod_id_str))
-            raise NotFoundInStorage
+            raise NotFoundInStorage('prepared signal {0}'.format(ch_id_str),
+                                    'product {0}'.format(prod_id_str))
 
     @property
     def cloud_mask(self):
@@ -163,8 +159,6 @@ class DataStorage(object):
     def cloud_mask(self, new_mask):
         if self.cloud_mask is not None:
             if not self.cloud_mask.equals(new_mask):
-                logger.error('cloud mask already exists '
-                             'in data storage and is different ')
                 raise DifferentCloudMaskExists
 
         self.data.cloud_mask = new_mask
@@ -187,7 +181,5 @@ class DataStorage(object):
     def header(self, new_header):
         if self.header is not None:
             if not (self.header == new_header):
-                logger.error('header already exists '
-                             'in data storage and is different ')
                 raise DifferentHeaderExists
         self.data.header = new_header

@@ -202,10 +202,8 @@ class GeneralProductParams(Params):
         result.error_threshold.low = query.ErrorThresholdsLow.value
         result.error_threshold.high = query.ErrorThresholdsHigh.value
         result.detection_limit = query.ProductOptions.detection_limit
-        if result.detection_limit == 0.:
-            logger.error('detection limit of product {0} '
-                         'must be > 0'.format(result.prod_id))
-            raise(DetectionLimitZero)
+        if result.detection_limit == 0.0:
+            raise(DetectionLimitZero, result.prod_id)
 
         result.valid_alt_range.min_height = query.ProductOptions.min_height
         result.valid_alt_range.max_height = query.ProductOptions.max_height

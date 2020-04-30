@@ -73,11 +73,21 @@ def main():
     try:
         try:
             meas_id = handle_args()
+            # todo: transform system errors to exception
+            # SystemError: error return without exception set
+            # error: the following arguments are required: meas_id
+            # returns 2
+            #
+            # main.py: error: unrecognized arguments: -d
+            # returns 2
+            #
+            # main.py: error: argument - l: invalid choice
+            # returns 2
         except Exception as e:
             raise (WrongCommandLineParameter)
 
         create_logger(meas_id)
-        register_plugins()
+        # register_plugins()
 
         logger.info('welcome to the EARLINET Lidar Data Analyzer for \
                    multi-wavelengths measurements (ELDAmwl)')

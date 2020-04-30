@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """import of all plugins"""
 import glob
-from os.path import join
+import importlib
 from ELDAmwl.configs.config import PLUGINS_DIR
 
 def register_plugins():
-    plugins = glob.glob(join(PLUGINS_DIR, 'plugins') + '/*.py')
+    plugins = glob.glob(PLUGINS_DIR + '/*.py')
     for plugin in plugins:
-        import plugin
+        importlib.import_module(plugin)

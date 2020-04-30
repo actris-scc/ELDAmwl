@@ -83,11 +83,7 @@ class BackscatterParams(ProductParams):
         result.calibration_params = BscCalibrationParams.from_db(general_params)  # noqa E501
         if result.calibration_params.cal_interval.max_height > \
                 result.general_params.valid_alt_range.max_height:
-            logger.error('the height interval for searching '
-                         'the calibration window is '
-                         'higher than the vertical range '
-                         'for product calculation')
-            raise CalRangeHigherThanValid
+            raise CalRangeHigherThanValid(result.prod_id_str)
 
         return result
 
@@ -227,11 +223,8 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         for bp in self.bsc_params[1:]:
             if not self.bsc_params[0].calibration_params.equal(
                     bp.calibration_params):
-                logger.error('calibration params of products {0} and {1} '
-                             'are not equal.'.format(
-                                self.bsc_params[0].prod_id,
-                                bp.prod_id))
-                raise BscCalParamsNotEqual
+                raise BscCalParamsNotEqual(self.bsc_params[0].prod_id,
+                                           bp.prod_id)
 
         for bp in self.bsc_params:
             el_sig = self.data_storage.prepared_signal(bp.prod_id_str,

@@ -42,6 +42,14 @@ class NotFoundInStorage(ELDAmwlException):
     """
     return_value = 100
 
+    def __init__(self, what, where):
+        self.what = what
+        self.where = where
+
+    def __str__(self):
+        return('cannot find {what} for {where} '
+               'in data storage'.format(self.what, self.where))
+
 
 class LogPathNotExists(ELDAmwlException):
     """raised when the path for writing the log file does not exists"""
@@ -53,11 +61,31 @@ class UseCaseNotImplemented(ELDAmwlException):
     """
     return_value = 7
 
+    def __init__(self, usecase, product_type, instead):
+        self.usecase = usecase
+        self.product = product_type
+        self.instead = instead
+
+    def __str__(self):
+        msg = 'Usecase {0} of {1} not yet implemented. '\
+            .format(self.usecase, self.product_type)
+        if self.instead:
+            msg.join('use {0} intsead.'.format(self.instead))
+        return(msg)
+
 
 class CalRangeHigherThanValid(ELDAmwlException):
     """raised when the range for finding the calibration window is higher
     than vertical range for product calculation"""
     return_value = 11
+
+    def __init__(self, product_id):
+        self.product_id = product_id
+
+    def __str__(self):
+        return('the upper end of the height interval for searching '
+               'the calibration window is higher than the upper end '
+               'of the valid vertical range of product {0}'.format(self.product_id))
 
 
 class NoValidDataPointsForCalibration(ELDAmwlException):
@@ -66,6 +94,10 @@ class NoValidDataPointsForCalibration(ELDAmwlException):
     calculated within the requested uncertainty.
     """
     return_value = 13
+
+    def __str__(self):
+        return('error of calibration factor larger than '
+               'maximum allowable backscatter uncertainty')
 
 
 class NotEnoughMCIterations(ELDAmwlException):
@@ -78,10 +110,25 @@ class DetectionLimitZero(ELDAmwlException):
     """
     return_value = 31
 
+    def __init__(self, prod_id):
+        self.prod_id = prod_id
+
+    def __str__(self):
+        return('detection limit of product {0} '
+               'must be > 0'.format(self.prod_id))
+
 
 class BscCalParamsNotEqual(ELDAmwlException):
     """raised when calibration params of backscatter products are not equal"""
     return_value = 38
+
+    def __init__(self, prod_id_1, prod_id_2):
+        self.pid1 = prod_id_1
+        self.pid2 = prod_id_2
+
+    def __str__(self):
+        return('calibration params of products {0} and {1} '
+               'are not equal.'.format(self.pid1, self.pid2))
 
 
 class WrongCommandLineParameter(ELDAmwlException):
@@ -96,6 +143,11 @@ class DifferentCloudMaskExists(ELDAmwlException):
     """
     return_value = 36
 
+    def __str__(self):
+        return('Another ELPP file with a different cloud mask '
+               'has already been red')
+
+
 
 class DifferentHeaderExists(ELDAmwlException):
     """
@@ -103,3 +155,8 @@ class DifferentHeaderExists(ELDAmwlException):
     but the existing one is different from the new one
     """
     return_value = 37
+
+    def __str__(self):
+        return('Another ELPP file with different header information '
+               'has already been red')
+

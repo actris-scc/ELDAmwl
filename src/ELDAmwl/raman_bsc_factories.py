@@ -218,8 +218,8 @@ class CalcRamanBscProfileViaBR(BaseOperation):
             rel_sem = sem / mean
 
             if rel_sem > error_params.err_threshold.high:
-                logger.err('error of calibration factor too large')
                 raise NoValidDataPointsForCalibration
+
             else:
                 calibr_factor[t] = calibration.calibr_value.value / mean
                 calibr_factor_err[t] = calibr_factor[t] * \
@@ -257,9 +257,9 @@ class CalcRamanBscProfileAsAnsmann(BaseOperation):
     name = 'CalcRamanBscProfileAsAnsmann'
 
     def run(self, **kwargs):
-        logger.error('This Raman bsc method is not yet implemented. '
-                     'Use viaBR (id = 1) instead.')
-        raise UseCaseNotImplemented()
+        raise UseCaseNotImplemented('CalcRamanBscProfileAsAnsmann',
+                                    'Raman Backscatter',
+                                    'viaBR (id = 1)')
 
 
 registry.register_class(CalcRamanBscProfile,
