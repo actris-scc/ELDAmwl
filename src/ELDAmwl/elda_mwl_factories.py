@@ -208,8 +208,7 @@ class RunELDAmwl(BaseOperation):
     def read_elpp_data(self):
         logger.info('read ELPP files')
         for p_param in self.params.basic_products():
-            elpp_data = ElppData()
-            elpp_data.read_nc_file(self.data, p_param)
+            ElppData().read_nc_file(self.data, p_param)
 
     def prepare_signals(self):
         logger.info('prepare signals')

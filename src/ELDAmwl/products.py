@@ -3,7 +3,7 @@
 from addict import Dict
 from copy import deepcopy
 from ELDAmwl.base import Params
-from ELDAmwl.configs.config_default import RANGE_BOUNDARY_KM
+from ELDAmwl.configs.config import RANGE_BOUNDARY_KM
 from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES
 from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import EXT
@@ -13,6 +13,7 @@ from ELDAmwl.constants import NC_FILL_INT
 from ELDAmwl.constants import RBSC
 from ELDAmwl.constants import UNITS
 from ELDAmwl.database.db_functions import get_general_params_query
+from ELDAmwl.exceptions import DetectionLimitZero
 from ELDAmwl.log import logger
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.signals import Signals
@@ -201,6 +202,10 @@ class GeneralProductParams(Params):
         result.error_threshold.low = query.ErrorThresholdsLow.value
         result.error_threshold.high = query.ErrorThresholdsHigh.value
         result.detection_limit = query.ProductOptions.detection_limit
+        if result.detection_limit == 0.:
+            logger.error('detection limit of product {0} '
+                         'must be > 0'.format(result.prod_id))
+            raise(DetectionLimitZero)
 
         result.valid_alt_range.min_height = query.ProductOptions.min_height
         result.valid_alt_range.max_height = query.ProductOptions.max_height

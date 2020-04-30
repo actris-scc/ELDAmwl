@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.error_codes import ERROR_LOG_DIR_NOT_EXISTS
 from logging import ERROR
 from logging import FileHandler
 from logging import Formatter

@@ -55,8 +55,12 @@ class ElppData(object):
         """
         # todo: check if scc version in query = current version
 
-        nc_ds = xr.open_dataset(os.path.join(cfg.SIGNAL_PATH,
-                                             p_param.general_params.elpp_file))
+        elpp_file = os.path.join(cfg.SIGNAL_PATH,
+                                 p_param.general_params.elpp_file)
+        if not os._exists(elpp_file):
+            raise()
+
+        nc_ds = xr.open_dataset(elpp_file)
 
         self.cloud_mask = nc_ds.cloud_mask.astype(int)
         data_storage.cloud_mask = self.cloud_mask

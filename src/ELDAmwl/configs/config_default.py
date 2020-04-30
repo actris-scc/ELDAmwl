@@ -12,6 +12,7 @@ LOG_PATH = ''
 SIGNAL_PATH = ''
 PRODUCT_PATH = ''
 TEMP_PATH = ''
+PLUGINS_DIR = ''
 
 # ===================
 # database connection

@@ -35,7 +35,7 @@ class RayleighLidarRatioFromConst(BaseOperation):
     def run(self):
         return RAYL_LR
 
-
 registry.register_class(RayleighLidarRatio,
                         RayleighLidarRatioFromConst.__name__,
                         RayleighLidarRatioFromConst)
+

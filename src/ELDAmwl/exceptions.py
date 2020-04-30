@@ -27,6 +27,14 @@ class OnlyOneOverrideAllowed(ELDAmwlException):
     """
     return_value = 101
 
+    def __init__(self, factory_name):
+        self.factory_name = factory_name
+
+    def __str__(self):
+        return('attempt to add more than one override to '
+               'class registry for BaseOperationFactory {0}'
+               .format(self.factory_name))
+
 
 class NotFoundInStorage(ELDAmwlException):
     """
@@ -63,6 +71,12 @@ class NoValidDataPointsForCalibration(ELDAmwlException):
 class NotEnoughMCIterations(ELDAmwlException):
     """raised when number of MC iterations is not >1"""
     return_value = 23
+
+
+class DetectionLimitZero(ELDAmwlException):
+    """raised when a detection limit = 0.0 . The value must be >0.0
+    """
+    return_value = 31
 
 
 class BscCalParamsNotEqual(ELDAmwlException):

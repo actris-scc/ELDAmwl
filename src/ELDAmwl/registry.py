@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """Class registry"""
+import sys
 
 from addict import Dict
 from ELDAmwl.exceptions import OnlyOneOverrideAllowed
-
+from ELDAmwl.log import logger
 
 OVERRIDE = '__OVERRIDE__'
 
@@ -16,19 +17,20 @@ class FactoryRegistry(object):
         """
         self.registry = Dict()
 
-    def register_class(self, klass_name, klass, override=False):
+    def register_class(self, factory_name,
+                       klass_name, klass, override=False):
         """
         Registers a class by name
 
         Args:
-            factory: The factory to register for
+            factory_name: Name of the factory to register for
             klass_name: The name under which the class is registered in the db
             klass: The class to register
         """
         self.registry[klass_name] = klass
         if override:
             if OVERRIDE in self.registry:
-                raise OnlyOneOverrideAllowed
+                raise OnlyOneOverrideAllowed(factory_name)
             self.registry[OVERRIDE] = klass_name
 
     def find_class_by_name(self, klass_name):
@@ -67,10 +69,10 @@ class Registry(object):
 
     def get_factory_registration(self, factory):
         """
-        Retireve or create new factory entry in the registry
+        Retrieve or create new factory entry in the registry
 
         Args:
-            factory: THe factory which is looked for
+            factory: The factory which is looked for
 
         Returns:
 
@@ -92,8 +94,9 @@ class Registry(object):
 
         """
         factory_registration = self.get_factory_registration(factory)
-        factory_registration.register_class(klass_name, klass,
-                                            override=override)
+        factory_registration.register_class(factory.name,
+                                        klass_name, klass,
+                                        override=override)
 
     def find_class_by_name(self, factory, klass_name):
         """
@@ -127,6 +130,5 @@ class Registry(object):
                 res.append(' ' * 4 + name + ' => ' + str(klass))
 
         return '\n'.join(res)
-
 
 registry = Registry()

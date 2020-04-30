@@ -3,24 +3,18 @@ import sys
 
 from ELDAmwl.constants import ELDA_MWL_VERSION
 from ELDAmwl.elda_mwl_factories import RunELDAmwl
-from ELDAmwl.error_codes import NO_ERROR
-from ELDAmwl.exceptions import ELDAmwlException, UNKNOWN_EXCEPTION, WrongCommandLineParameter
+from ELDAmwl.exceptions import ELDAmwlException, UNKNOWN_EXCEPTION, WrongCommandLineParameter, NO_ERROR
 from ELDAmwl.log import create_logger
 from ELDAmwl.log import logger
-from ELDAmwl.plugins import plugin  # noqa F401
+from ELDAmwl.plugins import register_plugins
 
 import argparse
 
-
-# ELDAmwl.plugins module needs to be imported.
-# Otherwise ELDAmwl does not know the plugins.
 
 try:
     import ELDAmwl.configs.config as cfg  # noqa E401
 except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg  # noqa E401
-
-# registry.status()
 
 
 # meas_id = '20181017oh00'
@@ -83,6 +77,7 @@ def main():
             raise (WrongCommandLineParameter)
 
         create_logger(meas_id)
+        register_plugins()
 
         logger.info('welcome to the EARLINET Lidar Data Analyzer for \
                    multi-wavelengths measurements (ELDAmwl)')
