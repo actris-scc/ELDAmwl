@@ -16,6 +16,7 @@ from ELDAmwl.constants import REFLECTED
 from ELDAmwl.constants import TOTAL
 from ELDAmwl.constants import TRANSMITTED
 from ELDAmwl.constants import WATER_VAPOR
+from ELDAmwl.exceptions import ELPPFileNotFound, CannotOpenELLPFile
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
@@ -57,10 +58,13 @@ class ElppData(object):
 
         elpp_file = os.path.join(cfg.SIGNAL_PATH,
                                  p_param.general_params.elpp_file)
-        if not os._exists(elpp_file):
-            raise()
+        if not os.path.exists(elpp_file):
+            raise(ELPPFileNotFound(elpp_file))
 
-        nc_ds = xr.open_dataset(elpp_file)
+        try:
+            nc_ds = xr.open_dataset(elpp_file)
+        except:
+            raise(CannotOpenELLPFile(elpp_file))
 
         self.cloud_mask = nc_ds.cloud_mask.astype(int)
         data_storage.cloud_mask = self.cloud_mask

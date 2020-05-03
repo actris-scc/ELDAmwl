@@ -17,13 +17,14 @@ from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
-from ELDAmwl.database.tables.system_product import ErrorThresholds
+from ELDAmwl.database.tables.system_product import ErrorThresholds, MCOption
 from ELDAmwl.database.tables.system_product import MWLproductProduct
 from ELDAmwl.database.tables.system_product import PreparedSignalFile
 from ELDAmwl.database.tables.system_product import ProductOptions
 from ELDAmwl.database.tables.system_product import Products
 from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SystemProduct
+from ELDAmwl.exceptions import NOMCOptions, NoBscCalOptions
 from ELDAmwl.log import logger
 from sqlalchemy.orm import aliased
 
@@ -318,6 +319,7 @@ def read_elast_bsc_params(product_id):
     if options.count() == 1:
         result = {'elast_bsc_method': options.value('_elast_bsc_method_ID'),
                   'lr_input_method': options.value('_lr_input_method_id'),
+                  'error_method': options.value('_error_method_ID'),
                   }
 
         # if options.value('_lr_input_method_id') == PROFILE:
@@ -385,15 +387,31 @@ def read_raman_bsc_params(product_id):
 
     if options.count() == 1:
         result = {'ram_bsc_method': options.value('_ram_bsc_method_ID'),
+                  'error_method': options.value('_error_method_ID'),
                   }
         return result
     else:
         logger.error('wrong number of Raman bsc options ({0})'
                      .format(options.count()))
 
+def get_mc_params_query(prod_id):
+    """read from db which params shall be used for the Monte-Carlo error retrieval
+    Args:
+        prod_id (int): product id
+
+    """
+    mc_params = dbutils.session.query(MCOption,
+    ).filter(
+        MCOption._product_ID == prod_id)
+
+    if mc_params.count() > 1:
+        return mc_params[0]
+    else:
+        raise(NOMCOptions, prod_id)
+
 
 def get_bsc_cal_params_query(bsc_prod_id, bsc_type):
-    """ read from db which shall be used to get the calibration of a sc product.
+    """ read from db which params shall be used to get the calibration of a sc product.
 
         Args:
             bsc_prod_id (int): product id of the bsc product
@@ -419,7 +437,7 @@ def get_bsc_cal_params_query(bsc_prod_id, bsc_type):
     if cal_params.count() > 0:
         return cal_params[0]
     else:
-        logger.error('no calibration params for bsc product')
+        raise(NoBscCalOptions(bsc_prod_id))
 
 
 def read_mwl_product_id(system_id):

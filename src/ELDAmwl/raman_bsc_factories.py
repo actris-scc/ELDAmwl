@@ -7,7 +7,7 @@ from ELDAmwl.backscatter_factories import BackscatterFactoryDefault
 from ELDAmwl.backscatter_factories import BackscatterParams
 from ELDAmwl.backscatter_factories import Backscatters
 from ELDAmwl.base import DataPoint
-from ELDAmwl.constants import NC_FILL_STR
+from ELDAmwl.constants import NC_FILL_STR, MC
 from ELDAmwl.constants import RAYL_LR
 from ELDAmwl.database.db_functions import read_raman_bsc_algorithm
 from ELDAmwl.database.db_functions import read_raman_bsc_params
@@ -16,6 +16,7 @@ from ELDAmwl.exceptions import UseCaseNotImplemented
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
+from ELDAmwl.products import MCParams
 from ELDAmwl.registry import registry
 from ELDAmwl.signals import Signals
 
@@ -36,6 +37,8 @@ class RamanBscParams(BackscatterParams):
         result = super(RamanBscParams, cls).from_db(general_params)
         rbp = read_raman_bsc_params(general_params.prod_id)
         result.raman_bsc_method = rbp['ram_bsc_method']
+        result.get_error_params(rbp)
+
         return result
 
     def add_signal_role(self, signal):

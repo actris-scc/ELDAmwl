@@ -4,7 +4,7 @@ from addict import Dict
 from copy import deepcopy
 from ELDAmwl.base import Params
 from ELDAmwl.configs.config import RANGE_BOUNDARY_KM
-from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES
+from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, MC
 from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import EXT
 from ELDAmwl.constants import MERGE_PRODUCT_USE_CASES
@@ -12,8 +12,8 @@ from ELDAmwl.constants import NC_FILL_BYTE
 from ELDAmwl.constants import NC_FILL_INT
 from ELDAmwl.constants import RBSC
 from ELDAmwl.constants import UNITS
-from ELDAmwl.database.db_functions import get_general_params_query
-from ELDAmwl.exceptions import DetectionLimitZero
+from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query
+from ELDAmwl.exceptions import DetectionLimitZero, NotEnoughMCIterations
 from ELDAmwl.log import logger
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.signals import Signals
@@ -52,6 +52,19 @@ class ProductParams(Params):
     def __init__(self):
         self.sub_params = ['general_params']
         self.general_params = None
+        self.mc_params = None
+
+    def get_error_params(self, db_options):
+        """reads error params
+        Args:
+            db_options {}: product params, read from
+                    SCC db with read_elast_bsc_params(),
+                    read_extinction_params(), or
+                    read_raman_bsc_params
+            """
+        self.general_params.error_method = db_options['error_method']
+        if self.error_method == MC:
+            self.mc_params = MCParams.from_db(self.prod_id)
 
     @property
     def prod_id_str(self):
@@ -224,15 +237,15 @@ class GeneralProductParams(Params):
 
         return result
 
-    @classmethod
-    def from_db(cls, general_params):
-        if not isinstance(general_params, ProductParams):
-            logger.error('')
-            return None
-
-        result = general_params.deepcopy()
-
-        return result
+    # @classmethod
+    # def from_db(cls, general_params):
+    #     if not isinstance(general_params, ProductParams):
+    #         logger.error('')
+    #         return None
+    #
+    #     result = general_params.deepcopy()
+    #
+    #     return result
 
     @classmethod
     def from_id(cls, prod_id):
@@ -241,6 +254,16 @@ class GeneralProductParams(Params):
         return result
 
 
-class MCOptions(Params):
-    # raise(NotEnoughMCIterations)
-    pass
+class MCParams(Params):
+    nb_of_iterations = None
+
+    @classmethod
+    def from_db(cls, prod_id):
+        result = cls()
+        query = get_mc_params_query(prod_id)
+        result.nb_of_iterations = query.iteration_count
+
+        if result.nb_of_iterations <= 1:
+            raise(NotEnoughMCIterations, prod_id)
+
+        return result

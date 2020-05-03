@@ -100,3 +100,11 @@ class PreparedSignalFile(Base):
     _Product_ID = Column(INTEGER, nullable=False, index=True)
     _scc_version_ID = Column(INTEGER, nullable=False)
     filename = Column(String(100), nullable=False)
+
+
+class MCOption(Base):
+    __tablename__ = 'mc_options'
+
+    ID = Column(INTEGER, primary_key=True)
+    _product_ID = Column(INTEGER, nullable=False, index=True)
+    iteration_count = Column(INTEGER, nullable=False)

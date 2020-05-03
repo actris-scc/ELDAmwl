@@ -7,7 +7,10 @@ UNKNOWN_EXCEPTION = 22
 
 class ELDAmwlException(Exception):
     return_value = None
+    prod_id = None
 
+    def __init__(self, prod_id):
+        self.prod_id = prod_id
 
 class CsvFileNotFound(ELDAmwlException):
     """
@@ -51,6 +54,30 @@ class NotFoundInStorage(ELDAmwlException):
                'in data storage'.format(self.what, self.where))
 
 
+class ELPPFileNotFound(ELDAmwlException):
+    """raised when the requested ELPP file is not found
+    """
+
+    return_value = 3
+
+    def __init__(self, filename):
+        self.filename = filename
+
+    def __str__(self):
+        return('ELPP file {0} not found'.format(self.filename))
+
+
+class CannotOpenELLPFile(ELDAmwlException):
+    """raised when an eLPP file cannot be opened"""
+
+    return_value = 10
+
+    def __init__(self, filename):
+        self.filename = filename
+
+    def __str__(self):
+        return('cannot open ELPP file {0}'.format(self.filename))
+
 class LogPathNotExists(ELDAmwlException):
     """raised when the path for writing the log file does not exists"""
     return_value = 6
@@ -79,9 +106,6 @@ class CalRangeHigherThanValid(ELDAmwlException):
     than vertical range for product calculation"""
     return_value = 11
 
-    def __init__(self, product_id):
-        self.product_id = product_id
-
     def __str__(self):
         return('the upper end of the height interval for searching '
                'the calibration window is higher than the upper end '
@@ -104,31 +128,20 @@ class NotEnoughMCIterations(ELDAmwlException):
     """raised when number of MC iterations is not >1"""
     return_value = 23
 
+    def __str__(self):
+        return('Product {0} has wrong number of MonteCarlo '
+               'iterations (must be larger than 1).'
+               .format(self.prod_id))
+
 
 class DetectionLimitZero(ELDAmwlException):
     """raised when a detection limit = 0.0 . The value must be >0.0
     """
     return_value = 31
 
-    def __init__(self, prod_id):
-        self.prod_id = prod_id
-
     def __str__(self):
         return('detection limit of product {0} '
                'must be > 0'.format(self.prod_id))
-
-
-class BscCalParamsNotEqual(ELDAmwlException):
-    """raised when calibration params of backscatter products are not equal"""
-    return_value = 38
-
-    def __init__(self, prod_id_1, prod_id_2):
-        self.pid1 = prod_id_1
-        self.pid2 = prod_id_2
-
-    def __str__(self):
-        return('calibration params of products {0} and {1} '
-               'are not equal.'.format(self.pid1, self.pid2))
 
 
 class WrongCommandLineParameter(ELDAmwlException):
@@ -159,4 +172,42 @@ class DifferentHeaderExists(ELDAmwlException):
     def __str__(self):
         return('Another ELPP file with different header information '
                'has already been red')
+
+
+class BscCalParamsNotEqual(ELDAmwlException):
+    """raised when calibration params of backscatter products are not equal"""
+    return_value = 38
+
+    def __init__(self, prod_id_1, prod_id_2):
+        self.pid1 = prod_id_1
+        self.pid2 = prod_id_2
+
+    def __str__(self):
+        return('calibration params of products {0} and {1} '
+               'are not equal.'.format(self.pid1, self.pid2))
+
+
+class NOMCOptions(ELDAmwlException):
+    """raised when no MonteCarlo options are provided in SCC db
+    for a product with error_method == mc
+    """
+
+    return_value = 39
+
+    def __str__(self):
+        return('no MonteCarlo options are provided in SCC db'
+               'for product {0} which has error_method = mc'
+               .format(self.prod_id))
+
+
+class NoBscCalOptions(ELDAmwlException):
+    """raised when a backscatter product has no calibration options in SCC db
+    """
+
+    return_value = 40
+
+    def __str__(self):
+        return('no backscatter calibration options are '
+               'provided in SCC db for product {0}'
+               .format(self.prod_id))
 

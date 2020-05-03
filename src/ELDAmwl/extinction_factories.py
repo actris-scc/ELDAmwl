@@ -12,7 +12,7 @@ from ELDAmwl.database.db_functions import read_extinction_params
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
-from ELDAmwl.products import ProductParams
+from ELDAmwl.products import ProductParams, MCParams
 from ELDAmwl.products import Products
 from ELDAmwl.registry import registry
 from math import sqrt
@@ -42,7 +42,8 @@ class ExtinctionParams(ProductParams):
         result.correct_ovl = ep['overlap_correction']
         result.ovl_filename = ep['overlap_file']
         result.ext_method = ep['ext_method']
-        result.general_params.error_method = ep['error_method']
+
+        result.get_error_params(ep)
 
         return result
 
