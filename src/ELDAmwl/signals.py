@@ -254,19 +254,23 @@ class Signals(Columns):
             laser_pointing_angle_of_profiles,
             laser_pointing_angle)
 
-        atmospheric_molecular_extinction = nc_ds.atmospheric_molecular_extinction[idx_in_file]  # noqa E501
-        result.ds['mol_extinction'] = result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,  # noqa E501
-                                                                         atmospheric_molecular_extinction)  # noqa E501
+        result.ds['mol_extinction'] = nc_ds.molecular_extinction[idx_in_file]  # noqa E501
+#        atmospheric_molecular_extinction = nc_ds.atmospheric_molecular_extinction[idx_in_file]  # noqa E501
+#        result.ds['mol_extinction'] = result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,  # noqa E501
+#                                                                         atmospheric_molecular_extinction)  # noqa E501
 
-        result.ds['mol_lidar_ratio'] = nc_ds.atmospheric_molecular_lidar_ratio[idx_in_file]  # noqa E501
+        result.ds['mol_lidar_ratio'] = nc_ds.molecular_lidar_ratio[idx_in_file]  # noqa E501
+#        result.ds['mol_lidar_ratio'] = nc_ds.atmospheric_molecular_lidar_ratio[idx_in_file]  # noqa E501
 
-        mol_trasm_at_detection_wl = nc_ds.atmospheric_molecular_trasmissivity_at_detection_wavelength[idx_in_file]  # noqa E501
-        result.ds['mol_trasm_at_detection_wl'] = result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,  # noqa E501
-                                                                                    mol_trasm_at_detection_wl)  # noqa E501
+        result.ds['mol_trasm_at_detection_wl'] = nc_ds.molecular_transmissivity_at_detection_wavelength[idx_in_file]  # noqa E501
+#        mol_trasm_at_detection_wl = nc_ds.atmospheric_molecular_trasmissivity_at_detection_wavelength[idx_in_file]  # noqa E501
+#        result.ds['mol_trasm_at_detection_wl'] = result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,  # noqa E501
+#                                                                                    mol_trasm_at_detection_wl)  # noqa E501
 
-        mol_trasm_at_emission_wl = nc_ds.atmospheric_molecular_trasmissivity_at_emission_wavelength[idx_in_file]  # noqa E501
-        result.ds['mol_trasm_at_emission_wl'] = result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,  # noqa E501
-                                                                                   mol_trasm_at_emission_wl)  # noqa E501
+        result.ds['mol_trasm_at_emission_wl'] = nc_ds.molecular_transmissivity_at_emission_wavelength[idx_in_file]  # noqa E501
+#        mol_trasm_at_emission_wl = nc_ds.atmospheric_molecular_trasmissivity_at_emission_wavelength[idx_in_file]  # noqa E501
+#        result.ds['mol_trasm_at_emission_wl'] = result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,  # noqa E501
+#                                                                                   mol_trasm_at_emission_wl)  # noqa E501
 
         result.channel_id = nc_ds.range_corrected_signal_channel_id[idx_in_file].astype(int)  # noqa E501
         result.detection_type = nc_ds.range_corrected_signal_detection_mode[idx_in_file].astype(int)  # noqa E501
