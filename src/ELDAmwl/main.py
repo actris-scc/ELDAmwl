@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
+import traceback
 
 from ELDAmwl.constants import ELDA_MWL_VERSION
 from ELDAmwl.elda_mwl_factories import RunELDAmwl
@@ -110,6 +111,9 @@ def main():
 
     except Exception as e:
         logger.error('unknown exception raised {0}'.format(e))
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        for line in traceback.format_tb(exc_traceback):
+            logger.error("exception: %s" % (line[:-1]))
         sys.exit(UNKNOWN_EXCEPTION)
 
 

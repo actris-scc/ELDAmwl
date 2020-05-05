@@ -83,7 +83,7 @@ class RamanBackscatters(Backscatters):
                              })
 
         calibr_value = DataPoint.from_data(
-            p_params.calibration_params.CalValue, 0, 0)
+            p_params.calibration_params.cal_value, 0, 0)
         cal_params = Dict({'cal_first_lev': cal_first_lev,
                            'cal_last_lev': cal_last_lev,
                            'calibr_value': calibr_value})
