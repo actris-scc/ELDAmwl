@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+# those error codes shall be transformed into exceptions, where applicable
+
 #ERROR_INI_FILE_NOT_EXISTS = 1
 ERROR_LR_FILE_NOT_EXISTS = 2
 #ERROR_SIG_FILE_NOT_EXISTS = 3

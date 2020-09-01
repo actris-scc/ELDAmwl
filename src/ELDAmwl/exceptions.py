@@ -6,21 +6,25 @@ UNKNOWN_EXCEPTION = 22
 
 
 class ELDAmwlException(Exception):
+    """
+    base class of exceptions raised by ELDAmwl
+    """
     return_value = None
     prod_id = None
 
     def __init__(self, prod_id):
         self.prod_id = prod_id
 
+
 class CsvFileNotFound(ELDAmwlException):
     """
-    Raised when the csv file is not found
+    Raised when the csv file is not found; can occur only while testing
     """
 
 
 class FillTableFailed(ELDAmwlException):
     """
-    Raised when the import of a DB table failed
+    Raised when the import of a DB table failed; can occur only while testing
     """
 
 
@@ -167,7 +171,7 @@ class DifferentHeaderExists(ELDAmwlException):
     Raised if a header shall be written to the data storage
     but the existing one is different from the new one
     """
-    return_value = 37
+    return_value = 40
 
     def __str__(self):
         return('Another ELPP file with different header information '
@@ -176,7 +180,7 @@ class DifferentHeaderExists(ELDAmwlException):
 
 class BscCalParamsNotEqual(ELDAmwlException):
     """raised when calibration params of backscatter products are not equal"""
-    return_value = 38
+    return_value = 41
 
     def __init__(self, prod_id_1, prod_id_2):
         self.pid1 = prod_id_1
@@ -192,7 +196,7 @@ class NOMCOptions(ELDAmwlException):
     for a product with error_method == mc
     """
 
-    return_value = 39
+    return_value = 42
 
     def __str__(self):
         return('no MonteCarlo options are provided in SCC db'
@@ -204,7 +208,7 @@ class NoBscCalOptions(ELDAmwlException):
     """raised when a backscatter product has no calibration options in SCC db
     """
 
-    return_value = 40
+    return_value = 43
 
     def __str__(self):
         return('no backscatter calibration options are '
