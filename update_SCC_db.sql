@@ -78,6 +78,19 @@
 
 #-------------------------
 
+ALTER TABLE `_cal_range_search_methods`
+ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
+
+#-------------------------
+
+#ALTER TABLE `_elast_bsc_methods`
+#ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
+
+#UPDATE `_elast_bsc_methods` set `python_classname` = 'CalcBscProfileKF' where ID=0;
+#UPDATE `_elast_bsc_methods` set `python_classname` = 'CalcBscProfileIter' where ID=1;
+
+#-------------------------
+
 #ALTER TABLE `_ext_methods` 
 #ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
 
@@ -86,16 +99,11 @@
 
 #-------------------------
 
-#ALTER TABLE `_elast_bsc_methods` 
-#ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
-
-#UPDATE `_elast_bsc_methods` set `python_classname` = 'CalcBscProfileKF' where ID=0;
-#UPDATE `_elast_bsc_methods` set `python_classname` = 'CalcBscProfileIter' where ID=1;
-
-#-------------------------
-
 #ALTER TABLE `_ram_bsc_methods` 
 #ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
 
 #UPDATE `_ram_bsc_methods` set `python_classname` = 'CalcRamanBscProfileAsAnsmann' where ID=0;
 #UPDATE `_ram_bsc_methods` set `python_classname` = 'CalcRamanBscProfileViaBR' where ID=1;
+
+#-------------------------
+
