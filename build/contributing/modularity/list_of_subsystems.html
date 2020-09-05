@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,19 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> ELDAmwl
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ELDAmwl
           
 
           
@@ -72,6 +73,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -98,6 +100,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -136,7 +139,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Overview on modularized algorithm subsystems</li>
     
@@ -175,8 +178,8 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.get_basic_products.GetBasicProducts" title="ELDAmwl.get_basic_products.GetBasicProducts"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetBasicProducts</span></code></a></p></td>
 <td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.get_basic_products.GetBasicProductsDefault" title="ELDAmwl.get_basic_products.GetBasicProductsDefault"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetBasicProductsDefault</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RayleighLidarRatio</span></code></p></td>
-<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RayleighLidarRatioFromConst</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../ELDAmwl.html#ELDAmwl.rayleigh.RayleighLidarRatio" title="ELDAmwl.rayleigh.RayleighLidarRatio"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayleighLidarRatio</span></code></a></p></td>
+<td><p><a class="reference internal" href="../../ELDAmwl.html#ELDAmwl.rayleigh.RayleighLidarRatioFromConst" title="ELDAmwl.rayleigh.RayleighLidarRatioFromConst"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayleighLidarRatioFromConst</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.prepare_signals.PrepareSignals" title="ELDAmwl.prepare_signals.PrepareSignals"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrepareSignals</span></code></a></p></td>
 <td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.prepare_signals.PrepareSignalsDefault" title="ELDAmwl.prepare_signals.PrepareSignalsDefault"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrepareSignalsDefault</span></code></a></p></td>
@@ -204,6 +207,9 @@
 <tr class="row-even"><td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.signals.CombineDepolComponents" title="ELDAmwl.signals.CombineDepolComponents"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombineDepolComponents</span></code></a></p></td>
 <td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.signals.CombineDepolComponentsDefault" title="ELDAmwl.signals.CombineDepolComponentsDefault"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombineDepolComponentsDefault</span></code></a></p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../ELDAmwl.html#ELDAmwl.write_mwl_output.WriteMWLOutput" title="ELDAmwl.write_mwl_output.WriteMWLOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">WriteMWLOutput</span></code></a></p></td>
+<td><p><a class="reference internal" href="../../ELDAmwl.html#ELDAmwl.write_mwl_output.WriteMWLOutputDefault" title="ELDAmwl.write_mwl_output.WriteMWLOutputDefault"><code class="xref py py-class docutils literal notranslate"><span class="pre">WriteMWLOutputDefault</span></code></a></p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -219,11 +225,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Ina Mattis
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -234,7 +248,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

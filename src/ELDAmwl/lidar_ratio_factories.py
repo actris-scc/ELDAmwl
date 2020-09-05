@@ -20,27 +20,26 @@ class LidarRatioParams(ProductParams):
         self.extinction_params = None
         self.backscatter_params = None
 
-    @classmethod
-    def from_db(cls, general_params):
-        result = cls()
-        result.general_params = general_params
+    def from_db(self, general_params):
+        super(LidarRatioParams, self).from_db(general_params)
 
         query = read_lidar_ratio_params(general_params.prod_id)
-        result.bsc_prod_id = query._raman_backscatter_options_product_ID
-        result.ext_prod_id = query._extinction_options_product_ID
-        result.general_params.error_method = ERROR_METHODS[query._error_method_ID]  # noqa E501
-        result.min_BscRatio_for_LR = query.min_BscRatio_for_LR
+        self.bsc_prod_id = query._raman_backscatter_options_product_ID
+        self.ext_prod_id = query._extinction_options_product_ID
+        self.general_params.error_method = ERROR_METHODS[query._error_method_ID]  # noqa E501
+        self.min_BscRatio_for_LR = query.min_BscRatio_for_LR
 
-        bsc_general_params = result.from_id(result.bsc_prod_id)
-        result.backscatter_params = RamanBscParams.from_db(bsc_general_params)  # noqa E501
-        result.backscatter_params.general_params.calc_with_lr = True
-        result.backscatter_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
+        bsc_general_params = self.from_id(self.bsc_prod_id)
+        self.backscatter_params = RamanBscParams()
+        self.backscatter_params.from_db(bsc_general_params)  # noqa E501
+        self.backscatter_params.general_params.calc_with_lr = True
+        self.backscatter_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
 
-        ext_general_params = result.from_id(result.ext_prod_id)
-        result.extinction_params = ExtinctionParams.from_db(ext_general_params)
-        result.extinction_params.general_params.calc_with_lr = True
-        result.extinction_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
-        return result
+        ext_general_params = self.from_id(self.ext_prod_id)
+        self.extinction_params = ExtinctionParams()
+        self.extinction_params.from_db(ext_general_params)
+        self.extinction_params.general_params.calc_with_lr = True
+        self.extinction_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
 
     def assign_to_product_list(self, global_product_list):
         super(LidarRatioParams, self).assign_to_product_list(

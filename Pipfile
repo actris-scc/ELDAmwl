@@ -25,10 +25,10 @@ netCDF4 = "*"
 pandas = ">=0.24"
 sphinxcontrib-serializinghtml = "*"
 sphinxcontrib-qthelp = "*"
-Sphinx = "*"
 sphinx-rtd-theme = "*"
 autodocsumm = "*"
 scipy = "*"
+sphinx = "*"
 
 [requires]
 python_version = "3.7"

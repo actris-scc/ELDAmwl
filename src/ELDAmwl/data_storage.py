@@ -2,6 +2,8 @@
 """ELDAmwl factories"""
 
 from addict import Dict
+
+from ELDAmwl.constants import HIGHRES, LOWRES, RESOLUTION_STR
 from ELDAmwl.exceptions import DifferentCloudMaskExists
 from ELDAmwl.exceptions import DifferentHeaderExists
 from ELDAmwl.exceptions import NotFoundInStorage
@@ -23,7 +25,10 @@ class DataStorage(object):
         self.data = Dict({'elpp_signals': Dict(),
                           'prepared_signals': Dict(),
                           'basic_products_auto_smooth': Dict(),
-                          'basic_products_common_smooth': Dict(),
+                          'binres_common_smooth': Dict({LOWRES: Dict(),
+                                                        HIGHRES: Dict()}),
+                          'basic_products_common_smooth': Dict({LOWRES: Dict(),
+                                                                HIGHRES: Dict()}),
                           'header': None,
                           'cloud_mask': None,
                           })
@@ -41,7 +46,23 @@ class DataStorage(object):
     def set_basic_product_auto_smooth(self, prod_id_str, new_product):
         """write new auto smoothed basic product to storage
         """
-        self.data.elpp_signals[prod_id_str] = new_product  # noqa E501
+        self.data.basic_products_auto_smooth[prod_id_str] = new_product  # noqa E501
+
+    def set_basic_product_common_smooth(self, prod_id_str, res, new_product):
+        """write a basic product that was smoothed with onto a common grid to storage
+        """
+        self.data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
+
+    def set_binres_common_smooth(self, prod_id_str, resolution, new_res_array):
+        """
+
+        Args:
+            prod_id_str:
+            resolution:
+            new_res_array: xarray.DataArray
+
+        """
+        self.data.binres_common_smooth[resolution][prod_id_str] = new_res_array
 
     def elpp_signals(self, prod_id_str):
         """all ELPP signals of one product
@@ -137,6 +158,33 @@ class DataStorage(object):
         except AttributeError:
             raise NotFoundInStorage('prepared signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
+
+    def binres_common_smooth(self, prod_id_str, resolution):
+        """ bin resolution profile of a product
+
+        The bin resolution corresponds to the common vertical resolution
+        of all basic and derived products. Some products are smoothed with
+        high resolution and low resolution.
+        The transformation between bin resolution and effective
+        vertical resolution is done with :obj:`GetEffVertRes` and
+        :obj:`GetUsedBinRes` corresponding to the retrieval method of the product
+
+        Args:
+            prod_id_str (str): product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns: xarray.DataArray
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and resolution was found in storage
+        """
+        try:
+            return self.data.binres_common_smooth[resolution][prod_id_str]
+        except AttributeError:
+            raise NotFoundInStorage('common bin resolution profile',
+                                    'product {0} in {1}'.format(prod_id_str, RESOLUTION_STR[resolution]))
+
 
     @property
     def cloud_mask(self):

@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,19 @@
   
 
   
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ELDAmwl.tests.database package" href="ELDAmwl.tests.database.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> ELDAmwl
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ELDAmwl
           
 
           
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -133,6 +135,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -171,7 +174,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">ELDAmwl</a> &raquo;</li>
         
@@ -204,7 +207,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="ELDAmwl.tests.database.html">ELDAmwl.tests.database package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.database.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.database.html#module-ELDAmwl.tests.database.create_test_db">ELDAmwl.tests.database.create_test_db module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.database.html#eldamwl-tests-database-create-test-db-module">ELDAmwl.tests.database.create_test_db module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.database.html#module-ELDAmwl.tests.database">Module contents</a></li>
 </ul>
 </li>
@@ -217,7 +220,22 @@
 <div class="section" id="module-ELDAmwl.tests.disable_test_elda_mwl_factories">
 <span id="eldamwl-tests-disable-test-elda-mwl-factories-module"></span><h2>ELDAmwl.tests.disable_test_elda_mwl_factories module<a class="headerlink" href="#module-ELDAmwl.tests.disable_test_elda_mwl_factories" title="Permalink to this headline">¶</a></h2>
 <p>Tests for the factories</p>
-<p><strong>Functions</strong></p>
+<p><strong>Classes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dict</span></code>(*args, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeasurementParams</span></code>(measurement_id)</p></td>
+<td><p>General parameters and settings of the measurement</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -238,13 +256,19 @@
 <div class="section" id="module-ELDAmwl.tests.test_factory">
 <span id="eldamwl-tests-test-factory-module"></span><h2>ELDAmwl.tests.test_factory module<a class="headerlink" href="#module-ELDAmwl.tests.test_factory" title="Permalink to this headline">¶</a></h2>
 <p>Tests for Signals</p>
-<p><strong>Classes</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseOperation</span></code>(**kwargs)</p></td>
+<td><p>Base class of operations</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code>()</p></td>
+<td><p>Base class of factories.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.tests.test_factory.Factory" title="ELDAmwl.tests.test_factory.Factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Factory</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
@@ -254,9 +278,12 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.tests.test_factory.OperationB" title="ELDAmwl.tests.test_factory.OperationB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OperationB</span></code></a>(**kwargs)</p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Registry</span></code>()</p></td>
+<td><p>Registers classes for the class factories</p></td>
+</tr>
 </tbody>
 </table>
-<p><strong>Functions</strong></p>
+<p><strong>Functions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -311,19 +338,22 @@
 <div class="section" id="module-ELDAmwl.tests.test_params">
 <span id="eldamwl-tests-test-params-module"></span><h2>ELDAmwl.tests.test_params module<a class="headerlink" href="#module-ELDAmwl.tests.test_params" title="Permalink to this headline">¶</a></h2>
 <p>Tests for Signals</p>
-<p><strong>Classes</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.tests.test_params.ParamsA" title="ELDAmwl.tests.test_params.ParamsA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParamsA</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Params</span></code>()</p></td>
+<td><p>Base Params</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.tests.test_params.ParamsA" title="ELDAmwl.tests.test_params.ParamsA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParamsA</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Functions</strong></p>
+<p><strong>Functions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -339,7 +369,7 @@
 <dt id="ELDAmwl.tests.test_params.ParamsA">
 <em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.tests.test_params.</code><code class="sig-name descname">ParamsA</code><a class="headerlink" href="#ELDAmwl.tests.test_params.ParamsA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ELDAmwl.html#ELDAmwl.base.Params" title="ELDAmwl.base.Params"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.base.Params</span></code></a></p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -354,7 +384,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Methods</strong></p>
+<p><strong>Methods:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -392,13 +422,19 @@
 <div class="section" id="module-ELDAmwl.tests.test_registry">
 <span id="eldamwl-tests-test-registry-module"></span><h2>ELDAmwl.tests.test_registry module<a class="headerlink" href="#module-ELDAmwl.tests.test_registry" title="Permalink to this headline">¶</a></h2>
 <p>Tests for Signals</p>
-<p><strong>Classes</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseOperation</span></code>(**kwargs)</p></td>
+<td><p>Base class of operations</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code>()</p></td>
+<td><p>Base class of factories.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.tests.test_registry.Factory" title="ELDAmwl.tests.test_registry.Factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Factory</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
@@ -408,9 +444,12 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.tests.test_registry.OperationB" title="ELDAmwl.tests.test_registry.OperationB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OperationB</span></code></a>(**kwargs)</p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Registry</span></code>()</p></td>
+<td><p>Registers classes for the class factories</p></td>
+</tr>
 </tbody>
 </table>
-<p><strong>Functions</strong></p>
+<p><strong>Functions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -426,7 +465,7 @@
 <dt id="ELDAmwl.tests.test_registry.Factory">
 <em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.tests.test_registry.</code><code class="sig-name descname">Factory</code><a class="headerlink" href="#ELDAmwl.tests.test_registry.Factory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="ELDAmwl.html#ELDAmwl.factory.BaseOperationFactory" title="ELDAmwl.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.factory.BaseOperationFactory</span></code></a></p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -434,7 +473,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.tests.test_registry.Factory.name" title="ELDAmwl.tests.test_registry.Factory.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
-<td><p>str(object=’’) -&gt; str</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -466,7 +505,25 @@
 <div class="section" id="module-ELDAmwl.tests.test_signals">
 <span id="eldamwl-tests-test-signals-module"></span><h2>ELDAmwl.tests.test_signals module<a class="headerlink" href="#module-ELDAmwl.tests.test_signals" title="Permalink to this headline">¶</a></h2>
 <p>Tests for Signals</p>
-<p><strong>Functions</strong></p>
+<p><strong>Classes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataStorage</span></code>()</p></td>
+<td><p>global data storage</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductParams</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Signals</span></code>()</p></td>
+<td><p>two-dimensional (time, level) signal data</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -517,11 +574,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Ina Mattis
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -532,7 +597,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

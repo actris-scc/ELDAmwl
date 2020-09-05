@@ -23,19 +23,18 @@ class ElastBscParams(BackscatterParams):
         self.elast_bsc_method = None
         self.lr_input_method = None
 
-    @classmethod
-    def from_db(cls, general_params):
-        result = super(ElastBscParams, cls).from_db(general_params)
+    def from_db(self, general_params):
+        super(ElastBscParams, self).from_db(general_params)
 
         ebp = read_elast_bsc_params(general_params.prod_id)
 
-        result.elast_bsc_method = ebp['elast_bsc_method']
-        if result.elast_bsc_method == IT:
-            result.iter_params = IterBscParams.from_db(general_params)  # noqa E501
+        self.elast_bsc_method = ebp['elast_bsc_method']
+        if self.elast_bsc_method == IT:
+            self.iter_params = IterBscParams.from_db(general_params)  # noqa E501
 
-        result.lr_input_method = ebp['lr_input_method']
+        self.lr_input_method = ebp['lr_input_method']
 
-        return result
+        self.get_error_params(ebp)
 
 
 class IterBscParams(Params):

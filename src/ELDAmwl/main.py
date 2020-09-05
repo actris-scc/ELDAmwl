@@ -85,7 +85,7 @@ def main():
             # main.py: error: argument - l: invalid choice
             # returns 2
         except Exception as e:
-            raise (WrongCommandLineParameter)
+            raise(WrongCommandLineParameter)
 
         create_logger(meas_id)
         # register_plugins()

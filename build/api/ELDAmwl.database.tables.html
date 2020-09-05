@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,19 @@
   
 
   
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ELDAmwl.tests package" href="ELDAmwl.tests.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> ELDAmwl
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ELDAmwl
           
 
           
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -133,6 +135,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -171,7 +174,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">ELDAmwl</a> &raquo;</li>
         
@@ -206,21 +209,39 @@
 <div class="section" id="module-ELDAmwl.database.tables.backscatter">
 <span id="eldamwl-database-tables-backscatter-module"></span><h2>ELDAmwl.database.tables.backscatter module<a class="headerlink" href="#module-ELDAmwl.database.tables.backscatter" title="Permalink to this headline">¶</a></h2>
 <p>Classes for backscatter related db tables</p>
-<p><strong>Classes</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption" title="ELDAmwl.database.tables.backscatter.BscCalibrOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BscCalibrOption</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Base</span></code>(**kwargs)</p></td>
+<td><p>The most base type</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.BscCalibrOption" title="ELDAmwl.database.tables.backscatter.BscCalibrOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BscCalibrOption</span></code></a>(**kwargs)</p></td>
 <td><p>content of the db table bsc_calibr_options</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.ElastBackscatterOption" title="ELDAmwl.database.tables.backscatter.ElastBackscatterOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBackscatterOption</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">CHAR</span></code>([length, collation, convert_unicode, …])</p></td>
+<td><p>The SQL CHAR type.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Column</span></code>(*args, **kwargs)</p></td>
+<td><p>Represents a column in a database table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DECIMAL</span></code>([precision, scale, …])</p></td>
+<td><p>The SQL DECIMAL type.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DateTime</span></code>([timezone])</p></td>
+<td><p>A type for <code class="docutils literal notranslate"><span class="pre">datetime.datetime()</span></code> objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.ElastBackscatterOption" title="ELDAmwl.database.tables.backscatter.ElastBackscatterOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBackscatterOption</span></code></a>(**kwargs)</p></td>
 <td><p>content of the db table elast_backscatter_options</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.ElastBscMethod" title="ELDAmwl.database.tables.backscatter.ElastBscMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBscMethod</span></code></a>(**kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.ElastBscMethod" title="ELDAmwl.database.tables.backscatter.ElastBscMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBscMethod</span></code></a>(**kwargs)</p></td>
 <td><p>content of the db table _elast_bsc_methods</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTEGER</span></code>()</p></td>
+<td><p>The SQL INT or INTEGER type.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.IterBackscatterOption" title="ELDAmwl.database.tables.backscatter.IterBackscatterOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IterBackscatterOption</span></code></a>(**kwargs)</p></td>
 <td><p>content of the db table iter_backscatter_options</p></td>
@@ -233,6 +254,24 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.backscatter.RamanBscMethod" title="ELDAmwl.database.tables.backscatter.RamanBscMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RamanBscMethod</span></code></a>(**kwargs)</p></td>
 <td><p>content of the db table _ram_bsc_methods</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">String</span></code>([length, collation, convert_unicode, …])</p></td>
+<td><p>The base for all string and character types.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">declarative_base</span></code>([bind, metadata, mapper, …])</p></td>
+<td><p>Construct a base class for declarative class definitions.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">text</span></code>(text[, bind, bindparams, typemap, …])</p></td>
+<td><p>Construct a new <code class="xref py py-class docutils literal notranslate"><span class="pre">_expression.TextClause</span></code> clause, representing a textual SQL string directly.</p></td>
 </tr>
 </tbody>
 </table>
@@ -247,7 +286,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -309,7 +348,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -339,7 +378,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -385,7 +424,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -431,7 +470,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -501,7 +540,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -531,7 +570,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -569,18 +608,42 @@ for example, any mapped columns or relationships.</p>
 </div>
 <div class="section" id="module-ELDAmwl.database.tables.db_base">
 <span id="eldamwl-database-tables-db-base-module"></span><h2>ELDAmwl.database.tables.db_base module<a class="headerlink" href="#module-ELDAmwl.database.tables.db_base" title="Permalink to this headline">¶</a></h2>
-<p><strong>Classes</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Base</span></code>(**kwargs)</p></td>
+<td><p>The most base type</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Column</span></code>(*args, **kwargs)</p></td>
+<td><p>Represents a column in a database table.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.db_base.ElastBscMethod" title="ELDAmwl.database.tables.db_base.ElastBscMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBscMethod</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.db_base.ErrorMethod" title="ELDAmwl.database.tables.db_base.ErrorMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorMethod</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTEGER</span></code>()</p></td>
+<td><p>The SQL INT or INTEGER type.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">String</span></code>([length, collation, convert_unicode, …])</p></td>
+<td><p>The base for all string and character types.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">declarative_base</span></code>([bind, metadata, mapper, …])</p></td>
+<td><p>Construct a base class for declarative class definitions.</p></td>
 </tr>
 </tbody>
 </table>
@@ -594,7 +657,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -631,7 +694,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -662,21 +725,57 @@ for example, any mapped columns or relationships.</p>
 <div class="section" id="module-ELDAmwl.database.tables.extinction">
 <span id="eldamwl-database-tables-extinction-module"></span><h2>ELDAmwl.database.tables.extinction module<a class="headerlink" href="#module-ELDAmwl.database.tables.extinction" title="Permalink to this headline">¶</a></h2>
 <p>Classes for extinction related db tables</p>
-<p><strong>Classes</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtMethod" title="ELDAmwl.database.tables.extinction.ExtMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtMethod</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Base</span></code>(**kwargs)</p></td>
+<td><p>The most base type</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">CHAR</span></code>([length, collation, convert_unicode, …])</p></td>
+<td><p>The SQL CHAR type.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Column</span></code>(*args, **kwargs)</p></td>
+<td><p>Represents a column in a database table.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DECIMAL</span></code>([precision, scale, …])</p></td>
+<td><p>The SQL DECIMAL type.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DateTime</span></code>([timezone])</p></td>
+<td><p>A type for <code class="docutils literal notranslate"><span class="pre">datetime.datetime()</span></code> objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtMethod" title="ELDAmwl.database.tables.extinction.ExtMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtMethod</span></code></a>(**kwargs)</p></td>
 <td><p>content of the db table _ext_methods</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtinctionOption" title="ELDAmwl.database.tables.extinction.ExtinctionOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtinctionOption</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.ExtinctionOption" title="ELDAmwl.database.tables.extinction.ExtinctionOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtinctionOption</span></code></a>(**kwargs)</p></td>
 <td><p>content of the db table extinction_options</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTEGER</span></code>()</p></td>
+<td><p>The SQL INT or INTEGER type.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.extinction.OverlapFile" title="ELDAmwl.database.tables.extinction.OverlapFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OverlapFile</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">String</span></code>([length, collation, convert_unicode, …])</p></td>
+<td><p>The base for all string and character types.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">declarative_base</span></code>([bind, metadata, mapper, …])</p></td>
+<td><p>Construct a base class for declarative class definitions.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">text</span></code>(text[, bind, bindparams, typemap, …])</p></td>
+<td><p>Construct a new <code class="xref py py-class docutils literal notranslate"><span class="pre">_expression.TextClause</span></code> clause, representing a textual SQL string directly.</p></td>
 </tr>
 </tbody>
 </table>
@@ -691,7 +790,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -737,7 +836,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -774,7 +873,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -837,15 +936,42 @@ for example, any mapped columns or relationships.</p>
 <div class="section" id="module-ELDAmwl.database.tables.lidar_ratio">
 <span id="eldamwl-database-tables-lidar-ratio-module"></span><h2>ELDAmwl.database.tables.lidar_ratio module<a class="headerlink" href="#module-ELDAmwl.database.tables.lidar_ratio" title="Permalink to this headline">¶</a></h2>
 <p>Classes for lidar ratio related db tables</p>
-<p><strong>Classes</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.lidar_ratio.ExtBscOption" title="ELDAmwl.database.tables.lidar_ratio.ExtBscOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtBscOption</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Base</span></code>(**kwargs)</p></td>
+<td><p>The most base type</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Column</span></code>(*args, **kwargs)</p></td>
+<td><p>Represents a column in a database table.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DECIMAL</span></code>([precision, scale, …])</p></td>
+<td><p>The SQL DECIMAL type.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.lidar_ratio.ExtBscOption" title="ELDAmwl.database.tables.lidar_ratio.ExtBscOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtBscOption</span></code></a>(**kwargs)</p></td>
 <td><p>content of the db table ext_bsc_options</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTEGER</span></code>()</p></td>
+<td><p>The SQL INT or INTEGER type.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">declarative_base</span></code>([bind, metadata, mapper, …])</p></td>
+<td><p>Construct a base class for declarative class definitions.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">text</span></code>(text[, bind, bindparams, typemap, …])</p></td>
+<td><p>Construct a new <code class="xref py py-class docutils literal notranslate"><span class="pre">_expression.TextClause</span></code> clause, representing a textual SQL string directly.</p></td>
 </tr>
 </tbody>
 </table>
@@ -860,7 +986,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -891,15 +1017,48 @@ for example, any mapped columns or relationships.</p>
 <div class="section" id="module-ELDAmwl.database.tables.measurements">
 <span id="eldamwl-database-tables-measurements-module"></span><h2>ELDAmwl.database.tables.measurements module<a class="headerlink" href="#module-ELDAmwl.database.tables.measurements" title="Permalink to this headline">¶</a></h2>
 <p>Classes for measurement related db tables</p>
-<p><strong>Classes</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements" title="ELDAmwl.database.tables.measurements.Measurements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Measurements</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Base</span></code>(**kwargs)</p></td>
+<td><p>The most base type</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">CHAR</span></code>([length, collation, convert_unicode, …])</p></td>
+<td><p>The SQL CHAR type.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Column</span></code>(*args, **kwargs)</p></td>
+<td><p>Represents a column in a database table.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DateTime</span></code>([timezone])</p></td>
+<td><p>A type for <code class="docutils literal notranslate"><span class="pre">datetime.datetime()</span></code> objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTEGER</span></code>()</p></td>
+<td><p>The SQL INT or INTEGER type.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.measurements.Measurements" title="ELDAmwl.database.tables.measurements.Measurements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Measurements</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">String</span></code>([length, collation, convert_unicode, …])</p></td>
+<td><p>The base for all string and character types.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">VARCHAR</span></code>([length, collation, …])</p></td>
+<td><p>The SQL VARCHAR type.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">declarative_base</span></code>([bind, metadata, mapper, …])</p></td>
+<td><p>Construct a base class for declarative class definitions.</p></td>
 </tr>
 </tbody>
 </table>
@@ -913,7 +1072,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -1288,33 +1447,72 @@ for example, any mapped columns or relationships.</p>
 <div class="section" id="module-ELDAmwl.database.tables.system_product">
 <span id="eldamwl-database-tables-system-product-module"></span><h2>ELDAmwl.database.tables.system_product module<a class="headerlink" href="#module-ELDAmwl.database.tables.system_product" title="Permalink to this headline">¶</a></h2>
 <p>Classes for measurement system-product related db tables</p>
-<p><strong>Classes</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Base</span></code>(**kwargs)</p></td>
+<td><p>The most base type</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">CHAR</span></code>([length, collation, convert_unicode, …])</p></td>
+<td><p>The SQL CHAR type.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Column</span></code>(*args, **kwargs)</p></td>
+<td><p>Represents a column in a database table.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DECIMAL</span></code>([precision, scale, …])</p></td>
+<td><p>The SQL DECIMAL type.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ErrorThresholds" title="ELDAmwl.database.tables.system_product.ErrorThresholds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorThresholds</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.MWLproductProduct" title="ELDAmwl.database.tables.system_product.MWLproductProduct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MWLproductProduct</span></code></a>(**kwargs)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Float</span></code>([precision, asdecimal, …])</p></td>
+<td><p>Type representing floating point types, such as <code class="docutils literal notranslate"><span class="pre">FLOAT</span></code> or <code class="docutils literal notranslate"><span class="pre">REAL</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTEGER</span></code>()</p></td>
+<td><p>The SQL INT or INTEGER type.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.MCOption" title="ELDAmwl.database.tables.system_product.MCOption"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MCOption</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.PreparedSignalFile" title="ELDAmwl.database.tables.system_product.PreparedSignalFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreparedSignalFile</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.MWLproductProduct" title="ELDAmwl.database.tables.system_product.MWLproductProduct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MWLproductProduct</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions" title="ELDAmwl.database.tables.system_product.ProductOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductOptions</span></code></a>(**kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.PreparedSignalFile" title="ELDAmwl.database.tables.system_product.PreparedSignalFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreparedSignalFile</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes" title="ELDAmwl.database.tables.system_product.ProductTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductTypes</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions" title="ELDAmwl.database.tables.system_product.ProductOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductOptions</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.Products" title="ELDAmwl.database.tables.system_product.Products"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Products</span></code></a>(**kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductTypes" title="ELDAmwl.database.tables.system_product.ProductTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductTypes</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.SystemProduct" title="ELDAmwl.database.tables.system_product.SystemProduct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SystemProduct</span></code></a>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.Products" title="ELDAmwl.database.tables.system_product.Products"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Products</span></code></a>(**kwargs)</p></td>
 <td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.SmoothTypes" title="ELDAmwl.database.tables.system_product.SmoothTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SmoothTypes</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">String</span></code>([length, collation, convert_unicode, …])</p></td>
+<td><p>The base for all string and character types.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.SystemProduct" title="ELDAmwl.database.tables.system_product.SystemProduct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SystemProduct</span></code></a>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">declarative_base</span></code>([bind, metadata, mapper, …])</p></td>
+<td><p>Construct a base class for declarative class definitions.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1328,7 +1526,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -1364,6 +1562,43 @@ for example, any mapped columns or relationships.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt id="ELDAmwl.database.tables.system_product.MCOption">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">MCOption</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.MCOption" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.MCOption.ID" title="ELDAmwl.database.tables.system_product.MCOption.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.MCOption.iteration_count" title="ELDAmwl.database.tables.system_product.MCOption.iteration_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iteration_count</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.MCOption.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.MCOption.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.MCOption.iteration_count">
+<code class="sig-name descname">iteration_count</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.MCOption.iteration_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="ELDAmwl.database.tables.system_product.MWLproductProduct">
 <em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">MWLproductProduct</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.MWLproductProduct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
@@ -1373,7 +1608,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -1418,7 +1653,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -1455,7 +1690,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -1468,7 +1703,31 @@ for example, any mapped columns or relationships.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.detection_limit" title="ELDAmwl.database.tables.system_product.ProductOptions.detection_limit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detection_limit</span></code></a></p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.highres_highrange_integration_time" title="ELDAmwl.database.tables.system_product.ProductOptions.highres_highrange_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">highres_highrange_integration_time</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.highres_highrange_vertical_resolution" title="ELDAmwl.database.tables.system_product.ProductOptions.highres_highrange_vertical_resolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">highres_highrange_vertical_resolution</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.highres_lowrange_integration_time" title="ELDAmwl.database.tables.system_product.ProductOptions.highres_lowrange_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">highres_lowrange_integration_time</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.highres_lowrange_vertical_resolution" title="ELDAmwl.database.tables.system_product.ProductOptions.highres_lowrange_vertical_resolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">highres_lowrange_vertical_resolution</span></code></a></p></td>
+<td><p></p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.interpolation_id" title="ELDAmwl.database.tables.system_product.ProductOptions.interpolation_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolation_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.lowres_highrange_integration_time" title="ELDAmwl.database.tables.system_product.ProductOptions.lowres_highrange_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lowres_highrange_integration_time</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.lowres_highrange_vertical_resolution" title="ELDAmwl.database.tables.system_product.ProductOptions.lowres_highrange_vertical_resolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lowres_highrange_vertical_resolution</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.lowres_lowrange_integration_time" title="ELDAmwl.database.tables.system_product.ProductOptions.lowres_lowrange_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lowres_lowrange_integration_time</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.lowres_lowrange_vertical_resolution" title="ELDAmwl.database.tables.system_product.ProductOptions.lowres_lowrange_vertical_resolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lowres_lowrange_vertical_resolution</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.max_height" title="ELDAmwl.database.tables.system_product.ProductOptions.max_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_height</span></code></a></p></td>
@@ -1481,6 +1740,12 @@ for example, any mapped columns or relationships.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_vertical_resolution" title="ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_vertical_resolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">preprocessing_vertical_resolution</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.transition_zone_from" title="ELDAmwl.database.tables.system_product.ProductOptions.transition_zone_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transition_zone_from</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.ProductOptions.transition_zone_to" title="ELDAmwl.database.tables.system_product.ProductOptions.transition_zone_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transition_zone_to</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -1496,8 +1761,48 @@ for example, any mapped columns or relationships.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.highres_highrange_integration_time">
+<code class="sig-name descname">highres_highrange_integration_time</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.highres_highrange_integration_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.highres_highrange_vertical_resolution">
+<code class="sig-name descname">highres_highrange_vertical_resolution</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.highres_highrange_vertical_resolution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.highres_lowrange_integration_time">
+<code class="sig-name descname">highres_lowrange_integration_time</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.highres_lowrange_integration_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.highres_lowrange_vertical_resolution">
+<code class="sig-name descname">highres_lowrange_vertical_resolution</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.highres_lowrange_vertical_resolution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="ELDAmwl.database.tables.system_product.ProductOptions.interpolation_id">
 <code class="sig-name descname">interpolation_id</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.interpolation_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.lowres_highrange_integration_time">
+<code class="sig-name descname">lowres_highrange_integration_time</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.lowres_highrange_integration_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.lowres_highrange_vertical_resolution">
+<code class="sig-name descname">lowres_highrange_vertical_resolution</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.lowres_highrange_vertical_resolution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.lowres_lowrange_integration_time">
+<code class="sig-name descname">lowres_lowrange_integration_time</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.lowres_lowrange_integration_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.lowres_lowrange_vertical_resolution">
+<code class="sig-name descname">lowres_lowrange_vertical_resolution</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.lowres_lowrange_vertical_resolution" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1520,6 +1825,16 @@ for example, any mapped columns or relationships.</p>
 <code class="sig-name descname">preprocessing_vertical_resolution</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.preprocessing_vertical_resolution" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.transition_zone_from">
+<code class="sig-name descname">transition_zone_from</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.transition_zone_from" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.ProductOptions.transition_zone_to">
+<code class="sig-name descname">transition_zone_to</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.ProductOptions.transition_zone_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1532,7 +1847,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -1617,7 +1932,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -1637,6 +1952,43 @@ for example, any mapped columns or relationships.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt id="ELDAmwl.database.tables.system_product.SmoothTypes">
+<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">SmoothTypes</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.SmoothTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>.</p>
+<p>Only keys that are present as
+attributes of the instance’s class are allowed. These could be,
+for example, any mapped columns or relationships.</p>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.SmoothTypes.ID" title="ELDAmwl.database.tables.system_product.SmoothTypes.ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ID</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.tables.system_product.SmoothTypes.smooth_type" title="ELDAmwl.database.tables.system_product.SmoothTypes.smooth_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_type</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.SmoothTypes.ID">
+<code class="sig-name descname">ID</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.SmoothTypes.ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.database.tables.system_product.SmoothTypes.smooth_type">
+<code class="sig-name descname">smooth_type</code><a class="headerlink" href="#ELDAmwl.database.tables.system_product.SmoothTypes.smooth_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="ELDAmwl.database.tables.system_product.SystemProduct">
 <em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.tables.system_product.</code><code class="sig-name descname">SystemProduct</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.tables.system_product.SystemProduct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.ext.declarative.api.Base</span></code></p>
@@ -1646,7 +1998,7 @@ values in <code class="docutils literal notranslate"><span class="pre">kwargs</s
 <p>Only keys that are present as
 attributes of the instance’s class are allowed. These could be,
 for example, any mapped columns or relationships.</p>
-<p><strong>Attributes</strong></p>
+<p><strong>Attributes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -1694,11 +2046,19 @@ for example, any mapped columns or relationships.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Ina Mattis
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1709,7 +2069,6 @@ for example, any mapped columns or relationships.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

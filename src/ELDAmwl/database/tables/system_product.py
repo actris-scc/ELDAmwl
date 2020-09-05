@@ -71,7 +71,17 @@ class ProductOptions(Base):
     preprocessing_integration_time = Column(INTEGER, nullable=False)
     preprocessing_vertical_resolution = Column(DECIMAL(10, 4), nullable=False)
     interpolation_id = Column(INTEGER, nullable=False)
-
+    transition_zone_from = Column(DECIMAL(10, 4), nullable=True)
+    transition_zone_to = Column(DECIMAL(10, 4), nullable=True)
+    lowres_lowrange_vertical_resolution = Column(DECIMAL(10, 4), nullable=True)
+    lowres_highrange_vertical_resolution = Column(DECIMAL(10, 4), nullable=True)
+    highres_lowrange_vertical_resolution = Column(DECIMAL(10, 4), nullable=True)
+    highres_highrange_vertical_resolution = Column(DECIMAL(10, 4), nullable=True)
+    lowres_lowrange_integration_time = Column(INTEGER, nullable=True)
+    lowres_highrange_integration_time = Column(INTEGER, nullable=True)
+    highres_lowrange_integration_time = Column(INTEGER, nullable=True)
+    highres_highrange_integration_time = Column(INTEGER, nullable=True)
+    _smooth_type = Column(INTEGER, nullable=False)
 
 class ErrorThresholds(Base):
     __tablename__ = '_error_thresholds'
@@ -79,6 +89,13 @@ class ErrorThresholds(Base):
     ID = Column('Id', INTEGER, primary_key=True)
     value = Column(Float, nullable=False)
     name = Column(String(100), nullable=False)
+
+
+class SmoothTypes(Base):
+    __tablename__ = '_smooth_types'
+
+    ID = Column('Id', INTEGER, primary_key=True)
+    smooth_type = Column(String(50), nullable=False)
 
 
 # class ErrorMethod(Base):

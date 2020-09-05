@@ -11,7 +11,6 @@ class Params(object):
     """
     Base Params
     """
-    sub_params = None
 
     def __init__(self):
         self.sub_params = []

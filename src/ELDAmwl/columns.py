@@ -86,6 +86,10 @@ class Columns(object):
         return self.ds.qf
 
     @property
+    def binres(self):
+        return self.ds.binres
+
+    @property
     def altitude(self):
         """xarray.DataArray(dimensions=time,level):
                 altitude axis in m a.s.l."""

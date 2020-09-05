@@ -85,6 +85,19 @@ ASS = 1
 
 ERROR_METHODS = [MC, ASS]
 
+# ====== smooth methods ======
+AUTO = 0
+FIXED = 1
+
+SMOOTH_METHODS = [AUTO, FIXED]
+
+# ====== time and vertical resolutions ======
+LOWRES = 0
+HIGHRES = 1
+
+RESOLUTIONS = [LOWRES, HIGHRES]
+RESOLUTION_STR = ['lowres', 'highres']
+
 # ====== elast bsc methods ======
 KF = 0  # Klett-Fernald
 IT = 1  # iterative

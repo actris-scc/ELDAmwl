@@ -117,3 +117,30 @@ INSERT INTO `eldaexitcodes` (`exit_code`, `description`) VALUES
 	(43, 'No backscatter calibration options for product'),
 	(100, 'internal error: cannot fnd requested information in data storage'),
 	(101, 'internal error: more than 1 override to class registry');
+
+#-------------------------
+
+CREATE TABLE `_smooth_types` (
+	`ID` INT(11) NOT NULL,
+	`smooth_type` VARCHAR(50) NOT NULL,
+	UNIQUE INDEX `ID` (`ID`)
+);
+
+INSERT INTO `_smooth_types` (`ID`, `smooth_type`) VALUES
+	(0, 'auto'),
+	(1, 'fixed');
+
+#-------------------------
+
+alter table `product_options`
+add column `transition_zone_from` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
+add column `transition_zone_to` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
+add column `lowres_lowrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
+add column `low_res_highrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
+add column `highres_lowrange_integration_time` INT(11) NULL DEFAULT NULL,
+add column `highres_highrange_integration_time` INT(11) NULL DEFAULT NULL,
+add column `lowres_lowrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
+add column `lowres_highrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
+add column `highres_lowrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL,
+add column `highres_highrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL,
+add column `_smooth_type` INT(11) NOT NULL DEFAULT '0';

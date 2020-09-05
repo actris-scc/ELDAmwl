@@ -75,17 +75,14 @@ class BackscatterParams(ProductParams):
         self.cross_sig_id = None
         self.parallel_sig_id = None
 
-    @classmethod
-    def from_db(cls, general_params):
-        result = cls()
-        result.general_params = general_params
+    def from_db(self, general_params):
+        super(BackscatterParams, self).from_db(general_params)
 
-        result.calibration_params = BscCalibrationParams.from_db(general_params)  # noqa E501
-        if result.calibration_params.cal_interval.max_height > \
-                result.general_params.valid_alt_range.max_height:
-            raise CalRangeHigherThanValid(result.prod_id_str)
+        self.calibration_params = BscCalibrationParams.from_db(general_params)  # noqa E501
+        if self.calibration_params.cal_interval.max_height > \
+                self.general_params.valid_alt_range.max_height:
+            raise CalRangeHigherThanValid(self.prod_id_str)
 
-        return result
 
     def add_signal_role(self, signal):
         super(BackscatterParams, self)

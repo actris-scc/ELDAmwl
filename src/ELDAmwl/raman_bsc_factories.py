@@ -32,14 +32,13 @@ class RamanBscParams(BackscatterParams):
 
         self.raman_bsc_method = None
 
-    @classmethod
-    def from_db(cls, general_params):
-        result = super(RamanBscParams, cls).from_db(general_params)
-        rbp = read_raman_bsc_params(general_params.prod_id)
-        result.raman_bsc_method = rbp['ram_bsc_method']
-        result.get_error_params(rbp)
+    def from_db(self, general_params):
+        super(RamanBscParams, self).from_db(general_params)
 
-        return result
+        rbp = read_raman_bsc_params(general_params.prod_id)
+        self.raman_bsc_method = rbp['ram_bsc_method']
+        self.get_error_params(rbp)
+
 
     def add_signal_role(self, signal):
         super(RamanBscParams, self).add_signal_role(signal)

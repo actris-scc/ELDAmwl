@@ -300,6 +300,40 @@ def get_general_params_query(prod_id):
                      .format(options.count()))
 
 
+def get_smooth_params_query(prod_id):
+    """ read smooth params of a product from db
+
+        Args:
+            prod_id (int): id of the product
+
+        Returns:
+            query with smooth params
+
+        """
+
+    ErrorThresholdsLow = aliased(ErrorThresholds,
+                                 name='ErrorThresholdsLow')
+    ErrorThresholdsHigh = aliased(ErrorThresholds,
+                                  name='ErrorThresholdsHigh')
+
+    options = dbutils.session.query(
+        ProductOptions,
+        ErrorThresholdsLow,
+        ErrorThresholdsHigh
+    ).filter(
+        ProductOptions._product_ID == prod_id,
+    ).filter(
+        ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
+    ).filter(
+        ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID)
+
+    if options.count() == 1:
+        return options[0]
+    else:
+        logger.error('wrong number of product options ({0})'
+                     .format(options.count()))
+
+
 def read_elast_bsc_params(product_id):
     """ function to read options of an elast bsc product from db.
 

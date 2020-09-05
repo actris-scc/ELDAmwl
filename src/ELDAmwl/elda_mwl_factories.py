@@ -18,12 +18,13 @@ from ELDAmwl.get_basic_products import GetBasicProducts
 from ELDAmwl.lidar_ratio_factories import LidarRatioParams
 from ELDAmwl.log import logger
 from ELDAmwl.prepare_signals import PrepareSignals
-from ELDAmwl.products import GeneralProductParams
+from ELDAmwl.products import GeneralProductParams, SmoothParams
 from ELDAmwl.raman_bsc_factories import RamanBscParams
 from ELDAmwl.signals import ElppData
 
 import pandas as pd
 
+from ELDAmwl.write_mwl_output import WriteMWLOutput
 
 try:
     import ELDAmwl.configs.config as cfg  # noqa E401
@@ -41,12 +42,14 @@ class MeasurementParams(Params):
     """
     def __init__(self, measurement_id):
         super(MeasurementParams, self).__init__()
-        self.sub_params = ['measurement_params']
+        self.sub_params = ['measurement_params', 'smooth_params']
         self.measurement_params = Params()
 
         self.measurement_params.meas_id = measurement_id
         self.measurement_params.system_id = read_system_id(self.meas_id)
         self.measurement_params.mwl_product_id = read_mwl_product_id(self.system_id)  # noqa E501
+
+        self.smooth_params = SmoothParams.from_db(self.measurement_params.mwl_product_id)
 
         # product_list provides a link between product id and
         # the parameter object of the product
@@ -171,8 +174,8 @@ class MeasurementParams(Params):
         for q in p_query:
             general_params = GeneralProductParams.from_query(q)
             prod_type = general_params.product_type
-            prod_params = PARAM_CLASSES[prod_type].from_db(general_params)
-
+            prod_params = PARAM_CLASSES[prod_type]()
+            prod_params.from_db(general_params)
             prod_params.assign_to_product_list(self.measurement_params)
 
     def prod_params(self, prod_type, wl):
@@ -220,6 +223,13 @@ class RunELDAmwl(BaseOperation):
     def get_basic_products(self):
         logger.info('calc basic products ')
         GetBasicProducts()(
+            data_storage=self.data,
+            product_params=self.params,
+            ).run()
+
+    def write_mwl_output(self):
+        logger.info('write all products into one NetCDF file ')
+        WriteMWLOutput()(
             data_storage=self.data,
             product_params=self.params,
             ).run()

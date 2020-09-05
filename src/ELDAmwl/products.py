@@ -4,7 +4,7 @@ from addict import Dict
 from copy import deepcopy
 from ELDAmwl.base import Params
 from ELDAmwl.configs.config import RANGE_BOUNDARY_KM
-from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, MC
+from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, MC, AUTO, FIXED, HIGHRES, LOWRES
 from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import EXT
 from ELDAmwl.constants import MERGE_PRODUCT_USE_CASES
@@ -12,7 +12,7 @@ from ELDAmwl.constants import NC_FILL_BYTE
 from ELDAmwl.constants import NC_FILL_INT
 from ELDAmwl.constants import RBSC
 from ELDAmwl.constants import UNITS
-from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query
+from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query, get_smooth_params_query
 from ELDAmwl.exceptions import DetectionLimitZero, NotEnoughMCIterations
 from ELDAmwl.log import logger
 from ELDAmwl.rayleigh import RayleighLidarRatio
@@ -50,9 +50,15 @@ class Products(Signals):
 class ProductParams(Params):
 
     def __init__(self):
-        self.sub_params = ['general_params']
+        super(ProductParams, self).__init__()
+        self.sub_params = ['general_params', 'mc_params', 'smooth_params']
         self.general_params = None
         self.mc_params = None
+        self.smooth_params = None
+
+    def from_db(self, general_params):
+        self.general_params = general_params
+        self.smooth_params = SmoothParams.from_db(general_params.prod_id)
 
     def get_error_params(self, db_options):
         """reads error params
@@ -75,9 +81,13 @@ class ProductParams(Params):
         return self.general_params.error_method
 
     @property
+    def smooth_method(self):
+        return self.smooth_params.smooth_method
+
+    @property
     def det_limit_asDataArray(self):
         units = UNITS[self.general_params.product_type]
-        return xr.DataArray(self.general_params.detection_limit,
+        return xr.DataArray(self.smooth_params.detection_limit,
                             name='detection_limit',
                             attrs={'long_name': 'detection limit',
                                    'units': units,
@@ -85,7 +95,7 @@ class ProductParams(Params):
 
     @property
     def error_threshold_low_asDataArray(self):
-        return xr.DataArray(self.general_params.error_threshold.low,
+        return xr.DataArray(self.smooth_params.error_threshold.low,
                             name='error_threshold_low',
                             attrs={'long_name': 'threshold for the '
                                                 'relative statistical error '
@@ -95,7 +105,7 @@ class ProductParams(Params):
 
     @property
     def error_threshold_high_asDataArray(self):
-        return xr.DataArray(self.general_params.error_threshold.high,
+        return xr.DataArray(self.smooth_params.error_threshold.high,
                             name='error_threshold_low',
                             attrs={'long_name': 'threshold for the '
                                                 'relative statistical error '
@@ -104,7 +114,7 @@ class ProductParams(Params):
                                    'units': '1'})
 
     @property
-    def smooth_params(self):
+    def smooth_params_auto(self):
         return Dict({'error_threshold_low':
                     self.error_threshold_low_asDataArray,
                      'error_threshold_high':
@@ -112,6 +122,15 @@ class ProductParams(Params):
                      'detection_limit':
                     self.det_limit_asDataArray,
                      })
+
+    def calc_with_res(self, res):
+        if self.general_params.calc_with_hr and res == HIGHRES:
+            return True
+        elif self.general_params.calc_with_lr and res == LOWRES:
+            return True
+        else:
+            return False
+
 
     def assign_to_product_list(self, measurement_params):
         gen_params = self.general_params
@@ -148,13 +167,6 @@ class ProductParams(Params):
         else:
             return False
 
-    # todo: read error_method from db
-    # def error_from_mc(self):
-    #     if self.general_params.error_method == MC:
-    #         return True
-    #     else:
-    #         return False
-
     def includes_product_merging(self):
         if self.general_params.product_type in [EXT, RBSC, EBSC]:
             # todo: put info on MERGE_PRODUCT_USE_CASES in db table
@@ -189,9 +201,10 @@ class GeneralProductParams(Params):
         self.calc_with_lr = False
 
         self.error_method = None
-        self.detection_limit = None
-        self.error_threshold = Dict({'low': None,
-                                     'high': None})
+
+#        self.detection_limit = None
+#        self.error_threshold = Dict({'low': None,
+#                                     'high': None})
 
         self.valid_alt_range = Dict({'min_height': None,
                                      'max_height': None})
@@ -212,11 +225,11 @@ class GeneralProductParams(Params):
         result.is_basic_product = query.ProductTypes.is_basic_product == 1
         result.is_derived_product = not result.is_basic_product
 
-        result.error_threshold.low = query.ErrorThresholdsLow.value
-        result.error_threshold.high = query.ErrorThresholdsHigh.value
-        result.detection_limit = query.ProductOptions.detection_limit
-        if result.detection_limit == 0.0:
-            raise(DetectionLimitZero, result.prod_id)
+#        result.error_threshold.low = query.ErrorThresholdsLow.value
+#        result.error_threshold.high = query.ErrorThresholdsHigh.value
+#        result.detection_limit = query.ProductOptions.detection_limit
+#        if result.detection_limit == 0.0:
+#            raise(DetectionLimitZero, result.prod_id)
 
         result.valid_alt_range.min_height = query.ProductOptions.min_height
         result.valid_alt_range.max_height = query.ProductOptions.max_height
@@ -237,16 +250,6 @@ class GeneralProductParams(Params):
 
         return result
 
-    # @classmethod
-    # def from_db(cls, general_params):
-    #     if not isinstance(general_params, ProductParams):
-    #         logger.error('')
-    #         return None
-    #
-    #     result = general_params.deepcopy()
-    #
-    #     return result
-
     @classmethod
     def from_id(cls, prod_id):
         query = get_general_params_query(prod_id)
@@ -266,4 +269,66 @@ class MCParams(Params):
         if result.nb_of_iterations <= 1:
             raise(NotEnoughMCIterations, prod_id)
 
+        return result
+
+
+class SmoothParams(Params):
+    """
+    smooth parameters for product retrievals
+    """
+
+    def __init__(self):
+        self.smooth_method = None
+
+        self.detection_limit = None
+        self.error_threshold = Dict({'lowrange': None,
+                                     'highrange': None})
+
+        self.transition_zone = Dict({'bottom': None,
+                                     'top': None})
+        self.vert_res = Dict({'lowres': Dict({'lowrange': None,
+                                                'highrange': None}),
+                              'highres': Dict({'lowrange': None,
+                                                'highrange': None}),
+                              })
+        self.time_res = Dict({'lowres': Dict({'lowrange': None,
+                                                'highrange': None}),
+                              'highres': Dict({'lowrange': None,
+                                                'highrange': None}),
+                              })
+
+    @classmethod
+    def from_query(cls, query):
+        result = cls()
+
+        result.smooth_method = query.ProductOptions._smooth_type
+
+        if result.smooth_method == AUTO:
+            result.error_threshold.lowrange = query.ErrorThresholdsLow.value
+            result.error_threshold.highrange = query.ErrorThresholdsHigh.value
+
+            result.detection_limit = query.ProductOptions.detection_limit
+            if result.detection_limit == 0.0:
+                raise(DetectionLimitZero, result.prod_id)
+
+        if result.smooth_method == FIXED:
+            result.transition_zone.bottom = query.ProductOptions.transition_zone_from
+            result.transition_zone.top = query.ProductOptions.transition_zone_to
+
+            result.vert_res.lowres.lowrange = query.ProductOptions.lowres_lowrange_vertical_resolution
+            result.vert_res.lowres.highrange = query.ProductOptions.lowres_highrange_vertical_resolution
+            result.vert_res.highres.lowrange = query.ProductOptions.highres_lowrange_vertical_resolution
+            result.vert_res.highres.highrange = query.ProductOptions.highres_highrange_vertical_resolution
+
+            result.time_res.lowres.lowrange = query.ProductOptions.lowres_lowrange_integration_time
+            result.time_res.lowres.highrange = query.ProductOptions.lowres_highrange_integration_time
+            result.time_res.highres.lowrange = query.ProductOptions.highres_lowrange_integration_time
+            result.time_res.highres.highrange = query.ProductOptions.highres_highrange_integration_time
+
+        return result
+
+    @classmethod
+    def from_db(cls, prod_id):
+        query = get_smooth_params_query(prod_id)
+        result = cls.from_query(query)
         return result

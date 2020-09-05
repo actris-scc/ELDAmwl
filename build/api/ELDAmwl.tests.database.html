@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,19 @@
   
 
   
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="ELDAmwl.tests package" href="ELDAmwl.tests.html" /> 
@@ -50,7 +51,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> ELDAmwl
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ELDAmwl
           
 
           
@@ -73,6 +74,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -132,6 +134,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -170,7 +173,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">ELDAmwl</a> &raquo;</li>
         
@@ -202,109 +205,8 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-ELDAmwl.tests.database.create_test_db">
-<span id="eldamwl-tests-database-create-test-db-module"></span><h2>ELDAmwl.tests.database.create_test_db module<a class="headerlink" href="#module-ELDAmwl.tests.database.create_test_db" title="Permalink to this headline">¶</a></h2>
-<p><strong>Classes</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.tests.database.create_test_db.DBConstructor" title="ELDAmwl.tests.database.create_test_db.DBConstructor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DBConstructor</span></code></a>()</p></td>
-<td><p>Construct a test DB from CSV files</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py class">
-<dt id="ELDAmwl.tests.database.create_test_db.DBConstructor">
-<em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.tests.database.create_test_db.</code><code class="sig-name descname">DBConstructor</code><a class="headerlink" href="#ELDAmwl.tests.database.create_test_db.DBConstructor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Construct a test DB from CSV files</p>
-<p><strong>Methods</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.create_tables" title="ELDAmwl.tests.database.create_test_db.DBConstructor.create_tables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_tables</span></code></a>()</p></td>
-<td><p>Create all DB tables</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.csv_data" title="ELDAmwl.tests.database.create_test_db.DBConstructor.csv_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csv_data</span></code></a>(table)</p></td>
-<td><p>Read the CSV file associated with the give table in a list of dicts.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.fill_table" title="ELDAmwl.tests.database.create_test_db.DBConstructor.fill_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_table</span></code></a>(table, data)</p></td>
-<td><p>Fills a DB table with CSV content</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.fill_tables" title="ELDAmwl.tests.database.create_test_db.DBConstructor.fill_tables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_tables</span></code></a>()</p></td>
-<td><p>Fills all DB tables with content from the CSV files.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.refine_data" title="ELDAmwl.tests.database.create_test_db.DBConstructor.refine_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refine_data</span></code></a>(table, data)</p></td>
-<td><p>Bring the data in shape</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.remove_db" title="ELDAmwl.tests.database.create_test_db.DBConstructor.remove_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_db</span></code></a>()</p></td>
-<td><p>Remove the prior DB</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py method">
-<dt id="ELDAmwl.tests.database.create_test_db.DBConstructor.create_tables">
-<code class="sig-name descname">create_tables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.create_tables" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create all DB tables
-:returns: Nothing</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ELDAmwl.tests.database.create_test_db.DBConstructor.csv_data">
-<code class="sig-name descname">csv_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.csv_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the CSV file associated with the give table in a list of dicts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>table</strong> – the current table instance</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The parsed csv file as a list of dictionaries</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ELDAmwl.tests.database.create_test_db.DBConstructor.fill_table">
-<code class="sig-name descname">fill_table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table</span></em>, <em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.fill_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fills a DB table with CSV content
-:param table: The current table instance
-:param data: The CSV data as list of dicts</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Nothing</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ELDAmwl.tests.database.create_test_db.DBConstructor.fill_tables">
-<code class="sig-name descname">fill_tables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.fill_tables" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fills all DB tables with content from the CSV files.
-If a CSV file is not found the table is skipped.
-:returns: None</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ELDAmwl.tests.database.create_test_db.DBConstructor.refine_data">
-<code class="sig-name descname">refine_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table</span></em>, <em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.refine_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bring the data in shape
-:returns: refined data</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ELDAmwl.tests.database.create_test_db.DBConstructor.remove_db">
-<code class="sig-name descname">remove_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.tests.database.create_test_db.DBConstructor.remove_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove the prior DB</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="eldamwl-tests-database-create-test-db-module">
+<h2>ELDAmwl.tests.database.create_test_db module<a class="headerlink" href="#eldamwl-tests-database-create-test-db-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-ELDAmwl.tests.database">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl.tests.database" title="Permalink to this headline">¶</a></h2>
@@ -329,11 +231,19 @@ If a CSV file is not found the table is skipped.
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Ina Mattis
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -344,7 +254,6 @@ If a CSV file is not found the table is skipped.
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

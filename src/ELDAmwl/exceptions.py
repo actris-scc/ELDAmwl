@@ -101,7 +101,7 @@ class UseCaseNotImplemented(ELDAmwlException):
         msg = 'Usecase {0} of {1} not yet implemented. '\
             .format(self.usecase, self.product_type)
         if self.instead:
-            msg.join('use {0} intsead.'.format(self.instead))
+            msg.join('use {0} instead.'.format(self.instead))
         return(msg)
 
 

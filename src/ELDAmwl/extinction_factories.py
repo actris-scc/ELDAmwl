@@ -31,21 +31,18 @@ class ExtinctionParams(ProductParams):
         self.correct_ovl = False
         self.ovl_filename = NC_FILL_STR
 
-    @classmethod
-    def from_db(cls, general_params):
-        result = cls()
-        result.general_params = general_params
+    def from_db(self, general_params):
+        super(ExtinctionParams, self).from_db(general_params)
 
         ep = read_extinction_params(general_params.prod_id)
 
-        result.angstroem = ep['angstroem']
-        result.correct_ovl = ep['overlap_correction']
-        result.ovl_filename = ep['overlap_file']
-        result.ext_method = ep['ext_method']
+        self.angstroem = ep['angstroem']
+        self.correct_ovl = ep['overlap_correction']
+        self.ovl_filename = ep['overlap_file']
+        self.ext_method = ep['ext_method']
 
-        result.get_error_params(ep)
+        self.get_error_params(ep)
 
-        return result
 
     def add_signal_role(self, signal):
         super(ExtinctionParams, self)
@@ -64,8 +61,8 @@ class ExtinctionParams(ProductParams):
                                                 'retrieval'})
 
     @property
-    def smooth_params(self):
-        res = super(ExtinctionParams, self).smooth_params
+    def smooth_params_auto(self):
+        res = super(ExtinctionParams, self).smooth_params_auto()
         # todo: get bin resolutions from actual height
         #  resolution of the used algorithm
         res.max_binres_low = 39
@@ -270,7 +267,7 @@ class ExtinctionAutosmoothDefault(BaseOperation):
 
 class ExtinctionFactory(BaseOperationFactory):
     """
-
+    optional argument resolution, can be LOWRES(=0) or HIGHRES(=1)
     """
 
     name = 'ExtinctionFactory'
@@ -302,6 +299,7 @@ class ExtinctionFactoryDefault(BaseOperation):
     def get_product(self):
         self.data_storage = self.kwargs['data_storage']
         self.param = self.kwargs['ext_param']
+        resolution = self.kwargs['resolution']
 
         if not self.param.includes_product_merging():
             raman_sig = self.data_storage.prepared_signal(
@@ -314,18 +312,25 @@ class ExtinctionFactoryDefault(BaseOperation):
                     smooth_params=self.param.smooth_params,
                 ).run()
 
+            else:
+                smooth_res = self.data_storage.binres_common_smooth(self.param.prod_id_str, resolution)
+
             smoothed_sig = deepcopy(raman_sig)
-            smoothed_sig.ds['binres'] = smooth_res
+            smoothed_sig.ds['binres'] = deepcopy(smooth_res)
             result = Extinctions.from_signal(smoothed_sig, self.param)
         else:
-            # result = Extinctions.from_merged_signals()
+            # todo: result = Extinctions.from_merged_signals()
             pass
 
         if self.param.error_method == MC:
+            # todo: MC product
             pass
 
         return result
 
+
+class GetEffVertRes(BaseOperationFactory):
+    pass
 
 class SignalSlope(BaseOperationFactory):
     """

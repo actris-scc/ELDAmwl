@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,19 @@
   
 
   
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ELDAmwl.database.tables package" href="ELDAmwl.database.tables.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> ELDAmwl
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ELDAmwl
           
 
           
@@ -74,6 +75,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -133,6 +135,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -171,7 +174,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">ELDAmwl</a> &raquo;</li>
         
@@ -222,7 +225,7 @@
 </div>
 <div class="section" id="module-ELDAmwl.database.db">
 <span id="eldamwl-database-db-module"></span><h2>ELDAmwl.database.db module<a class="headerlink" href="#module-ELDAmwl.database.db" title="Permalink to this headline">¶</a></h2>
-<p><strong>Classes</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -232,13 +235,31 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db.DBUtils" title="ELDAmwl.database.db.DBUtils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DBUtils</span></code></a>([connect_string])</p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SystemProduct</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sessionmaker</span></code>([bind, class_, autoflush, …])</p></td>
+<td><p>A configurable <code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code> factory.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_engine</span></code>(*args, **kwargs)</p></td>
+<td><p>Create a new <code class="xref py py-class docutils literal notranslate"><span class="pre">_engine.Engine</span></code> instance.</p></td>
+</tr>
 </tbody>
 </table>
 <dl class="py class">
 <dt id="ELDAmwl.database.db.DBUtils">
 <em class="property">class </em><code class="sig-prename descclassname">ELDAmwl.database.db.</code><code class="sig-name descname">DBUtils</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">connect_string</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.db.DBUtils" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p><strong>Methods</strong></p>
+<p><strong>Methods:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -277,30 +298,126 @@
 <div class="section" id="module-ELDAmwl.database.db_functions">
 <span id="eldamwl-database-db-functions-module"></span><h2>ELDAmwl.database.db_functions module<a class="headerlink" href="#module-ELDAmwl.database.db_functions" title="Permalink to this headline">¶</a></h2>
 <p>functions for db handling</p>
-<p><strong>Functions</strong></p>
+<p><strong>Classes:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.get_bsc_cal_params_query" title="ELDAmwl.database.db_functions.get_bsc_cal_params_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bsc_cal_params_query</span></code></a>(bsc_prod_id, bsc_type)</p></td>
-<td><p>read from db which shall be used to get the calibration of a sc product.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BscCalibrOption</span></code>(**kwargs)</p></td>
+<td><p>content of the db table bsc_calibr_options</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.get_general_params_query" title="ELDAmwl.database.db_functions.get_general_params_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_general_params_query</span></code></a>(prod_id)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Channels</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DBUtils</span></code>([connect_string])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBackscatterOption</span></code>(**kwargs)</p></td>
+<td><p>content of the db table elast_backscatter_options</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBscMethod</span></code>(**kwargs)</p></td>
+<td><p>content of the db table _elast_bsc_methods</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ErrorThresholds</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtBscOption</span></code>(**kwargs)</p></td>
+<td><p>content of the db table ext_bsc_options</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtMethod</span></code>(**kwargs)</p></td>
+<td><p>content of the db table _ext_methods</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtinctionOption</span></code>(**kwargs)</p></td>
+<td><p>content of the db table extinction_options</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IterBackscatterOption</span></code>(**kwargs)</p></td>
+<td><p>content of the db table iter_backscatter_options</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MCOption</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MWLproductProduct</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Measurements</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">OverlapFile</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreparedSignalFile</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductChannels</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductOptions</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductTypes</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Products</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RamanBackscatterOption</span></code>(**kwargs)</p></td>
+<td><p>content of the db table raman_backscatter_options</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RamanBscMethod</span></code>(**kwargs)</p></td>
+<td><p>content of the db table _ram_bsc_methods</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SystemProduct</span></code>(**kwargs)</p></td>
+<td><p>A simple constructor that allows initialization from kwargs.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NOMCOptions</span></code>(prod_id)</p></td>
+<td><p>raised when no MonteCarlo options are provided in SCC db for a product with error_method == mc</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoBscCalOptions</span></code>(prod_id)</p></td>
+<td><p>raised when a backscatter product has no calibration options in SCC db</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">aliased</span></code>(element[, alias, name, flat, …])</p></td>
+<td><p>Produce an alias of the given element, usually an <code class="xref py py-class docutils literal notranslate"><span class="pre">AliasedClass</span></code> instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.get_bsc_cal_params_query" title="ELDAmwl.database.db_functions.get_bsc_cal_params_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bsc_cal_params_query</span></code></a>(bsc_prod_id, bsc_type)</p></td>
+<td><p>read from db which params shall be used to get the calibration of a sc product.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.get_general_params_query" title="ELDAmwl.database.db_functions.get_general_params_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_general_params_query</span></code></a>(prod_id)</p></td>
 <td><p>read general params of a product from db</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.get_mc_params_query" title="ELDAmwl.database.db_functions.get_mc_params_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mc_params_query</span></code></a>(prod_id)</p></td>
+<td><p>read from db which params shall be used for the Monte-Carlo error retrieval :param prod_id: product id :type prod_id: int</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.get_products_query" title="ELDAmwl.database.db_functions.get_products_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_products_query</span></code></a>(mwl_prod_id, measurement_id)</p></td>
-<td><p>read from db which of the products correlated to</p></td>
+<td><p>read from db which of the products correlated to this system is the mwl product.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_elast_bsc_algorithm" title="ELDAmwl.database.db_functions.read_elast_bsc_algorithm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_elast_bsc_algorithm</span></code></a>(product_id)</p></td>
-<td><p>read from db which algorithm shall be used for</p></td>
+<td><p>read from db which algorithm shall be used for calculation in elastic backscatter retrievals.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_elast_bsc_params" title="ELDAmwl.database.db_functions.read_elast_bsc_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_elast_bsc_params</span></code></a>(product_id)</p></td>
 <td><p>function to read options of an elast bsc product from db.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_extinction_algorithm" title="ELDAmwl.database.db_functions.read_extinction_algorithm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_extinction_algorithm</span></code></a>(product_id)</p></td>
-<td><p>read from db which algorithm shall be used for the slope</p></td>
+<td><p>read from db which algorithm shall be used for the slope calculation in extinction retrievals.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_extinction_params" title="ELDAmwl.database.db_functions.read_extinction_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_extinction_params</span></code></a>(product_id)</p></td>
 <td><p>function to read options of an extinction product from db.</p></td>
@@ -312,10 +429,10 @@
 <td><p>function to read options of an lidar ratio product from db.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_mwl_product_id" title="ELDAmwl.database.db_functions.read_mwl_product_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_mwl_product_id</span></code></a>(system_id)</p></td>
-<td><p>read from db which of the products correlated</p></td>
+<td><p>read from db which of the products correlated to this system is the mwl product.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_raman_bsc_algorithm" title="ELDAmwl.database.db_functions.read_raman_bsc_algorithm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_raman_bsc_algorithm</span></code></a>(product_id)</p></td>
-<td><p>read from db which algorithm shall be used for</p></td>
+<td><p>read from db which algorithm shall be used for calculation in Raman backscatter retrievals.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.database.db_functions.read_raman_bsc_params" title="ELDAmwl.database.db_functions.read_raman_bsc_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_raman_bsc_params</span></code></a>(product_id)</p></td>
 <td><p>function to read options of a Raman bsc product from db.</p></td>
@@ -335,7 +452,7 @@
 <dl class="py function">
 <dt id="ELDAmwl.database.db_functions.get_bsc_cal_params_query">
 <code class="sig-prename descclassname">ELDAmwl.database.db_functions.</code><code class="sig-name descname">get_bsc_cal_params_query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bsc_prod_id</span></em>, <em class="sig-param"><span class="n">bsc_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.db_functions.get_bsc_cal_params_query" title="Permalink to this definition">¶</a></dt>
-<dd><p>read from db which shall be used to get the calibration of a sc product.</p>
+<dd><p>read from db which params shall be used to get the calibration of a sc product.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -361,6 +478,14 @@
 <dd class="field-even"><p>general products</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.database.db_functions.get_mc_params_query">
+<code class="sig-prename descclassname">ELDAmwl.database.db_functions.</code><code class="sig-name descname">get_mc_params_query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prod_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.database.db_functions.get_mc_params_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>read from db which params shall be used for the Monte-Carlo error retrieval
+:param prod_id: product id
+:type prod_id: int</p>
 </dd></dl>
 
 <dl class="py function">
@@ -608,11 +733,19 @@ Raman bsc product shall be derived.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, Ina Mattis
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -623,7 +756,6 @@ Raman bsc product shall be derived.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

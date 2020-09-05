@@ -29,5 +29,7 @@ Overview on modularized algorithm subsystems
       - :class:`~ELDAmwl.extinction_factories.SlopeToExtinctionDefault`
     * - :class:`~ELDAmwl.signals.CombineDepolComponents`
       - :class:`~ELDAmwl.signals.CombineDepolComponentsDefault`
+    * - :class:`~ELDAmwl.write_mwl_output.WriteMWLOutput`
+      - :class:`~ELDAmwl.write_mwl_output.WriteMWLOutputDefault`
 
 
