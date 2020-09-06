@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
+from copy import deepcopy
 
-from ELDAmwl.constants import NC_FILL_BYTE
+from ELDAmwl.constants import NC_FILL_BYTE, RESOLUTION_STR
 from ELDAmwl.constants import NC_FILL_INT
 
 import numpy as np
@@ -99,3 +100,8 @@ class Columns(object):
     def height(self):
         """xarray.DataArray(dimensions=time,level): height axis in m a.g."""
         return self.altitude - self.station_altitude
+
+    def height_to_bin(self, a_height):
+        closest_bin = (abs(self.height - a_height)).argmin(dim='level')
+        return closest_bin
+

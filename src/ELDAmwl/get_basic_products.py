@@ -59,14 +59,14 @@ class GetBasicProductsDefault(BaseOperation):
         fixed vertical resolution of the mwl product
 
         """
+        sp = self.product_params.smooth_params
+
         for prod_param in self.product_params.basic_products():
             pid = prod_param.prod_id_str
             for res in RESOLUTIONS:
+                dummy_sig = self.data_storage.prepared_signals(pid)[0]
                 if prod_param.calc_with_res(res):
-                    binres = deepcopy(self.data_storage.prepared_signals(pid)[0].binres)
-                    binres[:] = 5
-                    # todo: actually calculate bin resolution
-
+                    binres = dummy_sig.get_binres_from_fixed_smooth(sp, res)
                     self.data_storage.set_binres_common_smooth(pid, res, binres)
 
 

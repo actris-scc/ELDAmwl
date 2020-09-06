@@ -312,13 +312,13 @@ class SmoothParams(Params):
                 raise(DetectionLimitZero, result.prod_id)
 
         if result.smooth_method == FIXED:
-            result.transition_zone.bottom = query.ProductOptions.transition_zone_from
-            result.transition_zone.top = query.ProductOptions.transition_zone_to
+            result.transition_zone.bottom = float(query.ProductOptions.transition_zone_from)
+            result.transition_zone.top = float(query.ProductOptions.transition_zone_to)
 
-            result.vert_res.lowres.lowrange = query.ProductOptions.lowres_lowrange_vertical_resolution
-            result.vert_res.lowres.highrange = query.ProductOptions.lowres_highrange_vertical_resolution
-            result.vert_res.highres.lowrange = query.ProductOptions.highres_lowrange_vertical_resolution
-            result.vert_res.highres.highrange = query.ProductOptions.highres_highrange_vertical_resolution
+            result.vert_res.lowres.lowrange = float(query.ProductOptions.lowres_lowrange_vertical_resolution)
+            result.vert_res.lowres.highrange = float(query.ProductOptions.lowres_highrange_vertical_resolution)
+            result.vert_res.highres.lowrange = float(query.ProductOptions.highres_lowrange_vertical_resolution)
+            result.vert_res.highres.highrange = float(query.ProductOptions.highres_highrange_vertical_resolution)
 
             result.time_res.lowres.lowrange = query.ProductOptions.lowres_lowrange_integration_time
             result.time_res.lowres.highrange = query.ProductOptions.lowres_highrange_integration_time

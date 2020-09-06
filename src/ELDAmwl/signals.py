@@ -4,7 +4,7 @@
 from copy import deepcopy
 from ELDAmwl.base import DataPoint
 from ELDAmwl.columns import Columns
-from ELDAmwl.constants import ALL_OK
+from ELDAmwl.constants import ALL_OK, RESOLUTION_STR
 from ELDAmwl.constants import ANALOG
 from ELDAmwl.constants import CROSS
 from ELDAmwl.constants import FAR_RANGE
@@ -534,6 +534,44 @@ class Signals(Columns):
     @property
     def is_refl_sig(self):
         return (self.pol_channel_geometry == REFLECTED).values
+
+    def used_binres(self, vert_res):
+        """
+        how many bins are used to calculate a product with the given effective vertical resolution
+
+        Args:
+            vert_res (float): effective vertical resolution [m]
+
+        Returns:
+            number of used bins (int)
+        """
+        return (vert_res / self.raw_heightres).round().astype(int)
+
+    def get_binres_from_fixed_smooth(self, smooth_params, res):
+        tz_bottom = smooth_params.transition_zone.bottom
+        tz_bottom_bin = self.height_to_bin(tz_bottom)
+        vert_res_low = smooth_params.vert_res[RESOLUTION_STR[res]]['lowrange']
+        binres_low = self.used_binres(vert_res_low)
+
+        tz_top = smooth_params.transition_zone.top
+        tz_top_bin = self.height_to_bin(tz_top)
+        vert_res_high = smooth_params.vert_res[RESOLUTION_STR[res]]['highrange']
+        binres_high = self.used_binres(vert_res_high)
+
+        delta_res = (vert_res_high - vert_res_low) / (tz_top_bin - tz_bottom_bin)
+
+        # ! reversed logic! because
+        # where(condition, fillvalue where condition is not true)
+        result = self.binres.where(self.binres.level > tz_bottom_bin, binres_low)
+        result = result.where(result.level < tz_top_bin, binres_high)
+
+        for t in range(tz_bottom_bin.shape[0]):
+            for bin in range(int(tz_bottom_bin[t]), int(tz_top_bin[t])):
+                vert_res = float(vert_res_low + delta_res[t] * (bin - tz_bottom_bin[t]))
+                a_binres = int(self.used_binres(vert_res)[t])
+                result[t, bin] = a_binres
+
+        return result
 
 
 class CombineDepolComponentsDefault(BaseOperation):
