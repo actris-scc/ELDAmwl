@@ -102,6 +102,7 @@ class Columns(object):
         return self.altitude - self.station_altitude
 
     def height_to_bin(self, a_height):
+        # todo: try also scipy bisect
         closest_bin = (abs(self.height - a_height)).argmin(dim='level')
         return closest_bin
 
