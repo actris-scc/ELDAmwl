@@ -166,6 +166,9 @@ class Signals(Columns):
     pol_calibr = None
     raw_heightres = np.nan
 
+    calc_eff_bin_res_routine = None
+    calc_used_bin_res_routine = None
+
     @classmethod
     def as_sig_ratio(cls, enumerator, denominator):
         """creates a Signals instance from the ratio of two Signals
@@ -362,6 +365,13 @@ class Signals(Columns):
 
         return result
 
+    def heightres_to_bins(self, heightres):
+        """converts a height resolution into number of vertical bins
+        Args: heightres(float): height resolution in m
+        Returns: bins(int): number of vertical bins corresponding to the vertical resolution
+        """
+        return (heightres / self.raw_heightres).round().astype(int)
+
     def get_raw_heightres(self):
         diff = np.diff(self.height, axis=1)
 
@@ -374,9 +384,9 @@ class Signals(Columns):
             logger.error('height axis is not equidistant')
 
     def heights_to_levels(self, heights):
-        """converts a height value into a series of level (dim=time)
+        """converts a series of height value into a series of level (dim=time)
         Args: heights (np.ndarray): a requested height for each time, in m
-        Returns: first level above the requested height
+        Returns: level (xarray) closest to the requested heights
         """
         times = self.ds.dims['time']
         if heights.shape[0] != times:
@@ -384,23 +394,22 @@ class Signals(Columns):
                          'different lenghts (time dimension)')
             return None
 
-        result = []
-        for t in range(times):
-            result.append(np.where(self.height[t] > heights[t])[0][0])
-
-        return np.array(result)
+        closest_bin = (abs(self.height - heights)).argmin(dim='level')
+        return closest_bin
+#        result = []
+#        for t in range(times):
+#            result.append(np.where(self.height[t] > heights[t])[0][0])
+#        return np.array(result)
+        return closest_bin
 
     def height_to_levels(self, height):
         """converts a height value into a series of level (dim=time)
         Args: height (float): one requested height for all times, in m
-        Returns: first level above the requested height
+        Returns: level (xarray) closest to the requested height
         """
-        times = self.ds.dims['time']
-        result = []
-        for t in range(times):
-            result.append(np.where(self.height[t] > height)[0][0])
-
-        return np.array(result)
+        # todo: try also scipy bisect
+        closest_bin = (abs(self.height - height)).argmin(dim='level')
+        return closest_bin
 
     def data_in_vertical_range(self, v_range, boundaries=None):
         """data in vertical range
@@ -535,41 +544,51 @@ class Signals(Columns):
     def is_refl_sig(self):
         return (self.pol_channel_geometry == REFLECTED).values
 
-    def used_binres(self, vert_res):
+    def eff_to_used_binres(self, an_eff_binres):
         """
-        how many bins are used to calculate a product with the given effective vertical resolution
+        how many bins are used to calculate a product with the given effective bin resolution
 
         Args:
-            vert_res (float): effective vertical resolution [m]
+            an_eff_binres (float): effective bin resolution
 
         Returns:
             number of used bins (int)
         """
-        return (vert_res / self.raw_heightres).round().astype(int)
+        if self.calc_used_bin_res_routine:
+            return self.calc_used_bin_res_routine.run(eff_binres=an_eff_binres)
+        else:
+            logger.warning('no method implemented for effective-to-used bin resolution')
+            return an_eff_binres
 
-    def get_binres_from_fixed_smooth(self, smooth_params, res):
+    def get_binres_from_fixed_smooth(self, smooth_params, res, used_binres_routine=None):
+        if used_binres_routine:
+            self.calc_used_bin_res_routine = used_binres_routine
+
         tz_bottom = smooth_params.transition_zone.bottom
-        tz_bottom_bin = self.height_to_bin(tz_bottom)
+        tz_bottom_bin = self.height_to_levels(tz_bottom)
         vert_res_low = smooth_params.vert_res[RESOLUTION_STR[res]]['lowrange']
-        binres_low = self.used_binres(vert_res_low)
+        binres_low = self.heightres_to_bins(vert_res_low)
+        used_binres_low = self.eff_to_used_binres(binres_low)
 
         tz_top = smooth_params.transition_zone.top
-        tz_top_bin = self.height_to_bin(tz_top)
+        tz_top_bin = self.height_to_levels(tz_top)
         vert_res_high = smooth_params.vert_res[RESOLUTION_STR[res]]['highrange']
-        binres_high = self.used_binres(vert_res_high)
+        binres_high = self.heightres_to_bins(vert_res_high)
+        used_binres_high = self.eff_to_used_binres(binres_high)
 
         delta_res = (vert_res_high - vert_res_low) / (tz_top_bin - tz_bottom_bin)
 
         # ! reversed logic! because
         # where(condition, fillvalue where condition is not true)
-        result = self.binres.where(self.binres.level > tz_bottom_bin, binres_low)
-        result = result.where(result.level < tz_top_bin, binres_high)
+        result = self.binres.where(self.binres.level > tz_bottom_bin, used_binres_low)
+        result = result.where(result.level < tz_top_bin, used_binres_high)
 
         for t in range(tz_bottom_bin.shape[0]):
             for bin in range(int(tz_bottom_bin[t]), int(tz_top_bin[t])):
                 vert_res = float(vert_res_low + delta_res[t] * (bin - tz_bottom_bin[t]))
-                a_binres = int(self.used_binres(vert_res)[t])
-                result[t, bin] = a_binres
+                a_binres = int(self.heightres_to_bins(vert_res)[t])
+                a_used_binres = self.eff_to_used_binres(a_binres)
+                result[t, bin] = a_used_binres
 
         return result
 

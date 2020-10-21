@@ -101,8 +101,8 @@ class Columns(object):
         """xarray.DataArray(dimensions=time,level): height axis in m a.g."""
         return self.altitude - self.station_altitude
 
-    def height_to_bin(self, a_height):
-        # todo: try also scipy bisect
-        closest_bin = (abs(self.height - a_height)).argmin(dim='level')
-        return closest_bin
+#    def height_to_bin(self, a_height):
+#        # todo: try also scipy bisect
+#        closest_bin = (abs(self.height - a_height)).argmin(dim='level')
+#        return closest_bin
 

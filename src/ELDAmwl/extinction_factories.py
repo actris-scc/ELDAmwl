@@ -3,7 +3,7 @@
 from addict import Dict
 from copy import deepcopy
 from ELDAmwl.configs.config_default import RANGE_BOUNDARY
-from ELDAmwl.constants import ABOVE_MAX_ALT
+from ELDAmwl.constants import ABOVE_MAX_ALT, NC_FILL_INT
 from ELDAmwl.constants import BELOW_OVL
 from ELDAmwl.constants import MC
 from ELDAmwl.constants import NC_FILL_STR
@@ -96,6 +96,8 @@ class Extinctions(Products):
         num_levels = signal.ds.dims['level']
 
         slope_routine = SignalSlope()(prod_id=p_params.prod_id_str)
+        cls.calc_eff_bin_res_routine = ExtEffBinRes()(slope_alg_name=slope_routine.name)
+
         x_data = np.array(signal.range)
         y_data = np.array(signal.ds.data)
         yerr_data = np.array(signal.ds.err)
@@ -329,8 +331,65 @@ class ExtinctionFactoryDefault(BaseOperation):
         return result
 
 
-class GetEffVertRes(BaseOperationFactory):
-    pass
+class ExtEffBinRes(BaseOperationFactory):
+    """
+    Creates a Class for the calculation of signal slope.
+
+    Keyword Args:
+        slope_alg_name (str): name of the algorithm of the slope calculation
+    """
+
+    name = 'ExtEffBinRes'
+    slope_alg_name = NC_FILL_STR
+
+    def __call__(self, **kwargs):
+        assert 'slope_alg_name' in kwargs
+        self.slope_alg_name = kwargs['slope_alg_name']
+
+        res = super(ExtEffBinRes, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """ creates the classname from the name of the slope algorithm
+
+        Returns: name of the class for the calculation of the effective bin resolution of the slope retrieval
+        """
+        return self.slope_alg_name + '_EffBinRes'
+
+
+class ExtUsedBinRes(BaseOperationFactory):
+    """
+    Creates a Class for the calculation of signal slope.
+
+    Keyword Args:
+        slope_alg_name (str): name of the algorithm of the slope calculation
+    """
+
+    name = 'ExtUsedBinRes'
+    slope_alg_name = NC_FILL_STR
+    prod_id = NC_FILL_STR
+
+    def __call__(self, **kwargs):
+        assert ('slope_alg_name' in kwargs) or ('prod_id' in kwargs)
+        if 'slope_alg_name' in kwargs:
+            self.slope_alg_name = kwargs['slope_alg_name']
+        if 'prod_id' in kwargs:
+            self.prod_id = kwargs['prod_id']
+
+        res = super(ExtUsedBinRes, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """ creates the classname from the name of the slope algorithm
+
+        Returns: name of the class for the calculation of the effective bin resolution of the slope retrieval
+        """
+        if self.slope_alg_name == NC_FILL_STR:
+            self.slope_alg_name = SignalSlope()(prod_id=self.prod_id).name
+
+        return self.slope_alg_name + '_UsedBinRes'
+
+
 
 class SignalSlope(BaseOperationFactory):
     """
@@ -405,6 +464,62 @@ class LinFit(BaseOperation):
         return result
 
 
+class LinFit_EffBinRes(BaseOperation):
+    """
+    The calculation is done according to Mattis et al. 2016 with the equation
+    eff_binres = round(used_bins * 0.85934 - 0.17802)
+    """
+    name = 'LinFit_EffBinRes'
+
+    def run(self, **kwargs):
+        """
+        starts the calculation
+
+        Keyword Args:
+            used_bins(integer): number of bins used for the calculation of the linear fit (= diameter of the fit window)
+
+        Returns:
+            eff_binres(integer): resulting effective resolution in terms of vertical bins
+
+        """
+        assert 'used_bins' in kwargs
+
+        used_bins = kwargs['used_bins']
+        eff_binres = np.array(used_bins * 0.85934 - 0.17802)
+        result = eff_binres.round().astype(int)
+
+        return result
+
+
+class LinFit_UsedBinRes(BaseOperation):
+    """
+    The calculation is done according to Mattis et al. 2016 with the equation
+    used_bins = round((eff_binres + 0.17802) / 0.85934)
+    """
+    name = 'LinFit_UsedBinRes'
+
+    def run(self, **kwargs):
+        """
+        starts the calculation
+
+        Keyword Args:
+            eff_binres(integer): required effective vertical resolution in terms of bins
+
+        Returns:
+            used_bins(integer): number of bins (= diameter of the fit window) to be used for
+                                the calculation of the linear fit in order to achieve the required effective
+                                vertical bin resolution
+
+        """
+        assert 'eff_binres' in kwargs
+
+        eff_binres = kwargs['eff_binres']
+        used_binres = np.array((eff_binres + 0.17802) / 0.85934)
+        result = used_binres.round().astype(int)
+
+        return result
+
+
 class WeightedLinearFit(BaseOperation):
     """
     calculates a weighted linear fit
@@ -431,6 +546,62 @@ class WeightedLinearFit(BaseOperation):
         assert 'signal' in kwargs
 
         return self.fit.run(signal=kwargs['signal'])
+
+
+class WeightedLinearFit_EffBinRes(BaseOperation):
+    """
+    calculates the effective bin resolution for a given number of bins used for the linear fit
+
+    """
+    name = 'WeightedLinearFit_EffBinRes'
+
+    def __init__(self, **kwargs):
+        super(WeightedLinearFit_EffBinRes, self).__init__(**kwargs)
+        self.eff_bin_res = LinFit_EffBinRes()
+
+    def run(self, **kwargs):
+        """
+        calls LinFit_EffBinRes.run()
+
+        Keyword Args:
+            used_bins(integer): number of bins used for the calculation of the linear fit
+
+        Returns:
+            eff_binres(integer): resulting effective resolution in terms of vertical bins
+
+        """
+        assert 'used_bins' in kwargs
+
+        return self.eff_bin_res.run(used_bins=kwargs['used_bins'])
+
+
+class WeightedLinearFit_UsedBinRes(BaseOperation):
+    """
+    calculates how many bins have to be used for the linear fit in order to achieve the required effective bin resolution
+
+    """
+    name = 'WeightedLinearFit_UsedBinRes'
+
+    def __init__(self, **kwargs):
+        super(WeightedLinearFit_UsedBinRes, self).__init__(**kwargs)
+        self.used_bin_res = LinFit_UsedBinRes()
+
+    def run(self, **kwargs):
+        """
+        calls LinFit_UsedBinRes.run()
+
+        Keyword Args:
+            eff_binres(integer): required effective vertical resolution in terms of bins
+
+        Returns:
+            used_bins(integer): number of bins (= diameter of the fit window) to be used for
+                                the calculation of the linear fit in order to achieve the required effective
+                                vertical bin resolution
+
+        """
+        assert 'eff_binres' in kwargs
+
+        return self.used_bin_res.run(eff_binres=kwargs['eff_binres'])
 
 
 class NonWeightedLinearFit(BaseOperation):
@@ -460,13 +631,85 @@ class NonWeightedLinearFit(BaseOperation):
         return self.fit.run(signal=kwargs['signal'])
 
 
+class NonWeightedLinearFit_EffBinRes(BaseOperation):
+    """
+    calculates the effective bin resolution for a given number of bins used for the linear fit
+
+    """
+    name = 'NonWeightedLinearFit_EffBinRes'
+
+    def __init__(self, **kwargs):
+        super(NonWeightedLinearFit_EffBinRes, self).__init__(**kwargs)
+        self.eff_bin_res = LinFit_EffBinRes()
+
+    def run(self, **kwargs):
+        """
+        calls LinFit_EffBinRes.run()
+
+        Keyword Args:
+            used_bins(integer): number of bins used for the calculation of the linear fit
+
+        Returns:
+            eff_binres(integer): resulting effective resolution in terms of vertical bins
+
+        """
+        assert 'used_bins' in kwargs
+
+        return self.eff_bin_res.run(used_bins=kwargs['used_bins'])
+
+
+class NonWeightedLinearFit_UsedBinRes(BaseOperation):
+    """
+    calculates how many bins have to be used for the linear fit in order to achieve the required effective bin resolution
+
+    """
+    name = 'NonWeightedLinearFit_UsedBinRes'
+
+    def __init__(self, **kwargs):
+        super(NonWeightedLinearFit_UsedBinRes, self).__init__(**kwargs)
+        self.used_bin_res = LinFit_UsedBinRes()
+
+    def run(self, **kwargs):
+        """
+        calls LinFit_UsedBinRes.run()
+
+        Keyword Args:
+            eff_binres(integer): required effective vertical resolution in terms of bins
+
+        Returns:
+            used_bins(integer): number of bins (= diameter of the fit window) to be used for
+                                the calculation of the linear fit in order to achieve the required effective
+                                vertical bin resolution
+
+        """
+        assert 'eff_binres' in kwargs
+
+        return self.used_bin_res.run(eff_binres=kwargs['eff_binres'])
+
+
 registry.register_class(SignalSlope,
                         NonWeightedLinearFit.__name__,
                         NonWeightedLinearFit)
 
+registry.register_class(ExtEffBinRes,
+                        NonWeightedLinearFit_EffBinRes.__name__,
+                        NonWeightedLinearFit_EffBinRes)
+
+registry.register_class(ExtUsedBinRes,
+                        NonWeightedLinearFit_UsedBinRes.__name__,
+                        NonWeightedLinearFit_UsedBinRes)
+
 registry.register_class(SignalSlope,
                         WeightedLinearFit.__name__,
                         WeightedLinearFit)
+
+registry.register_class(ExtEffBinRes,
+                        WeightedLinearFit_EffBinRes.__name__,
+                        WeightedLinearFit_EffBinRes)
+
+registry.register_class(ExtUsedBinRes,
+                        WeightedLinearFit_UsedBinRes.__name__,
+                        WeightedLinearFit_UsedBinRes)
 
 registry.register_class(ExtinctionFactory,
                         ExtinctionFactoryDefault.__name__,
