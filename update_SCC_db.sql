@@ -93,9 +93,12 @@ ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name
 
 #ALTER TABLE `_ext_methods` 
 #ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
+#ADD COLUMN `python_classname_get_used_binres` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
+#ADD COLUMN `python_classname_get_effective_binres` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
 
 #UPDATE `_ext_methods` set `python_classname` = 'WeightedLinearFit' where ID=0;
-#UPDATE `_ext_methods` set `python_classname` = 'NonWeightedLinearFit' where ID=1;
+#UPDATE `_ext_methods` set `python_classname_get_used_binres` = 'LinFitUsedBinRes';
+#UPDATE `_ext_methods` set `python_classname_get_effective_binres` = 'LinFitEffBinRes';
 
 #-------------------------
 

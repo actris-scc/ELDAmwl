@@ -75,6 +75,56 @@ def read_extinction_algorithm(product_id):
                      .format(options.count()))
 
 
+def read_ext_effbin_algorithm(product_id):
+    """ read from db which algorithm shall be used for the
+    calculation of the effective bin resolution from the number of
+    bins used for the slope calculation in extinction retrievals.
+
+        Args:
+            product_id (int): the id of the actual extinction product
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    options = dbutils.session.query(ExtMethod,
+                                    ExtinctionOption)\
+        .filter(ExtMethod.ID == ExtinctionOption._ext_method_ID)\
+        .filter(ExtinctionOption._product_ID == product_id)
+
+    if options.count() == 1:
+        result = options.value('python_classname_get_effective_binres')
+        return result
+    else:
+        logger.error('wrong number of extinction options ({0})'
+                     .format(options.count()))
+
+
+def read_ext_usedbin_algorithm(product_id):
+    """ read from db which algorithm shall be used to calculate how
+    many bins have to be used in the slope calculation of the extinction
+    retrievals in order to achieve a given effective resolution.
+
+        Args:
+            product_id (int): the id of the actual extinction product
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    options = dbutils.session.query(ExtMethod,
+                                    ExtinctionOption)\
+        .filter(ExtMethod.ID == ExtinctionOption._ext_method_ID)\
+        .filter(ExtinctionOption._product_ID == product_id)
+
+    if options.count() == 1:
+        result = options.value('python_classname_get_used_binres')
+        return result
+    else:
+        logger.error('wrong number of extinction options ({0})'
+                     .format(options.count()))
+
+
 def read_raman_bsc_algorithm(product_id):
     """ read from db which algorithm shall be used for
         calculation in Raman backscatter retrievals.

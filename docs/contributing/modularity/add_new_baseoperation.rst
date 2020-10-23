@@ -59,17 +59,6 @@ was provided in the database table.
     __init__() and run() methods which accepts keyword arguments.
 
 
-.. note::
-
-    There has to be two additional classes
-    * for the calculation of the effective vertical resolution
-    (in terms of bins) from the number of bins used for the calculation of the data of a height
-    bin
-    * and for the retrieval of the number of bins which has to be used in order to achieve a given
-    effective resolution.
-    * the names of those classes must be name_of_BaseOperation_class + '_EffBinRes' and
-    name_of_BaseOperation_class + '_UsedBinRes', respectively.
-
 Step 3
 ^^^^^^
 
