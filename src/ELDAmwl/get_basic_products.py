@@ -7,20 +7,20 @@ from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import EXT
 from ELDAmwl.constants import LR
 from ELDAmwl.constants import RBSC
+from ELDAmwl.elast_bsc_factories import ElastBscUsedBinRes
 from ELDAmwl.exceptions import UseCaseNotImplemented
 from ELDAmwl.extinction_factories import ExtinctionFactory, ExtUsedBinRes
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.raman_bsc_factories import RamanBackscatterFactory
+from ELDAmwl.raman_bsc_factories import RamanBackscatterFactory, RamBscUsedBinRes
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.registry import registry
 from ELDAmwl.constants import AUTO, FIXED, RESOLUTIONS
 
 
-GET_USED_BINRES_CLASSES = {#RBSC: RamanBscParams,
-                 #EBSC: ElastBscParams,
-                 EXT: ExtUsedBinRes,
-                 #LR: LidarRatioParams
+GET_USED_BINRES_CLASSES = {RBSC: RamBscUsedBinRes,
+                           EBSC: ElastBscUsedBinRes,
+                           EXT: ExtUsedBinRes,
                 }
 
 class GetBasicProductsDefault(BaseOperation):
@@ -65,7 +65,7 @@ class GetBasicProductsDefault(BaseOperation):
 
     def get_binres_common_smooth(self):
         """
-        calculates bin resolution (for lowres and highres) for each product according to the
+        calculates bin resolution (for lowres and highres) for each basic product according to the
         fixed vertical resolution of the mwl product
 
         """
@@ -73,14 +73,12 @@ class GetBasicProductsDefault(BaseOperation):
 
         for prod_param in self.product_params.basic_products():
             pid = prod_param.prod_id_str
-            if prod_param.product_type in GET_USED_BINRES_CLASSES:
-                # todo: for all product types
-                used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
-                for res in RESOLUTIONS:
-                    dummy_sig = deepcopy(self.data_storage.prepared_signals(pid)[0])
-                    if prod_param.calc_with_res(res):
-                        binres = dummy_sig.get_binres_from_fixed_smooth(sp, res, used_binres_routine=used_binres_routine)
-                        self.data_storage.set_binres_common_smooth(pid, res, binres)
+            used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
+            for res in RESOLUTIONS:
+                dummy_sig = deepcopy(self.data_storage.prepared_signals(pid)[0])
+                if prod_param.calc_with_res(res):
+                    binres = dummy_sig.get_binres_from_fixed_smooth(sp, res, used_binres_routine=used_binres_routine)
+                    self.data_storage.set_binres_common_smooth(pid, res, binres)
 
 
     def get_auto_smooth_products(self):

@@ -56,6 +56,27 @@ class IterBscParams(Params):
         return result
 
 
+class ElastBscEffBinRes(BaseOperationFactory):
+    """
+    Creates a Class for the calculation of the effective bin resolution for a given number of bins
+    used in the retrieval of ...
+
+    Keyword Args:
+    """
+
+    pass
+
+
+class ElastBscUsedBinRes(BaseOperationFactory):
+    """
+    Creates a Class for the calculation of how many bins have to be used for the
+    ... in order to achieve the required effective bin resolution of ...
+
+    Keyword Args:
+    """
+
+    pass
+
 class CalcElastBscProfile(BaseOperationFactory):
     """calculates bsc profiles from signal and calibration window"""
     pass

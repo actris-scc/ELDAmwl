@@ -333,36 +333,47 @@ class ExtinctionFactoryDefault(BaseOperation):
 
 class ExtEffBinRes(BaseOperationFactory):
     """
-    Creates a Class for the calculation of signal slope.
+    Creates a Class for the calculation of the effective bin resolution for a given number of bins
+    used in the retrieval of the signal slope.
 
     Keyword Args:
         slope_alg_name (str): name of the algorithm of the slope calculation
+        prod_id (str): id of the product (used only if no slope_alg_name is provided)
+        one of the two keyword args have to be provided.
     """
 
     name = 'ExtEffBinRes'
     slope_alg_name = NC_FILL_STR
 
     def __call__(self, **kwargs):
-        assert 'slope_alg_name' in kwargs
-        self.slope_alg_name = kwargs['slope_alg_name']
+        assert ('slope_alg_name' in kwargs) or ('prod_id' in kwargs)
+        if 'slope_alg_name' in kwargs:
+            self.slope_alg_name = kwargs['slope_alg_name']
+        if 'prod_id' in kwargs:
+            self.prod_id = kwargs['prod_id']
 
         res = super(ExtEffBinRes, self).__call__(**kwargs)
         return res
 
     def get_classname_from_db(self):
-        """ creates the classname from the name of the slope algorithm
+        """ creates the classname from the name of the slope algorithm or the product id
 
         Returns: name of the class for the calculation of the effective bin resolution of the slope retrieval
         """
+        if self.slope_alg_name == NC_FILL_STR:
+            self.slope_alg_name = SignalSlope()(prod_id=self.prod_id).name
+
         return self.slope_alg_name + '_EffBinRes'
 
 
 class ExtUsedBinRes(BaseOperationFactory):
     """
-    Creates a Class for the calculation of signal slope.
+    Creates a Class for the calculation of how many bins have to be used for the linear fit in order to achieve the required effective bin resolutionof signal slope.
 
     Keyword Args:
         slope_alg_name (str): name of the algorithm of the slope calculation
+        prod_id (str): id of the product (used only if no slope_alg_name is provided)
+        one of the two keyword args have to be provided.
     """
 
     name = 'ExtUsedBinRes'
@@ -380,9 +391,9 @@ class ExtUsedBinRes(BaseOperationFactory):
         return res
 
     def get_classname_from_db(self):
-        """ creates the classname from the name of the slope algorithm
+        """ creates the classname from the name of the slope algorithm or the product id
 
-        Returns: name of the class for the calculation of the effective bin resolution of the slope retrieval
+        Returns: name of the class for the calculation of the used bin resolution of the slope retrieval
         """
         if self.slope_alg_name == NC_FILL_STR:
             self.slope_alg_name = SignalSlope()(prod_id=self.prod_id).name

@@ -264,6 +264,26 @@ class CalcRamanBscProfileAsAnsmann(BaseOperation):
                                     'Raman Backscatter',
                                     'viaBR (id = 1)')
 
+class RamBscEffBinRes(BaseOperationFactory):
+    """
+    Creates a Class for the calculation of the effective bin resolution for a given number of bins
+    used in the retrieval of ...
+
+    Keyword Args:
+    """
+
+    pass
+
+
+class RamBscUsedBinRes(BaseOperationFactory):
+    """
+    Creates a Class for the calculation of how many bins have to be used ...
+
+    Keyword Args:
+    """
+
+    pass
+
 
 registry.register_class(CalcRamanBscProfile,
                         CalcRamanBscProfileViaBR.__name__,
