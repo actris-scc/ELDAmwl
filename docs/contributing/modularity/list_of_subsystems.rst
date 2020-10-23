@@ -23,8 +23,20 @@ Overview on modularized algorithm subsystems
       - :class:`~ELDAmwl.extinction_factories.WeightedLinearFit`
 
         :class:`~ELDAmwl.extinction_factories.NonWeightedLinearFit`
+    * - :class:`~ELDAmwl.extinction_factories.ExtEffBinRes`
+      - :class:`~ELDAmwl.extinction_factories.WeightedLinearFit_EffBinRes`
+
+        :class:`~ELDAmwl.extinction_factories.NonWeightedLinearFit_EffBinRes`
+    * - :class:`~ELDAmwl.extinction_factories.ExtUsedBinRes`
+      - :class:`~ELDAmwl.extinction_factories.WeightedLinearFit_UsedBinRes`
+
+        :class:`~ELDAmwl.extinction_factories.NonWeightedLinearFit_UsedBinRes`
     * -
       - :class:`~ELDAmwl.extinction_factories.LinFit`
+    * -
+      - :class:`~ELDAmwl.extinction_factories.LinFit_EffBinRes`
+    * -
+      - :class:`~ELDAmwl.extinction_factories.LinFit_UsedBinRes`
     * - :class:`~ELDAmwl.extinction_factories.SlopeToExtinction`
       - :class:`~ELDAmwl.extinction_factories.SlopeToExtinctionDefault`
     * - :class:`~ELDAmwl.signals.CombineDepolComponents`
