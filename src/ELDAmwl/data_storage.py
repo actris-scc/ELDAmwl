@@ -159,6 +159,26 @@ class DataStorage(object):
             raise NotFoundInStorage('prepared signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
 
+    def basic_product_common_smooth(self, prod_id_str, resolution):
+        """a product, derived with coomon smooth
+
+        Args:
+            prod_id_str (str):  product id
+
+        Returns:
+            :obj:`Products` the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+
+        try:
+            return self.data.basic_products_common_smooth[resolution][prod_id_str]
+        except AttributeError:
+            raise NotFoundInStorage('product {0}'.format(prod_id_str),
+                                    'basic products with common smoothing with {0}'.format(RESOLUTION_STR[resolution]))
+
     def binres_common_smooth(self, prod_id_str, resolution):
         """ bin resolution profile of a product
 

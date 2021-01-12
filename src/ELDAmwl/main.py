@@ -101,6 +101,9 @@ def main():
         elda_mwl.prepare_signals()
         elda_mwl.get_basic_products()
 
+#        elda_mwl.write_single_output()
+        elda_mwl.write_mwl_output()
+
         logger.info('the end')
 
         sys.exit(NO_ERROR)

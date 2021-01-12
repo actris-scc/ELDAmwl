@@ -3,7 +3,7 @@
 
 from addict import Dict
 from ELDAmwl.base import Params
-from ELDAmwl.constants import EBSC
+from ELDAmwl.constants import EBSC, LOWRES
 from ELDAmwl.constants import EXT
 from ELDAmwl.constants import LR
 from ELDAmwl.constants import RBSC
@@ -226,6 +226,13 @@ class RunELDAmwl(BaseOperation):
             data_storage=self.data,
             product_params=self.params,
             ).run()
+
+    def write_single_output(self):
+        logger.info('write products into NetCDF files ')
+#        self.data.basic_product_common_smooth('377', LOWRES).save_to_netcdf()
+#        for p_param in self.params.basic_products():
+#            self.data.basic_product_common_smooth(p_param.prod_id_str, 'lowres').save_to_netcdf()
+
 
     def write_mwl_output(self):
         logger.info('write all products into one NetCDF file ')

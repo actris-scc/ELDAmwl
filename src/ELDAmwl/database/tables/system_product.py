@@ -58,19 +58,26 @@ class ProductTypes(Base):
     is_basic_product = Column(INTEGER, nullable=True)
 
 
-class ProductOptions(Base):
-    __tablename__ = 'product_options'
+class PreProcOptions(Base):
+    __tablename__ = 'preproc_options'
+
+    ID = Column(INTEGER, primary_key=True)
+    _product_ID = Column(INTEGER, nullable=False)
+    min_height = Column(DECIMAL(10, 4), nullable=False)
+    max_height = Column(DECIMAL(10, 4), nullable=False)
+    preprocessing_integration_time = Column(INTEGER, nullable=False)
+    preprocessing_vertical_resolution = Column(DECIMAL(10, 4), nullable=False)
+    interpolation_id = Column(INTEGER, nullable=False)
+
+
+class SmoothOptions(Base):
+    __tablename__ = 'smooth_options'
 
     ID = Column(INTEGER, primary_key=True)
     _product_ID = Column(INTEGER, nullable=False)
     _lowrange_error_threshold_ID = Column(INTEGER, nullable=False, index=True)
     _highrange_error_threshold_ID = Column(INTEGER, nullable=False, index=True)
     detection_limit = Column(DECIMAL(11, 11), nullable=False)
-    min_height = Column(DECIMAL(10, 4), nullable=False)
-    max_height = Column(DECIMAL(10, 4), nullable=False)
-    preprocessing_integration_time = Column(INTEGER, nullable=False)
-    preprocessing_vertical_resolution = Column(DECIMAL(10, 4), nullable=False)
-    interpolation_id = Column(INTEGER, nullable=False)
     transition_zone_from = Column(DECIMAL(10, 4), nullable=True)
     transition_zone_to = Column(DECIMAL(10, 4), nullable=True)
     lowres_lowrange_vertical_resolution = Column(DECIMAL(10, 4), nullable=True)
@@ -82,6 +89,7 @@ class ProductOptions(Base):
     highres_lowrange_integration_time = Column(INTEGER, nullable=True)
     highres_highrange_integration_time = Column(INTEGER, nullable=True)
     _smooth_type = Column(INTEGER, nullable=False)
+
 
 class ErrorThresholds(Base):
     __tablename__ = '_error_thresholds'

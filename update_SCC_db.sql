@@ -112,12 +112,12 @@ ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name
 
 ALTER TABLE `eldaexitcodes`
 INSERT INTO `eldaexitcodes` (`exit_code`, `description`) VALUES
-	(38, 'wrong command line parameter'),
-	(39, 'different cloud masks exist for measurement'),
-	(40, 'different header information in ELPP files of measurement'),
-	(41, 'calibration params of backscatter products of the measurement are not equal'),
-	(42, 'No MonteCarlo Options for product'),
-	(43, 'No backscatter calibration options for product'),
+	(39, 'wrong command line parameter'),
+	(40, 'different cloud masks exist for measurement'),
+	(41, 'different header information in ELPP files of measurement'),
+	(42, 'calibration params of backscatter products of the measurement are not equal'),
+	(43, 'No MonteCarlo Options for product'),
+	(44, 'No backscatter calibration options for product'),
 	(100, 'internal error: cannot fnd requested information in data storage'),
 	(101, 'internal error: more than 1 override to class registry');
 
@@ -135,15 +135,60 @@ INSERT INTO `_smooth_types` (`ID`, `smooth_type`) VALUES
 
 #-------------------------
 
-alter table `product_options`
-add column `transition_zone_from` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
-add column `transition_zone_to` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
-add column `lowres_lowrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
-add column `low_res_highrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
-add column `highres_lowrange_integration_time` INT(11) NULL DEFAULT NULL,
-add column `highres_highrange_integration_time` INT(11) NULL DEFAULT NULL,
-add column `lowres_lowrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
-add column `lowres_highrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
-add column `highres_lowrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL,
-add column `highres_highrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL,
-add column `_smooth_type` INT(11) NOT NULL DEFAULT '0';
+CREATE TABLE `smooth_options` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`_product_ID` INT(11) NOT NULL DEFAULT '-1',
+	`_lowrange_error_threshold_ID` INT(11) NOT NULL DEFAULT '1',
+	`_highrange_error_threshold_ID` INT(11) NOT NULL DEFAULT '1',
+	`detection_limit` DECIMAL(11,11) NOT NULL DEFAULT '0.00000000000',
+	`transition_zone_from` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
+	`transition_zone_to` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
+    `lowres_lowrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
+    `lowres_highrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
+    `highres_lowrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
+    `highres_highrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
+    `lowres_lowrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
+    `lowres_highrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
+    `highres_lowrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL,
+    `highres_highrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL,
+    `_smooth_type` INT(11) NOT NULL DEFAULT '0';
+	PRIMARY KEY (`id`)
+);
+
+insert
+into smooth_options
+    (_product_ID,
+    _lowrange_error_threshold_ID,
+    _highrange_error_threshold_ID,
+    detection_limit)
+select
+    _product_ID,
+    _lowrange_error_threshold_ID,
+    _highrange_error_threshold_ID,
+    detection_limit
+from product_options;
+
+#-------------------------
+
+alter table product_options
+drop column _lowrange_error_threshold_ID,
+drop column _highrange_error_threshold_ID,
+drop column detection_limit;
+
+#-------------------------
+
+create view product_options_v
+as select
+po.ID,
+po._product_ID,
+po.min_height,
+po.max_height,
+po.preprocessing_integration_time,
+po.preprocessing_vertical_resolution,
+po.interpolation_id,
+so._lowrange_error_threshold_ID,
+so._highrange_error_threshold_ID,
+so.detection_limit
+from product_options as po,
+smooth_options as so
+where so._product_ID = po._product_ID;

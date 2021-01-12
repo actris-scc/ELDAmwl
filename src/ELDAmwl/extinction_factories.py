@@ -7,7 +7,8 @@ from ELDAmwl.constants import ABOVE_MAX_ALT, NC_FILL_INT
 from ELDAmwl.constants import BELOW_OVL
 from ELDAmwl.constants import MC
 from ELDAmwl.constants import NC_FILL_STR
-from ELDAmwl.database.db_functions import read_extinction_algorithm, read_ext_effbin_algorithm
+from ELDAmwl.database.db_functions import read_extinction_algorithm, read_ext_effbin_algorithm, \
+    read_ext_usedbin_algorithm
 from ELDAmwl.database.db_functions import read_extinction_params
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
@@ -96,7 +97,7 @@ class Extinctions(Products):
         num_levels = signal.ds.dims['level']
 
         slope_routine = SignalSlope()(prod_id=p_params.prod_id_str)
-        cls.calc_eff_bin_res_routine = ExtEffBinRes()(slope_alg_name=slope_routine.name)
+        cls.calc_eff_bin_res_routine = ExtEffBinRes()(prod_id=p_params.prod_id_str)
 
         x_data = np.array(signal.range)
         y_data = np.array(signal.ds.data)
@@ -575,6 +576,14 @@ registry.register_class(SignalSlope,
 registry.register_class(SignalSlope,
                         WeightedLinearFit.__name__,
                         WeightedLinearFit)
+
+registry.register_class(ExtUsedBinRes,
+                        LinFitUsedBinRes.__name__,
+                        LinFitUsedBinRes)
+
+registry.register_class(ExtEffBinRes,
+                        LinFitEffBinRes.__name__,
+                        LinFitEffBinRes)
 
 registry.register_class(ExtinctionFactory,
                         ExtinctionFactoryDefault.__name__,

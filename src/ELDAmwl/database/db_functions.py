@@ -20,7 +20,7 @@ from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import ErrorThresholds, MCOption
 from ELDAmwl.database.tables.system_product import MWLproductProduct
 from ELDAmwl.database.tables.system_product import PreparedSignalFile
-from ELDAmwl.database.tables.system_product import ProductOptions
+from ELDAmwl.database.tables.system_product import SmoothOptions, PreProcOptions
 from ELDAmwl.database.tables.system_product import Products
 from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SystemProduct
@@ -265,7 +265,7 @@ def get_products_query(mwl_prod_id, measurement_id):
         MWLproductProduct,
         Products,
         ProductTypes,
-        ProductOptions,
+        SmoothOptions,
         ErrorThresholdsLow,
         ErrorThresholdsHigh,
         PreparedSignalFile,
@@ -280,11 +280,11 @@ def get_products_query(mwl_prod_id, measurement_id):
     ).filter(
         ProductTypes.is_in_mwl_products == 1,
     ).filter(
-        ProductOptions._product_ID == Products.ID,
+        SmoothOptions._product_ID == Products.ID,
     ).filter(
-        ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
+        SmoothOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
     ).filter(
-        ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
+        SmoothOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
     ).filter(
         ProductChannels._prod_ID == Products.ID,
     ).filter(
@@ -320,21 +320,21 @@ def get_general_params_query(prod_id):
     options = dbutils.session.query(
         Products,
         ProductTypes,
-        ProductOptions,
+        SmoothOptions,
         ErrorThresholdsLow,
         ErrorThresholdsHigh,
         ProductChannels,
         Channels
     ).filter(
-        ProductOptions._product_ID == Products.ID,
+        SmoothOptions._product_ID == Products.ID,
     ).filter(
         Products._prod_type_ID == ProductTypes.ID,
     ).filter(
         ProductTypes.is_in_mwl_products == 1,
     ).filter(
-        ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
+        SmoothOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
     ).filter(
-        ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
+        SmoothOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
     ).filter(
         ProductChannels._prod_ID == Products.ID,
     ).filter(
@@ -367,15 +367,15 @@ def get_smooth_params_query(prod_id):
                                   name='ErrorThresholdsHigh')
 
     options = dbutils.session.query(
-        ProductOptions,
+        SmoothOptions,
         ErrorThresholdsLow,
         ErrorThresholdsHigh
     ).filter(
-        ProductOptions._product_ID == prod_id,
+        SmoothOptions._product_ID == prod_id,
     ).filter(
-        ProductOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
+        SmoothOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
     ).filter(
-        ProductOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID)
+        SmoothOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID)
 
     if options.count() == 1:
         return options[0]
