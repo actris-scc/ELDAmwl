@@ -237,6 +237,17 @@ was provided in the database table.</p>
 <p>The new class needs to have a name attribute, as well as
 __init__() and run() methods which accepts keyword arguments.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There has to be two additional classes
+* for the calculation of the effective vertical resolution
+(in terms of bins) from the number of bins used for the calculation of the data of a height
+bin
+* and for the retrieval of the number of bins which has to be used in order to achieve a given
+effective resolution.
+* the names of those classes must be name_of_BaseOperation_class + ‘_EffBinRes’ and
+name_of_BaseOperation_class + ‘_UsedBinRes’, respectively.</p>
+</div>
 </div>
 <div class="section" id="step-3">
 <h2>Step 3<a class="headerlink" href="#step-3" title="Permalink to this headline">¶</a></h2>

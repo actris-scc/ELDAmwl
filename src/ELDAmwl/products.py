@@ -231,8 +231,8 @@ class GeneralProductParams(Params):
 #        if result.detection_limit == 0.0:
 #            raise(DetectionLimitZero, result.prod_id)
 
-        result.valid_alt_range.min_height = query.ProductOptions.min_height
-        result.valid_alt_range.max_height = query.ProductOptions.max_height
+        result.valid_alt_range.min_height = query.PreProcOptions.min_height
+        result.valid_alt_range.max_height = query.PreProcOptions.max_height
 
         # the MWLproducProduct and PreparedSignalFile tables
         # are not available if query is
@@ -301,29 +301,29 @@ class SmoothParams(Params):
     def from_query(cls, query):
         result = cls()
 
-        result.smooth_method = query.ProductOptions._smooth_type
+        result.smooth_method = query.SmoothOptions._smooth_type
 
         if result.smooth_method == AUTO:
             result.error_threshold.lowrange = query.ErrorThresholdsLow.value
             result.error_threshold.highrange = query.ErrorThresholdsHigh.value
 
-            result.detection_limit = query.ProductOptions.detection_limit
+            result.detection_limit = query.SmoothOptions.detection_limit
             if result.detection_limit == 0.0:
                 raise(DetectionLimitZero, result.prod_id)
 
         if result.smooth_method == FIXED:
-            result.transition_zone.bottom = float(query.ProductOptions.transition_zone_from)
-            result.transition_zone.top = float(query.ProductOptions.transition_zone_to)
+            result.transition_zone.bottom = float(query.SmoothOptions.transition_zone_from)
+            result.transition_zone.top = float(query.SmoothOptions.transition_zone_to)
 
-            result.vert_res.lowres.lowrange = float(query.ProductOptions.lowres_lowrange_vertical_resolution)
-            result.vert_res.lowres.highrange = float(query.ProductOptions.lowres_highrange_vertical_resolution)
-            result.vert_res.highres.lowrange = float(query.ProductOptions.highres_lowrange_vertical_resolution)
-            result.vert_res.highres.highrange = float(query.ProductOptions.highres_highrange_vertical_resolution)
+            result.vert_res.lowres.lowrange = float(query.SmoothOptions.lowres_lowrange_vertical_resolution)
+            result.vert_res.lowres.highrange = float(query.SmoothOptions.lowres_highrange_vertical_resolution)
+            result.vert_res.highres.lowrange = float(query.SmoothOptions.highres_lowrange_vertical_resolution)
+            result.vert_res.highres.highrange = float(query.SmoothOptions.highres_highrange_vertical_resolution)
 
-            result.time_res.lowres.lowrange = query.ProductOptions.lowres_lowrange_integration_time
-            result.time_res.lowres.highrange = query.ProductOptions.lowres_highrange_integration_time
-            result.time_res.highres.lowrange = query.ProductOptions.highres_lowrange_integration_time
-            result.time_res.highres.highrange = query.ProductOptions.highres_highrange_integration_time
+            result.time_res.lowres.lowrange = query.SmoothOptions.lowres_lowrange_integration_time
+            result.time_res.lowres.highrange = query.SmoothOptions.lowres_highrange_integration_time
+            result.time_res.highres.lowrange = query.SmoothOptions.highres_lowrange_integration_time
+            result.time_res.highres.highrange = query.SmoothOptions.highres_highrange_integration_time
 
         return result
 

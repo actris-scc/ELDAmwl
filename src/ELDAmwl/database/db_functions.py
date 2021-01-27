@@ -266,6 +266,7 @@ def get_products_query(mwl_prod_id, measurement_id):
         Products,
         ProductTypes,
         SmoothOptions,
+        PreProcOptions,
         ErrorThresholdsLow,
         ErrorThresholdsHigh,
         PreparedSignalFile,
@@ -281,6 +282,8 @@ def get_products_query(mwl_prod_id, measurement_id):
         ProductTypes.is_in_mwl_products == 1,
     ).filter(
         SmoothOptions._product_ID == Products.ID,
+    ).filter(
+        PreProcOptions._product_ID == Products.ID,
     ).filter(
         SmoothOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
     ).filter(
@@ -320,11 +323,14 @@ def get_general_params_query(prod_id):
     options = dbutils.session.query(
         Products,
         ProductTypes,
+        PreProcOptions,
         SmoothOptions,
         ErrorThresholdsLow,
         ErrorThresholdsHigh,
         ProductChannels,
         Channels
+    ).filter(
+        PreProcOptions._product_ID == Products.ID,
     ).filter(
         SmoothOptions._product_ID == Products.ID,
     ).filter(
@@ -488,7 +494,7 @@ def get_mc_params_query(prod_id):
     ).filter(
         MCOption._product_ID == prod_id)
 
-    if mc_params.count() > 1:
+    if mc_params.count() == 1:
         return mc_params[0]
     else:
         raise(NOMCOptions, prod_id)

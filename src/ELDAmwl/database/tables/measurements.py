@@ -20,7 +20,7 @@ Base = declarative_base()
 
 
 class Measurements(Base):
-    __tablename__ = '_measurements'
+    __tablename__ = 'measurements'
 
     num_id = Column(INTEGER, primary_key=True)
     ID = Column(VARCHAR(15), nullable=False)

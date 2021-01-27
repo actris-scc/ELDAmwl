@@ -19,6 +19,7 @@ from ELDAmwl.constants import WATER_VAPOR
 from ELDAmwl.exceptions import ELPPFileNotFound, CannotOpenELLPFile
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
+from ELDAmwl.header import Header
 from ELDAmwl.log import logger
 from ELDAmwl.registry import registry
 
@@ -104,49 +105,6 @@ class DepolarizationCalibration(object):
         # polarization_gain_factor_correction_start_datetime
         # polarization_gain_factor_correction_stop_datetime
         return result
-
-
-class Header(object):
-    station_latitude = np.nan
-    station_longitude = np.nan
-    station_altitude = np.nan
-    # todo: read further info about institution, PI etc.
-
-    @classmethod
-    def from_nc_file(cls, nc_ds):
-        """reads header information from an ELPP file
-
-        Args:
-            nc_ds (xarray.Dataset): content of the ELPP file.
-        """
-        result = cls()
-        result.station_latitude = nc_ds.latitude
-        result.station_longitude = nc_ds.longitude
-        result.station_altitude = nc_ds.station_altitude
-
-        return result
-
-    def __eq__(self, other):
-        result = True
-        for a in self.__dict__.keys():
-            if getattr(self, a) != getattr(other, a):
-                result = False
-        return result
-
-    @property
-    def latitude(self):
-        """measurement site latitude in degrees_north"""
-        return self.station_latitude
-
-    @property
-    def longitude(self):
-        """measurement site longitude in degrees_east"""
-        return self.station_longitude
-
-    @property
-    def altitude(self):
-        """measurement site altitude in m a.s.l."""
-        return self.station_altitude
 
 
 class Signals(Columns):

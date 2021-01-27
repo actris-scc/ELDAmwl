@@ -247,7 +247,7 @@ class DataStorage(object):
 
     @header.setter
     def header(self, new_header):
-        if self.header is not None:
-            if not (self.header == new_header):
-                raise DifferentHeaderExists
-        self.data.header = new_header
+        if self.header is None:
+            self.data.header = new_header
+        else:
+            self.header.append(new_header)

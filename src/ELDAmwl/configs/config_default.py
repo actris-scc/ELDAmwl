@@ -3,6 +3,12 @@
 from logging import DEBUG
 from logging import INFO
 
+# ===================
+# ELDAmwl
+# ===================
+
+# mwl output file
+FILE_FORMAT_VERSION = 1.0
 
 # ===================
 # Directories
