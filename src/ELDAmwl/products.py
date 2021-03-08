@@ -4,7 +4,7 @@ from addict import Dict
 from copy import deepcopy
 from ELDAmwl.base import Params
 from ELDAmwl.configs.config import RANGE_BOUNDARY_KM
-from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, MC, AUTO, FIXED, HIGHRES, LOWRES
+from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, MC, AUTO, FIXED, HIGHRES, LOWRES, RESOLUTION_STR
 from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import EXT
 from ELDAmwl.constants import MERGE_PRODUCT_USE_CASES
@@ -145,17 +145,17 @@ class ProductParams(Params):
                  'type': gen_params.product_type,
                  'basic': gen_params.is_basic_product,
                  'derived': gen_params.is_derived_product,
-                 'hres': gen_params.calc_with_hr,
-                 'lres': gen_params.calc_with_lr,
+                 RESOLUTION_STR[HIGHRES]: gen_params.calc_with_hr,
+                 RESOLUTION_STR[LOWRES]: gen_params.calc_with_lr,
                  'elpp_file': gen_params.elpp_file}
         else:
             df = params_table[(params_table.id == self.prod_id_str)]
             idx = df.index[0]
-            hres = df.hres[idx] or gen_params.calc_with_hr
-            lres = df.lres[idx] or gen_params.calc_with_lr
+            highres = df[RESOLUTION_STR[HIGHRES]][idx] or gen_params.calc_with_hr
+            lowres = df[RESOLUTION_STR[LOWRES]][idx] or gen_params.calc_with_lr
 
-            params_table.loc[params_table.id == self.prod_id_str, 'hres'] = hres  # noqa E501
-            params_table.loc[params_table.id == self.prod_id_str, 'lres'] = lres  # noqa E501
+            params_table.loc[params_table.id == self.prod_id_str, RESOLUTION_STR[HIGHRES]] = highres  # noqa E501
+            params_table.loc[params_table.id == self.prod_id_str, RESOLUTION_STR[LOWRES]] = lowres  # noqa E501
 
     def is_bsc_from_depol_components(self):
         if self.general_params.product_type in [RBSC, EBSC]:
@@ -286,14 +286,14 @@ class SmoothParams(Params):
 
         self.transition_zone = Dict({'bottom': None,
                                      'top': None})
-        self.vert_res = Dict({'lowres': Dict({'lowrange': None,
+        self.vert_res = Dict({RESOLUTION_STR[LOWRES]: Dict({'lowrange': None,
                                                 'highrange': None}),
-                              'highres': Dict({'lowrange': None,
+                              RESOLUTION_STR[HIGHRES]: Dict({'lowrange': None,
                                                 'highrange': None}),
                               })
-        self.time_res = Dict({'lowres': Dict({'lowrange': None,
+        self.time_res = Dict({RESOLUTION_STR[LOWRES]: Dict({'lowrange': None,
                                                 'highrange': None}),
-                              'highres': Dict({'lowrange': None,
+                              RESOLUTION_STR[HIGHRES]: Dict({'lowrange': None,
                                                 'highrange': None}),
                               })
 
@@ -315,15 +315,23 @@ class SmoothParams(Params):
             result.transition_zone.bottom = float(query.SmoothOptions.transition_zone_from)
             result.transition_zone.top = float(query.SmoothOptions.transition_zone_to)
 
-            result.vert_res.lowres.lowrange = float(query.SmoothOptions.lowres_lowrange_vertical_resolution)
-            result.vert_res.lowres.highrange = float(query.SmoothOptions.lowres_highrange_vertical_resolution)
-            result.vert_res.highres.lowrange = float(query.SmoothOptions.highres_lowrange_vertical_resolution)
-            result.vert_res.highres.highrange = float(query.SmoothOptions.highres_highrange_vertical_resolution)
+            result.vert_res[RESOLUTION_STR[LOWRES]].lowrange \
+                = float(query.SmoothOptions.lowres_lowrange_vertical_resolution)
+            result.vert_res[RESOLUTION_STR[LOWRES]].highrange \
+                = float(query.SmoothOptions.lowres_highrange_vertical_resolution)
+            result.vert_res[RESOLUTION_STR[HIGHRES]].lowrange \
+                = float(query.SmoothOptions.highres_lowrange_vertical_resolution)
+            result.vert_res[RESOLUTION_STR[HIGHRES]].highrange \
+                = float(query.SmoothOptions.highres_highrange_vertical_resolution)
 
-            result.time_res.lowres.lowrange = query.SmoothOptions.lowres_lowrange_integration_time
-            result.time_res.lowres.highrange = query.SmoothOptions.lowres_highrange_integration_time
-            result.time_res.highres.lowrange = query.SmoothOptions.highres_lowrange_integration_time
-            result.time_res.highres.highrange = query.SmoothOptions.highres_highrange_integration_time
+            result.time_res[RESOLUTION_STR[LOWRES]].lowrange \
+                = query.SmoothOptions.lowres_lowrange_integration_time
+            result.time_res[RESOLUTION_STR[LOWRES]].highrange \
+                = query.SmoothOptions.lowres_highrange_integration_time
+            result.time_res[RESOLUTION_STR[HIGHRES]].lowrange \
+                = query.SmoothOptions.highres_lowrange_integration_time
+            result.time_res[RESOLUTION_STR[HIGHRES]].highrange \
+                = query.SmoothOptions.highres_highrange_integration_time
 
         return result
 

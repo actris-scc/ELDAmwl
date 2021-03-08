@@ -3,6 +3,7 @@
 
 from addict import Dict
 import numpy as np
+import pandas as pd
 
 from ELDAmwl.constants import NC_FILL_STR
 from ELDAmwl.exceptions import DifferentHeaderExists
@@ -46,6 +47,8 @@ class Person(object):
 class Header(object):
     attrs = None
     vars = None
+    start_time = None
+    end_time = None
     class_attrs = ['pi', 'data_originator']
 
     def __init__(self):
@@ -93,6 +96,10 @@ class Header(object):
         result.vars.station_longitude = nc_ds.longitude
         result.vars.station_altitude = nc_ds.station_altitude
 
+        # it is really painful to do these conversions. Unfortunately, I found no better solution
+        result.start_time = pd.Timestamp(nc_ds.time_bounds[0, 0].values).to_pydatetime()
+        result.end_time = pd.Timestamp(nc_ds.time_bounds[-1, -1].values).to_pydatetime()
+
         return result
 
     def append(self, newHeader):
@@ -128,6 +135,9 @@ class Header(object):
         for var in self.vars:
             nc_varname = self.vars[var].name
             ds.data_vars[nc_varname] = self.vars[var]
+
+        ds.measurement_start_datetime = self.start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+        ds.measurement_stop_datetime = self.end_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     @property
     def latitude(self):

@@ -160,7 +160,7 @@ class DataStorage(object):
                                     'product {0}'.format(prod_id_str))
 
     def basic_product_common_smooth(self, prod_id_str, resolution):
-        """a product, derived with coomon smooth
+        """a product, derived with common smooth
 
         Args:
             prod_id_str (str):  product id
@@ -174,8 +174,15 @@ class DataStorage(object):
         """
 
         try:
-            return self.data.basic_products_common_smooth[resolution][prod_id_str]
+            result = self.data.basic_products_common_smooth[resolution][prod_id_str]
         except AttributeError:
+            raise NotFoundInStorage('product {0}'.format(prod_id_str),
+                                    'basic products with common smoothing with {0}'.format(RESOLUTION_STR[resolution]))
+
+        if result != {}:
+            return result
+        else:
+            # Dict returns {} instead of AttributeError
             raise NotFoundInStorage('product {0}'.format(prod_id_str),
                                     'basic products with common smoothing with {0}'.format(RESOLUTION_STR[resolution]))
 
@@ -230,6 +237,10 @@ class DataStorage(object):
                 raise DifferentCloudMaskExists
 
         self.data.cloud_mask = new_mask
+
+    def get_common_cloud_mask(self, res):
+        # todo: smooth cloud mask according to res
+        return self.cloud_mask
 
     @property
     def header(self):

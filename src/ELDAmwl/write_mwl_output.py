@@ -9,6 +9,10 @@ from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.registry import registry
 from ELDAmwl.configs.config import PRODUCT_PATH
+from ELDAmwl.constants import ELDA_MWL_VERSION, MWL
+from ELDAmwl.constants import HIGHRES, LOWRES, RESOLUTIONS, RESOLUTION_STR
+from ELDAmwl.exceptions import NotFoundInStorage
+
 
 class WriteMWLOutputDefault(BaseOperation):
     """
@@ -19,20 +23,17 @@ class WriteMWLOutputDefault(BaseOperation):
     out_filename = None
 
     def mwl_filename(self):
-        header = self.data_storage.header.attrs
+        header = self.data_storage.header
 
-        result = header.station.station_ID
-        # numeric 3 digits according to db table _product_types (for example 002)
-        # result += '_' +
-        # numeric 7 digits (for example 0000213)
-        # result += '_' +
-        # result += '_' + start_time.strftime('%Y%m%d%h%m')
-        # result += '_' + end_time.strftime('%Y%m%d%h%m')
-        result += header.measurement_ID
-        result += '_ELDAmwl'
-        # result += '_v{}'.format()
-        result += '.nc'
-
+        template = '{stat_id}_{prod_type_id}_{prod_id}_{start}_{end}_{meas_id}_ELDAmwl_v{version}.nc'
+        result = template.format(stat_id=header.attrs.station_ID,
+                                 prod_type_id=str(MWL).zfill(3),
+                                 prod_id=str(self.product_params.mwl_product_id).zfill(7),
+                                 start=header.start_time.strftime('%Y%m%d%H%M'),
+                                 end=header.end_time.strftime('%Y%m%d%H%M'),
+                                 meas_id=header.attrs.measurement_ID,
+                                 version=ELDA_MWL_VERSION,
+                                 )
         return result
 
     def run(self):
@@ -40,19 +41,55 @@ class WriteMWLOutputDefault(BaseOperation):
         self.product_params = self.kwargs['product_params']
         self.out_filename = os.path.join(PRODUCT_PATH, self.mwl_filename())
 
-        file_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
-
-        self.data_storage.header.to_dataset(file_data)
-
-        ds = xr.Dataset(data_vars=file_data.data_vars,
+        # create empty container for global attributes and variables
+        global_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
+        # fill container with header information
+        self.data_storage.header.to_dataset(global_data)
+        # convert into Dataset
+        ds = xr.Dataset(data_vars=global_data.data_vars,
                         coords={},
-                        attrs=file_data.attrs)
+                        attrs=global_data.attrs)
         # write global attributes and variables
-        #ds.to_netcdf(path='d:/temp/dummy.nc', mode='w', format='NETCDF4')
+        ds.to_netcdf(path=self.out_filename, mode='w', format='NETCDF4')
+        ds.close()
+
+        for res in RESOLUTIONS:
+            group_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
+
+            # todo cloudmask shall have common altitude, time and timebounds variables
+            group_data.data_vars.cloud_mask = self.data_storage.get_common_cloud_mask(res)
+
+            for prod_type in self.product_params.prod_types(res=res):
+                for wl in self.product_params.wavelengths(res=res):
+                    prod_id = self.product_params.prod_id(prod_type, wl)
+                    if prod_id:
+                        try:
+                            prod = self.data_storage.basic_product_common_smooth(prod_id, res)
+                            # if not first, concat with previous
+                            pass
+                        except NotFoundInStorage:
+                            # add empty profile
+                            pass
+                    else:
+                        # add empty profile
+                        pass
+
+            ds = xr.Dataset(data_vars=group_data.data_vars,
+                            coords={},
+                            attrs=group_data.attrs)
+            ds.to_netcdf(path=self.out_filename,
+                         mode='a',
+                         format='NETCDF4',
+                         group='{}_products'.format(RESOLUTION_STR[res]))
+            ds.close()
+
+
+
         # write group attributes and variables
         #ds.to_netcdf(path='d:/temp/dummy.nc', mode='a', format='NETCDF4', group='b')
+        #ds.to_netcdf(path='d:/temp/dummy.nc', mode='a', format='NETCDF4', group='/b/a')
 
-        ext = self.data_storage.basic_product_common_smooth('377', 0)
+        ext = self.data_storage.basic_product_common_smooth('377', LOWRES)
         ext1 = xr.Dataset({'value':ext.data,
                          'absolute_statistical_uncertainty': ext.err,
                          'time_bounds':ext.ds.time_bounds})

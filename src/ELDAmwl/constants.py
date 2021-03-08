@@ -23,6 +23,7 @@ VLDR = 15
 PLDR = 16
 
 PRODUCT_TYPES = [RBSC, EXT, LR, EBSC, MWL, AE, CR, VLDR, PLDR]
+BASIC_PRODUCT_TYPES = [RBSC, EXT, EBSC, VLDR]
 
 UNITS = {RBSC: '1/(m*sr)',
          EBSC: '1/(m*sr)',

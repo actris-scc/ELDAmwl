@@ -3,10 +3,11 @@
 
 from addict import Dict
 from ELDAmwl.base import Params
-from ELDAmwl.constants import EBSC, LOWRES
+from ELDAmwl.constants import EBSC, LOWRES, HIGHRES
 from ELDAmwl.constants import EXT
 from ELDAmwl.constants import LR
 from ELDAmwl.constants import RBSC
+from ELDAmwl.constants import RESOLUTION_STR
 from ELDAmwl.data_storage import DataStorage
 from ELDAmwl.database.db_functions import get_products_query
 from ELDAmwl.database.db_functions import read_mwl_product_id
@@ -23,6 +24,7 @@ from ELDAmwl.raman_bsc_factories import RamanBscParams
 from ELDAmwl.signals import ElppData
 
 import pandas as pd
+import numpy as np
 
 from ELDAmwl.write_mwl_output import WriteMWLOutput
 
@@ -69,17 +71,52 @@ class MeasurementParams(Params):
              'type': [],
              'basic': [],
              'derived': [],
-             'hres': [],
-             'lres': [],
+             RESOLUTION_STR[HIGHRES]: [],
+             RESOLUTION_STR[LOWRES]: [],
              'elpp_file': []})\
             .astype({'id': 'str',
                      'wl': 'float',
                      'type': 'int',
                      'basic': 'bool',
                      'derived': 'bool',
-                     'hres': 'bool',
-                     'lres': 'bool',
+                     RESOLUTION_STR[HIGHRES]: 'bool',
+                     RESOLUTION_STR[LOWRES]: 'bool',
                      'elpp_file': 'str'})
+
+    def wavelengths(self, res=None):
+        """unique sorted list of wavelengths of all products with resolution = res
+        Args:
+            res (optional): ['lowres', 'highres']
+        Returns:
+            list of float: unique, sorted list of wavelengths of all products with resolution = res
+        """
+        prod_df = self.measurement_params.product_table
+
+        if res:
+            all_wls = prod_df['wl'][RESOLUTION_STR[res]].to_numpy()
+        else:
+            all_wls = prod_df.wl.to_numpy()
+
+        unique_wls = np.unique(all_wls)
+        return unique_wls.tolist()
+
+    def prod_types(self, res=None):
+        """unique sorted list of all product types with resolution = res
+
+        Args:
+            res (optional): ['lowres', 'highres']
+        Returns:
+            list of float: unique, sorted list of all product types with resolution = res
+        """
+        prod_df = self.measurement_params.product_table
+
+        if res:
+            all_ptypes = prod_df['type'][RESOLUTION_STR[res]].to_numpy()
+        else:
+            all_ptypes = prod_df.type.to_numpy()
+
+        unique_ptypes = np.unique(all_ptypes)
+        return unique_ptypes.tolist()
 
     def basic_products(self):
         """list of parameters of all basic products
@@ -182,7 +219,7 @@ class MeasurementParams(Params):
         prod_df = self.measurement_params.product_table
         ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.type == prod_type)]
 
-        if ids > 0:
+        if ids.size > 0:
             result = []
             for idx in ids:
                 result.append(self.measurement_params.product_list[idx])
@@ -190,6 +227,27 @@ class MeasurementParams(Params):
         else:
             return None
 
+    def prod_id(self, prod_type, wl):
+        """
+
+        Args:
+            prod_type: int
+            wl: float
+
+        Returns:
+            id (str): of the product with wavelength wl and type product_type
+            None: if no product exists for wl and product_type
+        """
+        prod_df = self.measurement_params.product_table
+        ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.type == prod_type)]
+
+        if ids.size == 1:
+            return ids.values[0]
+        elif ids.size >= 1:
+            logger.warning('more than one product id for wavelength {} and produc type {}'.format(wl, prod_type))
+            return None
+        else:
+            return None
 
 class RunELDAmwl(BaseOperation):
     """
