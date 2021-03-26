@@ -10,7 +10,7 @@ from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.registry import registry
 from ELDAmwl.configs.config import PRODUCT_PATH
 from ELDAmwl.constants import ELDA_MWL_VERSION, MWL
-from ELDAmwl.constants import HIGHRES, LOWRES, RESOLUTIONS, RESOLUTION_STR
+from ELDAmwl.constants import HIGHRES, LOWRES, RESOLUTIONS, RESOLUTION_STR, NC_VAR_NAMES
 from ELDAmwl.exceptions import NotFoundInStorage
 
 
@@ -36,15 +36,11 @@ class WriteMWLOutputDefault(BaseOperation):
                                  )
         return result
 
-    def run(self):
-        self.data_storage = self.kwargs['data_storage']
-        self.product_params = self.kwargs['product_params']
-        self.out_filename = os.path.join(PRODUCT_PATH, self.mwl_filename())
-
+    def write_header(self):
         # create empty container for global attributes and variables
         global_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
         # fill container with header information
-        self.data_storage.header.to_dataset(global_data)
+        self.data_storage.header.to_ds_dict(global_data)
         # convert into Dataset
         ds = xr.Dataset(data_vars=global_data.data_vars,
                         coords={},
@@ -53,18 +49,32 @@ class WriteMWLOutputDefault(BaseOperation):
         ds.to_netcdf(path=self.out_filename, mode='w', format='NETCDF4')
         ds.close()
 
+    def run(self):
+        self.data_storage = self.kwargs['data_storage']
+        self.product_params = self.kwargs['product_params']
+        self.out_filename = os.path.join(PRODUCT_PATH, self.mwl_filename())
+
+        self.write_header()  # must be called first because this function creates the file
+
+        meta_data = Dict()
         for res in RESOLUTIONS:
             group_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
+            meta_data[res] = Dict()
 
             # todo cloudmask shall have common altitude, time and timebounds variables
             group_data.data_vars.cloud_mask = self.data_storage.get_common_cloud_mask(res)
 
             for prod_type in self.product_params.prod_types(res=res):
                 for wl in self.product_params.wavelengths(res=res):
+                    prod_str = '{type}_{wl}'.format(type=NC_VAR_NAMES[prod_type],
+                                                    wl=str(wl))
+                    meta_data[res][prod_str] = Dict()
                     prod_id = self.product_params.prod_id(prod_type, wl)
                     if prod_id:
                         try:
                             prod = self.data_storage.basic_product_common_smooth(prod_id, res)
+                            # write meta data into dataset, add link to meta data to var ?
+                            prod.params.to_dataset(meta_data[res][prod_str])
                             # if not first, concat with previous
                             pass
                         except NotFoundInStorage:

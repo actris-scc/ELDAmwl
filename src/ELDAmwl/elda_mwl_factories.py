@@ -16,6 +16,7 @@ from ELDAmwl.elast_bsc_factories import ElastBscParams
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.get_basic_products import GetBasicProducts
+from ELDAmwl.mwl_product_factories import GetProductMatrix
 from ELDAmwl.lidar_ratio_factories import LidarRatioParams
 from ELDAmwl.log import logger
 from ELDAmwl.prepare_signals import PrepareSignals
@@ -127,6 +128,17 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
         ids = prod_df['id'][prod_df.basic]
+        return self.filtered_list(ids)
+
+    def all_products(self, res):
+        """list of parameters of all basic products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all basic products
+        """
+        prod_df = self.measurement_params.product_table
+        ids = prod_df['id'][prod_df[RESOLUTION_STR[res]]]
         return self.filtered_list(ids)
 
     def extinction_products(self):
@@ -281,6 +293,16 @@ class RunELDAmwl(BaseOperation):
     def get_basic_products(self):
         logger.info('calc basic products ')
         GetBasicProducts()(
+            data_storage=self.data,
+            product_params=self.params,
+            ).run()
+
+    def get_derived_products(self):
+        logger.info('calc derived products ')
+
+    def get_product_matrix(self):
+        logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
+        GetProductMatrix()(
             data_storage=self.data,
             product_params=self.params,
             ).run()

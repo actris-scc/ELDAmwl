@@ -38,7 +38,16 @@ class Person(object):
                 result = False
         return result
 
-    def to_dataset(self, ds, nc_name):
+    def to_ds_dict(self, ds, nc_name):
+        """
+
+        Args:
+            ds: Dict, to be converted into ds
+            nc_name:
+
+        Returns:
+
+        """
         for att in self.__dict__:
             ds_att_name = nc_name + '_' + att
             ds[ds_att_name] = self.__dict__[att]
@@ -124,9 +133,17 @@ class Header(object):
                 result = False
         return result
 
-    def to_dataset(self, ds):
-        self.attrs.pi.to_dataset(ds.attrs, 'PI')
-        self.attrs.data_originator.to_dataset(ds.attrs, 'Data_Originator')
+    def to_ds_dict(self, ds):
+        """
+
+        Args:
+            ds: dict, to be converted into dataset
+
+        Returns:
+
+        """
+        self.attrs.pi.to_ds_dict(ds.attrs, 'PI')
+        self.attrs.data_originator.to_ds_dict(ds.attrs, 'Data_Originator')
 
         for att in self.attrs:
             if not att in self.class_attrs:

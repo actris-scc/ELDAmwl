@@ -35,6 +35,16 @@ UNITS = {RBSC: '1/(m*sr)',
          PLDR: '1',
          }
 
+NC_VAR_NAMES = {RBSC: 'backscatter',
+                EBSC: 'backscatter',
+                EXT: 'extinction',
+                LR: 'lidarratio',
+                AE: 'angstroemexponent',
+                CR: 'coloratio',
+                VLDR: 'volumedepolarization',
+                PLDR: 'particledepolarization',
+                }
+
 # todo: put info on USE_CASES in db tables
 COMBINE_DEPOL_USE_CASES = {RBSC: [7, 9, 10, 11, 12, 18, 17],
                            EBSC: [3, 4, 7, 8]}

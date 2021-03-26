@@ -23,6 +23,7 @@ import xarray as xr
 
 
 class Products(Signals):
+    p_params = None
 
     @classmethod
     def from_signal(cls, signal, p_params):
@@ -39,12 +40,32 @@ class Products(Signals):
         result.ds['qf'][:] = NC_FILL_BYTE
         result.ds['binres'][:] = NC_FILL_INT
 
+        result.params = p_params
+
         # todo: copy other general parameter
 
         return result
 
     def save_to_netcdf(self):
         pass
+
+    def write_in_ds(self, ds):
+        """
+        insert product data into dataset
+
+        find the indexes where the product coordinates fit into coordinates of
+        the ds and write product data there
+        Args:
+            ds (xr.Dataset): empty dataset where to insert the product data
+
+        Returns:
+
+        """
+        pass
+        # wl_idx =
+        # first_level_idx =
+        # last_level_idx =
+        # ds.variables['values'][wl_idx, :, first_level_idx:last:level_idx] = self.data[:,:]
 
 
 class ProductParams(Params):
@@ -178,6 +199,14 @@ class ProductParams(Params):
             return False
 
     def add_signal_role(self, signal):
+        pass
+
+    def to_dataset(self, metadata):
+        """
+
+        Args:
+            metadata: addict.dict, to be filled
+        """
         pass
 
 

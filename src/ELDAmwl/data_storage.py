@@ -8,6 +8,9 @@ from ELDAmwl.exceptions import DifferentCloudMaskExists
 from ELDAmwl.exceptions import DifferentHeaderExists
 from ELDAmwl.exceptions import NotFoundInStorage
 from ELDAmwl.log import logger
+from ELDAmwl.products import Products
+
+import xarray as xr
 
 
 class DataStorage(object):
@@ -29,6 +32,10 @@ class DataStorage(object):
                                                         HIGHRES: Dict()}),
                           'basic_products_common_smooth': Dict({LOWRES: Dict(),
                                                                 HIGHRES: Dict()}),
+                          'derived_products_common_smooth': Dict({LOWRES: Dict(),
+                                                                HIGHRES: Dict()}),
+                          'final_product_matrix': Dict({LOWRES: Dict(),
+                                                        HIGHRES: Dict()}),
                           'header': None,
                           'cloud_mask': None,
                           })
@@ -52,6 +59,11 @@ class DataStorage(object):
         """write a basic product that was smoothed with onto a common grid to storage
         """
         self.data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
+
+    def set_final_product(self, prod_id_str, res, new_product):
+        """write a product which was extrapolated to common grid to storage
+        """
+        self.data.final_product_matrix[res][prod_id_str] = new_product  # noqa E501
 
     def set_binres_common_smooth(self, prod_id_str, resolution, new_res_array):
         """
@@ -159,11 +171,28 @@ class DataStorage(object):
             raise NotFoundInStorage('prepared signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
 
+    def get_prod_res_entry(self, prod_id_str, resolution, source, what_str, where_str):
+        try:
+            result = self.data[source][resolution][prod_id_str]
+        except AttributeError:
+            raise NotFoundInStorage('{0} {1}'.format(what_str, prod_id_str),
+                                    '{0} {1}'.format(where_str, RESOLUTION_STR[resolution]))
+
+        if isinstance(result, xr.DataArray):
+            return result
+        elif isinstance(result, Products):
+            return result
+        else:
+            # Dict returns {} instead of AttributeError
+            raise NotFoundInStorage('{0} {1}'.format(what_str, prod_id_str),
+                                    '{0} {1}'.format(where_str, RESOLUTION_STR[resolution]))
+
     def basic_product_common_smooth(self, prod_id_str, resolution):
-        """a product, derived with common smooth
+        """a basic product, derived with common smooth
 
         Args:
             prod_id_str (str):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
 
         Returns:
             :obj:`Products` the requested product
@@ -173,18 +202,56 @@ class DataStorage(object):
                 is found in storage
         """
 
-        try:
-            result = self.data.basic_products_common_smooth[resolution][prod_id_str]
-        except AttributeError:
-            raise NotFoundInStorage('product {0}'.format(prod_id_str),
-                                    'basic products with common smoothing with {0}'.format(RESOLUTION_STR[resolution]))
+        return self.get_prod_res_entry(prod_id_str, resolution,
+                                       'basic_products_common_smooth',
+                                       'product',
+                                       'basic products with common smoothing with')
 
-        if result != {}:
-            return result
-        else:
-            # Dict returns {} instead of AttributeError
-            raise NotFoundInStorage('product {0}'.format(prod_id_str),
-                                    'basic products with common smoothing with {0}'.format(RESOLUTION_STR[resolution]))
+    def derived_product_common_smooth(self, prod_id_str, resolution):
+        """a basic product, derived with common smooth
+
+        Args:
+            prod_id_str (str):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`Products` the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+
+        return self.get_prod_res_entry(prod_id_str, resolution,
+                                       'derived_products_common_smooth',
+                                       'product',
+                                       'derived products with common smoothing with')
+
+    def product_common_smooth(self, prod_id_str, resolution):
+        """a product, derived with common smooth
+
+        Args:
+            prod_id_str (str):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`Products` the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+        try:
+            result = self.basic_product_common_smooth(prod_id_str, resolution)
+        except NotFoundInStorage:
+            try:
+                result = self.derived_product_common_smooth(prod_id_str, resolution)
+            except NotFoundInStorage:
+                raise NotFoundInStorage('product {0}'.format(prod_id_str),
+                                        'products with common smoothing with {0}'.format(RESOLUTION_STR[resolution]))
+
+        return result
+
 
     def binres_common_smooth(self, prod_id_str, resolution):
         """ bin resolution profile of a product
@@ -206,12 +273,27 @@ class DataStorage(object):
              NotFoundInStorage: if no entry for the given product id
                 and resolution was found in storage
         """
-        try:
-            return self.data.binres_common_smooth[resolution][prod_id_str]
-        except AttributeError:
-            raise NotFoundInStorage('common bin resolution profile',
-                                    'product {0} in {1}'.format(prod_id_str, RESOLUTION_STR[resolution]))
+        return self.get_prod_res_entry(prod_id_str, resolution,
+                                       'binres_common_smooth',
+                                       'common bin resolution profile',
+                                       'product {0} in '.format(prod_id_str))
 
+    def final_product_matrix(self, prod_type, res):
+        """ 3-dimensional (time, level, wavelength) data matrix
+
+        Product matrix contains all product profiles and cloud mask.
+        All data are on the same grid of time, altitude and wavelength.
+        Except cloud mask, which has no wavelength dimension.
+        Missing data are filled with nan.
+
+        Args:
+            prod_type :
+            res (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns: xarray.DataArray (or Dataset?)
+
+        """
+        pass
 
     @property
     def cloud_mask(self):
