@@ -169,6 +169,7 @@ class Signals(Columns):
         result = cls()
 
         result.channel_idx_in_ncfile = idx_in_file
+        result.num_scan_angles = nc_ds.dims['angle']
 
         result.ds = nc_ds.range_corrected_signal[idx_in_file].to_dataset(name='data')  # noqa E501
         result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file]  # noqa E501

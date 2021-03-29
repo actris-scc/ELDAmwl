@@ -43,6 +43,8 @@ class Products(Signals):
         result.params = p_params
 
         # todo: copy other general parameter
+        result.emission_wavelength = signal.emission_wavelength
+        result.num_scan_angles = signal.num_scan_angles
 
         return result
 
@@ -61,11 +63,18 @@ class Products(Signals):
         Returns:
 
         """
-        pass
-        # wl_idx =
-        # first_level_idx =
-        # last_level_idx =
-        # ds.variables['values'][wl_idx, :, first_level_idx:last:level_idx] = self.data[:,:]
+        subset = ds.sel(wavelength=self.emission_wavelength)
+        if self.num_scan_angles > 1:
+            # altitude axes might be different, analyze all time slices separately
+            # todo: not yet tested
+            for t_idx in range(subset.dims['time']):
+                idx = np.searchsorted(subset.altitude.values[t_idx], self.altitude.values[t_idx])
+                subset.variables['values'][t_idx, idx] = self.data[t_idx, :]
+        else:
+            # analyze only first time slice, because altitude axes are all equal
+            t_idx = 0
+            idx = np.searchsorted(subset.altitude.values[t_idx], self.altitude.values[t_idx])
+            subset.variables['values'][:, idx ] = self.data[:, :]
 
 
 class ProductParams(Params):

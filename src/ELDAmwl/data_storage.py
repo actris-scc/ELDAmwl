@@ -60,10 +60,12 @@ class DataStorage(object):
         """
         self.data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
 
-    def set_final_product(self, prod_id_str, res, new_product):
-        """write a product which was extrapolated to common grid to storage
+    def set_final_product(self, prod_type, res, new_dataset):
+        """write a dataset with common grid (wavelength, time, altitude) to storage
+
+        one dataset per product type and resolution
         """
-        self.data.final_product_matrix[res][prod_id_str] = new_product  # noqa E501
+        self.data.final_product_matrix[res][prod_type] = new_dataset  # noqa E501
 
     def set_binres_common_smooth(self, prod_id_str, resolution, new_res_array):
         """

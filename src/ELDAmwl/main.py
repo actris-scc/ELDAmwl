@@ -104,6 +104,7 @@ def main():
 
 #        elda_mwl.write_single_output()
         elda_mwl.get_product_matrix()
+        elda_mwl.quality_control()
         elda_mwl.write_mwl_output()
 
         logger.info('the end')

@@ -40,7 +40,7 @@ NC_VAR_NAMES = {RBSC: 'backscatter',
                 EXT: 'extinction',
                 LR: 'lidarratio',
                 AE: 'angstroemexponent',
-                CR: 'coloratio',
+                CR: 'colorratio',
                 VLDR: 'volumedepolarization',
                 PLDR: 'particledepolarization',
                 }

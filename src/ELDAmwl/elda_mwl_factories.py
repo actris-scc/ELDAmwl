@@ -16,7 +16,7 @@ from ELDAmwl.elast_bsc_factories import ElastBscParams
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.get_basic_products import GetBasicProducts
-from ELDAmwl.mwl_product_factories import GetProductMatrix
+from ELDAmwl.mwl_product_factories import GetProductMatrix, QualityControl
 from ELDAmwl.lidar_ratio_factories import LidarRatioParams
 from ELDAmwl.log import logger
 from ELDAmwl.prepare_signals import PrepareSignals
@@ -303,6 +303,13 @@ class RunELDAmwl(BaseOperation):
     def get_product_matrix(self):
         logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
         GetProductMatrix()(
+            data_storage=self.data,
+            product_params=self.params,
+            ).run()
+
+    def quality_control(self):
+        logger.info('synergistic quality control of all products ')
+        QualityControl()(
             data_storage=self.data,
             product_params=self.params,
             ).run()
