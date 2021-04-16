@@ -60,7 +60,7 @@ class DataStorage(object):
         """
         self.data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
 
-    def set_final_product(self, prod_type, res, new_dataset):
+    def set_final_product_matrix(self, prod_type, res, new_dataset):
         """write a dataset with common grid (wavelength, time, altitude) to storage
 
         one dataset per product type and resolution
@@ -281,7 +281,7 @@ class DataStorage(object):
                                        'product {0} in '.format(prod_id_str))
 
     def final_product_matrix(self, prod_type, res):
-        """ 3-dimensional (time, level, wavelength) data matrix
+        """ 3-dimensional (wavelength, time, altitude) data matrix
 
         Product matrix contains all product profiles and cloud mask.
         All data are on the same grid of time, altitude and wavelength.
@@ -292,10 +292,10 @@ class DataStorage(object):
             prod_type :
             res (int): can be LOWRES (=0) or HIGHRES (=1)
 
-        Returns: xarray.DataArray (or Dataset?)
+        Returns: xarray.Dataset
 
         """
-        pass
+        return self.data.final_product_matrix[res][prod_type]
 
     @property
     def cloud_mask(self):

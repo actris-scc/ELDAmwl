@@ -93,8 +93,8 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
 
-        if res:
-            all_wls = prod_df['wl'][RESOLUTION_STR[res]].to_numpy()
+        if res is not None:
+            all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()
         else:
             all_wls = prod_df.wl.to_numpy()
 
@@ -111,8 +111,8 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
 
-        if res:
-            all_ptypes = prod_df['type'][RESOLUTION_STR[res]].to_numpy()
+        if res is not None:
+            all_ptypes = prod_df['type'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()
         else:
             all_ptypes = prod_df.type.to_numpy()
 

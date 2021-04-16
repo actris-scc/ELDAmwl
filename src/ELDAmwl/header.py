@@ -5,7 +5,7 @@ from addict import Dict
 import numpy as np
 import pandas as pd
 
-from ELDAmwl.constants import NC_FILL_STR
+from ELDAmwl.constants import NC_FILL_STR, NC_FILE_META_DATA_ATTRS, NC_FILE_META_DATA_VARS
 from ELDAmwl.exceptions import DifferentHeaderExists
 from os.path import basename
 
@@ -58,7 +58,8 @@ class Header(object):
     vars = None
     start_time = None
     end_time = None
-    class_attrs = ['pi', 'data_originator']
+    class_attrs = Dict({'pi': 'PI',
+                        'data_originator': 'Data_Originator'})
 
     def __init__(self):
         self.attrs = Dict()
@@ -133,23 +134,42 @@ class Header(object):
                 result = False
         return result
 
-    def to_ds_dict(self, ds):
+    def to_ds_dict(self, ds, group='global'):
         """
 
         Args:
             ds: dict, to be converted into dataset
-
+            group (str): group of the nc file into which
+                    the global attributes and variables
+                    shall be written. can be 'global' or 'meta_data'
         Returns:
 
         """
-        self.attrs.pi.to_ds_dict(ds.attrs, 'PI')
-        self.attrs.data_originator.to_ds_dict(ds.attrs, 'Data_Originator')
 
-        for att in self.attrs:
-            if not att in self.class_attrs:
+        if group == 'meta_data':
+            write_atts = NC_FILE_META_DATA_ATTRS
+            write_vars = NC_FILE_META_DATA_VARS
+        elif group == 'global':
+            write_atts = self.attrs
+            for md_att in NC_FILE_META_DATA_ATTRS:
+                write_atts.pop(md_att)
+            write_vars = self.vars
+            for md_var in NC_FILE_META_DATA_VARS:
+                write_vars.pop(md_var)
+
+#        if 'PI' in write_atts:
+#            self.attrs.pi.to_ds_dict(ds.attrs, 'PI')
+#        if 'Data_Originator' in write_atts:
+#            self.attrs.data_originator.to_ds_dict(ds.attrs, 'Data_Originator')
+
+        for att in write_atts:
+            if att in self.class_attrs:
+                self.attrs[att].to_ds_dict(ds.attrs, self.class_attrs[att])
+            else:
                 ds.attrs[att] = self.attrs[att]
 
-        for var in self.vars:
+
+        for var in write_vars:
             nc_varname = self.vars[var].name
             ds.data_vars[nc_varname] = self.vars[var]
 

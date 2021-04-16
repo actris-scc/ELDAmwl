@@ -45,6 +45,11 @@ NC_VAR_NAMES = {RBSC: 'backscatter',
                 PLDR: 'particledepolarization',
                 }
 
+# global variables and attributes which go into
+# the meta_data group of the output file
+NC_FILE_META_DATA_VARS = ['cloud_mask_type', 'scc_product_type']
+NC_FILE_META_DATA_ATTRS = ['hoi_system_ID', 'hoi_configuration_ID', 'elpp_history']
+
 # todo: put info on USE_CASES in db tables
 COMBINE_DEPOL_USE_CASES = {RBSC: [7, 9, 10, 11, 12, 18, 17],
                            EBSC: [3, 4, 7, 8]}

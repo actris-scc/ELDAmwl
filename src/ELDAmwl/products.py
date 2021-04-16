@@ -74,7 +74,7 @@ class Products(Signals):
             # analyze only first time slice, because altitude axes are all equal
             t_idx = 0
             idx = np.searchsorted(subset.altitude.values[t_idx], self.altitude.values[t_idx])
-            subset.variables['values'][:, idx ] = self.data[:, :]
+            subset.variables['data'][:, idx ] = self.data[:, :]
 
 
 class ProductParams(Params):
