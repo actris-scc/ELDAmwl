@@ -2,10 +2,11 @@
 """Classes for handling of mwl products"""
 from addict import Dict
 from copy import deepcopy
-from ELDAmwl.constants import EXT, RBSC, EBSC, NC_VAR_NAMES, RESOLUTION_STR
+from ELDAmwl.constants import EXT, RBSC, EBSC
 from ELDAmwl.constants import RESOLUTIONS
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
+from ELDAmwl.mwl_file_structure import GROUP_NAME,META_DATA, NC_VAR_NAMES
 #from ELDAmwl.log import logger
 from ELDAmwl.registry import registry
 
@@ -23,7 +24,7 @@ class GetProductMatrixDefault(BaseOperation):
 
     def get_common_shape(self, res):
 
-        params = self.product_params.all_products(res)
+        params = self.product_params.all_products_of_res(res)
         if params == []:
             return None
 
@@ -87,11 +88,11 @@ class GetProductMatrixDefault(BaseOperation):
                         # get product object from data storage
                         prod = self.data_storage.product_common_smooth(prod_id, res)
                         # write product data into common Dataset
-                        prod.write_in_ds(ds)
+                        prod.write_data_in_ds(ds)
 
                         wl_idx = wavelengths.index(wl)
-                        ds.meta_data[wl_idx] = '/meta_data/{}_{}'.format(NC_VAR_NAMES[ptype],
-                                                                         round(wl))
+                        ds.meta_data[wl_idx] = '/{}/{}'.format(GROUP_NAME[META_DATA],
+                                                               prod.mwl_meta_id)
 
 
                 self.data_storage.set_final_product_matrix(ptype, res, ds)

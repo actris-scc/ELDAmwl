@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""bas Classes for factories and operators"""
+"""base Classes for factories and operators"""
 
 from ELDAmwl.registry import registry
 

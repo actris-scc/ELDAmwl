@@ -130,12 +130,12 @@ class MeasurementParams(Params):
         ids = prod_df['id'][prod_df.basic]
         return self.filtered_list(ids)
 
-    def all_products(self, res):
-        """list of parameters of all basic products
+    def all_products_of_res(self, res):
+        """list of parameters of all basic products with resolution res
 
         Returns:
             list of :class:`ELDAmwl.products.ProductParams`:
-            list of parameters of all basic products
+            list of parameters of all basic products with resolution res
         """
         prod_df = self.measurement_params.product_table
         ids = prod_df['id'][prod_df[RESOLUTION_STR[res]]]

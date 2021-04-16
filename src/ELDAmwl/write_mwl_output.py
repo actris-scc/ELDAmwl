@@ -7,10 +7,11 @@ import xarray as xr
 from addict import Dict
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
+from ELDAmwl.mwl_file_structure import GENERAL, META_DATA, WRITE_MODE, GROUP_NAME, RES_GROUP, MAIN_GROUPS, NC_VAR_NAMES
 from ELDAmwl.registry import registry
 from ELDAmwl.configs.config import PRODUCT_PATH
-from ELDAmwl.constants import ELDA_MWL_VERSION, MWL, EXT
-from ELDAmwl.constants import HIGHRES, LOWRES, RESOLUTIONS, RESOLUTION_STR, NC_VAR_NAMES
+from ELDAmwl.constants import ELDA_MWL_VERSION, MWL, EXT, LOWRES, HIGHRES
+from ELDAmwl.constants import RESOLUTIONS
 from ELDAmwl.exceptions import NotFoundInStorage
 
 
@@ -21,6 +22,8 @@ class WriteMWLOutputDefault(BaseOperation):
     data_storage = None
     product_params = None
     out_filename = None
+    data = Dict() # data of all main groups
+    meta_data = Dict() # meta_data of individual products
 
     def mwl_filename(self):
         header = self.data_storage.header
@@ -36,44 +39,66 @@ class WriteMWLOutputDefault(BaseOperation):
                                  )
         return result
 
-    def write_header(self):
-        # create empty container for global attributes and variables
-        global_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
-        # fill container with header information
-        self.data_storage.header.to_ds_dict(global_data)
-        # convert into Dataset
-        global_ds = xr.Dataset(data_vars=global_data.data_vars,
-                        coords={},
-                        attrs=global_data.attrs)
-        # write global attributes and variables
-        global_ds.to_netcdf(path=self.out_filename,
-                            mode='w',
-                            format='NETCDF4')
-        global_ds.close()
+    def collect_header_info(self):
+        for group in [GENERAL, META_DATA]:
+            # create empty container for global attributes and variables
+            header_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
+            # fill container with header information
+            self.data_storage.header.to_ds_dict(header_data, group)
+
+            self.data[group] = header_data
+
+    def collect_meta_data(self):
+        # read meta data of all products into meta_data
+        for id, param in self.product_params.product_list.items():
+            # todo: remove limit to EXT when other prod types are included
+            if param.calc_with_res(LOWRES) and param.product_type == EXT:
+                prod = self.data_storage.product_common_smooth(id, LOWRES)
+            elif param.product_type == EXT:
+                prod = self.data_storage.product_common_smooth(id, HIGHRES)
+
+            if param.product_type == EXT:
+                prod.to_meta_ds_dict(self.meta_data)
+
+        # todo: read info on molecular profile into general meta_data
+
+    def write_groups(self):
+        for group in MAIN_GROUPS:
+            # todo: pass if group is empty
+            # convert Dict into Dataset
+            ds = xr.Dataset(data_vars=self.data[group].data_vars,
+                            coords={},
+                            attrs=self.data[group].attrs)
+            # write attributes and variables into netCDF file
+            ds.to_netcdf(path=self.out_filename,
+                                mode=WRITE_MODE[group],
+                                group=GROUP_NAME[group],
+                                format='NETCDF4')
+            ds.close()
+
+        for mwl_id, md in self.meta_data.items():
+            ds = xr.Dataset(data_vars=md.data_vars,
+                            coords={},
+                            attrs=md.attrs)
+            ds.to_netcdf(path=self.out_filename,
+                                mode='a',
+                                group='{}/{}'.format(GROUP_NAME[META_DATA], mwl_id),
+                                format='NETCDF4')
+            ds.close()
 
     def run(self):
         self.data_storage = self.kwargs['data_storage']
         self.product_params = self.kwargs['product_params']
         self.out_filename = os.path.join(PRODUCT_PATH, self.mwl_filename())
 
-        self.write_header()  # must be called first because this function creates the file
-
-        meta_data = Dict({'general': {'attrs': Dict(), 'data_vars': Dict()}})
-        self.data_storage.header.to_ds_dict(meta_data.general, group='meta_data')
-        meta_ds = xr.Dataset(data_vars=meta_data.general.data_vars,
-                             coords={},
-                             attrs=meta_data.general.attrs)
-        # write meta_data attributes and variables
-        meta_ds.to_netcdf(path=self.out_filename,
-                          group='meta_data',
-                          mode='a',
-                          format='NETCDF4')
-        meta_ds.close()
+        self.collect_header_info()
+        self.collect_meta_data()
 
         for res in RESOLUTIONS:
+            # collect all data with this resolution
             group_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
-            meta_data[res] = Dict({'attrs': Dict(), 'data_vars': Dict()})
 
+            # all product types that are available for this resolution
             p_types = self.product_params.prod_types(res=res)
 
             # todo: remove limit to EXT when other prod types are included
@@ -92,49 +117,9 @@ class WriteMWLOutputDefault(BaseOperation):
                 group_data.data_vars['error_{}'.format(var_name)] = p_matrix.absolute_statistical_uncertainty
                 group_data.data_vars['{}_meta_data'.format(var_name)] = p_matrix.meta_data
 
-#                for wl in self.product_params.wavelengths(res=res):
-#                    prod_str = '{type}_{wl}'.format(type=NC_VAR_NAMES[prod_type],
-#                                                    wl=str(wl))
-#                    meta_data[res][prod_str] = Dict()
-#                    prod_id = self.product_params.prod_id(prod_type, wl)
-#                    if prod_id is not None:
-#                        try:
-#                            prod = self.data_storage.basic_product_common_smooth(prod_id, res)
-                            # write meta data into dataset, add link to meta data to var ?
-#                            prod.params.to_dataset(meta_data[res][prod_str])
-                            # if not first, concat with previous
-#                            pass
-#                        except NotFoundInStorage:
-                            # add empty profile
-#                            pass
+            self.data[RES_GROUP[res]] = group_data
 
-            ds = xr.Dataset(data_vars=group_data.data_vars,
-                            coords={},
-                            attrs=group_data.attrs)
-            ds.to_netcdf(path=self.out_filename,
-                         mode='a',
-                         format='NETCDF4',
-                         group='{}_products'.format(RESOLUTION_STR[res]))
-            ds.close()
-
-
-
-        # write group attributes and variables
-        #ds.to_netcdf(path='d:/temp/dummy.nc', mode='a', format='NETCDF4', group='b')
-        #ds.to_netcdf(path='d:/temp/dummy.nc', mode='a', format='NETCDF4', group='/b/a')
-
-        ext = self.data_storage.basic_product_common_smooth('377', LOWRES)
-        ext1 = xr.Dataset({'value':ext.data,
-                         'absolute_statistical_uncertainty': ext.err,
-                         'time_bounds':ext.ds.time_bounds})
-        #xr.concat([ext1.ds, ext2.ds], dim='wl')
-
-        for param in self.product_params.basic_products():
-            product = self.data_storage.data.basic_products_common_smooth.LOWRES[param.prod_id_str]
-            product.ds.to_netcdf(path=self.out_filename,
-                                 mode='a',
-                                 format='NETCDF4',
-                                 group='low_res_products')
+        self.write_groups()
 
 
 class WriteMWLOutput(BaseOperationFactory):

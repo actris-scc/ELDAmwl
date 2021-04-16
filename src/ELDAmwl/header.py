@@ -5,9 +5,11 @@ from addict import Dict
 import numpy as np
 import pandas as pd
 
-from ELDAmwl.constants import NC_FILL_STR, NC_FILE_META_DATA_ATTRS, NC_FILE_META_DATA_VARS
+from ELDAmwl.constants import NC_FILL_STR
 from ELDAmwl.exceptions import DifferentHeaderExists
 from os.path import basename
+
+from ELDAmwl.mwl_file_structure import TITLE, REFERENCES, PROCESSOR_NAME, HEADER_ATTRS, HEADER_VARS
 
 
 class Person(object):
@@ -75,9 +77,9 @@ class Header(object):
         result = cls()
         result.attrs.measurement_ID = nc_ds.measurement_ID
         result.attrs.comment = nc_ds.comment
-        result.attrs.title = 'Profiles of aerosol optical properties'
+        result.attrs.title = TITLE
         result.attrs.source = nc_ds.source
-        result.attrs.references = 'Project website at http://www.earlinet.org'
+        result.attrs.references = REFERENCES
 
         result.attrs.station_ID = nc_ds.station_ID
         result.attrs.location = nc_ds.location
@@ -94,7 +96,7 @@ class Header(object):
 
         result.attrs.elpp_history = nc_ds.history
         result.attrs.input_file = basename(nc_ds._file_obj._filename)
-        result.attrs.processor_name = 'ELDAmwl'
+        result.attrs.processor_name = PROCESSOR_NAME
         # result.processor_version =
         # result.__file_format_version = cfg.FILE_FORMAT_VERSION
         # result.scc_version = nc_ds.scc_version
@@ -134,47 +136,37 @@ class Header(object):
                 result = False
         return result
 
-    def to_ds_dict(self, ds, group='global'):
+    def to_ds_dict(self, ds, group):
         """
 
         Args:
             ds: dict, to be converted into dataset
             group (str): group of the nc file into which
                     the global attributes and variables
-                    shall be written. can be 'global' or 'meta_data'
+                    shall be written. can be GENERAL or META_DATA
         Returns:
 
         """
 
-        if group == 'meta_data':
-            write_atts = NC_FILE_META_DATA_ATTRS
-            write_vars = NC_FILE_META_DATA_VARS
-        elif group == 'global':
-            write_atts = self.attrs
-            for md_att in NC_FILE_META_DATA_ATTRS:
-                write_atts.pop(md_att)
-            write_vars = self.vars
-            for md_var in NC_FILE_META_DATA_VARS:
-                write_vars.pop(md_var)
+        write_attrs = HEADER_ATTRS[group]
+        write_vars = HEADER_VARS[group]
 
-#        if 'PI' in write_atts:
-#            self.attrs.pi.to_ds_dict(ds.attrs, 'PI')
-#        if 'Data_Originator' in write_atts:
-#            self.attrs.data_originator.to_ds_dict(ds.attrs, 'Data_Originator')
+        for att in self.attrs:
+            if att in write_attrs:
+                if att in self.class_attrs:
+                    self.attrs[att].to_ds_dict(ds.attrs, self.class_attrs[att])
+                else:
+                    ds.attrs[att] = self.attrs[att]
 
-        for att in write_atts:
-            if att in self.class_attrs:
-                self.attrs[att].to_ds_dict(ds.attrs, self.class_attrs[att])
-            else:
-                ds.attrs[att] = self.attrs[att]
+        if 'measurement_start_datetime' in write_attrs:
+            ds.measurement_start_datetime = self.start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+        if 'measurement_stop_datetime' in write_attrs:
+            ds.measurement_stop_datetime = self.end_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-
-        for var in write_vars:
+        for var in self.vars:
             nc_varname = self.vars[var].name
-            ds.data_vars[nc_varname] = self.vars[var]
-
-        ds.measurement_start_datetime = self.start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
-        ds.measurement_stop_datetime = self.end_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+            if nc_varname in write_vars:
+                ds.data_vars[nc_varname] = self.vars[var]
 
     @property
     def latitude(self):

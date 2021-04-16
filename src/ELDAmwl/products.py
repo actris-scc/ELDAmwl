@@ -15,6 +15,7 @@ from ELDAmwl.constants import UNITS
 from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query, get_smooth_params_query
 from ELDAmwl.exceptions import DetectionLimitZero, NotEnoughMCIterations
 from ELDAmwl.log import logger
+from ELDAmwl.mwl_file_structure import NC_VAR_NAMES, error_method_var
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.signals import Signals
 
@@ -46,12 +47,15 @@ class Products(Signals):
         result.emission_wavelength = signal.emission_wavelength
         result.num_scan_angles = signal.num_scan_angles
 
+        result.mwl_meta_id = '{}_{}'.format(NC_VAR_NAMES[p_params.general_params.product_type],
+                                            round(float(result.emission_wavelength)))
+
         return result
 
     def save_to_netcdf(self):
         pass
 
-    def write_in_ds(self, ds):
+    def write_data_in_ds(self, ds):
         """
         insert product data into dataset
 
@@ -75,6 +79,12 @@ class Products(Signals):
             t_idx = 0
             idx = np.searchsorted(subset.altitude.values[t_idx], self.altitude.values[t_idx])
             subset.variables['data'][:, idx ] = self.data[:, :]
+
+    def to_meta_ds_dict(self, meta_data):
+        dict = Dict({'attrs': Dict(), 'data_vars': Dict()})
+
+        dict.data_vars.error_retrieval_method = error_method_var(self.params.general_params.error_method)
+        meta_data[self.mwl_meta_id] = dict
 
 
 class ProductParams(Params):
