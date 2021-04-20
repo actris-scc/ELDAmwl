@@ -6,7 +6,7 @@ import xarray as xr
 import numpy as np
 
 from ELDAmwl.constants import LOWRES, HIGHRES, RESOLUTION_STR, NC_FILL_BYTE, MC, ASS
-from ELDAmwl.constants import RBSC, EBSC, EXT, LR, AE
+from ELDAmwl.constants import RBSC, EBSC, EXT, LR, AE, CR, VLDR, PLDR
 
 GENERAL = 0
 META_DATA = 1
@@ -30,7 +30,9 @@ WRITE_MODE = {GENERAL: 'w',
               HIGHRES_PRODUCTS: 'a'}
 
 HEADER_VARS = {GENERAL: ['latitude', 'longitude', 'station_altitude'],
-               META_DATA: ['cloud_mask_type', 'scc_product_type'],
+               META_DATA: ['cloud_mask_type',
+                           'scc_product_type',
+                           'molecular_calculation_source'],
                }
 
 HEADER_ATTRS = {GENERAL: ['measurement_ID',
@@ -40,7 +42,10 @@ HEADER_ATTRS = {GENERAL: ['measurement_ID',
                           'data_processing_institution', 'comment', 'title',
                           'source', 'references', 'processor_name',
                           'measurement_start_datetime', 'measurement_stop_datetime'],
-                META_DATA: ['hoi_system_ID', 'hoi_configuration_ID', 'elpp_history'],
+                META_DATA: ['hoi_system_ID',
+                            'hoi_configuration_ID',
+#                            'elpp_history',
+                            'molecular_calculation_source_file'],
                 }
 
 TITLE = 'Profiles of aerosol optical properties'
@@ -52,9 +57,9 @@ NC_VAR_NAMES = {RBSC: 'backscatter',
                 EXT: 'extinction',
                 LR: 'lidarratio',
                 AE: 'angstroemexponent',
-#                CR: 'colorratio',
-#                VLDR: 'volumedepolarization',
-#                PLDR: 'particledepolarization',
+                CR: 'colorratio',
+                VLDR: 'volumedepolarization',
+                PLDR: 'particledepolarization',
                 }
 
 def error_method_var(value):

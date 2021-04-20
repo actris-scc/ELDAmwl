@@ -60,8 +60,6 @@ class WriteMWLOutputDefault(BaseOperation):
             if param.product_type == EXT:
                 prod.to_meta_ds_dict(self.meta_data)
 
-        # todo: read info on molecular profile into general meta_data
-
     def write_groups(self):
         for group in MAIN_GROUPS:
             # todo: pass if group is empty

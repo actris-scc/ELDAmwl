@@ -7,6 +7,7 @@ import pandas as pd
 
 from ELDAmwl.constants import NC_FILL_STR
 from ELDAmwl.exceptions import DifferentHeaderExists
+from ELDAmwl.log import logger
 from os.path import basename
 
 from ELDAmwl.mwl_file_structure import TITLE, REFERENCES, PROCESSOR_NAME, HEADER_ATTRS, HEADER_VARS
@@ -96,6 +97,9 @@ class Header(object):
 
         result.attrs.elpp_history = nc_ds.history
         result.attrs.input_file = basename(nc_ds._file_obj._filename)
+        if 'molecular_calculation_source_file' in nc_ds.attrs:
+            result.attrs.molecular_calculation_source_file = \
+                nc_ds.molecular_calculation_source_file
         result.attrs.processor_name = PROCESSOR_NAME
         # result.processor_version =
         # result.__file_format_version = cfg.FILE_FORMAT_VERSION
@@ -104,6 +108,7 @@ class Header(object):
 
         result.vars.cloud_mask_type = nc_ds.cloud_mask_type
         result.vars.scc_product_type = nc_ds.scc_product_type
+        result.vars.molecular_calculation_source = nc_ds.molecular_calculation_source
         result.vars.station_latitude = nc_ds.latitude
         result.vars.station_longitude = nc_ds.longitude
         result.vars.station_altitude = nc_ds.station_altitude
@@ -155,8 +160,10 @@ class Header(object):
             if att in write_attrs:
                 if att in self.class_attrs:
                     self.attrs[att].to_ds_dict(ds.attrs, self.class_attrs[att])
-                else:
+                elif self.attrs[att] != {}:
                     ds.attrs[att] = self.attrs[att]
+                else:
+                    logger.warning('cannot write empty attribute {} in mwl file'.format(att))
 
         if 'measurement_start_datetime' in write_attrs:
             ds.measurement_start_datetime = self.start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
