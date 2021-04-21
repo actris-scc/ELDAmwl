@@ -13,6 +13,7 @@ from ELDAmwl.database.db_functions import read_extinction_params
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
+from ELDAmwl.mwl_file_structure import ext_method_var
 from ELDAmwl.products import ProductParams, MCParams
 from ELDAmwl.products import Products
 from ELDAmwl.registry import registry
@@ -56,10 +57,11 @@ class ExtinctionParams(ProductParams):
     @property
     def ang_exp_asDataArray(self):
         return xr.DataArray(self.angstroem,
-                            name='angstroem_exponent',
-                            attrs={'long_name': 'Angstroem exponent '
+                            name='assumed_angstroem_exponent',
+                            attrs={'long_name': 'assumed Angstroem exponent '
                                                 'for the extinction '
-                                                'retrieval'})
+                                                'retrieval',
+                                   'units': '1'})
 
     @property
     def smooth_params_auto(self):
@@ -70,6 +72,23 @@ class ExtinctionParams(ProductParams):
         res.max_binres_high = 155
         res.max_bin_delta = 2
         return res
+
+    def to_meta_ds_dict(self, dict):
+        """
+        writes parameter content into Dict for further export in mwl file
+        Args:
+            dict (addict.Dict): is a dict which will be converted into dataset.
+                            has the keys 'attrs' and 'data_vars'
+
+        Returns:
+
+        """
+        #super(ExtinctionParams, self).to_meta_ds_dict(dict)
+        dict.data_vars.assumed_angstroem_exponent = self.ang_exp_asDataArray
+        dict.data_vars.evaluation_algorithm = ext_method_var(self.ext_method)
+
+        if self.correct_ovl:
+            dict.attrs.overlap_correction_file = self.ovl_filename
 
 
 class Extinctions(Products):
@@ -135,6 +154,13 @@ class Extinctions(Products):
                                         ext_params=ext_params).run()
 
         return result
+
+    def to_meta_ds_dict(self, meta_data):
+        # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
+        # and attributes it with key self.mwl_meta_id to meta_data
+        super(Extinctions, self).to_meta_ds_dict(meta_data)
+        dict = meta_data[self.mwl_meta_id]
+        self.params.to_meta_ds_dict(dict)
 
 
 class SlopeToExtinction(BaseOperationFactory):

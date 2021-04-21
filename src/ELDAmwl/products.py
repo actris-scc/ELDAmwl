@@ -11,7 +11,7 @@ from ELDAmwl.constants import MERGE_PRODUCT_USE_CASES
 from ELDAmwl.constants import NC_FILL_BYTE
 from ELDAmwl.constants import NC_FILL_INT
 from ELDAmwl.constants import RBSC
-from ELDAmwl.constants import UNITS
+from ELDAmwl.mwl_file_structure import UNITS
 from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query, get_smooth_params_query
 from ELDAmwl.exceptions import DetectionLimitZero, NotEnoughMCIterations
 from ELDAmwl.log import logger
@@ -220,11 +220,15 @@ class ProductParams(Params):
     def add_signal_role(self, signal):
         pass
 
-    def to_dataset(self, metadata):
+    def to_meta_ds_dict(self, dict):
         """
-
+        writes parameter content into Dict for further export in mwl file
         Args:
-            metadata: addict.dict, to be filled
+            dict (addict.Dict): is a dict which will be converted into dataset.
+                            has the keys 'attrs' and 'data_vars'
+
+        Returns:
+
         """
         pass
 

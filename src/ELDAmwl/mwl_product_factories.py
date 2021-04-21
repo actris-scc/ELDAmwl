@@ -6,7 +6,7 @@ from ELDAmwl.constants import EXT, RBSC, EBSC
 from ELDAmwl.constants import RESOLUTIONS
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.mwl_file_structure import GROUP_NAME,META_DATA, NC_VAR_NAMES
+from ELDAmwl.mwl_file_structure import GROUP_NAME, META_DATA, NC_VAR_NAMES, data_attrs, err_attrs
 #from ELDAmwl.log import logger
 from ELDAmwl.registry import registry
 
@@ -73,9 +73,9 @@ class GetProductMatrixDefault(BaseOperation):
                 ds = xr.Dataset(data_vars={'altitude': self.shape.alt,
                                           'wavelength': self.shape.wl,
                                           'data':
-                                              (['wavelength', 'time', 'level'], deepcopy(array)),
+                                              (['wavelength', 'time', 'level'], deepcopy(array), data_attrs(ptype)),
                                           'absolute_statistical_uncertainty':
-                                              (['wavelength', 'time', 'level'], deepcopy(array)),
+                                              (['wavelength', 'time', 'level'], deepcopy(array), err_attrs(ptype)),
                                           'meta_data': (['wavelength',], np.empty(len(wavelengths), dtype=object),
                                                         {'long_name': 'path to meta data'}),
                                            })

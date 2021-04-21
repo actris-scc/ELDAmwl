@@ -25,16 +25,6 @@ PLDR = 16
 PRODUCT_TYPES = [RBSC, EXT, LR, EBSC, MWL, AE, CR, VLDR, PLDR]
 BASIC_PRODUCT_TYPES = [RBSC, EXT, EBSC, VLDR]
 
-UNITS = {RBSC: '1/(m*sr)',
-         EBSC: '1/(m*sr)',
-         EXT: '1/m',
-         LR: 'sr',
-         AE: '1',
-         CR: '1',
-         VLDR: '1',
-         PLDR: '1',
-         }
-
 # todo: put info on USE_CASES in db tables
 COMBINE_DEPOL_USE_CASES = {RBSC: [7, 9, 10, 11, 12, 18, 17],
                            EBSC: [3, 4, 7, 8]}

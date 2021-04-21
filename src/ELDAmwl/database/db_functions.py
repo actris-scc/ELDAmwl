@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """functions for db handling"""
+from addict import Dict
 
 from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import MWL
@@ -50,6 +51,23 @@ def read_signal_filenames(measurement_id):
         logger.error('no prepared signal files for measurement {0}'
                      .format(measurement_id))
 
+def read_ext_algorithms():
+    """read id's and names of all extinction algorithms from db
+        Args:
+
+        Returns:
+            addict.Dict: keys= id's, values = names
+
+    """
+    options = dbutils.session.query(ExtMethod)
+
+    if options.count() > 0:
+        result = {}
+        for o in options:
+            result[o.ID] = o.method
+        return Dict(result)
+    else:
+        logger.error('found no extinction algorithms in db')
 
 def read_extinction_algorithm(product_id):
     """ read from db which algorithm shall be used for the slope
