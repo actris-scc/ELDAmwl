@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 """ELDAmwl factories"""
+from copy import deepcopy
 
 from addict import Dict
 
-from ELDAmwl.constants import HIGHRES, LOWRES, RESOLUTION_STR
+from ELDAmwl.constants import HIGHRES, LOWRES, RESOLUTION_STR, NC_FILL_BYTE
 from ELDAmwl.exceptions import DifferentCloudMaskExists
 from ELDAmwl.exceptions import DifferentHeaderExists
 from ELDAmwl.exceptions import NotFoundInStorage
 from ELDAmwl.log import logger
 from ELDAmwl.products import Products
 
+import numpy as np
 import xarray as xr
 
 
@@ -322,9 +324,47 @@ class DataStorage(object):
 
         self.data.cloud_mask = new_mask
 
+    def get_max_binres(self, res):
+        """
+        gets maximum of binres of all products with resolution=res
+        Args:
+            res:
+
+        Returns:
+            xr.DataArray with same shape as single binres arrays
+        """
+        if self.data.binres_common_smooth[res] == {}:
+            return None
+
+        all_binres = xr.concat(list(self.data.binres_common_smooth[res].values()), 'x')
+        maxres = all_binres.max('x')
+
+        return maxres
+
     def get_common_cloud_mask(self, res):
-        # todo: smooth cloud mask according to res
-        return self.cloud_mask
+        maxres = self.get_max_binres(res)
+        if maxres is None:
+            return None
+
+        cm = deepcopy(self.cloud_mask)
+        cm[:] = NC_FILL_BYTE
+
+        num_times = cm.shape[0]
+        num_levels = cm.shape[1]
+
+        fb = maxres.level - maxres // 2
+        lb = maxres.level + maxres // 2
+        fb = fb.where(fb >= 0, 0)
+        lb = lb.where(lb < num_levels, num_levels -1)
+
+        for t in range(num_times):
+            for lev in range(num_levels):
+                cm[t,lev] = np.bitwise_or.reduce(self.cloud_mask.values[t, int(fb[lev,t]):int(lb[lev,t])])
+        # self.cloud_mask[0, 50] =2
+        # self.cloud_mask[:, 100] = 1
+        # np.bitwise_or.reduce(self.cloud_mask.values[:,40:110], axis=1)
+        # self.cloud_mask[:, 40:110].reduce(np.bitwise_or.reduce, axis=1)
+        return cm
 
     @property
     def header(self):
