@@ -55,6 +55,12 @@ class RamanBscMethod(Base):
     python_classname = Column(String(100),
                               nullable=False,
                               server_default=text("''"))
+    python_classname_get_used_binres = Column(String(100),
+                              nullable=False,
+                              server_default=text("''"))
+    python_classname_get_effective_binres = Column(String(100),
+                              nullable=False,
+                              server_default=text("''"))
 
 
 class ElastBscMethod(Base):
@@ -71,6 +77,12 @@ class ElastBscMethod(Base):
                     nullable=False,
                     server_default=text("''"))
     python_classname = Column(String(100),
+                              nullable=False,
+                              server_default=text("''"))
+    python_classname_get_used_binres = Column(String(100),
+                              nullable=False,
+                              server_default=text("''"))
+    python_classname_get_effective_binres = Column(String(100),
                               nullable=False,
                               server_default=text("''"))
 

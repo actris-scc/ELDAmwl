@@ -25,7 +25,8 @@ class Columns(object):
              },
             coords={'time': (['time'], np.empty((0), dtype=np.datetime64)),
                     'level': (['level'], np.empty((0), dtype=np.int64)),
-                    'altitude': (['time', 'level'], np.empty((0, 0)))})
+                    'altitude': (['time', 'level'], np.empty((0, 0))),
+                    })
         self.station_altitude = None
 
     def set_invalid_point(self, time, level, qf):

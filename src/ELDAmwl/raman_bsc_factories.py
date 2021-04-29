@@ -264,6 +264,30 @@ class CalcRamanBscProfileAsAnsmann(BaseOperation):
                                     'Raman Backscatter',
                                     'viaBR (id = 1)')
 
+
+class SavGolayEffBinRes(BaseOperation):
+    """calculates effective bin resolution for a given number of bins
+    used for smoothing a profile with Savitzky-Golay method
+    """
+
+    name = 'SavGolayEffBinRes'
+
+    def run(self, **kwargs):
+        pass
+
+
+class SavGolayUsedBinRes(BaseOperation):
+    """calculates the number of bins which have to be
+    used for smoothing a profile with Savitzky-Golay method in order to achieve
+    a given effective bin resolution
+    """
+
+    name = 'SavGolayUsedBinRes'
+
+    def run(self, **kwargs):
+        pass
+
+
 class RamBscEffBinRes(BaseOperationFactory):
     """
     Creates a Class for the calculation of the effective bin resolution for a given number of bins
@@ -284,6 +308,14 @@ class RamBscUsedBinRes(BaseOperationFactory):
 
     pass
 
+
+registry.register_class(RamBscUsedBinRes,
+                        SavGolayUsedBinRes.__name__,
+                        SavGolayUsedBinRes)
+
+registry.register_class(RamBscEffBinRes,
+                        SavGolayEffBinRes.__name__,
+                        SavGolayEffBinRes)
 
 registry.register_class(CalcRamanBscProfile,
                         CalcRamanBscProfileViaBR.__name__,

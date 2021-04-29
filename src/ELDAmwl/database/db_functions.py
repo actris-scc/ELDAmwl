@@ -51,6 +51,74 @@ def read_signal_filenames(measurement_id):
         logger.error('no prepared signal files for measurement {0}'
                      .format(measurement_id))
 
+def read_algorithm(method_id, method_table):
+    """ read from db which algorithm shall be used for product retrieval.
+
+        Args:
+            method_id (int): the id of the method for product retrieval
+            method_table(Base): class which represents the db table with available methods
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    methods = dbutils.session.query(method_table)\
+        .filter(method_table.ID == method_id)
+
+    if methods.count() == 1:
+        result = methods.value('python_classname')
+        return result
+    else:
+        logger.error('wrong number ({0}) of available methods'
+                     .format(methods.count()))
+
+
+def read_effbin_algorithm(method_id, method_table):
+    """ read from db which algorithm shall be used for the
+    calculation of the effective bin resolution from the number of
+    bins used for calculation in optical retrievals.
+
+        Args:
+            method_id (int): the id of the method for product retrieval
+            method_table(Base): class which represents the db table with available methods
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    methods = dbutils.session.query(method_table)\
+        .filter(method_table.ID == method_id)
+
+    if methods.count() == 1:
+        result = methods.value('python_classname_get_effective_binres')
+        return result
+    else:
+        logger.error('wrong number ({0}) of available methods'
+                     .format(methods.count()))
+
+def read_usedbin_algorithm(method_id, method_table):
+    """ read from db which algorithm shall be used to calculate how
+    many bins have to be used in the product
+    retrievals in order to achieve a given effective resolution.
+        Args:
+            method_id (int): the id of the method for product retrieval
+            method_table(Base): class which represents the db table with available methods
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    methods = dbutils.session.query(method_table)\
+        .filter(method_table.ID == method_id)
+
+    if methods.count() == 1:
+        result = methods.value('python_classname_get_used_binres')
+        return result
+    else:
+        logger.error('wrong number ({0}) of available methods'
+                     .format(methods.count()))
+
+
 def read_ext_algorithms():
     """read id's and names of all extinction algorithms from db
         Args:
@@ -69,6 +137,26 @@ def read_ext_algorithms():
     else:
         logger.error('found no extinction algorithms in db')
 
+def read_ext_method_id(product_id):
+    """
+    read from db which algorithm (id) shall be used for the retrieval of this extinction product
+        Args:
+            product_id (int): the id of the actual extinction product
+
+        Returns:
+            int: id of the algorithm in table _extinction_methods
+
+    """
+    options = dbutils.session.query(ExtinctionOption)\
+        .filter(ExtinctionOption._product_ID == product_id)
+
+    if options.count() == 1:
+        result = options.value('_ext_method_ID')
+        return result
+    else:
+        logger.error('wrong number of extinction options ({0})'
+                     .format(options.count()))
+
 def read_extinction_algorithm(product_id):
     """ read from db which algorithm shall be used for the slope
         calculation in extinction retrievals.
@@ -80,18 +168,8 @@ def read_extinction_algorithm(product_id):
             str: name of the BaseOperation class to be used
 
         """
-    options = dbutils.session.query(ExtMethod,
-                                    ExtinctionOption)\
-        .filter(ExtMethod.ID == ExtinctionOption._ext_method_ID)\
-        .filter(ExtinctionOption._product_ID == product_id)
-
-    if options.count() == 1:
-        result = options.value('python_classname')
-        return result
-    else:
-        logger.error('wrong number of extinction options ({0})'
-                     .format(options.count()))
-
+    method_id = read_ext_method_id(product_id)
+    return(read_algorithm(method_id, ExtMethod))
 
 def read_ext_effbin_algorithm(product_id):
     """ read from db which algorithm shall be used for the
@@ -105,18 +183,8 @@ def read_ext_effbin_algorithm(product_id):
             str: name of the BaseOperation class to be used
 
         """
-    options = dbutils.session.query(ExtMethod,
-                                    ExtinctionOption)\
-        .filter(ExtMethod.ID == ExtinctionOption._ext_method_ID)\
-        .filter(ExtinctionOption._product_ID == product_id)
-
-    if options.count() == 1:
-        result = options.value('python_classname_get_effective_binres')
-        return result
-    else:
-        logger.error('wrong number of extinction options ({0})'
-                     .format(options.count()))
-
+    method_id = read_ext_method_id(product_id)
+    return(read_effbin_algorithm(method_id, ExtMethod))
 
 def read_ext_usedbin_algorithm(product_id):
     """ read from db which algorithm shall be used to calculate how
@@ -130,18 +198,29 @@ def read_ext_usedbin_algorithm(product_id):
             str: name of the BaseOperation class to be used
 
         """
-    options = dbutils.session.query(ExtMethod,
-                                    ExtinctionOption)\
-        .filter(ExtMethod.ID == ExtinctionOption._ext_method_ID)\
-        .filter(ExtinctionOption._product_ID == product_id)
+    method_id = read_ext_method_id(product_id)
+    return(read_usedbin_algorithm(method_id, ExtMethod))
+
+
+def read_raman_bsc_method_id(product_id):
+    """
+    read from db which algorithm (id) shall be used for the retrieval of this Raman bsc product
+        Args:
+            product_id (int): the id of the actual Raman bsc product
+
+        Returns:
+            int: id of the algorithm in table _ram_bsc_methods
+
+    """
+    options = dbutils.session.query(RamanBackscatterOption)\
+        .filter(RamanBackscatterOption._product_ID == product_id)
 
     if options.count() == 1:
-        result = options.value('python_classname_get_used_binres')
+        result = options.value('_ram_bsc_method_ID')
         return result
     else:
-        logger.error('wrong number of extinction options ({0})'
+        logger.error('wrong number of Raman bsc options ({0})'
                      .format(options.count()))
-
 
 def read_raman_bsc_algorithm(product_id):
     """ read from db which algorithm shall be used for
@@ -154,19 +233,59 @@ def read_raman_bsc_algorithm(product_id):
             str: name of the BaseOperation class to be used
 
         """
-    options = dbutils.session.query(RamanBscMethod,
-                                    RamanBackscatterOption)\
-        .filter(RamanBscMethod.ID ==
-                RamanBackscatterOption._ram_bsc_method_ID)\
-        .filter(RamanBackscatterOption._product_ID == product_id)
+    method_id = read_raman_bsc_method_id(product_id)
+    return(read_algorithm(method_id, RamanBscMethod))
+
+def read_raman_bsc_effbin_algorithm(product_id):
+    """ read from db which algorithm shall be used for the
+    calculation of the effective bin resolution from the number of
+    bins used in Raman backscatter retrievals.
+
+        Args:
+            product_id (int): the id of the actual Raman bsc product
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    method_id = read_raman_bsc_method_id(product_id)
+    return(read_effbin_algorithm(method_id, RamanBscMethod))
+
+def read_raman_bsc_usedbin_algorithm(product_id):
+    """ read from db which algorithm shall be used to calculate how
+    many bins have to be used in Raman backscatter retrievals
+    in order to achieve a given effective resolution.
+
+        Args:
+            product_id (int): the id of the actual Raman bsc product
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    method_id = read_raman_bsc_method_id(product_id)
+    return(read_usedbin_algorithm(method_id, RamanBscMethod))
+
+
+def read_elast_bsc_method_id(product_id):
+    """
+    read from db which algorithm (id) shall be used for the retrieval of this elastic bsc product
+        Args:
+            product_id (int): the id of the actual elastic bsc product
+
+        Returns:
+            int: id of the algorithm in table _elast_bsc_methods
+
+    """
+    options = dbutils.session.query(ElastBackscatterOption)\
+        .filter(ElastBackscatterOption._product_ID == product_id)
 
     if options.count() == 1:
-        result = options.value('python_classname')
+        result = options.value('_elast_bsc_method_ID')
         return result
     else:
-        logger.error('wrong number of Raman bsc options ({0})'
+        logger.error('wrong number of elastic bsc options ({0})'
                      .format(options.count()))
-
 
 def read_elast_bsc_algorithm(product_id):
     """ read from db which algorithm shall be used for
@@ -179,17 +298,38 @@ def read_elast_bsc_algorithm(product_id):
             str: name of the BaseOperation class to be used
 
         """
-    options = dbutils.session.query(ElastBscMethod,
-                                    ElastBackscatterOption)\
-        .filter(ElastBscMethod.ID == ElastBackscatterOption._ext_method_ID)\
-        .filter(ElastBackscatterOption._product_ID == product_id)
+    method_id = read_elast_bsc_method_id(product_id)
+    return(read_algorithm(method_id, ElastBscMethod))
 
-    if options.count() == 1:
-        result = options.value('python_classname')
-        return result
-    else:
-        logger.error('wrong number of Raman bsc options ({0})'
-                     .format(options.count()))
+def read_elast_bsc_effbin_algorithm(product_id):
+    """ read from db which algorithm shall be used for the
+    calculation of the effective bin resolution from the number of
+    bins used in elastic backscatter retrievals.
+
+        Args:
+            product_id (int): the id of the actual elastic bsc product
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    method_id = read_elast_bsc_method_id(product_id)
+    return(read_effbin_algorithm(method_id, ElastBscMethod))
+
+def read_elast_bsc_usedbin_algorithm(product_id):
+    """ read from db which algorithm shall be used to calculate how
+    many bins have to be used in elastic backscatter retrievals
+    in order to achieve a given effective resolution.
+
+        Args:
+            product_id (int): the id of the actual elastic bsc product
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    method_id = read_elast_bsc_method_id(product_id)
+    return(read_usedbin_algorithm(method_id, ElastBscMethod))
 
 
 def read_lidar_ratio_params(product_id):

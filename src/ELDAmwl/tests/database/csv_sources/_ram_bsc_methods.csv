@@ -1,0 +1,3 @@
+ID,method,python_classname,python_classname_get_used_binres,python_classname_get_effective_binres
+0,Ansmann method,CalcRamanBscProfileAsAnsmann,SavGolayUsedBinRes,SavGolayEffBinRes
+1,via backscatter ratio,CalcRamanBscProfileViaBR,SavGolayUsedBinRes,SavGolayEffBinRes
