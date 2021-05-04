@@ -39,6 +39,8 @@ class RamanBscParams(BackscatterParams):
         rbp = read_raman_bsc_params(general_params.prod_id)
         self.raman_bsc_method = rbp['ram_bsc_method']
         self.get_error_params(rbp)
+        self.smooth_params.smooth_method = rbp['smooth_method']
+
 
 
     def add_signal_role(self, signal):
@@ -269,24 +271,64 @@ class CalcRamanBscProfileAsAnsmann(BaseOperation):
 class SavGolayEffBinRes(BaseOperation):
     """calculates effective bin resolution for a given number of bins
     used for smoothing a profile with Savitzky-Golay method
-    """
+
+    The calculation is done according to Mattis et al. 2016 with the equation
+    eff_binres = round(used_bins * 1.24 - 0.24)
+"""
 
     name = 'SavGolayEffBinRes'
 
     def run(self, **kwargs):
-        pass
+        """
+        starts the calculation
+
+        Keyword Args:
+            used_bins(integer): number of bins used for the calculation of Sav-Gol filter (= radius of the smoothing window)
+
+        Returns:
+            eff_binres(integer): resulting effective resolution in terms of vertical bins
+
+        """
+        assert 'used_bins' in kwargs
+
+        used_bins = kwargs['used_bins']
+        eff_binres = np.array(used_bins * 1.24 - 0.24)
+        result = eff_binres.round().astype(int)
+
+        return result
 
 
 class SavGolayUsedBinRes(BaseOperation):
     """calculates the number of bins which have to be
     used for smoothing a profile with Savitzky-Golay method in order to achieve
     a given effective bin resolution
+
+    The calculation is done according to Mattis et al. 2016 with the equation
+    used_bins = round((eff_binres + 0.24) / 0.24)
     """
 
     name = 'SavGolayUsedBinRes'
 
     def run(self, **kwargs):
-        pass
+        """
+        starts the calculation
+
+        Keyword Args:
+            eff_binres(integer): required effective vertical resolution in terms of bins
+
+        Returns:
+            used_bins(integer): number of bins (= radius of the smooth window) to be used for
+                                the calculation of the Sav-Gol filter in order to achieve the required effective
+                                vertical bin resolution
+
+        """
+        assert 'eff_binres' in kwargs
+
+        eff_binres = kwargs['eff_binres']
+        used_binres = np.array((eff_binres + 0.24) / 1.24)
+        result = used_binres.round().astype(int)
+
+        return result
 
 
 class RamBscEffBinRes(BaseOperationFactory):

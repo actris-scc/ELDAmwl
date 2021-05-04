@@ -125,6 +125,10 @@ class ProductParams(Params):
         return self.smooth_params.smooth_type
 
     @property
+    def smooth_method(self):
+        return self.smooth_params.smooth_method
+
+    @property
     def det_limit_asDataArray(self):
         units = UNITS[self.general_params.product_type]
         return xr.DataArray(self.smooth_params.detection_limit,
@@ -331,6 +335,7 @@ class SmoothParams(Params):
 
     def __init__(self):
         self.smooth_type = None
+        self.smooth_method = None
 
         self.detection_limit = None
         self.error_threshold = Dict({'lowrange': None,

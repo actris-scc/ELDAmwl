@@ -608,6 +608,7 @@ def read_elast_bsc_params(product_id):
         result = {'elast_bsc_method': options.value('_elast_bsc_method_ID'),
                   'lr_input_method': options.value('_lr_input_method_id'),
                   'error_method': options.value('_error_method_ID'),
+                  'smooth_method': options.value('_smooth_method_ID'),
                   }
 
         # if options.value('_lr_input_method_id') == PROFILE:
@@ -676,6 +677,7 @@ def read_raman_bsc_params(product_id):
     if options.count() == 1:
         result = {'ram_bsc_method': options.value('_ram_bsc_method_ID'),
                   'error_method': options.value('_error_method_ID'),
+                  'smooth_method': options.value('_smooth_method_ID'),
                   }
         return result
     else:
