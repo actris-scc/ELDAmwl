@@ -9,7 +9,8 @@ from ELDAmwl.backscatter_factories import Backscatters
 from ELDAmwl.base import DataPoint
 from ELDAmwl.constants import NC_FILL_STR, MC
 from ELDAmwl.constants import RAYL_LR
-from ELDAmwl.database.db_functions import read_raman_bsc_algorithm
+from ELDAmwl.database.db_functions import read_raman_bsc_algorithm, read_raman_bsc_effbin_algorithm, \
+    read_raman_bsc_usedbin_algorithm
 from ELDAmwl.database.db_functions import read_raman_bsc_params
 from ELDAmwl.exceptions import NoValidDataPointsForCalibration
 from ELDAmwl.exceptions import UseCaseNotImplemented
@@ -134,10 +135,10 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
             #         smooth_params=self.param.smooth_params,
             #     ).run()
 
-            smoothed_sigratio = deepcopy(sig_ratio)
-            # smoothed_sigratio.ds['binres'] = smooth_res
-            result = RamanBackscatters.from_sigratio(
-                smoothed_sigratio, self.param, self.calibr_window)
+            bsc = RamanBackscatters.from_sigratio(
+                sig_ratio, self.param, self.calibr_window)
+
+            result = bsc.smooth()
 
         return result
 
@@ -294,9 +295,24 @@ class RamBscEffBinRes(BaseOperationFactory):
     used in the retrieval of ...
 
     Keyword Args:
+            prod_id (str): id of the product
     """
 
-    pass
+    name = 'RamBscEffBinRes'
+    prod_id = NC_FILL_STR
+
+    def __call__(self, **kwargs):
+        assert 'prod_id' in kwargs
+        self.prod_id = kwargs['prod_id']
+        res = super(RamBscEffBinRes, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """ reads from SCC db which algorithm to use
+
+        Returns: name of the class for the bsc calculation
+        """
+        return read_raman_bsc_effbin_algorithm(self.prod_id)
 
 
 class RamBscUsedBinRes(BaseOperationFactory):
@@ -306,7 +322,21 @@ class RamBscUsedBinRes(BaseOperationFactory):
     Keyword Args:
     """
 
-    pass
+    name = 'RamBscUsedBinRes'
+    prod_id = NC_FILL_STR
+
+    def __call__(self, **kwargs):
+        assert 'prod_id' in kwargs
+        self.prod_id = kwargs['prod_id']
+        res = super(RamBscUsedBinRes, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """ reads from SCC db which algorithm to use
+
+        Returns: name of the class for the bsc calculation
+        """
+        return read_raman_bsc_usedbin_algorithm(self.prod_id)
 
 
 registry.register_class(RamBscUsedBinRes,

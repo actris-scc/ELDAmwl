@@ -29,27 +29,27 @@ class GetBasicProductsDefault(BaseOperation):
 
     data_storage = None
     product_params = None
-    smooth_method = None
+    smooth_type = None
 
     def run(self):
         self.data_storage = self.kwargs['data_storage']
         self.product_params = self.kwargs['product_params']
-        self.smooth_method = self.product_params.smooth_params.smooth_method
+        self.smooth_type = self.product_params.smooth_params.smooth_type
 
 #        bsc_calibr_window = FindCommonBscCalibrWindow()(
 #            data_storage=self.data_storage,
 #            bsc_params=self.product_params.all_bsc_products(),
 #            ).run()
 
-        if self.smooth_method == AUTO:
+        if self.smooth_type == AUTO:
             self.get_auto_smooth_products()
             self.find_common_smooth()
 
-        elif self.smooth_method == FIXED:
+        elif self.smooth_type == FIXED:
             self.get_binres_common_smooth()
 
         else:
-            raise(UseCaseNotImplemented('self.smooth_method',
+            raise(UseCaseNotImplemented('self.smooth_type',
                                         'smoothing',
                                         '{0} or {1}'.format(AUTO, FIXED)))
 
@@ -90,7 +90,7 @@ class GetBasicProductsDefault(BaseOperation):
 
     def get_common_smooth_products(self):
         self.get_extinctions_fixed_smooth()
-        # todo: raman_bsc
+        self.get_raman_bsc_fixed_smooth()
         # todo: elsat_bsc
         # todo: vol_depol
 
@@ -129,6 +129,19 @@ class GetBasicProductsDefault(BaseOperation):
             # self.data_storage.set_basic_product_auto_smooth(
             #     bsc_param.prod_id_str, bsc)
 
+    def get_raman_bsc_fixed_smooth(self):
+        for bsc_param in self.product_params.raman_bsc_products():
+            for res in RESOLUTIONS:
+                if bsc_param.calc_with_res(res):
+                    bsc = RamanBackscatterFactory()(
+                        data_storage=self.data_storage,
+                        bsc_param=bsc_param,
+                        calibr_window=self.bsc_calibr_window,
+                        autosmooth=False,
+                    ).get_product()
+                    self.data_storage.set_basic_product_common_smooth(
+                        bsc_param.prod_id_str, res, bsc)
+
 
 class GetBasicProducts(BaseOperationFactory):
     """
@@ -138,13 +151,13 @@ class GetBasicProducts(BaseOperationFactory):
     """
 
     name = 'GetBasicProducts'
-    smooth_method = None
+    smooth_type = None
 
     def __call__(self, **kwargs):
         assert 'data_storage' in kwargs
         assert 'product_params' in kwargs
 
-        self.smooth_method = kwargs['product_params'].smooth_params.smooth_method
+        self.smooth_type = kwargs['product_params'].smooth_params.smooth_type
         res = super(GetBasicProducts, self).__call__(**kwargs)
         return res
 

@@ -1,3 +1,3 @@
-ID,_product_ID,_ram_bsc_method_ID,_bsc_calibr_options_ID,_error_method_ID
-71,324,1,11,1
-81,378,1,11,1
+ID,_product_ID,_ram_bsc_method_ID,_bsc_calibr_options_ID,_error_method_ID,_smooth_method_ID
+71,324,1,11,1,0
+81,378,1,11,1,0

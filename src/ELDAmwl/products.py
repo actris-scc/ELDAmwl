@@ -121,8 +121,8 @@ class ProductParams(Params):
         return self.general_params.error_method
 
     @property
-    def smooth_method(self):
-        return self.smooth_params.smooth_method
+    def smooth_type(self):
+        return self.smooth_params.smooth_type
 
     @property
     def det_limit_asDataArray(self):
@@ -330,7 +330,7 @@ class SmoothParams(Params):
     """
 
     def __init__(self):
-        self.smooth_method = None
+        self.smooth_type = None
 
         self.detection_limit = None
         self.error_threshold = Dict({'lowrange': None,
@@ -353,9 +353,9 @@ class SmoothParams(Params):
     def from_query(cls, query):
         result = cls()
 
-        result.smooth_method = query.SmoothOptions._smooth_type
+        result.smooth_type = query.SmoothOptions._smooth_type
 
-        if result.smooth_method == AUTO:
+        if result.smooth_type == AUTO:
             result.error_threshold.lowrange = query.ErrorThresholdsLow.value
             result.error_threshold.highrange = query.ErrorThresholdsHigh.value
 
@@ -363,7 +363,7 @@ class SmoothParams(Params):
             if result.detection_limit == 0.0:
                 raise(DetectionLimitZero, result.prod_id)
 
-        if result.smooth_method == FIXED:
+        if result.smooth_type == FIXED:
             result.transition_zone.bottom = float(query.SmoothOptions.transition_zone_from)
             result.transition_zone.top = float(query.SmoothOptions.transition_zone_to)
 

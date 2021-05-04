@@ -18,7 +18,7 @@ from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
-from ELDAmwl.database.tables.system_product import ErrorThresholds, MCOption
+from ELDAmwl.database.tables.system_product import ErrorThresholds, MCOption, SmoothMethod
 from ELDAmwl.database.tables.system_product import MWLproductProduct
 from ELDAmwl.database.tables.system_product import PreparedSignalFile
 from ELDAmwl.database.tables.system_product import SmoothOptions, PreProcOptions
@@ -222,6 +222,26 @@ def read_raman_bsc_method_id(product_id):
         logger.error('wrong number of Raman bsc options ({0})'
                      .format(options.count()))
 
+def read_raman_bsc_smooth_method_id(product_id):
+    """
+    read from db which algorithm (id) shall be used for smoothing in the retrieval of this Raman bsc product
+        Args:
+            product_id (int): the id of the actual Raman bsc product
+
+        Returns:
+            int: id of the algorithm in table _ram_bsc_methods
+
+    """
+    options = dbutils.session.query(RamanBackscatterOption)\
+        .filter(RamanBackscatterOption._product_ID == product_id)
+
+    if options.count() == 1:
+        result = options.value('_smooth_method_ID')
+        return result
+    else:
+        logger.error('wrong number of Raman bsc options ({0})'
+                     .format(options.count()))
+
 def read_raman_bsc_algorithm(product_id):
     """ read from db which algorithm shall be used for
         calculation in Raman backscatter retrievals.
@@ -248,8 +268,8 @@ def read_raman_bsc_effbin_algorithm(product_id):
             str: name of the BaseOperation class to be used
 
         """
-    method_id = read_raman_bsc_method_id(product_id)
-    return(read_effbin_algorithm(method_id, RamanBscMethod))
+    method_id = read_raman_bsc_smooth_method_id(product_id)
+    return(read_effbin_algorithm(method_id, SmoothMethod))
 
 def read_raman_bsc_usedbin_algorithm(product_id):
     """ read from db which algorithm shall be used to calculate how
@@ -263,8 +283,8 @@ def read_raman_bsc_usedbin_algorithm(product_id):
             str: name of the BaseOperation class to be used
 
         """
-    method_id = read_raman_bsc_method_id(product_id)
-    return(read_usedbin_algorithm(method_id, RamanBscMethod))
+    method_id = read_raman_bsc_smooth_method_id(product_id)
+    return(read_usedbin_algorithm(method_id, SmoothMethod))
 
 
 def read_elast_bsc_method_id(product_id):
@@ -282,6 +302,26 @@ def read_elast_bsc_method_id(product_id):
 
     if options.count() == 1:
         result = options.value('_elast_bsc_method_ID')
+        return result
+    else:
+        logger.error('wrong number of elastic bsc options ({0})'
+                     .format(options.count()))
+
+def read_elast_bsc_smooth_method_id(product_id):
+    """
+    read from db which algorithm (id) shall be used for smoothing in the retrieval of this elastic bsc product
+        Args:
+            product_id (int): the id of the actual elastic bsc product
+
+        Returns:
+            int: id of the algorithm in table _elast_bsc_methods
+
+    """
+    options = dbutils.session.query(ElastBackscatterOption)\
+        .filter(ElastBackscatterOption._product_ID == product_id)
+
+    if options.count() == 1:
+        result = options.value('_smooth_method_ID')
         return result
     else:
         logger.error('wrong number of elastic bsc options ({0})'
@@ -313,8 +353,8 @@ def read_elast_bsc_effbin_algorithm(product_id):
             str: name of the BaseOperation class to be used
 
         """
-    method_id = read_elast_bsc_method_id(product_id)
-    return(read_effbin_algorithm(method_id, ElastBscMethod))
+    method_id = read_elast_bsc_smooth_method_id(product_id)
+    return(read_effbin_algorithm(method_id, SmoothMethod))
 
 def read_elast_bsc_usedbin_algorithm(product_id):
     """ read from db which algorithm shall be used to calculate how
@@ -328,8 +368,8 @@ def read_elast_bsc_usedbin_algorithm(product_id):
             str: name of the BaseOperation class to be used
 
         """
-    method_id = read_elast_bsc_method_id(product_id)
-    return(read_usedbin_algorithm(method_id, ElastBscMethod))
+    method_id = read_elast_bsc_smooth_method_id(product_id)
+    return(read_usedbin_algorithm(method_id, SmoothMethod))
 
 
 def read_lidar_ratio_params(product_id):

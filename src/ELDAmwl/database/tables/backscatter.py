@@ -55,12 +55,6 @@ class RamanBscMethod(Base):
     python_classname = Column(String(100),
                               nullable=False,
                               server_default=text("''"))
-    python_classname_get_used_binres = Column(String(100),
-                              nullable=False,
-                              server_default=text("''"))
-    python_classname_get_effective_binres = Column(String(100),
-                              nullable=False,
-                              server_default=text("''"))
 
 
 class ElastBscMethod(Base):
@@ -77,12 +71,6 @@ class ElastBscMethod(Base):
                     nullable=False,
                     server_default=text("''"))
     python_classname = Column(String(100),
-                              nullable=False,
-                              server_default=text("''"))
-    python_classname_get_used_binres = Column(String(100),
-                              nullable=False,
-                              server_default=text("''"))
-    python_classname_get_effective_binres = Column(String(100),
                               nullable=False,
                               server_default=text("''"))
 
@@ -110,6 +98,10 @@ class RamanBackscatterOption(Base):
                               nullable=False,
                               index=True,
                               server_default=text("'-1'"))
+    _smooth_method_ID = Column(INTEGER,
+                              nullable=False,
+                              index=True,
+                              server_default=text("'0'"))
 
 
 class ElastBackscatterOption(Base):
@@ -143,6 +135,10 @@ class ElastBackscatterOption(Base):
                                   nullable=False,
                                   index=True,
                                   server_default=text("'-1'"))
+    _smooth_method_ID = Column(INTEGER,
+                              nullable=False,
+                              index=True,
+                              server_default=text("'0'"))
 
 
 class IterBackscatterOption(Base):

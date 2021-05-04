@@ -92,15 +92,6 @@ ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name
 
 ALTER TABLE `_elast_bsc_methods`
 ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
-ALTER TABLE `_elast_bsc_methods`
-ADD COLUMN `python_classname_get_used_binres` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
-ALTER TABLE `_elast_bsc_methods`
-ADD COLUMN `python_classname_get_effective_binres` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
-
-UPDATE `_elast_bsc_methods` set `python_classname` = 'CalcBscProfileKF' where ID=0;
-UPDATE `_elast_bsc_methods` set `python_classname` = 'CalcBscProfileIter' where ID=1;
-UPDATE `_elast_bsc_methods` set `python_classname_get_used_binres` = 'SavGolayUsedBinRes';
-UPDATE `_elast_bsc_methods` set `python_classname_get_effective_binres` = 'SavGolayEffBinRes';
 
 #-------------------------
 
@@ -120,15 +111,6 @@ UPDATE `_ext_methods` set `python_classname_get_effective_binres` = 'LinFitEffBi
 
 ALTER TABLE `_ram_bsc_methods`
 ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
-ALTER TABLE `_ram_bsc_methods`
-ADD COLUMN `python_classname_get_used_binres` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
-ALTER TABLE `_ram_bsc_methods`
-ADD COLUMN `python_classname_get_effective_binres` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
-
-UPDATE `_ram_bsc_methods` set `python_classname` = 'CalcRamanBscProfileAsAnsmann' where ID=0;
-UPDATE `_ram_bsc_methods` set `python_classname` = 'CalcRamanBscProfileViaBR' where ID=1;
-UPDATE `_ram_bsc_methods` set `python_classname_get_used_binres` = 'SavGolayUsedBinRes';
-UPDATE `_ram_bsc_methods` set `python_classname_get_effective_binres` = 'SavGolayEffBinRes';
 
 #-------------------------
 
@@ -153,6 +135,22 @@ CREATE TABLE `_smooth_types` (
 INSERT INTO `_smooth_types` (`ID`, `smooth_type`) VALUES
 	(0, 'auto'),
 	(1, 'fixed');
+
+#-------------------------
+
+CREATE TABLE `_smooth_methods` (
+  `ID` int(11) NOT NULL,
+  `method` varchar(100) NOT NULL DEFAULT '',
+  `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation',
+  `python_classname_get_used_binres` varchar(100) NOT NULL COMMENT 'the name of the python class in ELDAmwl which performs the calculation',
+  `python_classname_get_effective_binres` varchar(100) NOT NULL COMMENT 'the name of the python class in ELDAmwl which performs the calculation',
+  PRIMARY KEY (`ID`)
+);
+
+INSERT INTO `_smooth_methods` (`ID`, `method`, `python_classname`,
+        `python_classname_get_used_binres`, `python_classname_get_effective_binres`) VALUES
+	(0, 'Savitzky-Golay', 'SmoothSavGolay', 'SavGolayUsedBinRes', 'SavGolayEffBinRes'),
+	(1, 'sliding average', 'SmoothSlidingAverage', 'SlidAvrgUsedBinRes', 'SlidAvrgEffBinRes');
 
 #-------------------------
 
@@ -230,3 +228,13 @@ ALTER TABLE `ext_bsc_options`
 ADD COLUMN `min_BscRatio_for_LR` DECIMAL(10,4) NOT NULL DEFAULT '1.0000';
 
 UPDATE `ext_bsc_options` set `min_BscRatio_for_LR` = '1.1' where _product_ID=379;
+
+#-------------------------
+ALTER TABLE `elast_backscatter_options`
+	ADD COLUMN `_smooth_method_ID` INT(11) NOT NULL DEFAULT '0' AFTER `_iter_bsc_options_id`,
+	ADD INDEX `_smooth_method_ID` (`_smooth_method_ID`);
+
+#-------------------------
+ALTER TABLE `raman_backscatter_options`
+	ADD COLUMN `_smooth_method_ID` INT(11) NOT NULL DEFAULT '0' AFTER `_error_method_ID`,
+	ADD INDEX `_smooth_method_ID` (`_smooth_method_ID`);

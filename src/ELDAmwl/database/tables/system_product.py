@@ -7,6 +7,7 @@ from sqlalchemy import DECIMAL
 from sqlalchemy import Float
 from sqlalchemy import INTEGER
 from sqlalchemy import String
+from sqlalchemy import text
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -104,6 +105,35 @@ class SmoothTypes(Base):
 
     ID = Column('Id', INTEGER, primary_key=True)
     smooth_type = Column(String(50), nullable=False)
+
+
+class SmoothMethod(Base):
+    """content of the db table _smooth_methods
+
+    contains smooth methods (e.g. sliding average or Savitzky-Golay)
+    and Python classnames for the smoothing and the corresponding calculation
+    of effective and used bin resolution
+
+    """
+
+    __tablename__ = '_smooth_methods'
+
+    ID = Column(INTEGER,
+                primary_key=True,
+                server_default=text("'0'"))
+    method = Column(String(100),
+                    nullable=False,
+                    server_default=text("''"))
+    python_classname = Column(String(100),
+                              nullable=False,
+                              server_default=text("''"))
+    python_classname_get_used_binres = Column(String(100),
+                              nullable=False,
+                              server_default=text("''"))
+    python_classname_get_effective_binres = Column(String(100),
+                              nullable=False,
+                              server_default=text("''"))
+
 
 
 # class ErrorMethod(Base):
