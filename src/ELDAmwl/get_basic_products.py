@@ -30,16 +30,17 @@ class GetBasicProductsDefault(BaseOperation):
     data_storage = None
     product_params = None
     smooth_type = None
+    bsc_calibr_window = None
 
     def run(self):
         self.data_storage = self.kwargs['data_storage']
         self.product_params = self.kwargs['product_params']
         self.smooth_type = self.product_params.smooth_params.smooth_type
 
-#        bsc_calibr_window = FindCommonBscCalibrWindow()(
-#            data_storage=self.data_storage,
-#            bsc_params=self.product_params.all_bsc_products(),
-#            ).run()
+        self.bsc_calibr_window = FindCommonBscCalibrWindow()(
+            data_storage=self.data_storage,
+            bsc_params=self.product_params.all_bsc_products(),
+            ).run()
 
         if self.smooth_type == AUTO:
             self.get_auto_smooth_products()
@@ -73,7 +74,7 @@ class GetBasicProductsDefault(BaseOperation):
 
         for prod_param in self.product_params.basic_products():
             pid = prod_param.prod_id_str
-            if prod_param.product_type == EXT:
+            if prod_param.product_type in [EXT, RBSC]: # todo remove this limit
                 used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
                 for res in RESOLUTIONS:
                     dummy_sig = deepcopy(self.data_storage.prepared_signals(pid)[0])
@@ -126,19 +127,28 @@ class GetBasicProductsDefault(BaseOperation):
                 calibr_window=self.bsc_calibr_window,
                 autosmooth=True,
             ).get_product()
-            # self.data_storage.set_basic_product_auto_smooth(
-            #     bsc_param.prod_id_str, bsc)
+
+            self.data_storage.set_basic_product_raw(
+                bsc_param.prod_id_str, bsc)
+
+            smooth_bsc = deepcopy(bsc)
+            smooth_bsc.smooth(self.data_storage.binres_auto_smooth(bsc_param.prod_id_str))
+            self.data_storage.set_basic_product_auto_smooth(
+                bsc_param.prod_id_str, smooth_bsc)
 
     def get_raman_bsc_fixed_smooth(self):
         for bsc_param in self.product_params.raman_bsc_products():
+            bsc = RamanBackscatterFactory()(
+                data_storage=self.data_storage,
+                bsc_param=bsc_param,
+                calibr_window=self.bsc_calibr_window,
+                autosmooth=False,
+            ).get_product()
+
             for res in RESOLUTIONS:
                 if bsc_param.calc_with_res(res):
-                    bsc = RamanBackscatterFactory()(
-                        data_storage=self.data_storage,
-                        bsc_param=bsc_param,
-                        calibr_window=self.bsc_calibr_window,
-                        autosmooth=False,
-                    ).get_product()
+                    smooth_bsc = deepcopy(bsc)
+                    smooth_bsc.smooth(self.data_storage.binres_common_smooth(bsc_param.prod_id_str, res))
                     self.data_storage.set_basic_product_common_smooth(
                         bsc_param.prod_id_str, res, bsc)
 

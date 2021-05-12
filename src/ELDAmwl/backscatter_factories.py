@@ -226,7 +226,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         for bp in self.bsc_params:
             el_sig = self.data_storage.prepared_signal(bp.prod_id_str,
                                                        bp.total_sig_id)
-            error_threshold = bp.general_params.error_threshold.high
+            error_threshold = bp.quality_params.error_threshold.highrange
             w_width = (bp.calibration_params.window_width //
                        el_sig.raw_heightres).astype(int)
             ww0 = w_width[0, 0]

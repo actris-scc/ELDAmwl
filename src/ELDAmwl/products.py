@@ -12,7 +12,8 @@ from ELDAmwl.constants import NC_FILL_BYTE
 from ELDAmwl.constants import NC_FILL_INT
 from ELDAmwl.constants import RBSC
 from ELDAmwl.mwl_file_structure import UNITS
-from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query, get_smooth_params_query
+from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query, get_smooth_params_query, \
+    get_quality_params_query
 from ELDAmwl.exceptions import DetectionLimitZero, NotEnoughMCIterations
 from ELDAmwl.log import logger
 from ELDAmwl.mwl_file_structure import NC_VAR_NAMES, error_method_var
@@ -51,6 +52,17 @@ class Products(Signals):
                                             round(float(result.emission_wavelength)))
 
         return result
+
+    def smooth(self, binres):
+        """
+        performs smoothing of the data
+        Args:
+            binres (xarray.DataArray) array with the bin resolution which shall be used for smoothing
+
+        Returns:
+
+        """
+        pass
 
     def save_to_netcdf(self):
         pass
@@ -95,10 +107,12 @@ class ProductParams(Params):
         self.general_params = None
         self.mc_params = None
         self.smooth_params = None
+        self.quality_params = None
 
     def from_db(self, general_params):
         self.general_params = general_params
         self.smooth_params = SmoothParams.from_db(general_params.prod_id)
+        self.quality_params = QualityParams.from_db(general_params.prod_id)
 
     def get_error_params(self, db_options):
         """reads error params
@@ -131,7 +145,7 @@ class ProductParams(Params):
     @property
     def det_limit_asDataArray(self):
         units = UNITS[self.general_params.product_type]
-        return xr.DataArray(self.smooth_params.detection_limit,
+        return xr.DataArray(self.quality_params.detection_limit,
                             name='detection_limit',
                             attrs={'long_name': 'detection limit',
                                    'units': units,
@@ -139,7 +153,7 @@ class ProductParams(Params):
 
     @property
     def error_threshold_low_asDataArray(self):
-        return xr.DataArray(self.smooth_params.error_threshold.low,
+        return xr.DataArray(self.quality_params.error_threshold.low,
                             name='error_threshold_low',
                             attrs={'long_name': 'threshold for the '
                                                 'relative statistical error '
@@ -149,7 +163,7 @@ class ProductParams(Params):
 
     @property
     def error_threshold_high_asDataArray(self):
-        return xr.DataArray(self.smooth_params.error_threshold.high,
+        return xr.DataArray(self.quality_params.error_threshold.high,
                             name='error_threshold_low',
                             attrs={'long_name': 'threshold for the '
                                                 'relative statistical error '
@@ -328,6 +342,37 @@ class MCParams(Params):
         return result
 
 
+class QualityParams(Params):
+    """
+    quality parameters for product retrievals
+    """
+
+    def __init__(self):
+        self.detection_limit = None
+        self.error_threshold = Dict({'lowrange': None,
+                                     'highrange': None})
+
+
+    @classmethod
+    def from_query(cls, query):
+        result = cls()
+
+        result.error_threshold.lowrange = query.ErrorThresholdsLow.value
+        result.error_threshold.highrange = query.ErrorThresholdsHigh.value
+
+        result.detection_limit = query.SmoothOptions.detection_limit
+        if result.detection_limit == 0.0:
+            raise (DetectionLimitZero, result.prod_id)
+
+        return result
+
+    @classmethod
+    def from_db(cls, prod_id):
+        query = get_quality_params_query(prod_id)
+        result = cls.from_query(query)
+        return result
+
+
 class SmoothParams(Params):
     """
     smooth parameters for product retrievals
@@ -337,9 +382,9 @@ class SmoothParams(Params):
         self.smooth_type = None
         self.smooth_method = None
 
-        self.detection_limit = None
-        self.error_threshold = Dict({'lowrange': None,
-                                     'highrange': None})
+        # self.detection_limit = None
+        # self.error_threshold = Dict({'lowrange': None,
+        #                              'highrange': None})
 
         self.transition_zone = Dict({'bottom': None,
                                      'top': None})
@@ -358,37 +403,37 @@ class SmoothParams(Params):
     def from_query(cls, query):
         result = cls()
 
-        result.smooth_type = query.SmoothOptions._smooth_type
+        result.smooth_type = query._smooth_type
 
-        if result.smooth_type == AUTO:
-            result.error_threshold.lowrange = query.ErrorThresholdsLow.value
-            result.error_threshold.highrange = query.ErrorThresholdsHigh.value
-
-            result.detection_limit = query.SmoothOptions.detection_limit
-            if result.detection_limit == 0.0:
-                raise(DetectionLimitZero, result.prod_id)
+        # if result.smooth_type == AUTO:
+        #     result.error_threshold.lowrange = query.ErrorThresholdsLow.value
+        #     result.error_threshold.highrange = query.ErrorThresholdsHigh.value
+        #
+        #     result.detection_limit = query.SmoothOptions.detection_limit
+        #     if result.detection_limit == 0.0:
+        #         raise(DetectionLimitZero, result.prod_id)
 
         if result.smooth_type == FIXED:
-            result.transition_zone.bottom = float(query.SmoothOptions.transition_zone_from)
-            result.transition_zone.top = float(query.SmoothOptions.transition_zone_to)
+            result.transition_zone.bottom = float(query.transition_zone_from)
+            result.transition_zone.top = float(query.transition_zone_to)
 
             result.vert_res[RESOLUTION_STR[LOWRES]].lowrange \
-                = float(query.SmoothOptions.lowres_lowrange_vertical_resolution)
+                = float(query.lowres_lowrange_vertical_resolution)
             result.vert_res[RESOLUTION_STR[LOWRES]].highrange \
-                = float(query.SmoothOptions.lowres_highrange_vertical_resolution)
+                = float(query.lowres_highrange_vertical_resolution)
             result.vert_res[RESOLUTION_STR[HIGHRES]].lowrange \
-                = float(query.SmoothOptions.highres_lowrange_vertical_resolution)
+                = float(query.highres_lowrange_vertical_resolution)
             result.vert_res[RESOLUTION_STR[HIGHRES]].highrange \
-                = float(query.SmoothOptions.highres_highrange_vertical_resolution)
+                = float(query.highres_highrange_vertical_resolution)
 
             result.time_res[RESOLUTION_STR[LOWRES]].lowrange \
-                = query.SmoothOptions.lowres_lowrange_integration_time
+                = query.lowres_lowrange_integration_time
             result.time_res[RESOLUTION_STR[LOWRES]].highrange \
-                = query.SmoothOptions.lowres_highrange_integration_time
+                = query.lowres_highrange_integration_time
             result.time_res[RESOLUTION_STR[HIGHRES]].lowrange \
-                = query.SmoothOptions.highres_lowrange_integration_time
+                = query.highres_lowrange_integration_time
             result.time_res[RESOLUTION_STR[HIGHRES]].highrange \
-                = query.SmoothOptions.highres_highrange_integration_time
+                = query.highres_highrange_integration_time
 
         return result
 

@@ -19,6 +19,7 @@ class Params(object):
         try:
             return object.__getattribute__(self, item)
         except AttributeError:
+            sp = None
             for sp_name in object.__getattribute__(self, 'sub_params'):
                 sp = object.__getattribute__(self, sp_name)
                 try:
@@ -26,8 +27,12 @@ class Params(object):
                 except AttributeError:
                     continue
 
-            class_name = object.__getattribute__(sp, '__class__').__name__
-            raise(AttributeError('class {0} has no attribute {1}'.format(class_name, item)))  # noqa E501
+            if sp is not None:
+                class_name = object.__getattribute__(sp, '__class__').__name__
+            else:
+                class_name = object.__getattribute__(self, '__class__').__name__
+
+            raise AttributeError('class {0} has no attribute {1}'.format(class_name, item))
 
 
 class DataPoint(object):

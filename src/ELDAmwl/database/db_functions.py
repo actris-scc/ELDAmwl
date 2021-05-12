@@ -565,6 +565,29 @@ def get_smooth_params_query(prod_id):
 
         """
 
+    options = dbutils.session.query(
+        SmoothOptions
+    ).filter(
+        SmoothOptions._product_ID == prod_id,)
+
+    if options.count() == 1:
+        return options[0]
+    else:
+        logger.error('wrong number of product options ({0})'
+                     .format(options.count()))
+
+
+def get_quality_params_query(prod_id):
+    """ read quality params of a product from db
+
+        Args:
+            prod_id (int): id of the product
+
+        Returns:
+            query with smooth params
+
+        """
+
     ErrorThresholdsLow = aliased(ErrorThresholds,
                                  name='ErrorThresholdsLow')
     ErrorThresholdsHigh = aliased(ErrorThresholds,
@@ -586,7 +609,6 @@ def get_smooth_params_query(prod_id):
     else:
         logger.error('wrong number of product options ({0})'
                      .format(options.count()))
-
 
 def read_elast_bsc_params(product_id):
     """ function to read options of an elast bsc product from db.

@@ -74,21 +74,19 @@ class RamanBackscatters(Backscatters):
         if calibr_window is None:
             calibr_window = p_params.calibr_window
 
-        # times = sigratio.ds.dims['time']
-        # todo: test if new heights to bins still work (returns now xarray instead of np.array)
         cal_first_lev = sigratio.heights_to_levels(
-            calibr_window[:, 0].values)
+            calibr_window[:, 0])
         cal_last_lev = sigratio.heights_to_levels(
-            calibr_window[:, 1].values)
+            calibr_window[:, 1])
 
         error_params = Dict({'err_threshold':
-                            p_params.general_params.error_threshold,
+                            p_params.quality_params.error_threshold,
                              })
 
         calibr_value = DataPoint.from_data(
             p_params.calibration_params.cal_value, 0, 0)
-        cal_params = Dict({'cal_first_lev': cal_first_lev,
-                           'cal_last_lev': cal_last_lev,
+        cal_params = Dict({'cal_first_lev': cal_first_lev.values,
+                           'cal_last_lev': cal_last_lev.values,
                            'calibr_value': calibr_value})
 
         calc_routine = CalcRamanBscProfile()(prod_id=p_params.prod_id_str)
@@ -130,17 +128,19 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
 
             sig_ratio = Signals.as_sig_ratio(self.elast_sig, self.raman_sig)
 
-            # todo
-            # if self.kwargs['autosmooth']:
-            #     smooth_res = ExtinctionAutosmooth()(
-            #         signal=raman_sig.ds,
-            #         smooth_params=self.param.smooth_params,
-            #     ).run()
-
             bsc = RamanBackscatters.from_sigratio(
                 sig_ratio, self.param, self.calibr_window)
 
-            result = bsc.smooth()
+            # todo
+            # if self.kwargs['autosmooth']:
+                # get auto smooht resolution
+            #     smooth_res = RamBscAutosmooth()(
+            #         signal=raman_sig.ds,
+            #         smooth_params=self.param.smooth_params,
+            #     ).run()
+            #    self.data_storage.set_binres_auto_smooth(self.param.prod_id_str, smooth_res)
+
+            result = bsc
 
         return result
 
@@ -190,7 +190,7 @@ class CalcRamanBscProfileViaBR(BaseOperation):
                     variables 'data', 'error', 'qf',
                     'binres', 'mol_extinction'
                 error_params (addict.Dict):
-                    with keys 'low' and 'high' =
+                    with keys 'lowrange' and 'highrange' =
                         maximum allowable relative statistical error
                 calibration (addict.Dict):
                     with keys 'cal_first_lev',
@@ -223,7 +223,7 @@ class CalcRamanBscProfileViaBR(BaseOperation):
             sem = df.data.sem()
             rel_sem = sem / mean
 
-            if rel_sem > error_params.err_threshold.high:
+            if rel_sem > error_params.err_threshold.highrange:
                 raise NoValidDataPointsForCalibration
 
             else:
@@ -237,9 +237,6 @@ class CalcRamanBscProfileViaBR(BaseOperation):
         cf = xr.DataArray(calibr_factor,
                           dims=['time'],
                           coords=[sigratio.time])
-        # cf_err = xr.DataArray(calibr_factor_err,
-        #                       dims=['time'],
-        #                       coords=[sigratio.time])
         sqr_cf_err = xr.DataArray(sqr_rel_calibr_err,
                                   dims=['time'],
                                   coords=[sigratio.time])

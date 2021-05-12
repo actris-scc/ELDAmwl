@@ -344,7 +344,7 @@ class Signals(Columns):
 
     def heights_to_levels(self, heights):
         """converts a series of height value into a series of level (dim=time)
-        Args: heights (np.ndarray): a requested height for each time, in m
+        Args: heights (xarray): a requested height for each time, in m
         Returns: level (xarray) closest to the requested heights
         """
         times = self.ds.dims['time']

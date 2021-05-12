@@ -29,33 +29,54 @@ class DataStorage(object):
     def __init__(self):
         self.data = Dict({'elpp_signals': Dict(),
                           'prepared_signals': Dict(),
+
+                          'basic_products_raw': Dict(),
                           'basic_products_auto_smooth': Dict(),
+                          'binres_auto_smooth': Dict(),
+
                           'binres_common_smooth': Dict({LOWRES: Dict(),
                                                         HIGHRES: Dict()}),
                           'basic_products_common_smooth': Dict({LOWRES: Dict(),
                                                                 HIGHRES: Dict()}),
                           'derived_products_common_smooth': Dict({LOWRES: Dict(),
                                                                 HIGHRES: Dict()}),
+
                           'final_product_matrix': Dict({LOWRES: Dict(),
                                                         HIGHRES: Dict()}),
+
                           'header': None,
                           'cloud_mask': None,
                           })
-
-    def set_prepared_signal(self, prod_id_str, new_signal):
-        """write new prepared signal to storage"""
-
-        self.data.prepared_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_elpp_signal(self, prod_id_str, new_signal):
         """write new ELPP signal to storage"""
 
         self.data.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
+    def set_prepared_signal(self, prod_id_str, new_signal):
+        """write new prepared signal to storage"""
+
+        self.data.prepared_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
+
+    def set_basic_product_raw(self, prod_id_str, new_product):
+        """write new un-smoothed basic product to storage
+        """
+        self.data.basic_products_raw[prod_id_str] = new_product  # noqa E501
+
     def set_basic_product_auto_smooth(self, prod_id_str, new_product):
         """write new auto smoothed basic product to storage
         """
         self.data.basic_products_auto_smooth[prod_id_str] = new_product  # noqa E501
+
+    def set_binres_auto_smooth(self, prod_id_str, new_res_array):
+        """write new auto smoothed basic product to storage
+
+        Args:
+            prod_id_str:
+            new_res_array: xarray.DataArray
+
+        """
+        self.data.binres_auto_smooth[prod_id_str] = new_res_array  # noqa E501
 
     def set_basic_product_common_smooth(self, prod_id_str, res, new_product):
         """write a basic product that was smoothed with onto a common grid to storage
@@ -177,7 +198,10 @@ class DataStorage(object):
 
     def get_prod_res_entry(self, prod_id_str, resolution, source, what_str, where_str):
         try:
-            result = self.data[source][resolution][prod_id_str]
+            if resolution is not None:
+                result = self.data[source][resolution][prod_id_str]
+            else:
+                result = self.data[source][prod_id_str]
         except AttributeError:
             raise NotFoundInStorage('{0} {1}'.format(what_str, prod_id_str),
                                     '{0} {1}'.format(where_str, RESOLUTION_STR[resolution]))
@@ -188,8 +212,99 @@ class DataStorage(object):
             return result
         else:
             # Dict returns {} instead of AttributeError
-            raise NotFoundInStorage('{0} {1}'.format(what_str, prod_id_str),
-                                    '{0} {1}'.format(where_str, RESOLUTION_STR[resolution]))
+            if resolution is not None:
+                raise NotFoundInStorage('{0} {1}'.format(what_str, prod_id_str),
+                                        '{0} {1}'.format(where_str, RESOLUTION_STR[resolution]))
+            else:
+                raise NotFoundInStorage('{0} {1}'.format(what_str, prod_id_str),
+                                        '{0}'.format(where_str))
+
+
+    def basic_product_raw(self, prod_id_str):
+        """a basic product, derived without smoothing
+
+        Args:
+            prod_id_str (str):  product id
+
+        Returns:
+            :obj:`Products` the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+
+        return self.get_prod_res_entry(prod_id_str, None,
+                                       'basic_products_raw',
+                                       'product',
+                                       'basic products without smoothing')
+
+    def basic_product_auto_smooth(self, prod_id_str):
+        """a basic product, derived with automatic smooth
+
+        Args:
+            prod_id_str (str):  product id
+
+        Returns:
+            :obj:`Products` the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+
+        return self.get_prod_res_entry(prod_id_str, None,
+                                       'basic_products_auto_smooth',
+                                       'product',
+                                       'basic products with automatic smoothing')
+
+    def binres_auto_smooth(self, prod_id_str):
+        """ bin resolution profile of a product
+
+        The bin resolution corresponds to the automatically derived vertical resolution
+        of a basic product.
+        The transformation between bin resolution and effective
+        vertical resolution is done with :obj:`GetEffVertRes` and
+        :obj:`GetUsedBinRes` corresponding to the retrieval method of the product
+
+        Args:
+            prod_id_str (str): product id
+
+        Returns: xarray.DataArray
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and resolution was found in storage
+        """
+        return self.get_prod_res_entry(prod_id_str, None,
+                                       'binres_auto_smooth',
+                                       'automatically derived bin resolution profile',
+                                       'product {0}'.format(prod_id_str))
+
+    def binres_common_smooth(self, prod_id_str, resolution):
+        """ bin resolution profile of a product
+
+        The bin resolution corresponds to the common vertical resolution
+        of all basic and derived products. Some products are smoothed with
+        high resolution and low resolution.
+        The transformation between bin resolution and effective
+        vertical resolution is done with :obj:`GetEffVertRes` and
+        :obj:`GetUsedBinRes` corresponding to the retrieval method of the product
+
+        Args:
+            prod_id_str (str): product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns: xarray.DataArray
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and resolution was found in storage
+        """
+        return self.get_prod_res_entry(prod_id_str, resolution,
+                                       'binres_common_smooth',
+                                       'common bin resolution profile',
+                                       'product {0} in '.format(prod_id_str))
 
     def basic_product_common_smooth(self, prod_id_str, resolution):
         """a basic product, derived with common smooth
@@ -256,31 +371,6 @@ class DataStorage(object):
 
         return result
 
-
-    def binres_common_smooth(self, prod_id_str, resolution):
-        """ bin resolution profile of a product
-
-        The bin resolution corresponds to the common vertical resolution
-        of all basic and derived products. Some products are smoothed with
-        high resolution and low resolution.
-        The transformation between bin resolution and effective
-        vertical resolution is done with :obj:`GetEffVertRes` and
-        :obj:`GetUsedBinRes` corresponding to the retrieval method of the product
-
-        Args:
-            prod_id_str (str): product id
-            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
-
-        Returns: xarray.DataArray
-
-        Raises:
-             NotFoundInStorage: if no entry for the given product id
-                and resolution was found in storage
-        """
-        return self.get_prod_res_entry(prod_id_str, resolution,
-                                       'binres_common_smooth',
-                                       'common bin resolution profile',
-                                       'product {0} in '.format(prod_id_str))
 
     def final_product_matrix(self, prod_type, res):
         """ 3-dimensional (wavelength, time, altitude) data matrix
