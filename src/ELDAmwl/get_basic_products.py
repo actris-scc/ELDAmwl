@@ -84,12 +84,18 @@ class GetBasicProductsDefault(BaseOperation):
 
 
     def get_auto_smooth_products(self):
+        """get all basic products with automatic smoothing
+
+        """
         self.get_raman_bsc_auto_smooth()
         self.get_extinctions_auto_smooth()
         # todo: get elast_bsc
         # todo: get vol_depol
 
     def get_common_smooth_products(self):
+        """get all basic products with pre-defined smoothing
+
+        """
         self.get_extinctions_fixed_smooth()
         self.get_raman_bsc_fixed_smooth()
         # todo: elsat_bsc
@@ -97,6 +103,9 @@ class GetBasicProductsDefault(BaseOperation):
 
 
     def get_extinctions_auto_smooth(self):
+        """get extinction products with automatic smoothing
+
+        """
         for ext_param in self.product_params.extinction_products():
             extinction = ExtinctionFactory()(
                 data_storage=self.data_storage,
@@ -107,6 +116,9 @@ class GetBasicProductsDefault(BaseOperation):
                 ext_param.prod_id_str, extinction)
 
     def get_extinctions_fixed_smooth(self):
+        """get extinction products with pre-defined smoothing
+
+        """
         for ext_param in self.product_params.extinction_products():
             for res in RESOLUTIONS:
                 if ext_param.calc_with_res(res):

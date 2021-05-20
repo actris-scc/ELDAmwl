@@ -3,21 +3,25 @@
 from addict import Dict
 from copy import deepcopy
 from ELDAmwl.base import Params
+from ELDAmwl.cached_functions import sg_coeffs, smooth_routine_from_db
 from ELDAmwl.configs.config import RANGE_BOUNDARY_KM
-from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, MC, AUTO, FIXED, HIGHRES, LOWRES, RESOLUTION_STR
+from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, MC, AUTO, FIXED, HIGHRES, LOWRES, RESOLUTION_STR, NC_FILL_STR, \
+    CALC_WINDOW_OUTSIDE_PROFILE
 from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import EXT
 from ELDAmwl.constants import MERGE_PRODUCT_USE_CASES
 from ELDAmwl.constants import NC_FILL_BYTE
 from ELDAmwl.constants import NC_FILL_INT
 from ELDAmwl.constants import RBSC
+from ELDAmwl.factory import BaseOperationFactory, BaseOperation
 from ELDAmwl.mwl_file_structure import UNITS
 from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query, get_smooth_params_query, \
     get_quality_params_query
-from ELDAmwl.exceptions import DetectionLimitZero, NotEnoughMCIterations
+from ELDAmwl.exceptions import DetectionLimitZero, NotEnoughMCIterations, SizeMismatch, UseCaseNotImplemented
 from ELDAmwl.log import logger
 from ELDAmwl.mwl_file_structure import NC_VAR_NAMES, error_method_var
 from ELDAmwl.rayleigh import RayleighLidarRatio
+from ELDAmwl.registry import registry
 from ELDAmwl.signals import Signals
 
 import numpy as np
@@ -26,6 +30,7 @@ import xarray as xr
 
 class Products(Signals):
     p_params = None
+    smooth_routine = None  # class to perform smoothing
 
     @classmethod
     def from_signal(cls, signal, p_params):
@@ -51,6 +56,9 @@ class Products(Signals):
         result.mwl_meta_id = '{}_{}'.format(NC_VAR_NAMES[p_params.general_params.product_type],
                                             round(float(result.emission_wavelength)))
 
+        if result.params.smooth_method is not None:
+            result.smooth_routine = SmoothRoutine()(method_id=result.params.smooth_method)
+
         return result
 
     def smooth(self, binres):
@@ -62,7 +70,38 @@ class Products(Signals):
         Returns:
 
         """
-        pass
+
+        if self.data.shape != binres.shape:
+            raise SizeMismatch('bin resolution',
+                               'product {}'.format(self.params.prod_id_str),
+                               'smooth')
+        num_times = self.ds.dims['time']
+        num_levels = self.ds.dims['level']
+        # first bin of the smooth window
+        fb = binres.level - binres // 2
+        # next bin after smooth window
+        nb = binres.level + binres // 2 + 1
+
+        for t in range(num_times):
+            # first and last smoothable bins
+            fsb = np.where(fb[:,t] >= 0)[0][0]
+            lsb = np.where(nb[:,t] > num_levels)[0][0] # actually, this is not the last smoothable bin, but the one after that
+            # keep this notation in order to avoid lsb + 1 everywhere
+
+            for lev in range(fsb, lsb):
+                self.qf[t,lev] = np.bitwise_or.reduce(self.qf.values[t, int(fb[lev,t]):int(nb[lev,t])])
+                smoothed = self.smooth_routine.run(window=int(binres[t,lev]),
+                                                   data=self.data.values[t, int(fb[lev,t]):int(nb[lev,t])],
+                                                   err=self.err.values[t, int(fb[lev,t]):int(nb[lev,t])])
+                self.data[t,lev] = smoothed.data
+                self.err[t,lev] = smoothed.err
+                self.binres[t,lev] = binres[t,lev]
+
+            for lev in range(fsb):
+                self.set_invalid_point(t, lev, CALC_WINDOW_OUTSIDE_PROFILE)
+            for lev in range(lsb, num_levels):
+                self.set_invalid_point(t, lev, CALC_WINDOW_OUTSIDE_PROFILE)
+
 
     def save_to_netcdf(self):
         pass
@@ -442,3 +481,86 @@ class SmoothParams(Params):
         query = get_smooth_params_query(prod_id)
         result = cls.from_query(query)
         return result
+
+
+class SmoothSavGolay(BaseOperation):
+    """smoothes a profile window with Savitzky-Golay method
+
+    """
+
+    name = 'SmoothSavGolay'
+
+    def run(self, **kwargs):
+        """
+        starts the calculation.
+
+        in scipy.signal.savgol_filter, the filtering is done as
+        convolution (scipy.ndimage.convolve1d ) of the data and SG coefficients:
+         result=convolve1d(data,sgc.
+         Here, the filtering can be done as simple sum (which is supposedly faster)
+
+        Keyword Args:
+            window(integer): total length (diameter) of the smooth window. must be an odd number
+            data(): ndarray (size=window) which contains the data to be smoothed
+            err(): ndarray (size=window) which contains the errors of the data to be smoothed
+
+        Returns:
+            addict.Dict with keys 'data' and 'err' which contains the smoothed data and its error
+
+        """
+        assert 'window' in kwargs
+        assert 'data' in kwargs
+        assert 'err' in kwargs
+
+        win = kwargs['window']
+        err = kwargs['err']
+        data = kwargs['data']
+
+        sgc = sg_coeffs(win,2)
+        err_sm = np.sqrt(np.sum(np.power(err*sgc, 2)))
+        data_sm = np.sum(data*sgc)
+
+        return Dict({'data': data_sm, 'err': err_sm})
+
+
+class SmoothSlidingAverage(BaseOperation):
+    """calculates Raman backscatter profile like in ansmann et al 1992"""
+
+    name = 'SmoothSlidingAverage'
+
+    def run(self, **kwargs):
+        raise UseCaseNotImplemented('SmoothSlidingAverage',
+                                    'smoothing',
+                                    'sliding average')
+
+class SmoothRoutine(BaseOperationFactory):
+    """
+    Creates a Class for smoothing
+
+    Keyword Args:
+    """
+
+    name = 'SmoothRoutine'
+    method_id = None
+
+    def __call__(self, **kwargs):
+        assert 'method_id' in kwargs
+        self.method_id = kwargs['method_id']
+        res = super(SmoothRoutine, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """ reads from SCC db which algorithm to use
+
+        Returns: name of the class for the smoothing
+        """
+        return smooth_routine_from_db(self.method_id)
+
+
+registry.register_class(SmoothRoutine,
+                        SmoothSavGolay.__name__,
+                        SmoothSavGolay)
+
+registry.register_class(SmoothRoutine,
+                        SmoothSlidingAverage.__name__,
+                        SmoothSlidingAverage)

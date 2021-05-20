@@ -821,3 +821,16 @@ def read_system_id(measurement_id):
     #     else:
     #         for filenames in psf_query:
     #             logger.notice(product_id, filenames.filename)
+
+def read_smooth_routine(method_id):
+    """ read from db which routine shall be used for smoothing
+
+        Args:
+            method_id (int): the id of the smooth method
+
+        Returns:
+            str: name of the BaseOperation class to be used
+
+        """
+    return(read_algorithm(method_id, SmoothMethod))
+

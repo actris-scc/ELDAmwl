@@ -27,6 +27,20 @@ class FillTableFailed(ELDAmwlException):
     Raised when the import of a DB table failed; can occur only while testing
     """
 
+class SizeMismatch(ELDAmwlException):
+    """
+    Raised when profiles of different sizes are to be combined
+    """
+    def __init__(self, profile1_name, profile2_name, function_name):
+        self.profile1_name = profile1_name
+        self.profile2_name = profile2_name
+        self.function_name = function_name
+
+    def __str__(self):
+        return('sizes of profiles {0} and {1} do not fit in function{2}'
+               .format(self.profile1_name,
+                       self. profile2_name,
+                       self.function_name))
 
 class OnlyOneOverrideAllowed(ELDAmwlException):
     """
