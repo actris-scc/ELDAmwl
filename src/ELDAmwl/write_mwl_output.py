@@ -10,7 +10,7 @@ from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.mwl_file_structure import GENERAL, META_DATA, WRITE_MODE, GROUP_NAME, RES_GROUP, MAIN_GROUPS, NC_VAR_NAMES
 from ELDAmwl.registry import registry
 from ELDAmwl.configs.config import PRODUCT_PATH
-from ELDAmwl.constants import ELDA_MWL_VERSION, MWL, EXT, LOWRES, HIGHRES
+from ELDAmwl.constants import ELDA_MWL_VERSION, MWL, EXT, LOWRES, HIGHRES, RBSC
 from ELDAmwl.constants import RESOLUTIONS
 from ELDAmwl.exceptions import NotFoundInStorage
 
@@ -52,12 +52,12 @@ class WriteMWLOutputDefault(BaseOperation):
         # read meta data of all products into meta_data
         for id, param in self.product_params.product_list.items():
             # todo: remove limit to EXT when other prod types are included
-            if param.calc_with_res(LOWRES) and param.product_type == EXT:
+            if param.calc_with_res(LOWRES) and param.product_type in [EXT, RBSC]:
                 prod = self.data_storage.product_common_smooth(id, LOWRES)
-            elif param.product_type == EXT:
+            elif param.product_type in [EXT, RBSC]:
                 prod = self.data_storage.product_common_smooth(id, HIGHRES)
 
-            if param.product_type == EXT:
+            if param.product_type in [EXT, RBSC]:
                 prod.to_meta_ds_dict(self.meta_data)
 
     def write_groups(self):
@@ -100,10 +100,9 @@ class WriteMWLOutputDefault(BaseOperation):
             p_types = self.product_params.prod_types(res=res)
 
             # todo: remove limit to EXT when other prod types are included
-            if EXT in p_types:
-                p_types=[EXT]
-            else:
-                p_types = []
+            for pt in p_types:
+                if pt not in [EXT, RBSC]:
+                    p_types.remove(pt)
 
             # todo cloudmask shall have common altitude, time and timebounds variables
             group_data.data_vars.cloud_mask = self.data_storage.get_common_cloud_mask(res)

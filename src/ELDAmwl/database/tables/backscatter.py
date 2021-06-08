@@ -39,6 +39,20 @@ class BscCalibrOption(Base):
                                       server_default=text("'-1'"))
 
 
+class BscMethod(Base):
+    """content of the db table _bsc_methods
+
+    """
+
+    __tablename__ = '_bsc_methods'
+
+    ID = Column(INTEGER,
+                primary_key=True,
+                server_default=text("'0'"))
+    method = Column(String(100),
+                    nullable=False,
+                    server_default=text("''"))
+
 class RamanBscMethod(Base):
     """content of the db table _ram_bsc_methods
 

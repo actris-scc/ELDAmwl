@@ -238,3 +238,14 @@ ALTER TABLE `elast_backscatter_options`
 ALTER TABLE `raman_backscatter_options`
 	ADD COLUMN `_smooth_method_ID` INT(11) NOT NULL DEFAULT '0' AFTER `_error_method_ID`,
 	ADD INDEX `_smooth_method_ID` (`_smooth_method_ID`);
+
+#-------------------------
+CREATE TABLE `_bsc_methods` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `method` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+);
+
+INSERT INTO `_bsc_methods` (`id`, `method`) VALUES
+	(0, 'Raman'),
+	(1, 'elastic_backscatter');

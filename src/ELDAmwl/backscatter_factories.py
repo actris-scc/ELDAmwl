@@ -101,6 +101,22 @@ class BackscatterParams(ProductParams):
             logger.debug('channel {0} is no elast signal'.
                          format(signal.channel_id_str))
 
+    def to_meta_ds_dict(self, dict):
+        """
+        writes parameter content into Dict for further export in mwl file
+        Args:
+            dict (addict.Dict): is a dict which will be converted into dataset.
+                            has the keys 'attrs' and 'data_vars'
+
+        Returns:
+
+        """
+        pass
+        # dict.data_vars.assumed_angstroem_exponent = self.ang_exp_asDataArray
+        # dict.data_vars.evaluation_algorithm = ext_method_var(self.ext_method)
+
+        # if self.correct_ovl:
+            # dict.attrs.overlap_correction_file = self.ovl_filename
 
 class Backscatters(Products):
     """
@@ -127,6 +143,12 @@ class Backscatters(Products):
 
         return result
 
+    def to_meta_ds_dict(self, meta_data):
+        # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
+        # and attributes it with key self.mwl_meta_id to meta_data
+        super(Backscatters, self).to_meta_ds_dict(meta_data)
+        dict = meta_data[self.mwl_meta_id]
+        self.params.to_meta_ds_dict(dict)
 
 class BackscatterFactory(BaseOperationFactory):
     """

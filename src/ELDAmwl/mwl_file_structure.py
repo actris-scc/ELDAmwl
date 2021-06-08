@@ -5,9 +5,11 @@ from addict import Dict
 import xarray as xr
 import numpy as np
 
-from ELDAmwl.constants import LOWRES, HIGHRES, RESOLUTION_STR, NC_FILL_BYTE, MC, ASS
+from ELDAmwl.constants import LOWRES, HIGHRES, RESOLUTION_STR, NC_FILL_BYTE, MC, ASS, ELAST, RAMAN
 from ELDAmwl.constants import RBSC, EBSC, EXT, LR, AE, CR, VLDR, PLDR
-from ELDAmwl.database.db_functions import read_ext_algorithms
+from ELDAmwl.database.db_functions import read_ext_algorithms, read_algorithm_options
+from ELDAmwl.database.tables.backscatter import RamanBscMethod
+from ELDAmwl.database.tables.extinction import ExtMethod
 
 GENERAL = 0
 META_DATA = 1
@@ -108,19 +110,50 @@ def error_method_var(value):
                               '_FillValue': NC_FILL_BYTE})
     return var
 
-def ext_method_var(value):
-    ext_methods = read_ext_algorithms()
+def method_var_from_db(value, db_table, name, long_name):
+    """ read available algorithms or methods from db into a DataArray.
+
+    """
+    methods = read_algorithm_options(db_table)
     values=[]
     meanings = []
-    for v, m in ext_methods.items():
+    for v, m in methods.items():
         values.append(np.int8(v))
         meanings.append(m.replace(' ', '_'))
     meanings_str = ' '.join(meanings)
 
     var = xr.DataArray(np.int8(value),
-                       name='evaluation_algorithm',
-                       attrs={'long_name': 'algorithm used for the extinction retrieval',
+                       name=name,
+                       attrs={'long_name': long_name,
                               'flag_values': values,
                               'flag_meanings': meanings_str,
                               '_FillValue': NC_FILL_BYTE})
     return var
+
+def ext_algorithm_var(value):
+    result = method_var_from_db(value,
+                                ExtMethod,
+                                'evaluation_algorithm',
+                                'algorithm used for the extinction retrieval')
+
+    return result
+
+def ram_bsc_algorithm_var(value):
+    result = method_var_from_db(value,
+                                RamanBscMethod,
+                                'evaluation_algorithm',
+                                'algorithm used for the retrieval of the Raman backscatter profile')
+
+    return result
+
+def bsc_method_var(value):
+    # see table BscMethod
+    var = xr.DataArray(np.int8(value),
+                       name='backscatter_evaluation_method',
+                       attrs={'long_name': 'method used for the backscatter retrieval',
+                              'flag_values': [np.int8(RAMAN), np.int8(ELAST)],
+                              'flag_meanings': 'Raman elastic_backscatter',
+                              '_FillValue': NC_FILL_BYTE})
+
+    return var
+

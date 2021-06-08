@@ -119,15 +119,16 @@ def read_usedbin_algorithm(method_id, method_table):
                      .format(methods.count()))
 
 
-def read_ext_algorithms():
-    """read id's and names of all extinction algorithms from db
+def read_algorithm_options(method_table):
+    """read id's and names of all algorithm options from table
         Args:
+            method_table(Base): class which represents the db table with available methods
 
         Returns:
             addict.Dict: keys= id's, values = names
 
     """
-    options = dbutils.session.query(ExtMethod)
+    options = dbutils.session.query(method_table)
 
     if options.count() > 0:
         result = {}
@@ -135,7 +136,7 @@ def read_ext_algorithms():
             result[o.ID] = o.method
         return Dict(result)
     else:
-        logger.error('found no extinction algorithms in db')
+        logger.error('found no algorithms in db')
 
 def read_ext_method_id(product_id):
     """

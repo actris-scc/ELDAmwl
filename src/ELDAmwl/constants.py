@@ -71,16 +71,18 @@ REFLECTED = 2
 CHANNEL_GEOMETRIES = [TRANSMITTED, REFLECTED]
 
 # ====== error calculation methods ======
+# todo: write method ids in db and read from there
 MC = 0
 ASS = 1
 
 ERROR_METHODS = [MC, ASS]
 
-# ====== smooth methods ======
+# ====== smooth types ======
+# todo: write method ids in db and read from there
 AUTO = 0
 FIXED = 1
 
-SMOOTH_METHODS = [AUTO, FIXED]
+SMOOTH_TYPES = [AUTO, FIXED]
 
 # ====== time and vertical resolutions ======
 LOWRES = 0
@@ -89,11 +91,19 @@ HIGHRES = 1
 RESOLUTIONS = [LOWRES, HIGHRES]
 RESOLUTION_STR = ['lowres', 'highres']
 
-# ====== elast bsc methods ======
+# ====== bsc methods ======
+# todo: write method ids in db and read from there
+RAMAN = 0  # Raman
+ELAST = 1  # elastic
+
+BSC_METHODS = [RAMAN, ELAST]
+
+# ====== elast bsc algorithms ======
+# todo: write method ids in db and read from there
 KF = 0  # Klett-Fernald
 IT = 1  # iterative
 
-ELAST_BSC_METHODS = [KF, IT]
+ELAST_BSC_ALGORITHMS = [KF, IT]
 
 # ====== lidar ratio input methods ======
 PROFILE = 0
@@ -101,11 +111,12 @@ FIXED = 1
 
 LR_INPUT_METHODS = [PROFILE, FIXED]
 
-# ====== Raman bsc methods ======
+# ====== Raman bsc algorithms ======
+# todo: write method ids in db and read from there
 ANSM = 0  # Ansmann
 BR = 1  # via backscatter ratio
 
-RAMAN_BSC_METHODS = [ANSM, BR]
+RAMAN_BSC_ALGORITHMS = [ANSM, BR]
 
 # ====== fill values ======
 NC_FILL_BYTE = -127

@@ -36,7 +36,7 @@ class GetProductMatrixDefault(BaseOperation):
         alt_axis = None
 
         for param in params:
-            if (alt_axis is None) and (param.product_type==EXT):  # todo: remove limit to EXT when other prod types are included
+            if (alt_axis is None) and (param.product_type in [EXT, RBSC]):  # todo: remove limit to EXT when other prod types are included
                 product = self.data_storage.product_common_smooth(param.prod_id_str, res)
                 alt_axis = product.altitude
             else:
@@ -59,10 +59,9 @@ class GetProductMatrixDefault(BaseOperation):
             p_types = self.product_params.prod_types(res=res)
 
             # todo: remove limit to EXT when other prod types are included
-            if EXT in p_types:
-                p_types=[EXT]
-            else:
-                p_types = []
+            for pt in p_types:
+                if pt not in [EXT, RBSC]:
+                    p_types.remove(pt)
 
             self.shape = self.get_common_shape(res)
 

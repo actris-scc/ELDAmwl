@@ -494,9 +494,10 @@ class SmoothSavGolay(BaseOperation):
         """
         starts the calculation.
 
-        in scipy.signal.savgol_filter, the filtering is done as
+        in scipy.signal.savgol_filter (https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html),
+        the filtering is done as
         convolution (scipy.ndimage.convolve1d ) of the data and SG coefficients:
-         result=convolve1d(data,sgc.
+         result=convolve1d(data,sgc).
          Here, the filtering can be done as simple sum (which is supposedly faster)
 
         Keyword Args:
