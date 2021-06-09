@@ -78,7 +78,7 @@ class GetBasicProductsDefault(BaseOperation):
                 used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
                 for res in RESOLUTIONS:
                     dummy_sig = deepcopy(self.data_storage.prepared_signals(pid)[0])
-                    if prod_param.calc_with_res(res):
+                    if prod_param in self.product_params.all_products_of_res(res) :
                         binres = dummy_sig.get_binres_from_fixed_smooth(sp, res, used_binres_routine=used_binres_routine)
                         self.data_storage.set_binres_common_smooth(pid, res, binres)
 
@@ -158,11 +158,11 @@ class GetBasicProductsDefault(BaseOperation):
             ).get_product()
 
             for res in RESOLUTIONS:
-                if bsc_param.calc_with_res(res):
+                if bsc_param in self.product_params.all_products_of_res(res):
                     smooth_bsc = deepcopy(bsc)
                     smooth_bsc.smooth(self.data_storage.binres_common_smooth(bsc_param.prod_id_str, res))
                     self.data_storage.set_basic_product_common_smooth(
-                        bsc_param.prod_id_str, res, bsc)
+                        bsc_param.prod_id_str, res, smooth_bsc)
 
 
 class GetBasicProducts(BaseOperationFactory):

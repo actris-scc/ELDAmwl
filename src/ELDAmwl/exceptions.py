@@ -68,7 +68,7 @@ class NotFoundInStorage(ELDAmwlException):
         self.where = where
 
     def __str__(self):
-        return('cannot find {what} for {where} '
+        return('cannot find {0} for {1} '
                'in data storage'.format(self.what, self.where))
 
 
