@@ -7,8 +7,8 @@ import numpy as np
 
 from ELDAmwl.constants import LOWRES, HIGHRES, RESOLUTION_STR, NC_FILL_BYTE, MC, ASS, ELAST, RAMAN
 from ELDAmwl.constants import RBSC, EBSC, EXT, LR, AE, CR, VLDR, PLDR
-from ELDAmwl.database.db_functions import read_ext_algorithms, read_algorithm_options
-from ELDAmwl.database.tables.backscatter import RamanBscMethod
+from ELDAmwl.database.db_functions import read_algorithm_options
+from ELDAmwl.database.tables.backscatter import RamanBscMethod, ElastBscMethod, BscMethod, BscCalibrMethod
 from ELDAmwl.database.tables.extinction import ExtMethod
 
 GENERAL = 0
@@ -146,14 +146,61 @@ def ram_bsc_algorithm_var(value):
 
     return result
 
-def bsc_method_var(value):
-    # see table BscMethod
-    var = xr.DataArray(np.int8(value),
-                       name='backscatter_evaluation_method',
-                       attrs={'long_name': 'method used for the backscatter retrieval',
-                              'flag_values': [np.int8(RAMAN), np.int8(ELAST)],
-                              'flag_meanings': 'Raman elastic_backscatter',
-                              '_FillValue': NC_FILL_BYTE})
+def elast_bsc_algorithm_var(value):
+    result = method_var_from_db(value,
+                                ElastBscMethod,
+                                'evaluation_algorithm',
+                                'algorithm used for the retrieval of the elastic backscatter profile')
 
+    return result
+
+def bsc_method_var(value):
+    result = method_var_from_db(value,
+                                BscMethod,
+                                'backscatter_retrieval_method',
+                                'method used for the backscatter retrieval')
+
+    return result
+
+def bsc_calibr_method_var(value):
+    # todo different values for min of signal ratio and min of elast signal
+    result = method_var_from_db(value,
+                                BscCalibrMethod,
+                                'backscatter_calibration_range_search_algorithm',
+                                'algorithm used for the search of the calibration_range')
+
+    return result
+
+def cal_search_range_var(value):
+    """
+
+    Args:
+        value: addict.Dict() with 2 items
+
+    Returns:
+
+    """
+    data = list(value.values())
+    var = xr.DataArray(data,
+                       dims=('nv',),
+                       name='calibration_search_range',
+                       attrs={'long_name': 'height range wherein calibration range is searched',
+                              '_FillValue': np.nan,
+                              'units': 'm'})
     return var
 
+def bsc_calibr_value_var(value):
+    """
+
+    Args:
+        value (dbl):
+
+    Returns:
+
+    """
+    var = xr.DataArray(np.float(value),
+                       name='calibration_value',
+                       attrs={'long_name': 'assumed backscatter-ratio value (unitless) in calibration range',
+                              '_FillValue': np.nan,
+                              'units': '1'})
+    return var

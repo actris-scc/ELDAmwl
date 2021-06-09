@@ -3,7 +3,7 @@
 
 from ELDAmwl.backscatter_factories import BackscatterParams
 from ELDAmwl.base import Params
-from ELDAmwl.constants import IT
+from ELDAmwl.constants import IT, ELAST
 from ELDAmwl.constants import NC_FILL_INT
 from ELDAmwl.database.db_functions import read_elast_bsc_params
 from ELDAmwl.database.db_functions import read_iter_bsc_params
@@ -11,6 +11,8 @@ from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 
 import numpy as np
+
+from ELDAmwl.mwl_file_structure import elast_bsc_algorithm_var
 
 
 class ElastBscParams(BackscatterParams):
@@ -20,7 +22,8 @@ class ElastBscParams(BackscatterParams):
         self.sub_params += ['iter_params']
         self.iter_params = None
 
-        self.elast_bsc_method = None
+        self.bsc_method = ELAST
+        self.elast_bsc_algorithm = None
         self.lr_input_method = None
 
     def from_db(self, general_params):
@@ -28,13 +31,29 @@ class ElastBscParams(BackscatterParams):
 
         ebp = read_elast_bsc_params(general_params.prod_id)
 
-        self.elast_bsc_method = ebp['elast_bsc_method']
-        if self.elast_bsc_method == IT:
+        self.elast_bsc_algorithm = ebp['elast_bsc_method']
+        if self.elast_bsc_algorithm == IT:
             self.iter_params = IterBscParams.from_db(general_params)  # noqa E501
 
         self.lr_input_method = ebp['lr_input_method']
 
         self.get_error_params(ebp)
+
+    def to_meta_ds_dict(self, dict):
+        """
+        writes parameter content into Dict for further export in mwl file
+        Args:
+            dict (addict.Dict): is a dict which will be converted into dataset.
+                            has the keys 'attrs' and 'data_vars'
+
+        Returns:
+
+        """
+        super(ElastBscParams, self).to_meta_ds_dict(dict)
+        dict.data_vars.evaluation_algorithm = elast_bsc_algorithm_var(self.elast_bsc_algorithm)
+        if self.iter_params is not None:
+            self.iter_params.to_meta_ds_dict(dict)
+
 
 
 class IterBscParams(Params):
@@ -55,6 +74,17 @@ class IterBscParams(Params):
 
         return result
 
+    def to_meta_ds_dict(self, dict):
+        """
+        writes parameter content into Dict for further export in mwl file
+        Args:
+            dict (addict.Dict): is a dict which will be converted into dataset.
+                            has the keys 'attrs' and 'data_vars'
+
+        Returns:
+
+        """
+        pass
 
 class ElastBscEffBinRes(BaseOperationFactory):
     """

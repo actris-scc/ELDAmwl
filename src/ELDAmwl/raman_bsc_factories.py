@@ -8,7 +8,7 @@ from ELDAmwl.backscatter_factories import BackscatterParams
 from ELDAmwl.backscatter_factories import Backscatters
 from ELDAmwl.base import DataPoint
 from ELDAmwl.cached_functions import sg_used_binres
-from ELDAmwl.constants import NC_FILL_STR, MC
+from ELDAmwl.constants import NC_FILL_STR, MC, RAMAN
 from ELDAmwl.constants import RAYL_LR
 from ELDAmwl.database.db_functions import read_raman_bsc_algorithm, read_raman_bsc_effbin_algorithm, \
     read_raman_bsc_usedbin_algorithm
@@ -18,6 +18,7 @@ from ELDAmwl.exceptions import UseCaseNotImplemented
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
+from ELDAmwl.mwl_file_structure import ram_bsc_algorithm_var
 from ELDAmwl.products import MCParams
 from ELDAmwl.registry import registry
 from ELDAmwl.signals import Signals
@@ -32,23 +33,34 @@ class RamanBscParams(BackscatterParams):
         super(RamanBscParams, self).__init__()
         self.raman_sig_id = None
 
-        self.raman_bsc_method = None
+        self.raman_bsc_algorithm = None
+        self.bsc_method = RAMAN
 
     def from_db(self, general_params):
         super(RamanBscParams, self).from_db(general_params)
 
         rbp = read_raman_bsc_params(general_params.prod_id)
-        self.raman_bsc_method = rbp['ram_bsc_method']
+        self.raman_bsc_algorithm = rbp['ram_bsc_method']
         self.get_error_params(rbp)
         self.smooth_params.smooth_method = rbp['smooth_method']
-
-
 
     def add_signal_role(self, signal):
         super(RamanBscParams, self).add_signal_role(signal)
         if signal.is_Raman_sig:
             self.raman_sig_id = signal.channel_id_str
 
+    def to_meta_ds_dict(self, dict):
+        """
+        writes parameter content into Dict for further export in mwl file
+        Args:
+            dict (addict.Dict): is a dict which will be converted into dataset.
+                            has the keys 'attrs' and 'data_vars'
+
+        Returns:
+
+        """
+        super(RamanBscParams, self).to_meta_ds_dict(dict)
+        dict.data_vars.evaluation_algorithm = ram_bsc_algorithm_var(self.raman_bsc_algorithm)
 
 class RamanBackscatters(Backscatters):
 
@@ -74,6 +86,8 @@ class RamanBackscatters(Backscatters):
 
         if calibr_window is None:
             calibr_window = p_params.calibr_window
+
+        result.calibr_window = calibr_window
 
         cal_first_lev = sigratio.heights_to_levels(
             calibr_window[:, 0])

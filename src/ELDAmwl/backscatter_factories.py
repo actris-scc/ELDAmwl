@@ -9,6 +9,7 @@ from ELDAmwl.exceptions import CalRangeHigherThanValid
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
+from ELDAmwl.mwl_file_structure import bsc_method_var, bsc_calibr_method_var, cal_search_range_var, bsc_calibr_value_var
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.registry import registry
@@ -23,7 +24,7 @@ class BscCalibrationParams(Params):
 
     def __init__(self):
         super(BscCalibrationParams, self).__init__()
-        self.cal_range_search_method = None
+        self.cal_range_search_algorithm = None
         self.WindowWidth = None
         self.cal_value = None
         self.cal_interval = Dict({'min_height': None,
@@ -36,7 +37,7 @@ class BscCalibrationParams(Params):
         query = get_bsc_cal_params_query(general_params.prod_id,
                                          general_params.product_type)
 
-        result.cal_range_search_method = \
+        result.cal_range_search_algorithm = \
             query.BscCalibrOption._calRangeSearchMethod_ID
         result.window_width = \
             float(query.BscCalibrOption.WindowWidth)
@@ -56,11 +57,25 @@ class BscCalibrationParams(Params):
                  other.cal_interval.max_height) or \
                 (self.window_width != other.window_width) or \
                 (self.cal_value != other.cal_value) or \
-                (self.cal_range_search_method !=
-                 other.cal_range_search_method):
+                (self.cal_range_search_algorithm !=
+                 other.cal_range_search_algorithm):
             result = False
 
         return result
+
+    def to_meta_ds_dict(self, dict):
+        """
+        writes parameter content into Dict for further export in mwl file
+        Args:
+            dict (addict.Dict): is a dict which will be converted into dataset.
+                            has the keys 'attrs' and 'data_vars'
+
+        Returns:
+
+        """
+        dict.data_vars.calibration_range_search_algorithm = bsc_calibr_method_var(self.cal_range_search_algorithm)
+        dict.data_vars.calibration_search_range = cal_search_range_var(self.cal_interval)
+        dict.data_vars.calibration_value = bsc_calibr_value_var(self.cal_value)
 
 
 class BackscatterParams(ProductParams):
@@ -74,6 +89,8 @@ class BackscatterParams(ProductParams):
         self.refl_sig_id = None
         self.cross_sig_id = None
         self.parallel_sig_id = None
+        self.bsc_method = None
+
 
     def from_db(self, general_params):
         super(BackscatterParams, self).from_db(general_params)
@@ -111,12 +128,8 @@ class BackscatterParams(ProductParams):
         Returns:
 
         """
-        pass
-        # dict.data_vars.assumed_angstroem_exponent = self.ang_exp_asDataArray
-        # dict.data_vars.evaluation_algorithm = ext_method_var(self.ext_method)
-
-        # if self.correct_ovl:
-            # dict.attrs.overlap_correction_file = self.ovl_filename
+        dict.data_vars.retrieval_method = bsc_method_var(self.bsc_method)
+        self.calibration_params.to_meta_ds_dict(dict)
 
 class Backscatters(Products):
     """
@@ -139,7 +152,7 @@ class Backscatters(Products):
                         first and last height of the calibration window [m]
         """
         result = super(Backscatters, cls).from_signal(signal, p_params)
-        cls.calibr_window = calibr_window
+        # cls.calibr_window = calibr_window
 
         return result
 
@@ -149,6 +162,8 @@ class Backscatters(Products):
         super(Backscatters, self).to_meta_ds_dict(meta_data)
         dict = meta_data[self.mwl_meta_id]
         self.params.to_meta_ds_dict(dict)
+        dict.data_vars.calibration_range = self.calibr_window
+
 
 class BackscatterFactory(BaseOperationFactory):
     """

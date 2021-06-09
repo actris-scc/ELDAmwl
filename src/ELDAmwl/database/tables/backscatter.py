@@ -39,6 +39,24 @@ class BscCalibrOption(Base):
                                       server_default=text("'-1'"))
 
 
+class BscCalibrMethod(Base):
+    """content of the db table _cal_range_search_methods
+
+    """
+
+    __tablename__ = '_cal_range_search_methods'
+
+    ID = Column(INTEGER,
+                primary_key=True,
+                server_default=text("'0'"))
+    method = Column(String(100),
+                    nullable=False,
+                    server_default=text("''"))
+    python_classname = Column(String(100),
+                    nullable=False,
+                    server_default=text("''"))
+
+
 class BscMethod(Base):
     """content of the db table _bsc_methods
 
