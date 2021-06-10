@@ -13,6 +13,7 @@ from ELDAmwl.database.db_functions import get_products_query
 from ELDAmwl.database.db_functions import read_mwl_product_id
 from ELDAmwl.database.db_functions import read_system_id
 from ELDAmwl.elast_bsc_factories import ElastBscParams
+from ELDAmwl.exceptions import ProductNotUnique
 from ELDAmwl.extinction_factories import ExtinctionParams
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.get_basic_products import GetBasicProducts
@@ -228,6 +229,8 @@ class MeasurementParams(Params):
             prod_params.assign_to_product_list(self.measurement_params)
 
     def prod_params(self, prod_type, wl):
+        """ returns a list with params of all products of type prod_type and wavelength wl
+         """
         prod_df = self.measurement_params.product_table
         ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.type == prod_type)]
 
@@ -238,6 +241,18 @@ class MeasurementParams(Params):
             return result
         else:
             return None
+
+    def prod_param(self, prod_type, wl):
+        """ returns exactly one param of the one product of type prod_type and wavelength wl
+         """
+        list = self.prod_params(prod_type, wl)
+
+        if list is None:
+            return None
+        elif len(list) == 1:
+            return list[0]
+        else:
+            raise ProductNotUnique(prod_type, wl)
 
     def prod_id(self, prod_type, wl):
         """

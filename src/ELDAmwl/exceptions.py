@@ -72,6 +72,19 @@ class NotFoundInStorage(ELDAmwlException):
                'in data storage'.format(self.what, self.where))
 
 
+class ProductNotUnique(ELDAmwlException):
+    """
+    Raised if there is more than one product defined with the same type and wavelength
+    """
+    def __init__(self, type, wl):
+        self.type = type
+        self.wl = wl
+
+    def __str__(self):
+        return('more than one product of type {0} and wavelength {1} '
+               .format(self.type, self.wl))
+
+
 class ELPPFileNotFound(ELDAmwlException):
     """raised when the requested ELPP file is not found
     """

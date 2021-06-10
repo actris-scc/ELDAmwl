@@ -24,7 +24,17 @@ class GetProductMatrixDefault(BaseOperation):
 
     def get_common_shape(self, res):
 
+        # all products that have been obtained with this resolution
         params = self.product_params.all_products_of_res(res)
+
+        # some of those products have been obtained as intermediate data only.
+        # E.g., Raman backscatter profiles for lidar ratio retrievals.
+        # If those products shall not be provided with this resolution,
+        # do not add them to the matrix -> delete them from params list
+        for param in params:
+            if not param.calc_with_res(res):
+                params.remove(param)
+
         if params == []:
             return None
 
@@ -80,18 +90,20 @@ class GetProductMatrixDefault(BaseOperation):
                                            })
 
                 for wl in wavelengths:
-                    # get the product id related to products type and wavelength;
+                    # get the product param related to products type and wavelength;
                     # returns None if the product does not exists
-                    prod_id = self.product_params.prod_id(ptype, wl)
-                    if prod_id is not None:
-                        # get product object from data storage
-                        prod = self.data_storage.product_common_smooth(prod_id, res)
-                        # write product data into common Dataset
-                        prod.write_data_in_ds(ds)
+                    param = self.product_params.prod_param(ptype, wl)
+                    if param is not None:
+                        if param.calc_with_res(res):
+                            prod_id = param.prod_id_str
+                            # get product object from data storage
+                            prod = self.data_storage.product_common_smooth(prod_id, res)
+                            # write product data into common Dataset
+                            prod.write_data_in_ds(ds)
 
-                        wl_idx = wavelengths.index(wl)
-                        ds.meta_data[wl_idx] = '/{}/{}'.format(GROUP_NAME[META_DATA],
-                                                               prod.mwl_meta_id)
+                            wl_idx = wavelengths.index(wl)
+                            ds.meta_data[wl_idx] = '/{}/{}'.format(GROUP_NAME[META_DATA],
+                                                                   prod.mwl_meta_id)
 
 
                 self.data_storage.set_final_product_matrix(ptype, res, ds)
