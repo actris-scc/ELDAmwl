@@ -523,12 +523,14 @@ class Signals(Columns):
         if used_binres_routine:
             self.calc_used_bin_res_routine = used_binres_routine
 
+        # get params for the lower part of the profile (below transition zone)
         tz_bottom = smooth_params.transition_zone.bottom
         tz_bottom_bin = self.height_to_levels(tz_bottom)
         vert_res_low = smooth_params.vert_res[RESOLUTION_STR[res]]['lowrange']
         binres_low = self.heightres_to_bins(vert_res_low)
         used_binres_low = self.eff_to_used_binres(binres_low)
 
+        # get params for the upper part of the profile (above transition zone)
         tz_top = smooth_params.transition_zone.top
         tz_top_bin = self.height_to_levels(tz_top)
         vert_res_high = smooth_params.vert_res[RESOLUTION_STR[res]]['highrange']

@@ -7,20 +7,27 @@ from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import EXT
 from ELDAmwl.constants import LR
 from ELDAmwl.constants import RBSC
-from ELDAmwl.elast_bsc_factories import ElastBscUsedBinRes
+from ELDAmwl.elast_bsc_factories import ElastBscUsedBinRes, ElastBscEffBinRes
 from ELDAmwl.exceptions import UseCaseNotImplemented
-from ELDAmwl.extinction_factories import ExtinctionFactory, ExtUsedBinRes
+from ELDAmwl.extinction_factories import ExtinctionFactory, ExtUsedBinRes, ExtEffBinRes
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.raman_bsc_factories import RamanBackscatterFactory, RamBscUsedBinRes
+from ELDAmwl.raman_bsc_factories import RamanBackscatterFactory, RamBscUsedBinRes, RamBscEffBinRes
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.registry import registry
 from ELDAmwl.constants import AUTO, FIXED, RESOLUTIONS
 
 
+# classes to convert effective bin resolution into bin resolution to use in retrievals
 GET_USED_BINRES_CLASSES = {RBSC: RamBscUsedBinRes,
                            EBSC: ElastBscUsedBinRes,
                            EXT: ExtUsedBinRes,
+                }
+
+# classes to convert bin resolution used in retrievals into effective resolution
+GET_EFF_BINRES_CLASSES = {RBSC: RamBscEffBinRes,
+                           EBSC: ElastBscEffBinRes,
+                           EXT: ExtEffBinRes,
                 }
 
 class GetBasicProductsDefault(BaseOperation):
