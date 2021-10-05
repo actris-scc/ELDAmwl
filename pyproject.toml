@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "ELDAmwl"
+version = "0.1.0"
+description = "ELDA multi wavelengt SCC module"
+authors = ["Ina Mattis <ina.mattis@dwd.de>"]
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4"
+addict = "*"
+colorlog = "^4.2.1"
+numpy = "^1.19.1"
+netCDF4 = "^1.5.4"
+pandas ="^1.1.1"
+pymysql = "^0.10.0"
+PyYAML = "^5.4.1"
+sqlalchemy = "^1.3.19"
+SQLAlchemy-Utils = "^0.36.8"
+scipy = "^1.5.2"
+xarray = "^0.19.0"
+isort = "^5.5.0"
+
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.8.3"
+flake8-blind-except = "^0.1.1"
+flake8-coding = "^1.3.2"
+flake8-commas = "^2.0.0"
+flake8-debugger = "^3.2.1"
+flake8-deprecated = "^1.3"
+flake8-isort = "^4.0.0"
+flake8-pep3101 = "^1.3.0"
+flake8-print = "^3.1.4"
+flake8-quotes = "^3.2.0"
+flake8-string-format = "^0.3.0"
+flake8-todo = "^0.7"
+pytest = "^6.0.1"
+pytest-mock = "*"
+sphinx = "^3.2.1"
+sphinxcontrib-qthelp = "^1.0.3"
+sphinxcontrib-serializinghtml = "^1.1.4"
+sphinx-rtd-theme = "*"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+create_test_db = 'ELDAmwl.tests.database.create_test_db'
