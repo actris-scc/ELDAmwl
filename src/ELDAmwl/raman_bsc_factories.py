@@ -7,8 +7,8 @@ from ELDAmwl.backscatter_factories import BackscatterFactoryDefault
 from ELDAmwl.backscatter_factories import BackscatterParams
 from ELDAmwl.backscatter_factories import Backscatters
 from ELDAmwl.base import DataPoint
-from ELDAmwl.cached_functions import sg_used_binres
-from ELDAmwl.constants import NC_FILL_STR, MC, RAMAN
+
+from ELDAmwl.constants import NC_FILL_STR, RAMAN
 from ELDAmwl.constants import RAYL_LR
 from ELDAmwl.database.db_functions import read_raman_bsc_algorithm, read_raman_bsc_effbin_algorithm, \
     read_raman_bsc_usedbin_algorithm
@@ -17,9 +17,7 @@ from ELDAmwl.exceptions import NoValidDataPointsForCalibration
 from ELDAmwl.exceptions import UseCaseNotImplemented
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.log import logger
 from ELDAmwl.mwl_file_structure import ram_bsc_algorithm_var
-from ELDAmwl.products import MCParams
 from ELDAmwl.registry import registry
 from ELDAmwl.signals import Signals
 
@@ -49,23 +47,24 @@ class RamanBscParams(BackscatterParams):
         if signal.is_Raman_sig:
             self.raman_sig_id = signal.channel_id_str
 
-    def to_meta_ds_dict(self, dict):
+    def to_meta_ds_dict(self, dct):
         """
         writes parameter content into Dict for further export in mwl file
         Args:
-            dict (addict.Dict): is a dict which will be converted into dataset.
+            dct (addict.Dict): is a dict which will be converted into dataset.
                             has the keys 'attrs' and 'data_vars'
 
         Returns:
 
         """
-        super(RamanBscParams, self).to_meta_ds_dict(dict)
-        dict.data_vars.evaluation_algorithm = ram_bsc_algorithm_var(self.raman_bsc_algorithm)
+        super(RamanBscParams, self).to_meta_ds_dict(dct)
+        dct.data_vars.evaluation_algorithm = ram_bsc_algorithm_var(self.raman_bsc_algorithm)
+
 
 class RamanBackscatters(Backscatters):
 
     @classmethod
-    def from_sigratio(cls, sigratio, p_params, calibr_window):
+    def from_sigratio(cls, sigratio, p_params, calibr_window=None):
         """calculates RamanBackscatters from a signal ratio.
 
         The signals were previously prepared by PrepareBscSignals .
@@ -80,12 +79,13 @@ class RamanBackscatters(Backscatters):
                                     'backscatter_calibration_range'
                                     (time, nv: 2)
         """
-        result = super(RamanBackscatters, cls).from_signal(sigratio,
-                                                           p_params,
-                                                           calibr_window)
 
         if calibr_window is None:
             calibr_window = p_params.calibr_window
+
+        result = super(RamanBackscatters, cls).from_signal(sigratio,
+                                                           p_params,
+                                                           calibr_window)
 
         result.calibr_window = calibr_window
 
@@ -148,7 +148,7 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
 
             # todo
             # if self.kwargs['autosmooth']:
-                # get auto smooht resolution
+            # get auto smooht resolution
             #     smooth_res = RamBscAutosmooth()(
             #         signal=raman_sig.ds,
             #         smooth_params=self.param.smooth_params,
@@ -157,7 +157,7 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
 
             result = bsc
 
-        return result
+        return result   # ToDo Ina debug
 
 
 class CalcRamanBscProfile(BaseOperationFactory):
@@ -299,7 +299,8 @@ class SavGolayEffBinRes(BaseOperation):
         starts the calculation
 
         Keyword Args:
-            used_bins(integer): number of bins used for the calculation of Sav-Gol filter (= diameter of the smoothing window)
+            used_bins(integer): number of bins used for the calculation of Sav-Gol filter
+                                (= diameter of the smoothing window)
 
         Returns:
             eff_binres(integer): resulting effective resolution in terms of vertical bins
@@ -347,7 +348,7 @@ class SavGolayUsedBinRes(BaseOperation):
         used_binres = (eff_binres + 0.86) / 0.62
         odd_binres = ((used_binres - 1) / 2).round() * 2 + 1
 
-        #result = sg_used_binres(eff_binres.tolist())
+        # result = sg_used_binres(eff_binres.tolist())
         result = odd_binres.astype(int)
 
         return result

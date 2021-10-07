@@ -63,19 +63,19 @@ class BscCalibrationParams(Params):
 
         return result
 
-    def to_meta_ds_dict(self, dict):
+    def to_meta_ds_dict(self, dct):
         """
         writes parameter content into Dict for further export in mwl file
         Args:
-            dict (addict.Dict): is a dict which will be converted into dataset.
+            dct (addict.Dict): is a dict which will be converted into dataset.
                             has the keys 'attrs' and 'data_vars'
 
         Returns:
 
         """
-        dict.data_vars.calibration_range_search_algorithm = bsc_calibr_method_var(self.cal_range_search_algorithm)
-        dict.data_vars.calibration_search_range = cal_search_range_var(self.cal_interval)
-        dict.data_vars.calibration_value = bsc_calibr_value_var(self.cal_value)
+        dct.data_vars.calibration_range_search_algorithm = bsc_calibr_method_var(self.cal_range_search_algorithm)
+        dct.data_vars.calibration_search_range = cal_search_range_var(self.cal_interval)
+        dct.data_vars.calibration_value = bsc_calibr_value_var(self.cal_value)
 
 
 class BackscatterParams(ProductParams):
@@ -91,7 +91,6 @@ class BackscatterParams(ProductParams):
         self.parallel_sig_id = None
         self.bsc_method = None
 
-
     def from_db(self, general_params):
         super(BackscatterParams, self).from_db(general_params)
 
@@ -99,7 +98,6 @@ class BackscatterParams(ProductParams):
         if self.calibration_params.cal_interval.max_height > \
                 self.general_params.valid_alt_range.max_height:
             raise CalRangeHigherThanValid(self.prod_id_str)
-
 
     def add_signal_role(self, signal):
         super(BackscatterParams, self)
@@ -118,18 +116,19 @@ class BackscatterParams(ProductParams):
             logger.debug('channel {0} is no elast signal'.
                          format(signal.channel_id_str))
 
-    def to_meta_ds_dict(self, dict):
+    def to_meta_ds_dict(self, dct):
         """
         writes parameter content into Dict for further export in mwl file
         Args:
-            dict (addict.Dict): is a dict which will be converted into dataset.
+            dct (addict.Dict): is a dict which will be converted into dataset.
                             has the keys 'attrs' and 'data_vars'
 
         Returns:
 
         """
-        dict.data_vars.retrieval_method = bsc_method_var(self.bsc_method)
-        self.calibration_params.to_meta_ds_dict(dict)
+        dct.data_vars.retrieval_method = bsc_method_var(self.bsc_method)
+        self.calibration_params.to_meta_ds_dict(dct)
+
 
 class Backscatters(Products):
     """
@@ -139,7 +138,7 @@ class Backscatters(Products):
     calibr_window = None
 
     @classmethod
-    def from_signal(cls, signal, p_params, calibr_window):
+    def from_signal(cls, signal, p_params, calibr_window=None):
         """calculates Backscatters from an elastic signal.
 
         The signal was previously prepared by PrepareBscSignals .
@@ -152,7 +151,7 @@ class Backscatters(Products):
                         first and last height of the calibration window [m]
         """
         result = super(Backscatters, cls).from_signal(signal, p_params)
-        # cls.calibr_window = calibr_window
+        # cls.calibr_window = calibr_window  ToDo: Ina debug
 
         return result
 
@@ -160,9 +159,9 @@ class Backscatters(Products):
         # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
         # and attributes it with key self.mwl_meta_id to meta_data
         super(Backscatters, self).to_meta_ds_dict(meta_data)
-        dict = meta_data[self.mwl_meta_id]
-        self.params.to_meta_ds_dict(dict)
-        dict.data_vars.calibration_range = self.calibr_window
+        dct = meta_data[self.mwl_meta_id]
+        self.params.to_meta_ds_dict(dct)
+        dct.data_vars.calibration_range = self.calibr_window
 
 
 class BackscatterFactory(BaseOperationFactory):
@@ -194,6 +193,7 @@ class BackscatterFactoryDefault(BaseOperation):
     data_storage = None
     elast_sig = None
     calibr_window = None
+    param = None
 
     def get_product(self):
         self.data_storage = self.kwargs['data_storage']
