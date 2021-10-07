@@ -36,7 +36,6 @@ def test_signals_register(mocker):
         return_value='379',
     )
     params = ProductParams()
-    params
 
     nc_ds = xr.open_dataset(TEST_INTERMEDIATE_FILE_1)
     testsig = Signals.from_nc_file(nc_ds, 0)
