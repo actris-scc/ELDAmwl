@@ -15,18 +15,18 @@ Base = declarative_base()
 #     method = Column(String(100), nullable=False)
 
 
-class ElastBscMethod(Base):
-    __tablename__ = '_elast_bsc_methods'
-
-    ID = Column(INTEGER, primary_key=True)
-    method = Column(String(100), nullable=False)
-
-
-class ErrorMethod(Base):
-    __tablename__ = '_error_method'
-
-    id = Column(INTEGER, primary_key=True)
-    method = Column(String(100), nullable=False)
+# class ElastBscMethod(Base):
+#     __tablename__ = '_elast_bsc_methods'
+#
+#     ID = Column(INTEGER, primary_key=True)
+#     method = Column(String(100), nullable=False)
+#
+#
+# class ErrorMethod(Base):
+#     __tablename__ = '_error_method'
+#
+#     id = Column(INTEGER, primary_key=True)
+#     method = Column(String(100), nullable=False)
 
 
 # class ExtMethod(Base):

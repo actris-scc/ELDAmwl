@@ -163,6 +163,12 @@ class ElastBackscatterOption(Base):
                                  nullable=False,
                                  index=True,
                                  server_default=text("'-1'"))
+    fixed_lr = Column(DECIMAL(10,4),
+                                 nullable=False,
+                                 server_default=text("'50.0000'"))
+    fixed_lr_error = Column(DECIMAL(10,4),
+                                 nullable=False,
+                                 server_default=text("'0.0000'"))
     _iter_bsc_options_id = Column(INTEGER,
                                   nullable=False,
                                   index=True,

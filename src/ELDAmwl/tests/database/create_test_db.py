@@ -3,18 +3,21 @@
 
 from ELDAmwl.configs.config_default import STRP_DATE_TIME_FORMAT
 from ELDAmwl.database.db import DBUtils
-from ELDAmwl.database.tables.backscatter import BscCalibrOption
+from ELDAmwl.database.tables.backscatter import BscCalibrOption, BscCalibrMethod, BscMethod, RamanBscMethod, \
+    ElastBscMethod, IterBackscatterOption, LRFile
 from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
+from ELDAmwl.database.tables.channels import ProductChannels, Channels
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
+from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
-from ELDAmwl.database.tables.system_product import ErrorThresholds
+from ELDAmwl.database.tables.system_product import ErrorThresholds, PreProcOptions, SmoothOptions, SmoothTypes, \
+    SmoothMethod, MCOption
 from ELDAmwl.database.tables.system_product import MWLproductProduct
 from ELDAmwl.database.tables.system_product import PreparedSignalFile
-from ELDAmwl.database.tables.system_product import ProductOptions
 from ELDAmwl.database.tables.system_product import Products
 from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SystemProduct
@@ -34,20 +37,33 @@ import sqlalchemy
 # List of all DB tables in the test DB
 ALL_DB_TABLES = [
     BscCalibrOption,
-    ElastBackscatterOption,
+    BscCalibrMethod,
+    BscMethod,
+    RamanBscMethod,
+    ElastBscMethod,
     RamanBackscatterOption,
+    ElastBackscatterOption,
+    IterBackscatterOption,
+    LRFile,
+    ProductChannels,
+    Channels,
     ExtMethod,
     ExtinctionOption,
     OverlapFile,
+    LidarConstants,
     ExtBscOption,
     Measurements,
     SystemProduct,
     MWLproductProduct,
     Products,
     ProductTypes,
-    ProductOptions,
+    PreProcOptions,
+    SmoothOptions,
     ErrorThresholds,
+    SmoothTypes,
+    SmoothMethod,
     PreparedSignalFile,
+    MCOption,
 ]
 
 # Where does the test-DB live
