@@ -2,7 +2,6 @@
 """Classes for header information"""
 
 from addict import Dict
-import numpy as np
 import pandas as pd
 
 from ELDAmwl.constants import NC_FILL_STR
@@ -96,7 +95,7 @@ class Header(object):
         result.attrs.hoi_configuration_ID = nc_ds.hoi_configuration_ID
 
         result.attrs.elpp_history = nc_ds.history
-        result.attrs.input_file = basename(nc_ds._file_obj._filename)
+        result.attrs.input_file = basename(nc_ds._file_obj._filename)  # ToDo Volker
         if 'molecular_calculation_source_file' in nc_ds.attrs:
             result.attrs.molecular_calculation_source_file = \
                 nc_ds.molecular_calculation_source_file
@@ -119,20 +118,19 @@ class Header(object):
 
         return result
 
-    def append(self, newHeader):
+    def append(self, new_header):
         not_mwl_attrs = ['input_file', 'elpp_history']
 
         for att in self.attrs:
             if att not in not_mwl_attrs:
-                if self.attrs[att] != newHeader.attrs[att]:
+                if self.attrs[att] != new_header.attrs[att]:
                     raise DifferentHeaderExists
 
         for var in self.vars:
-            if bool(self.vars[var] != newHeader.vars[var]):
+            if bool(self.vars[var] != new_header.vars[var]):
                 raise DifferentHeaderExists
 
-        self.attrs.input_file = self.attrs.input_file + ' ' + newHeader.attrs.input_file
-
+        self.attrs.input_file = self.attrs.input_file + ' ' + new_header.attrs.input_file
 
     def __eq__(self, other):
         result = True

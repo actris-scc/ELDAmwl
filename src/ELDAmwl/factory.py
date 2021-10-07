@@ -46,6 +46,7 @@ class BaseOperation(object):
     """
     Base class of operations
     """
+    _params = None
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs

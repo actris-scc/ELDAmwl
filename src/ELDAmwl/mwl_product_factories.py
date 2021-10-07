@@ -6,8 +6,7 @@ from ELDAmwl.constants import EXT, RBSC, EBSC
 from ELDAmwl.constants import RESOLUTIONS
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.mwl_file_structure import GROUP_NAME, META_DATA, NC_VAR_NAMES, data_attrs, err_attrs
-#from ELDAmwl.log import logger
+from ELDAmwl.mwl_file_structure import GROUP_NAME, META_DATA, data_attrs, err_attrs
 from ELDAmwl.registry import registry
 
 import numpy as np
@@ -21,6 +20,7 @@ class GetProductMatrixDefault(BaseOperation):
 
     data_storage = None
     product_params = None
+    shape = None
 
     def get_common_shape(self, res):
 
@@ -39,14 +39,15 @@ class GetProductMatrixDefault(BaseOperation):
             return None
 
         wl_array = np.array(self.product_params.wavelengths(res=res))
-        wl_axis = xr.DataArray(wl_array, dims=['wavelength'], coords=[wl_array])
+        wl_axis = xr.DataArray(wl_array, dims=['wavelength'], coords=[wl_array])  # Todo Ina debug
         wl_axis.attrs = {'long_name': 'wavelength of the transmitted laser pulse',
                          'units': 'nm',
                          }
         alt_axis = None
 
         for param in params:
-            if (alt_axis is None) and (param.product_type in [EXT, RBSC]):  # todo: remove limit to EXT when other prod types are included
+            # todo: remove limit to EXT when other prod types are included
+            if (alt_axis is None) and (param.product_type in [EXT, RBSC]):
                 product = self.data_storage.product_common_smooth(param.prod_id_str, res)
                 alt_axis = product.altitude
             else:
@@ -63,7 +64,6 @@ class GetProductMatrixDefault(BaseOperation):
         self.data_storage = self.kwargs['data_storage']
         self.product_params = self.kwargs['product_params']
 
-
         for res in RESOLUTIONS:
             wavelengths = self.product_params.wavelengths(res=res)
             p_types = self.product_params.prod_types(res=res)
@@ -79,13 +79,14 @@ class GetProductMatrixDefault(BaseOperation):
                 # create a common Dataset for each product type
                 # with common shape and empty data variables
                 array = np.ones(self.shape.shape) * np.nan
+                # ToDo Ina reformat dicts
                 ds = xr.Dataset(data_vars={'altitude': self.shape.alt,
                                           'wavelength': self.shape.wl,
                                           'data':
                                               (['wavelength', 'time', 'level'], deepcopy(array), data_attrs(ptype)),
                                           'absolute_statistical_uncertainty':
                                               (['wavelength', 'time', 'level'], deepcopy(array), err_attrs(ptype)),
-                                          'meta_data': (['wavelength',], np.empty(len(wavelengths), dtype=object),
+                                          'meta_data': (['wavelength', ], np.empty(len(wavelengths), dtype=object),
                                                         {'long_name': 'path to meta data'}),
                                            })
 
@@ -104,7 +105,6 @@ class GetProductMatrixDefault(BaseOperation):
                             wl_idx = wavelengths.index(wl)
                             ds.meta_data[wl_idx] = '/{}/{}'.format(GROUP_NAME[META_DATA],
                                                                    prod.mwl_meta_id)
-
 
                 self.data_storage.set_final_product_matrix(ptype, res, ds)
 

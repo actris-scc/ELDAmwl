@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """constants describing the structure of mwl output file"""
 
-from addict import Dict
 import xarray as xr
 import numpy as np
 
-from ELDAmwl.constants import LOWRES, HIGHRES, RESOLUTION_STR, NC_FILL_BYTE, MC, ASS, ELAST, RAMAN
+from ELDAmwl.constants import LOWRES, HIGHRES, RESOLUTION_STR, NC_FILL_BYTE, MC, ASS
 from ELDAmwl.constants import RBSC, EBSC, EXT, LR, AE, CR, VLDR, PLDR
 from ELDAmwl.database.db_functions import read_algorithm_options
 from ELDAmwl.database.tables.backscatter import RamanBscMethod, ElastBscMethod, BscMethod, BscCalibrMethod
@@ -18,6 +17,7 @@ HIGHRES_PRODUCTS = 3
 
 MAIN_GROUPS = [GENERAL, META_DATA, LOWRES_PRODUCTS, HIGHRES_PRODUCTS]
 
+# ToDo Ina reformat dicts
 RES_GROUP = {LOWRES: LOWRES_PRODUCTS,
              HIGHRES: HIGHRES_PRODUCTS,
              }
@@ -52,7 +52,7 @@ HEADER_ATTRS = {GENERAL: ['measurement_ID',
                 }
 
 TITLE = 'Profiles of aerosol optical properties'
-REFERENCES = 'Project website at http://www.earlinet.org'
+REFERENCES = 'Project website at https://www.earlinet.org'
 PROCESSOR_NAME = 'ELDAmwl'
 
 NC_VAR_NAMES = {RBSC: 'backscatter',

@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """Class registry"""
-import sys
 
 from addict import Dict
 from ELDAmwl.exceptions import OnlyOneOverrideAllowed
-from ELDAmwl.log import logger
+
 
 OVERRIDE = '__OVERRIDE__'
 
@@ -18,7 +17,7 @@ class FactoryRegistry(object):
         self.registry = Dict()
 
     def register_class(self, factory_name,
-                       klass_name, klass, override=False):
+                       klass_name, klass, override=False):  # ToDo Ina fix docstring
         """
         Registers a class by name
 
@@ -94,9 +93,12 @@ class Registry(object):
 
         """
         factory_registration = self.get_factory_registration(factory)
-        factory_registration.register_class(factory.name,
-                                        klass_name, klass,
-                                        override=override)
+        factory_registration.register_class(
+            factory.name,
+            klass_name,
+            klass,
+            override=override
+        )
 
     def find_class_by_name(self, factory, klass_name):
         """
@@ -130,5 +132,6 @@ class Registry(object):
                 res.append(' ' * 4 + name + ' => ' + str(klass))
 
         return '\n'.join(res)
+
 
 registry = Registry()

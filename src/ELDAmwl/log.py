@@ -8,7 +8,7 @@ from logging import StreamHandler
 from sys import stdout
 
 import os
-import sys
+
 
 from ELDAmwl.exceptions import LogPathNotExists
 
@@ -42,7 +42,6 @@ except Exception as e:  # noqa E841
 
 logger.setLevel(cfg.log_level)
 
-__all__ = ['logger']
 
 console_handler = StreamHandler(stdout)
 # formatter = Formatter('%(asctime)s %(levelname)-8s %(message)s',
@@ -58,7 +57,7 @@ def create_logger(meas_id):
         log(ERROR,
             'Log file directory does not exists {path}, please create it '.
             format(path=cfg.LOG_PATH))
-        raise(LogPathNotExists)
+        raise LogPathNotExists
 
     file_handler = FileHandler(os.path.join(cfg.LOG_PATH,
                                             '{id}.log'.format(id=meas_id)))

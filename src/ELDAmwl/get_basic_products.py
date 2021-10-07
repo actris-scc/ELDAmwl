@@ -5,7 +5,6 @@ from copy import deepcopy
 from ELDAmwl.backscatter_factories import FindCommonBscCalibrWindow
 from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import EXT
-from ELDAmwl.constants import LR
 from ELDAmwl.constants import RBSC
 from ELDAmwl.elast_bsc_factories import ElastBscUsedBinRes, ElastBscEffBinRes
 from ELDAmwl.exceptions import UseCaseNotImplemented
@@ -13,22 +12,24 @@ from ELDAmwl.extinction_factories import ExtinctionFactory, ExtUsedBinRes, ExtEf
 from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.raman_bsc_factories import RamanBackscatterFactory, RamBscUsedBinRes, RamBscEffBinRes
-from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.registry import registry
 from ELDAmwl.constants import AUTO, FIXED, RESOLUTIONS
 
 
 # classes to convert effective bin resolution into bin resolution to use in retrievals
-GET_USED_BINRES_CLASSES = {RBSC: RamBscUsedBinRes,
-                           EBSC: ElastBscUsedBinRes,
-                           EXT: ExtUsedBinRes,
-                }
+GET_USED_BINRES_CLASSES = {
+    RBSC: RamBscUsedBinRes,
+    EBSC: ElastBscUsedBinRes,
+    EXT: ExtUsedBinRes,
+    }
 
 # classes to convert bin resolution used in retrievals into effective resolution
-GET_EFF_BINRES_CLASSES = {RBSC: RamBscEffBinRes,
-                           EBSC: ElastBscEffBinRes,
-                           EXT: ExtEffBinRes,
-                }
+GET_EFF_BINRES_CLASSES = {
+    RBSC: RamBscEffBinRes,
+    EBSC: ElastBscEffBinRes,
+    EXT: ExtEffBinRes,
+    }
+
 
 class GetBasicProductsDefault(BaseOperation):
     """
@@ -81,14 +82,17 @@ class GetBasicProductsDefault(BaseOperation):
 
         for prod_param in self.product_params.basic_products():
             pid = prod_param.prod_id_str
-            if prod_param.product_type in [EXT, RBSC]: # todo remove this limit
+            if prod_param.product_type in [EXT, RBSC]:  # todo remove this limit
                 used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
                 for res in RESOLUTIONS:
                     dummy_sig = deepcopy(self.data_storage.prepared_signals(pid)[0])
-                    if prod_param in self.product_params.all_products_of_res(res) :
-                        binres = dummy_sig.get_binres_from_fixed_smooth(sp, res, used_binres_routine=used_binres_routine)
+                    if prod_param in self.product_params.all_products_of_res(res):
+                        binres = dummy_sig.get_binres_from_fixed_smooth(
+                            sp,
+                            res,
+                            used_binres_routine=used_binres_routine
+                        )
                         self.data_storage.set_binres_common_smooth(pid, res, binres)
-
 
     def get_auto_smooth_products(self):
         """get all basic products with automatic smoothing
@@ -107,7 +111,6 @@ class GetBasicProductsDefault(BaseOperation):
         self.get_raman_bsc_fixed_smooth()
         # todo: elsat_bsc
         # todo: vol_depol
-
 
     def get_extinctions_auto_smooth(self):
         """get extinction products with automatic smoothing

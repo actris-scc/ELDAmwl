@@ -64,7 +64,8 @@ class ElppData(object):
 
         try:
             nc_ds = xr.open_dataset(elpp_file)
-        except:
+        except Exception as e:   # ToDo Ina debug
+            print(e)
             raise(CannotOpenELLPFile(elpp_file))
 
         self.cloud_mask = nc_ds.cloud_mask.astype(int)
@@ -299,10 +300,8 @@ class Signals(Columns):
         Returns: Signals
         """
 
-        result = cls()
-
         result = deepcopy(transm_sig)  # see also weakref
-        depol_params = {'HR': refl_sig.h.data,
+        depol_params = {'HR': refl_sig.h.data,   # ToDo Ina debug
                         'GR': refl_sig.g.data,
                         'HT': transm_sig.h.data,
                         'GT': transm_sig.g.data,
@@ -320,7 +319,7 @@ class Signals(Columns):
                                        refl_sig.channel_id],
                                       dim='nc')
         result.pol_channel_conf.values = TOTAL
-        result.pol_channel_geometry.values = TRANSMITTED + REFLECTED
+        result.pol_channel_geometry.values = TRANSMITTED + REFLECTED  # ToDo Ina debug
 
         return result
 
@@ -359,7 +358,7 @@ class Signals(Columns):
 #        for t in range(times):
 #            result.append(np.where(self.height[t] > heights[t])[0][0])
 #        return np.array(result)
-        return closest_bin
+#        return closest_bin
 
     def height_to_levels(self, height):
         """converts a height value into a series of level (dim=time)
@@ -465,6 +464,7 @@ class Signals(Columns):
 
     @property
     def is_WV_sig(self):
+        # ToDo Ina make comment to clearify
         return (self.scatterer == WATER_VAPOR).values
 
     @property
@@ -545,11 +545,11 @@ class Signals(Columns):
         result = result.where(result.level < tz_top_bin, used_binres_high)
 
         for t in range(tz_bottom_bin.shape[0]):
-            for bin in range(int(tz_bottom_bin[t]), int(tz_top_bin[t])):
-                vert_res = float(vert_res_low + delta_res[t] * (bin - tz_bottom_bin[t]))
+            for idx in range(int(tz_bottom_bin[t]), int(tz_top_bin[t])):
+                vert_res = float(vert_res_low + delta_res[t] * (idx - tz_bottom_bin[t]))
                 a_binres = int(self.heightres_to_bins(vert_res)[t])
                 a_used_binres = self.eff_to_used_binres(a_binres)
-                result[t, bin] = a_used_binres
+                result[t, idx] = a_used_binres
 
         return result
 

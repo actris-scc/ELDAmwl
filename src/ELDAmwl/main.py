@@ -7,6 +7,7 @@ from ELDAmwl.elda_mwl_factories import RunELDAmwl
 from ELDAmwl.exceptions import ELDAmwlException, UNKNOWN_EXCEPTION, WrongCommandLineParameter, NO_ERROR
 from ELDAmwl.log import create_logger
 from ELDAmwl.log import logger
+# This import is mandatory
 from ELDAmwl.plugins import register_plugins
 
 import argparse
@@ -84,8 +85,8 @@ def main():
             #
             # main.py: error: argument - l: invalid choice
             # returns 2
-        except Exception as e:
-            raise(WrongCommandLineParameter)
+        except Exception:
+            raise WrongCommandLineParameter
 
         create_logger(meas_id)
         # register_plugins()

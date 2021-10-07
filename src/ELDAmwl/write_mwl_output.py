@@ -12,7 +12,6 @@ from ELDAmwl.registry import registry
 from ELDAmwl.configs.config import PRODUCT_PATH
 from ELDAmwl.constants import ELDA_MWL_VERSION, MWL, EXT, LOWRES, HIGHRES, RBSC
 from ELDAmwl.constants import RESOLUTIONS
-from ELDAmwl.exceptions import NotFoundInStorage
 
 
 class WriteMWLOutputDefault(BaseOperation):
@@ -22,8 +21,8 @@ class WriteMWLOutputDefault(BaseOperation):
     data_storage = None
     product_params = None
     out_filename = None
-    data = Dict() # data of all main groups
-    meta_data = Dict() # meta_data of individual products
+    data = Dict()  # data of all main groups
+    meta_data = Dict()  # meta_data of individual products
 
     def mwl_filename(self):
         header = self.data_storage.header
@@ -50,13 +49,13 @@ class WriteMWLOutputDefault(BaseOperation):
 
     def collect_meta_data(self):
         # read meta data of all products into meta_data
-        for id, param in self.product_params.product_list.items():
+        for pid, param in self.product_params.product_list.items():
             # todo: remove limit to EXT when other prod types are included
             if param.calc_with_res(LOWRES) and param.product_type in [EXT, RBSC]:
-                prod = self.data_storage.product_common_smooth(id, LOWRES)
+                prod = self.data_storage.product_common_smooth(pid, LOWRES)
             elif param.product_type in [EXT, RBSC]:
-                prod = self.data_storage.product_common_smooth(id, HIGHRES)
-
+                prod = self.data_storage.product_common_smooth(pid, HIGHRES)
+            # Todo Ina fix error
             if param.product_type in [EXT, RBSC]:
                 prod.to_meta_ds_dict(self.meta_data)
 
@@ -68,6 +67,7 @@ class WriteMWLOutputDefault(BaseOperation):
                             coords={},
                             attrs=self.data[group].attrs)
             # write attributes and variables into netCDF file
+            # ToDo ina indentation
             ds.to_netcdf(path=self.out_filename,
                                 mode=WRITE_MODE[group],
                                 group=GROUP_NAME[group],

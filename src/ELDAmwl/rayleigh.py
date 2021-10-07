@@ -32,10 +32,11 @@ class RayleighLidarRatio(BaseOperationFactory):
 class RayleighLidarRatioFromConst(BaseOperation):
 
     name = 'RayleighLidarRatioFromConst'
+
     def run(self):
         return RAYL_LR
+
 
 registry.register_class(RayleighLidarRatio,
                         RayleighLidarRatioFromConst.__name__,
                         RayleighLidarRatioFromConst)
-
