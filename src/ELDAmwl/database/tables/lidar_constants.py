@@ -1,10 +1,10 @@
-from datetime import datetime
 from sqlalchemy import Column
 from sqlalchemy import BIGINT, CHAR, INTEGER, FLOAT, DateTime, String, VARCHAR
 from sqlalchemy.ext.declarative import declarative_base
 
 
 Base = declarative_base()
+
 
 class LidarConstants(Base):
     """content of the db table lidar_constants
@@ -49,7 +49,7 @@ try:
     import ELDAmwl.configs.config as cfg
 except ImportError:
     import ELDAmwl.configs.config_default as cfg
-    
+
 connect_str = 'mysql+pymysql://{user}:{passw}@{host}/{db}'.format(
             user=cfg.DB_USER,
             passw=cfg.DB_PASS,
@@ -59,7 +59,12 @@ engine = create_engine(connect_str)
 
 conn = engine.connect()
 
-res = conn.execute('select * from (SELECT __measurements__ID, _product_ID, _hoi_system_ID, _channel_ID, profile_start_time, profile_end_time, count(*)  as count FROM lidar_constants WHERE is_latest_value=1 group by  __measurements__ID, _product_ID, _hoi_system_ID, _channel_ID, profile_start_time, profile_end_time) as selectcount where selectcount.count >1 order by __measurements__ID;')
+res = conn.execute('select * from (SELECT __measurements__ID,
+_product_ID, _hoi_system_ID, _channel_ID, profile_start_time, profile_end_time,
+count(*)  as count FROM lidar_constants WHERE is_latest_value=1
+group by  __measurements__ID, _product_ID, _hoi_system_ID,
+_channel_ID, profile_start_time, profile_end_time) as selectcount where selectcount.count >1
+order by __measurements__ID;')
 duplicates = res.fetchall()
 
 del_ids = []
@@ -71,11 +76,11 @@ for row in duplicates:
                  '_channel_ID={} and '
                  'profile_start_time = "{}" and '
                  'profile_end_time = "{}" and '
-                 'is_latest_value = 1 order by InscribedAt desc;').format(row[0], 
-                                                                          row[1], 
-                                                                          row[2], 
-                                                                          row[3], 
-                                                                          row[4], 
+                 'is_latest_value = 1 order by InscribedAt desc;').format(row[0],
+                                                                          row[1],
+                                                                          row[2],
+                                                                          row[3],
+                                                                          row[4],
                                                                           row[5])
     #print(statement)
     res = conn.execute(statement)
@@ -86,7 +91,7 @@ for row in duplicates:
 outfile = open('d:/temp/delete_ids.txt', 'w')
 for id in del_ids:
     outfile.write('{} '.format(id))
-    
+
 outfile.close()
 
 

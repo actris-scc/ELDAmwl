@@ -36,11 +36,11 @@ DB_DB = ''
 # The logfiles
 # general log level
 log_level = DEBUG
-# The desired loglevel for console output
+# The desired log_level for console output
 log_level_console = INFO
-# The desired loglevel for the logfile
+# The desired log_level for the logfile
 log_level_file = INFO
-# Colors for the log console output (Options see colorlog-package)
+# Colors for the log console output (Options see color_log-package)
 log_colors = {
     'DEBUG': 'cyan',
     'INFO': 'green',

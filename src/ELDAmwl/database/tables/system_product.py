@@ -128,13 +128,11 @@ class SmoothMethod(Base):
                               nullable=False,
                               server_default=text("''"))
     python_classname_get_used_binres = Column(String(100),
-                              nullable=False,
-                              server_default=text("''"))
+                                              nullable=False,
+                                              server_default=text("''"))
     python_classname_get_effective_binres = Column(String(100),
-                              nullable=False,
-                              server_default=text("''"))
-
-
+                                                   nullable=False,
+                                                   server_default=text("''"))
 
 # class ErrorMethod(Base):
 #     __tablename__ = '_error_method'
@@ -147,6 +145,8 @@ class SmoothMethod(Base):
 #                     server_default=text("''"))
 #
 #
+
+
 class PreparedSignalFile(Base):
     __tablename__ = 'prepared_signal_files'
 

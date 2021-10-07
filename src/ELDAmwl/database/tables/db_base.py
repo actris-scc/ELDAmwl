@@ -1,7 +1,4 @@
 # # -*- coding: utf-8 -*-
-from sqlalchemy import Column
-from sqlalchemy import INTEGER
-from sqlalchemy import String
 from sqlalchemy.ext.declarative import declarative_base
 
 

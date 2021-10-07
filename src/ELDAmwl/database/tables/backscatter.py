@@ -53,8 +53,8 @@ class BscCalibrMethod(Base):
                     nullable=False,
                     server_default=text("''"))
     python_classname = Column(String(100),
-                    nullable=False,
-                    server_default=text("''"))
+                              nullable=False,
+                              server_default=text("''"))
 
 
 class BscMethod(Base):
@@ -70,6 +70,7 @@ class BscMethod(Base):
     method = Column(String(100),
                     nullable=False,
                     server_default=text("''"))
+
 
 class RamanBscMethod(Base):
     """content of the db table _ram_bsc_methods
@@ -131,9 +132,9 @@ class RamanBackscatterOption(Base):
                               index=True,
                               server_default=text("'-1'"))
     _smooth_method_ID = Column(INTEGER,
-                              nullable=False,
-                              index=True,
-                              server_default=text("'0'"))
+                               nullable=False,
+                               index=True,
+                               server_default=text("'0'"))
 
 
 class ElastBackscatterOption(Base):
@@ -163,20 +164,20 @@ class ElastBackscatterOption(Base):
                                  nullable=False,
                                  index=True,
                                  server_default=text("'-1'"))
-    fixed_lr = Column(DECIMAL(10,4),
-                                 nullable=False,
-                                 server_default=text("'50.0000'"))
-    fixed_lr_error = Column(DECIMAL(10,4),
-                                 nullable=False,
-                                 server_default=text("'0.0000'"))
+    fixed_lr = Column(DECIMAL(10, 4),
+                      nullable=False,
+                      server_default=text("'50.0000'"))
+    fixed_lr_error = Column(DECIMAL(10, 4),
+                            nullable=False,
+                            server_default=text("'0.0000'"))
     _iter_bsc_options_id = Column(INTEGER,
                                   nullable=False,
                                   index=True,
                                   server_default=text("'-1'"))
     _smooth_method_ID = Column(INTEGER,
-                              nullable=False,
-                              index=True,
-                              server_default=text("'0'"))
+                               nullable=False,
+                               index=True,
+                               server_default=text("'0'"))
 
 
 class IterBackscatterOption(Base):
