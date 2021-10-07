@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
-from copy import deepcopy
 
-from ELDAmwl.constants import NC_FILL_BYTE, RESOLUTION_STR
+from ELDAmwl.constants import NC_FILL_BYTE
 from ELDAmwl.constants import NC_FILL_INT
 
 import numpy as np
@@ -23,7 +22,7 @@ class Columns(object):
              'time_bounds': (['time', 'nv'],
                              np.empty((0, 0), dtype=np.datetime64)),
              },
-            coords={'time': (['time'], np.empty((0), dtype=np.datetime64)),
+            coords={'time': (['time'], np.empty((0), dtype=np.datetime64)),  # ToDo Ina debug
                     'level': (['level'], np.empty((0), dtype=np.int64)),
                     'altitude': (['time', 'level'], np.empty((0, 0))),
                     })
@@ -45,27 +44,32 @@ class Columns(object):
 
         Args:
             angle_var: angle var is the time dependent
-            laser_pointing_angle_of_profiles
             data_var: data_var is the angle dependent variable
 
         Returns: xarray with time dependent data
 
         """
 
-        dict = {}
-        dict['dims'] = ('time',)
-        dict['coords'] = {'time': {'dims': angle_var.coords['time'].dims,
-                                   'data': angle_var.coords['time'].data}}
+        dct = {}
+        dct['dims'] = ('time',)  # ToDo Ina debug
+        dct['coords'] = {
+            'time': {
+                'dims': angle_var.coords['time'].dims,
+                'data': angle_var.coords['time'].data
+            }
+        }
 
         if 'level' in data_var.dims:
-            dict['dims'] = ('time', 'level')
-            dict['coords']['level'] = {'dims': data_var.coords['level'].dims,  # noqa E501
-                                       'data': data_var.coords['level'].data}  # noqa E501
+            dct['dims'] = ('time', 'level')
+            dct['coords']['level'] = {
+                'dims': data_var.coords['level'].dims,  # noqa E501
+                'data': data_var.coords['level'].data
+            }  # noqa E501
 
-        dict['attrs'] = data_var.attrs
-        dict['data'] = data_var[angle_var.values.astype(int)].values
+        dct['attrs'] = data_var.attrs
+        dct['data'] = data_var[angle_var.values.astype(int)].values
 
-        da = xr.DataArray.from_dict(dict)
+        da = xr.DataArray.from_dict(dct)
         return da
 
     def _relative_error(self):
@@ -106,4 +110,3 @@ class Columns(object):
 #        # todo: try also scipy bisect
 #        closest_bin = (abs(self.height - a_height)).argmin(dim='level')
 #        return closest_bin
-

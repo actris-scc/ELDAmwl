@@ -6,9 +6,7 @@ from addict import Dict
 
 from ELDAmwl.constants import HIGHRES, LOWRES, RESOLUTION_STR, NC_FILL_BYTE
 from ELDAmwl.exceptions import DifferentCloudMaskExists
-from ELDAmwl.exceptions import DifferentHeaderExists
 from ELDAmwl.exceptions import NotFoundInStorage
-from ELDAmwl.log import logger
 from ELDAmwl.products import Products
 
 import numpy as np
@@ -34,15 +32,30 @@ class DataStorage(object):
                           'basic_products_auto_smooth': Dict(),
                           'binres_auto_smooth': Dict(),
 
-                          'binres_common_smooth': Dict({LOWRES: Dict(),
-                                                        HIGHRES: Dict()}),
-                          'basic_products_common_smooth': Dict({LOWRES: Dict(),
-                                                                HIGHRES: Dict()}),
-                          'derived_products_common_smooth': Dict({LOWRES: Dict(),
-                                                                HIGHRES: Dict()}),
-
-                          'final_product_matrix': Dict({LOWRES: Dict(),
-                                                        HIGHRES: Dict()}),
+                          'binres_common_smooth': Dict(
+                              {
+                                LOWRES: Dict(),
+                                HIGHRES: Dict()
+                                }
+                          ),
+                          'basic_products_common_smooth': Dict(
+                              {
+                                LOWRES: Dict(),
+                                HIGHRES: Dict()
+                              }
+                          ),
+                          'derived_products_common_smooth': Dict(
+                              {
+                                LOWRES: Dict(),
+                                HIGHRES: Dict()
+                              }
+                          ),
+                          'final_product_matrix': Dict(
+                              {
+                                LOWRES: Dict(),
+                                HIGHRES: Dict()
+                              }
+                          ),
 
                           'header': None,
                           'cloud_mask': None,
@@ -219,7 +232,6 @@ class DataStorage(object):
                 raise NotFoundInStorage('{0} {1}'.format(what_str, prod_id_str),
                                         '{0}'.format(where_str))
 
-
     def basic_product_raw(self, prod_id_str):
         """a basic product, derived without smoothing
 
@@ -371,7 +383,6 @@ class DataStorage(object):
 
         return result
 
-
     def final_product_matrix(self, prod_type, res):
         """ 3-dimensional (wavelength, time, altitude) data matrix
 
@@ -445,11 +456,11 @@ class DataStorage(object):
         fb = maxres.level - maxres // 2
         lb = maxres.level + maxres // 2
         fb = fb.where(fb >= 0, 0)
-        lb = lb.where(lb < num_levels, num_levels -1)
+        lb = lb.where(lb < num_levels, num_levels - 1)
 
         for t in range(num_times):
             for lev in range(num_levels):
-                cm[t,lev] = np.bitwise_or.reduce(self.cloud_mask.values[t, int(fb[lev,t]):int(lb[lev,t])])
+                cm[t, lev] = np.bitwise_or.reduce(self.cloud_mask.values[t, int(fb[lev, t]):int(lb[lev, t])])
         # self.cloud_mask[0, 50] =2
         # self.cloud_mask[:, 100] = 1
         # np.bitwise_or.reduce(self.cloud_mask.values[:,40:110], axis=1)

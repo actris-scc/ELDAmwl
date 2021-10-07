@@ -3,13 +3,12 @@
 
 from sqlalchemy import CHAR
 from sqlalchemy import Column
-from sqlalchemy import DateTime
 from sqlalchemy import DECIMAL
+from sqlalchemy import DateTime
 from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy import text
 from sqlalchemy.ext.declarative import declarative_base
-
 
 Base = declarative_base()
 
@@ -22,15 +21,21 @@ class BscCalibrOption(Base):
     __tablename__ = 'bsc_calibr_options'
 
     ID = Column(INTEGER, primary_key=True)
-    LowestHeight = Column(DECIMAL(10, 4),
-                          nullable=False,
-                          server_default=text("'0.0000'"))
-    TopHeight = Column(DECIMAL(10, 4),
-                       nullable=False,
-                       server_default=text("'0.0000'"))
-    WindowWidth = Column(DECIMAL(10, 4),
-                         nullable=False,
-                         server_default=text("'0.0000'"))
+    LowestHeight = Column(
+        DECIMAL(10, 4),
+        nullable=False,
+        server_default=text("'0.0000'")
+    )
+    TopHeight = Column(
+        DECIMAL(10, 4),
+        nullable=False,
+        server_default=text("'0.0000'")
+    )
+    WindowWidth = Column(
+        DECIMAL(10, 4),
+        nullable=False,
+        server_default=text("'0.0000'")
+    )
     calValue = Column(DECIMAL(10, 4),
                       nullable=False,
                       server_default=text("'0.0000'"))

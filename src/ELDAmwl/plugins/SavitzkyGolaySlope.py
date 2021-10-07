@@ -12,6 +12,7 @@ class SavGolaySlope(BaseOperation):
     name = 'SavGolaySlope'
 
     def __init__(self, **kwargs):
+        super(SavGolaySlope, self).__init__(**kwargs)
         logger.debug('create SavGolaySlope ')
 
     def run(self, **kwargs):

@@ -55,7 +55,6 @@ class DataPoint(object):
 
     @classmethod
     def from_nc_file(cls, nc_ds, variable_name, idx_in_file):
-        result = cls()
 
         stat_err_name = variable_name + '_statistical_error'
         sys_err_name = variable_name + '_systematic_error'

@@ -39,21 +39,20 @@ class ElastBscParams(BackscatterParams):
 
         self.get_error_params(ebp)
 
-    def to_meta_ds_dict(self, dict):
+    def to_meta_ds_dict(self, dct):
         """
         writes parameter content into Dict for further export in mwl file
         Args:
-            dict (addict.Dict): is a dict which will be converted into dataset.
+            dct (addict.Dict): is a dict which will be converted into dataset.
                             has the keys 'attrs' and 'data_vars'
 
         Returns:
 
         """
-        super(ElastBscParams, self).to_meta_ds_dict(dict)
-        dict.data_vars.evaluation_algorithm = elast_bsc_algorithm_var(self.elast_bsc_algorithm)
+        super(ElastBscParams, self).to_meta_ds_dict(dct)
+        dct.data_vars.evaluation_algorithm = elast_bsc_algorithm_var(self.elast_bsc_algorithm)
         if self.iter_params is not None:
-            self.iter_params.to_meta_ds_dict(dict)
-
+            self.iter_params.to_meta_ds_dict(dct)
 
 
 class IterBscParams(Params):
@@ -74,17 +73,18 @@ class IterBscParams(Params):
 
         return result
 
-    def to_meta_ds_dict(self, dict):
+    def to_meta_ds_dict(self, dct):
         """
         writes parameter content into Dict for further export in mwl file
         Args:
-            dict (addict.Dict): is a dict which will be converted into dataset.
+            dct (addict.Dict): is a dict which will be converted into dataset.
                             has the keys 'attrs' and 'data_vars'
 
         Returns:
 
         """
         pass
+
 
 class ElastBscEffBinRes(BaseOperationFactory):
     """
@@ -106,6 +106,7 @@ class ElastBscUsedBinRes(BaseOperationFactory):
     """
 
     pass
+
 
 class CalcElastBscProfile(BaseOperationFactory):
     """calculates bsc profiles from signal and calibration window"""

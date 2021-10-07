@@ -11,6 +11,8 @@ class PrepareExtSignalsBetter(BaseOperation):
     name = 'PrepareExtSignalsBetter'
 
     def __init__(self, **kwargs):
+        super(PrepareExtSignalsBetter, self).__init__(**kwargs)
+
         logger.debug('create PrepareExtSignalsBetter ')
 
     def run(self, **kwargs):

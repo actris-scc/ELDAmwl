@@ -2,7 +2,6 @@
 """functions which are often calles with same parameters. Their results can be cached"""
 
 from functools import lru_cache
-import numpy as np
 from scipy.signal import savgol_coeffs
 
 from ELDAmwl.database.db_functions import read_smooth_routine
@@ -12,12 +11,14 @@ from ELDAmwl.database.db_functions import read_smooth_routine
 def sg_coeffs(window_length, order):
     return savgol_coeffs(window_length, order)
 
+
 @lru_cache(maxsize=100)
 def sg_used_binres(eff_binres):
     used_binres = (eff_binres + 0.86) / 0.62
-    odd_binres = ((used_binres -1)/2).round()*2 +1
+    odd_binres = ((used_binres - 1)/2).round() * 2 + 1
 
     return odd_binres.astype(int)
+
 
 @lru_cache()
 def smooth_routine_from_db(method_id):
