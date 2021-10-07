@@ -5,7 +5,7 @@ from copy import deepcopy
 from ELDAmwl.base import Params
 from ELDAmwl.cached_functions import sg_coeffs, smooth_routine_from_db
 from ELDAmwl.configs.config import RANGE_BOUNDARY_KM
-from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, MC, AUTO, FIXED, HIGHRES, LOWRES, RESOLUTION_STR, NC_FILL_STR, \
+from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, MC, FIXED, HIGHRES, LOWRES, RESOLUTION_STR,  \
     CALC_WINDOW_OUTSIDE_PROFILE
 from ELDAmwl.constants import EBSC
 from ELDAmwl.constants import EXT
@@ -18,7 +18,6 @@ from ELDAmwl.mwl_file_structure import UNITS
 from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query, get_smooth_params_query, \
     get_quality_params_query
 from ELDAmwl.exceptions import DetectionLimitZero, NotEnoughMCIterations, SizeMismatch, UseCaseNotImplemented
-from ELDAmwl.log import logger
 from ELDAmwl.mwl_file_structure import NC_VAR_NAMES, error_method_var
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.registry import registry
@@ -31,9 +30,12 @@ import xarray as xr
 class Products(Signals):
     p_params = None
     smooth_routine = None  # class to perform smoothing
+    mwl_meta_id = None
+    params = None
+    num_scan_angles = None
 
     @classmethod
-    def from_signal(cls, signal, p_params):
+    def from_signal(cls, signal, p_params, **kw_args):
         """creates an instance of Products with from general data of signal.
 
         data, err, qf, and binres have the same shape as signal,
@@ -84,24 +86,24 @@ class Products(Signals):
 
         for t in range(num_times):
             # first and last smoothable bins
-            fsb = np.where(fb[:,t] >= 0)[0][0]
-            lsb = np.where(nb[:,t] > num_levels)[0][0] # actually, this is not the last smoothable bin, but the one after that
+            fsb = np.where(fb[:, t] >= 0)[0][0]
+            # actually, this is not the last smoothable bin, but the one after that
+            lsb = np.where(nb[:, t] > num_levels)[0][0]
             # keep this notation in order to avoid lsb + 1 everywhere
 
             for lev in range(fsb, lsb):
-                self.qf[t,lev] = np.bitwise_or.reduce(self.qf.values[t, int(fb[lev,t]):int(nb[lev,t])])
-                smoothed = self.smooth_routine.run(window=int(binres[t,lev]),
-                                                   data=self.data.values[t, int(fb[lev,t]):int(nb[lev,t])],
-                                                   err=self.err.values[t, int(fb[lev,t]):int(nb[lev,t])])
-                self.data[t,lev] = smoothed.data
-                self.err[t,lev] = smoothed.err
-                self.binres[t,lev] = binres[t,lev]
+                self.qf[t, lev] = np.bitwise_or.reduce(self.qf.values[t, int(fb[lev, t]):int(nb[lev, t])])
+                smoothed = self.smooth_routine.run(window=int(binres[t, lev]),
+                                                   data=self.data.values[t, int(fb[lev, t]):int(nb[lev, t])],
+                                                   err=self.err.values[t, int(fb[lev, t]):int(nb[lev, t])])
+                self.data[t, lev] = smoothed.data
+                self.err[t, lev] = smoothed.err
+                self.binres[t, lev] = binres[t, lev]
 
             for lev in range(fsb):
                 self.set_invalid_point(t, lev, CALC_WINDOW_OUTSIDE_PROFILE)
             for lev in range(lsb, num_levels):
                 self.set_invalid_point(t, lev, CALC_WINDOW_OUTSIDE_PROFILE)
-
 
     def save_to_netcdf(self):
         pass
@@ -129,13 +131,13 @@ class Products(Signals):
             # analyze only first time slice, because altitude axes are all equal
             t_idx = 0
             idx = np.searchsorted(subset.altitude.values[t_idx], self.altitude.values[t_idx])
-            subset.variables['data'][:, idx ] = self.data[:, :]
+            subset.variables['data'][:, idx] = self.data[:, :]
 
     def to_meta_ds_dict(self, meta_data):
-        dict = Dict({'attrs': Dict(), 'data_vars': Dict()})
+        dct = Dict({'attrs': Dict(), 'data_vars': Dict()})
 
-        dict.data_vars.error_retrieval_method = error_method_var(self.params.general_params.error_method)
-        meta_data[self.mwl_meta_id] = dict
+        dct.data_vars.error_retrieval_method = error_method_var(self.params.general_params.error_method)
+        meta_data[self.mwl_meta_id] = dct
 
 
 class ProductParams(Params):
@@ -156,7 +158,7 @@ class ProductParams(Params):
     def get_error_params(self, db_options):
         """reads error params
         Args:
-            db_options {}: product params, read from
+            db_options (Dict): product params, read from
                     SCC db with read_elast_bsc_params(),
                     read_extinction_params(), or
                     read_raman_bsc_params
@@ -228,7 +230,6 @@ class ProductParams(Params):
         else:
             return False
 
-
     def assign_to_product_list(self, measurement_params):
         gen_params = self.general_params
         params_list = measurement_params.product_list
@@ -277,11 +278,11 @@ class ProductParams(Params):
     def add_signal_role(self, signal):
         pass
 
-    def to_meta_ds_dict(self, dict):
+    def to_meta_ds_dict(self, dct):
         """
         writes parameter content into Dict for further export in mwl file
         Args:
-            dict (addict.Dict): is a dict which will be converted into dataset.
+            dct (addict.Dict): is a dict which will be converted into dataset.
                             has the keys 'attrs' and 'data_vars'
 
         Returns:
@@ -296,6 +297,7 @@ class GeneralProductParams(Params):
     """
 
     def __init__(self):
+        super(GeneralProductParams, self).__init__()
         # product id
         self.prod_id = None
         self.product_type = None
@@ -387,10 +389,10 @@ class QualityParams(Params):
     """
 
     def __init__(self):
+        super(QualityParams, self).__init__()
         self.detection_limit = None
         self.error_threshold = Dict({'lowrange': None,
                                      'highrange': None})
-
 
     @classmethod
     def from_query(cls, query):
@@ -418,6 +420,7 @@ class SmoothParams(Params):
     """
 
     def __init__(self):
+        super(SmoothParams, self).__init__()
         self.smooth_type = None
         self.smooth_method = None
 
@@ -427,16 +430,16 @@ class SmoothParams(Params):
 
         self.transition_zone = Dict({'bottom': None,
                                      'top': None})
-        self.vert_res = Dict({RESOLUTION_STR[LOWRES]: Dict({'lowrange': None,
-                                                'highrange': None}),
-                              RESOLUTION_STR[HIGHRES]: Dict({'lowrange': None,
-                                                'highrange': None}),
-                              })
-        self.time_res = Dict({RESOLUTION_STR[LOWRES]: Dict({'lowrange': None,
-                                                'highrange': None}),
-                              RESOLUTION_STR[HIGHRES]: Dict({'lowrange': None,
-                                                'highrange': None}),
-                              })
+        self.vert_res = self.time_res = Dict({
+            RESOLUTION_STR[LOWRES]: Dict({
+                'lowrange': None,
+                'highrange': None
+                }),
+            RESOLUTION_STR[HIGHRES]: Dict({
+                'lowrange': None,
+                'highrange': None
+                }),
+            })
 
     @classmethod
     def from_query(cls, query):
@@ -494,7 +497,8 @@ class SmoothSavGolay(BaseOperation):
         """
         starts the calculation.
 
-        in scipy.signal.savgol_filter (https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html),
+        in scipy.signal.savgol_filter
+        (https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html),
         the filtering is done as
         convolution (scipy.ndimage.convolve1d ) of the data and SG coefficients:
          result=convolve1d(data,sgc).
@@ -517,7 +521,7 @@ class SmoothSavGolay(BaseOperation):
         err = kwargs['err']
         data = kwargs['data']
 
-        sgc = sg_coeffs(win,2)
+        sgc = sg_coeffs(win, 2)
         err_sm = np.sqrt(np.sum(np.power(err*sgc, 2)))
         data_sm = np.sum(data*sgc)
 
@@ -533,6 +537,7 @@ class SmoothSlidingAverage(BaseOperation):
         raise UseCaseNotImplemented('SmoothSlidingAverage',
                                     'smoothing',
                                     'sliding average')
+
 
 class SmoothRoutine(BaseOperationFactory):
     """
