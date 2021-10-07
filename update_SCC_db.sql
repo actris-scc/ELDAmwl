@@ -81,7 +81,7 @@ INSERT INTO `color_ratio_options` (`_product_ID`, `_nominator_product_ID`, `_den
 
 ALTER TABLE `measurements`
 ADD COLUMN `num_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT first;
-ALTER TABLE `measurements` DROP PRIMARY KEY, ADD PRIMARY KEY (num_id)
+ALTER TABLE `measurements` DROP PRIMARY KEY, ADD PRIMARY KEY (num_id);
 
 #-------------------------
 

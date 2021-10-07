@@ -66,7 +66,7 @@ def read_algorithm(method_id, method_table):
         .filter(method_table.ID == method_id)
 
     if methods.count() == 1:
-        result = methods.value('python_classname')
+        result = methods.first().python_classname
         return result
     else:
         logger.error('wrong number ({0}) of available methods'
@@ -90,7 +90,7 @@ def read_effbin_algorithm(method_id, method_table):
         .filter(method_table.ID == method_id)
 
     if methods.count() == 1:
-        result = methods.value('python_classname_get_effective_binres')
+        result = methods.first().python_classname_get_effective_binres
         return result
     else:
         logger.error('wrong number ({0}) of available methods'
@@ -112,7 +112,7 @@ def read_usedbin_algorithm(method_id, method_table):
         .filter(method_table.ID == method_id)
 
     if methods.count() == 1:
-        result = methods.value('python_classname_get_used_binres')
+        result = methods.first().python_classname_get_used_binres
         return result
     else:
         logger.error('wrong number ({0}) of available methods'
@@ -152,7 +152,7 @@ def read_ext_method_id(product_id):
         .filter(ExtinctionOption._product_ID == product_id)
 
     if options.count() == 1:
-        result = options.value('_ext_method_ID')
+        result = options.first()._ext_method_ID
         return result
     else:
         logger.error('wrong number of extinction options ({0})'
@@ -217,7 +217,7 @@ def read_raman_bsc_method_id(product_id):
         .filter(RamanBackscatterOption._product_ID == product_id)
 
     if options.count() == 1:
-        result = options.value('_ram_bsc_method_ID')
+        result = options.first()._ram_bsc_method_ID
         return result
     else:
         logger.error('wrong number of Raman bsc options ({0})'
@@ -237,7 +237,7 @@ def read_raman_bsc_smooth_method_id(product_id):
         .filter(RamanBackscatterOption._product_ID == product_id)
 
     if options.count() == 1:
-        result = options.value('_smooth_method_ID')
+        result = options.first()._smooth_method_ID
         return result
     else:
         logger.error('wrong number of Raman bsc options ({0})'
@@ -302,7 +302,7 @@ def read_elast_bsc_method_id(product_id):
         .filter(ElastBackscatterOption._product_ID == product_id)
 
     if options.count() == 1:
-        result = options.value('_elast_bsc_method_ID')
+        result = options.first()._elast_bsc_method_ID
         return result
     else:
         logger.error('wrong number of elastic bsc options ({0})'
@@ -322,7 +322,7 @@ def read_elast_bsc_smooth_method_id(product_id):
         .filter(ElastBackscatterOption._product_ID == product_id)
 
     if options.count() == 1:
-        result = options.value('_smooth_method_ID')
+        result = options.first()._smooth_method_ID
         return result
     else:
         logger.error('wrong number of elastic bsc options ({0})'
@@ -415,7 +415,7 @@ def read_extinction_params(product_id):
         .filter(ExtinctionOption._product_ID == product_id)
 
     if options.count() == 1:
-        if options.value('_overlap_file_ID') == -1:
+        if options.first().ExtinctionOption._overlap_file_ID == -1:
             overlap_correction = False
             overlap_file = None
         else:
@@ -425,16 +425,16 @@ def read_extinction_params(product_id):
                 .filter(ExtinctionOption._product_ID == product_id)
             if o_file.count() == 1:
                 overlap_correction = True
-                overlap_file = o_file.value('filename')
+                overlap_file = o_file.first().OverlapFile.filename
             else:
                 logger.error('cannot find overlap file with id {0} in db'
                              .format(options('_overlap_file_ID')))
 
-        result = {'angstroem': float(options.value('angstroem')),
-                  'ext_method': options.value('_ext_method_ID'),
+        result = {'angstroem': float(options.first().ExtinctionOption.angstroem),
+                  'ext_method': options.first().ExtinctionOption._ext_method_ID,
                   'overlap_correction': overlap_correction,
                   'overlap_file': overlap_file,
-                  'error_method': options.value('_error_method_ID'),
+                  'error_method': options.first().ExtinctionOption._error_method_ID,
                   }
         return result
     else:
@@ -628,13 +628,13 @@ def read_elast_bsc_params(product_id):
         .filter(ElastBackscatterOption._product_ID == product_id)
 
     if options.count() == 1:
-        result = {'elast_bsc_method': options.value('_elast_bsc_method_ID'),
-                  'lr_input_method': options.value('_lr_input_method_id'),
-                  'error_method': options.value('_error_method_ID'),
-                  'smooth_method': options.value('_smooth_method_ID'),
+        result = {'elast_bsc_method': options.first()._elast_bsc_method_ID,
+                  'lr_input_method': options.first()._lr_input_method_id,
+                  'error_method': options.first()._error_method_ID,
+                  'smooth_method': options.first()._smooth_method_ID,
                   }
 
-        # if options.value('_lr_input_method_id') == PROFILE:
+        # if options.first()._lr_input_method_id == PROFILE:
         #     lr_file = dbutils.session.query(LRFile) \
         #         .filter(LRFile.ID == ElastBackscatterOption._lr_file_ID) \
         #         .filter(ElastBackscatterOption._product_ID == product_id)
@@ -670,9 +670,9 @@ def read_iter_bsc_params(product_id):
                 IterBackscatterOption.ID)
 
     if options.count() == 1:
-        result = {'conv_crit': options.value('iter_conv_crit'),
-                  'max_iteration_count': options.value('max_iteration_count'),
-                  'ram_bsc_method': options.value('_ram_bsc_method_id'),
+        result = {'conv_crit': options.first().IterBackscatterOption.iter_conv_crit,
+                  'max_iteration_count': options.first().IterBackscatterOption.max_iteration_count,
+                  'ram_bsc_method': options.first().IterBackscatterOption._ram_bsc_method_id,
                   }
 
         return result
@@ -698,9 +698,9 @@ def read_raman_bsc_params(product_id):
         .filter(RamanBackscatterOption._product_ID == product_id)
 
     if options.count() == 1:
-        result = {'ram_bsc_method': options.value('_ram_bsc_method_ID'),
-                  'error_method': options.value('_error_method_ID'),
-                  'smooth_method': options.value('_smooth_method_ID'),
+        result = {'ram_bsc_method': options.first()._ram_bsc_method_ID,
+                  'error_method': options.first()._error_method_ID,
+                  'smooth_method': options.first()._smooth_method_ID,
                   }
         return result
     else:
@@ -771,7 +771,7 @@ def read_mwl_product_id(system_id):
         .filter(Products._prod_type_ID == MWL)
 
     if products.count() == 1:
-        return products.value('_Product_ID')
+        return products.first().Products.ID
     else:
         logger.error('wrong number of mwl products ({0})'
                      .format(products.count()))
@@ -795,7 +795,7 @@ def read_system_id(measurement_id):
         .filter(Measurements.ID == measurement_id)
 
     if sys_id.count() == 1:
-        return sys_id.value('_hoi_system_ID')
+        return sys_id.first()._hoi_system_ID
     else:
         logger.error('wrong number of system IDs ({0})'.format(sys_id.count()))
 
