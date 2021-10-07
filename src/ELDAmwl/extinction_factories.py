@@ -3,7 +3,7 @@
 from addict import Dict
 from copy import deepcopy
 from ELDAmwl.configs.config_default import RANGE_BOUNDARY
-from ELDAmwl.constants import ABOVE_MAX_ALT, NC_FILL_INT
+from ELDAmwl.constants import ABOVE_MAX_ALT
 from ELDAmwl.constants import BELOW_OVL
 from ELDAmwl.constants import MC
 from ELDAmwl.constants import NC_FILL_STR
@@ -14,7 +14,7 @@ from ELDAmwl.factory import BaseOperation
 from ELDAmwl.factory import BaseOperationFactory
 from ELDAmwl.log import logger
 from ELDAmwl.mwl_file_structure import ext_algorithm_var
-from ELDAmwl.products import ProductParams, MCParams
+from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.registry import registry
 from math import sqrt
@@ -45,7 +45,6 @@ class ExtinctionParams(ProductParams):
 
         self.get_error_params(ep)
 
-
     def add_signal_role(self, signal):
         super(ExtinctionParams, self)
         if signal.is_Raman_sig:
@@ -73,22 +72,22 @@ class ExtinctionParams(ProductParams):
         res.max_bin_delta = 2
         return res
 
-    def to_meta_ds_dict(self, dict):
+    def to_meta_ds_dict(self, dct):
         """
         writes parameter content into Dict for further export in mwl file
         Args:
-            dict (addict.Dict): is a dict which will be converted into dataset.
+            dct (addict.Dict): is a dict which will be converted into dataset.
                             has the keys 'attrs' and 'data_vars'
 
         Returns:
 
         """
-        #super(ExtinctionParams, self).to_meta_ds_dict(dict)
-        dict.data_vars.assumed_angstroem_exponent = self.ang_exp_asDataArray
-        dict.data_vars.evaluation_algorithm = ext_algorithm_var(self.ext_method)
+        # super(ExtinctionParams, self).to_meta_ds_dict(dict)   # ToDo Ina debug
+        dct.data_vars.assumed_angstroem_exponent = self.ang_exp_asDataArray
+        dct.data_vars.evaluation_algorithm = ext_algorithm_var(self.ext_method)
 
         if self.correct_ovl:
-            dict.attrs.overlap_correction_file = self.ovl_filename
+            dct.attrs.overlap_correction_file = self.ovl_filename
 
 
 class Extinctions(Products):
@@ -96,7 +95,7 @@ class Extinctions(Products):
     time series of extinction profiles
     """
     @classmethod
-    def from_signal(cls, signal, p_params):
+    def from_signal(cls, signal, p_params, **kwargs):
         """calculates Extinctions from a Raman signal.
 
         The signal was previously prepared by PrepareExtSignals .
@@ -105,7 +104,7 @@ class Extinctions(Products):
             signal (Signals): time series of signal profiles
             p_params (ExtinctionParams)
         """
-        result = super(Extinctions, cls).from_signal(signal, p_params)
+        result = super(Extinctions, cls).from_signal(signal, p_params, **kwargs)
 
         ext_params = Dict({'detection_wavelength': signal.detection_wavelength,
                            'emission_wavelength': signal.emission_wavelength,
@@ -159,8 +158,8 @@ class Extinctions(Products):
         # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
         # and attributes it with key self.mwl_meta_id to meta_data
         super(Extinctions, self).to_meta_ds_dict(meta_data)
-        dict = meta_data[self.mwl_meta_id]
-        self.params.to_meta_ds_dict(dict)
+        dct = meta_data[self.mwl_meta_id]
+        self.params.to_meta_ds_dict(dct)
 
 
 class SlopeToExtinction(BaseOperationFactory):
@@ -322,6 +321,7 @@ class ExtinctionFactoryDefault(BaseOperation):
     """
 
     name = 'ExtinctionFactoryDefault'
+    param = None
 
     data_storage = None
 
@@ -368,6 +368,7 @@ class ExtEffBinRes(BaseOperationFactory):
     """
 
     name = 'ExtEffBinRes'
+    prod_id = None
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs
@@ -386,7 +387,8 @@ class ExtEffBinRes(BaseOperationFactory):
 
 class ExtUsedBinRes(BaseOperationFactory):
     """
-    Creates a Class for the calculation of how many bins have to be used for the linear fit in order to achieve the required effective bin resolutionof signal slope.
+    Creates a Class for the calculation of how many bins have to be used for the linear fit
+    in order to achieve the required effective bin resolutionof signal slope.
 
     Keyword Args:
         prod_id (str): id of the product
@@ -410,7 +412,6 @@ class ExtUsedBinRes(BaseOperationFactory):
         return read_ext_usedbin_algorithm(self.prod_id)
 
 
-
 class SignalSlope(BaseOperationFactory):
     """
     Creates a Class for the calculation of signal slope.
@@ -420,7 +421,7 @@ class SignalSlope(BaseOperationFactory):
     """
 
     name = 'SignalSlope'
-    prod_id = NC_FILL_STR
+    prod_id = NC_FILL_STR  # Todo Ina into Base class???
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs

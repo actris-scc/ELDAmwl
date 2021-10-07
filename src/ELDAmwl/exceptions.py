@@ -27,6 +27,7 @@ class FillTableFailed(ELDAmwlException):
     Raised when the import of a DB table failed; can occur only while testing
     """
 
+
 class SizeMismatch(ELDAmwlException):
     """
     Raised when profiles of different sizes are to be combined
@@ -41,6 +42,7 @@ class SizeMismatch(ELDAmwlException):
                .format(self.profile1_name,
                        self. profile2_name,
                        self.function_name))
+
 
 class OnlyOneOverrideAllowed(ELDAmwlException):
     """
@@ -76,13 +78,13 @@ class ProductNotUnique(ELDAmwlException):
     """
     Raised if there is more than one product defined with the same type and wavelength
     """
-    def __init__(self, type, wl):
-        self.type = type
+    def __init__(self, typ, wl):
+        self.typ = typ
         self.wl = wl
 
     def __str__(self):
         return('more than one product of type {0} and wavelength {1} '
-               .format(self.type, self.wl))
+               .format(self.typ, self.wl))
 
 
 class ELPPFileNotFound(ELDAmwlException):
@@ -95,7 +97,7 @@ class ELPPFileNotFound(ELDAmwlException):
         self.filename = filename
 
     def __str__(self):
-        return('ELPP file {0} not found'.format(self.filename))
+        return 'ELPP file {0} not found'.format(self.filename)
 
 
 class CannotOpenELLPFile(ELDAmwlException):
@@ -107,7 +109,8 @@ class CannotOpenELLPFile(ELDAmwlException):
         self.filename = filename
 
     def __str__(self):
-        return('cannot open ELPP file {0}'.format(self.filename))
+        return 'cannot open ELPP file {0}'.format(self.filename)
+
 
 class LogPathNotExists(ELDAmwlException):
     """raised when the path for writing the log file does not exists"""
@@ -121,7 +124,7 @@ class UseCaseNotImplemented(ELDAmwlException):
 
     def __init__(self, usecase, product_type, instead):
         self.usecase = usecase
-        self.product = product_type
+        self.product_type = product_type
         self.instead = instead
 
     def __str__(self):
@@ -129,13 +132,16 @@ class UseCaseNotImplemented(ELDAmwlException):
             .format(self.usecase, self.product_type)
         if self.instead:
             msg.join('use {0} instead.'.format(self.instead))
-        return(msg)
+        return msg
 
 
 class CalRangeHigherThanValid(ELDAmwlException):
     """raised when the range for finding the calibration window is higher
     than vertical range for product calculation"""
     return_value = 11
+
+    def __init__(self, product_id):
+        self.product_id = product_id
 
     def __str__(self):
         return('the upper end of the height interval for searching '
@@ -192,7 +198,6 @@ class DifferentCloudMaskExists(ELDAmwlException):
                'has already been red')
 
 
-
 class DifferentHeaderExists(ELDAmwlException):
     """
     Raised if a header shall be written to the data storage
@@ -241,4 +246,3 @@ class NoBscCalOptions(ELDAmwlException):
         return('no backscatter calibration options are '
                'provided in SCC db for product {0}'
                .format(self.prod_id))
-

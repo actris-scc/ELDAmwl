@@ -95,7 +95,7 @@ class MeasurementParams(Params):
         prod_df = self.measurement_params.product_table
 
         if res is not None:
-            all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()
+            all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] is True].to_numpy()
         else:
             all_wls = prod_df.wl.to_numpy()
 
@@ -113,7 +113,7 @@ class MeasurementParams(Params):
         prod_df = self.measurement_params.product_table
 
         if res is not None:
-            all_ptypes = prod_df['type'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()
+            all_ptypes = prod_df['type'][prod_df[RESOLUTION_STR[res]] is True].to_numpy()
         else:
             all_ptypes = prod_df.type.to_numpy()
 
@@ -245,12 +245,12 @@ class MeasurementParams(Params):
     def prod_param(self, prod_type, wl):
         """ returns exactly one param of the one product of type prod_type and wavelength wl
          """
-        list = self.prod_params(prod_type, wl)
+        lst = self.prod_params(prod_type, wl)
 
-        if list is None:
+        if lst is None:
             return None
-        elif len(list) == 1:
-            return list[0]
+        elif len(lst) == 1:
+            return lst[0]
         else:
             raise ProductNotUnique(prod_type, wl)
 
@@ -275,6 +275,7 @@ class MeasurementParams(Params):
             return None
         else:
             return None
+
 
 class RunELDAmwl(BaseOperation):
     """
@@ -334,7 +335,6 @@ class RunELDAmwl(BaseOperation):
 #        self.data.basic_product_common_smooth('377', LOWRES).save_to_netcdf()
 #        for p_param in self.params.basic_products():
 #            self.data.basic_product_common_smooth(p_param.prod_id_str, 'lowres').save_to_netcdf()
-
 
     def write_mwl_output(self):
         logger.info('write all products into one NetCDF file ')
