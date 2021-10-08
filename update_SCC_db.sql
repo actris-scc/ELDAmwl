@@ -115,12 +115,12 @@ ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name
 #-------------------------
 
 INSERT INTO `eldaexitcodes` (`exit_code`, `description`) VALUES
-	(39, 'wrong command line parameter'),
-	(40, 'different cloud masks exist for measurement'),
-	(41, 'different header information in ELPP files of measurement'),
-	(42, 'calibration params of backscatter products of the measurement are not equal'),
-	(43, 'No MonteCarlo Options for product'),
-	(44, 'No backscatter calibration options for product'),
+	(41, 'wrong command line parameter'),
+	(42, 'different cloud masks exist for measurement'),
+	(43, 'different header information in ELPP files of measurement'),
+	(44, 'calibration params of backscatter products of the measurement are not equal'),
+	(45, 'No MonteCarlo Options for product'),
+	(46, 'No backscatter calibration options for product'),
 	(100, 'internal error: cannot fnd requested information in data storage'),
 	(101, 'internal error: more than 1 override to class registry');
 

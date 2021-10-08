@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.error_codes import DB_ERROR
-
-NO_ERROR = 0
-UNKNOWN_EXCEPTION = 22
+from ELDAmwl.error_codes import DB_ERROR, CLASS_REGISTRY_TOO_MAY_OVERRIDES, DATA_NOT_IN_STORAGE, \
+    ERROR_SIG_FILE_NOT_EXISTS, NC_OPEN_ERROR, ERROR_LOG_DIR_NOT_EXISTS, USE_CASE_NOT_IMPLEMENTED, \
+    CAL_RANGE_HIGHER_THAN_VALID, NO_VALID_POINTS_FOR_CAL, ERR_INVALID_NB_OF_MC_ITERATIONS, ZERO_DETECTION_LIMIT, \
+    WRONG_COMMAND_LINE_PARAM, DIFFERENT_CLOUD_MASK_EXISTS, DIFFERENT_HEADER_EXISTS, \
+    DIFFERENT_BSC_OPTIONS_IN_MEASUREMENT, NO_MC_OPTIONS_IN_DB, NO_BSC_CAL_OPTIONS_IN_DB
 
 
 class ELDAmwlException(Exception):
@@ -66,7 +67,7 @@ class OnlyOneOverrideAllowed(ELDAmwlException):
     """
     Raised on attempt to add more than one override to class registry
     """
-    return_value = 101  # Todo Ina these codes have go to error_codes.py
+    return_value = CLASS_REGISTRY_TOO_MAY_OVERRIDES
 
     def __init__(self, factory_name):
         self.factory_name = factory_name
@@ -81,7 +82,7 @@ class NotFoundInStorage(ELDAmwlException):
     """
     Raised if the requested data are not found in data storage
     """
-    return_value = 100
+    return_value = DATA_NOT_IN_STORAGE
 
     def __init__(self, what, where):
         self.what = what
@@ -109,7 +110,7 @@ class ELPPFileNotFound(ELDAmwlException):
     """raised when the requested ELPP file is not found
     """
 
-    return_value = 3
+    return_value = ERROR_SIG_FILE_NOT_EXISTS
 
     def __init__(self, filename):
         self.filename = filename
@@ -121,7 +122,7 @@ class ELPPFileNotFound(ELDAmwlException):
 class CannotOpenELLPFile(ELDAmwlException):
     """raised when an eLPP file cannot be opened"""
 
-    return_value = 10
+    return_value = NC_OPEN_ERROR
 
     def __init__(self, filename):
         self.filename = filename
@@ -132,13 +133,13 @@ class CannotOpenELLPFile(ELDAmwlException):
 
 class LogPathNotExists(ELDAmwlException):
     """raised when the path for writing the log file does not exists"""
-    return_value = 6
+    return_value = ERROR_LOG_DIR_NOT_EXISTS
 
 
 class UseCaseNotImplemented(ELDAmwlException):
     """Raised if a usecase or BaseOperation is called but not yet implemented
     """
-    return_value = 7
+    return_value = USE_CASE_NOT_IMPLEMENTED
 
     def __init__(self, usecase, product_type, instead):
         self.usecase = usecase
@@ -156,7 +157,7 @@ class UseCaseNotImplemented(ELDAmwlException):
 class CalRangeHigherThanValid(ELDAmwlException):
     """raised when the range for finding the calibration window is higher
     than vertical range for product calculation"""
-    return_value = 11
+    return_value = CAL_RANGE_HIGHER_THAN_VALID
 
     def __init__(self, product_id):
         self.product_id = product_id
@@ -172,7 +173,7 @@ class NoValidDataPointsForCalibration(ELDAmwlException):
     Raised if a backscatter calibration value cannot be
     calculated within the requested uncertainty.
     """
-    return_value = 13
+    return_value = NO_VALID_POINTS_FOR_CAL
 
     def __str__(self):
         return('error of calibration factor larger than '
@@ -181,7 +182,7 @@ class NoValidDataPointsForCalibration(ELDAmwlException):
 
 class NotEnoughMCIterations(ELDAmwlException):
     """raised when number of MC iterations is not >1"""
-    return_value = 23
+    return_value = ERR_INVALID_NB_OF_MC_ITERATIONS
 
     def __str__(self):
         return('Product {0} has wrong number of MonteCarlo '
@@ -192,7 +193,7 @@ class NotEnoughMCIterations(ELDAmwlException):
 class DetectionLimitZero(ELDAmwlException):
     """raised when a detection limit = 0.0 . The value must be >0.0
     """
-    return_value = 31
+    return_value = ZERO_DETECTION_LIMIT
 
     def __str__(self):
         return('detection limit of product {0} '
@@ -201,7 +202,7 @@ class DetectionLimitZero(ELDAmwlException):
 
 class WrongCommandLineParameter(ELDAmwlException):
     """raised when wrong command line parameters are provided"""
-    return_value = 35
+    return_value = WRONG_COMMAND_LINE_PARAM
 
 
 class DifferentCloudMaskExists(ELDAmwlException):
@@ -209,7 +210,7 @@ class DifferentCloudMaskExists(ELDAmwlException):
     Raised if a cloud_mask shall be written to the data storage
     but the existing one is different from the new one
     """
-    return_value = 36
+    return_value = DIFFERENT_CLOUD_MASK_EXISTS
 
     def __str__(self):
         return('Another ELPP file with a different cloud mask '
@@ -221,7 +222,7 @@ class DifferentHeaderExists(ELDAmwlException):
     Raised if a header shall be written to the data storage
     but the existing one is different from the new one
     """
-    return_value = 40
+    return_value = DIFFERENT_HEADER_EXISTS
 
     def __str__(self):
         return('Another ELPP file with different header information '
@@ -230,7 +231,7 @@ class DifferentHeaderExists(ELDAmwlException):
 
 class BscCalParamsNotEqual(ELDAmwlException):
     """raised when calibration params of backscatter products are not equal"""
-    return_value = 41
+    return_value = DIFFERENT_BSC_OPTIONS_IN_MEASUREMENT
 
     def __init__(self, prod_id_1, prod_id_2):
         self.pid1 = prod_id_1
@@ -246,7 +247,7 @@ class NOMCOptions(ELDAmwlException):
     for a product with error_method == mc
     """
 
-    return_value = 42
+    return_value = NO_MC_OPTIONS_IN_DB
 
     def __str__(self):
         return('no MonteCarlo options are provided in SCC db'
@@ -258,7 +259,7 @@ class NoBscCalOptions(ELDAmwlException):
     """raised when a backscatter product has no calibration options in SCC db
     """
 
-    return_value = 43
+    return_value = NO_BSC_CAL_OPTIONS_IN_DB
 
     def __str__(self):
         return('no backscatter calibration options are '
