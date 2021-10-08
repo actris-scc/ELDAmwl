@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
+from zope import component
 
+from ELDAmwl.component.interface import ILogger
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
 
@@ -14,6 +16,7 @@ class Columns(object):
     """
 
     def __init__(self):
+        self.logger = component.queryUtility(ILogger)
         self.ds = xr.Dataset(
             {'data': (['time', 'level'], np.empty((0, 0))),
              'err': (['time', 'level'], np.empty((0, 0))),

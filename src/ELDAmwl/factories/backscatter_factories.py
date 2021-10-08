@@ -35,8 +35,7 @@ class BscCalibrationParams(Params):
     def from_db(cls, general_params):
         result = cls()
         db_func = component.queryUtility(IDBFunc)
-        query = db_func.get_bsc_cal_params_query(general_params.prod_id,
-                                         general_params.product_type)
+        query = db_func.get_bsc_cal_params_query(general_params.prod_id, general_params.product_type)
 
         result.cal_range_search_algorithm = \
             query.BscCalibrOption._calRangeSearchMethod_ID
@@ -75,7 +74,8 @@ class BscCalibrationParams(Params):
 
         """
         mwl_struct = MWLFileStructure()
-        dct.data_vars.calibration_range_search_algorithm = mwl_struct.bsc_calibr_method_var(self.cal_range_search_algorithm)
+        dct.data_vars.calibration_range_search_algorithm = \
+            mwl_struct.bsc_calibr_method_var(self.cal_range_search_algorithm)
         dct.data_vars.calibration_search_range = mwl_struct.cal_search_range_var(self.cal_interval)
         dct.data_vars.calibration_value = mwl_struct.bsc_calibr_value_var(self.cal_value)
 
@@ -115,8 +115,9 @@ class BackscatterParams(ProductParams):
             if signal.is_refl_sig:
                 self.refl_sig_id = signal.channel_id_str
         else:
-            self.logger.debug('channel {0} is no elast signal'.
-                         format(signal.channel_id_str))
+            self.logger.debug(
+                'channel {0} is no elast signal'.format(signal.channel_id_str)
+            )
 
     def to_meta_ds_dict(self, dct):
         """

@@ -351,8 +351,9 @@ class Signals(Columns):
         """
         times = self.ds.dims['time']
         if heights.shape[0] != times:
-            self.logger.error('dataset and heights have '
-                         'different lenghts (time dimension)')
+            self.logger.error(
+                'dataset and heights have different lenghts (time dimension)'
+            )
             return None
 
         closest_bin = (abs(self.height - heights)).argmin(dim='level')

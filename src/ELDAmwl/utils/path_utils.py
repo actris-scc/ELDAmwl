@@ -9,4 +9,3 @@ def dir_not_found_hint(path_str):
         """To create the missing directory please do\n
            $mkdir {path}
         """.format(path=abs_path))
-

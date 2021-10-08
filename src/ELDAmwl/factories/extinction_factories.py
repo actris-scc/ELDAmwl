@@ -11,14 +11,9 @@ from ELDAmwl.utils.constants import ABOVE_MAX_ALT
 from ELDAmwl.utils.constants import BELOW_OVL
 from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import NC_FILL_STR
-#from ELDAmwl.database.db_functions import read_extinction_algorithm, read_ext_effbin_algorithm, \
-#    read_ext_usedbin_algorithm
-#from ELDAmwl.database.db_functions import read_extinction_params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-#from ELDAmwl.log import logger
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-#    ext_algorithm_var
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.component.registry import registry
@@ -55,8 +50,9 @@ class ExtinctionParams(ProductParams):
         if signal.is_Raman_sig:
             self.raman_sig_id = signal.channel_id_str
         else:
-            self.logger.debug('channel {0} is no Raman signal'.
-                         format(signal.channel_id_str))
+            self.logger.debug(
+                'channel {0} is no Raman signal'.format(signal.channel_id_str)
+            )
 
     @property
     def ang_exp_asDataArray(self):

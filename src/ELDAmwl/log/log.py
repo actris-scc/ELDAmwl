@@ -120,8 +120,7 @@ class Logger:
         Has to be setup when the output filename is known
         """
         if not os.path.exists(cfg.LOG_PATH):
-            self.error(ERROR,
-                """Log file directory "{path}" does not exists""".format(path=cfg.LOG_PATH))
+            self.error(ERROR, """Log file directory "{path}" does not exists""".format(path=cfg.LOG_PATH))
             dir_not_found_hint(cfg.LOG_PATH)
             raise LogPathNotExists
 
@@ -140,7 +139,6 @@ class Logger:
         Setup the DB logger. Should be called from the outside after a DB connection is established
         """
         self.db_log_func = component.queryUtility(IDBFunc).db_log
-
 
     def setup_logger(self):
         """

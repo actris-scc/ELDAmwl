@@ -18,13 +18,8 @@ from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.bases.factory import BaseOperationFactory, BaseOperation
-from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-# UNITS
-#from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query, get_smooth_params_query, \
-#    get_quality_params_query
 from ELDAmwl.errors.exceptions import DetectionLimitZero, NotEnoughMCIterations, SizeMismatch, UseCaseNotImplemented
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-# NC_VAR_NAMES, error_method_var
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
@@ -142,7 +137,8 @@ class Products(Signals):
     def to_meta_ds_dict(self, meta_data):
         dct = Dict({'attrs': Dict(), 'data_vars': Dict()})
 
-        dct.data_vars.error_retrieval_method = MWLFileStructure().error_method_var(self.params.general_params.error_method)
+        dct.data_vars.error_retrieval_method = MWLFileStructure() \
+            .error_method_var(self.params.general_params.error_method)
         meta_data[self.mwl_meta_id] = dct
 
 
