@@ -21,21 +21,31 @@ class ExtMethod(Base):
 
     __tablename__ = '_ext_methods'
 
-    ID = Column(INTEGER,
-                primary_key=True,
-                server_default=text("'0'"))
-    method = Column(String(100),
-                    nullable=False,
-                    server_default=text("''"))
-    python_classname = Column(String(100),
-                              nullable=False,
-                              server_default=text("''"))
-    python_classname_get_used_binres = Column(String(100),
-                                              nullable=False,
-                                              server_default=text("''"))
-    python_classname_get_effective_binres = Column(String(100),
-                                                   nullable=False,
-                                                   server_default=text("''"))
+    ID = Column(
+        INTEGER,
+        primary_key=True,
+        server_default=text("'0'")
+    )
+    method = Column(
+        String(100),
+        nullable=False,
+        server_default=text("''")
+    )
+    python_classname = Column(
+        String(100),
+        nullable=False,
+        server_default=text("''")
+    )
+    python_classname_get_used_binres = Column(
+        String(100),
+        nullable=False,
+        server_default=text("''")
+    )
+    python_classname_get_effective_binres = Column(
+        String(100),
+        nullable=False,
+        server_default=text("''")
+    )
 
 
 class ExtinctionOption(Base):
@@ -45,36 +55,70 @@ class ExtinctionOption(Base):
 
     __tablename__ = 'extinction_options'
 
-    ID = Column(INTEGER, primary_key=True)
-    _product_ID = Column(INTEGER,
-                         nullable=False,
-                         server_default=text("'-1'"))
-    _ext_method_ID = Column(INTEGER,
-                            nullable=False,
-                            index=True,
-                            server_default=text("'-1'"))
-    _error_method_ID = Column(INTEGER,
-                              nullable=False,
-                              index=True,
-                              server_default=text("'-1'"))
-    _overlap_file_ID = Column(INTEGER,
-                              nullable=False,
-                              index=True,
-                              server_default=text("'-1'"))
-    angstroem = Column(DECIMAL(10, 4),
-                       nullable=False,
-                       server_default=text("'0.0000'"))
+    ID = Column(
+        INTEGER,
+        primary_key=True
+    )
+    _product_ID = Column(
+        INTEGER,
+        nullable=False,
+        server_default=text("'-1'")
+    )
+    _ext_method_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'")
+    )
+    _error_method_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'")
+    )
+    _overlap_file_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'")
+    )
+    angstroem = Column(
+        DECIMAL(10, 4),
+        nullable=False,
+        server_default=text("'0.0000'")
+    )
 
 
 class OverlapFile(Base):
     __tablename__ = 'overlap_files'
 
-    ID = Column(INTEGER, primary_key=True)
+    ID = Column(
+        INTEGER,
+        primary_key=True)
+
     # Rule is: If a column has two underscores reduce to one
-    _hoi_stations_ID = Column('__hoi_stations__ID', CHAR(3))
-    start = Column(DateTime)
-    stop = Column(DateTime)
-    filename = Column(String(100), nullable=False, server_default=text("''"))
-    _interpolation_id = Column(INTEGER)
-    submission_date = Column(DateTime)
-    status = Column(String(20), nullable=False)
+    _hoi_stations_ID = Column(
+        '__hoi_stations__ID',
+        CHAR(3)
+    )
+    start = Column(
+        DateTime
+    )
+    stop = Column(
+        DateTime
+    )
+    filename = Column(
+        String(100),
+        nullable=False,
+        server_default=text("''")
+    )
+    _interpolation_id = Column(
+        INTEGER
+    )
+    submission_date = Column(
+        DateTime
+    )
+    status = Column(
+        String(20),
+        nullable=False
+    )
