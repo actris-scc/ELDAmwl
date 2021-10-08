@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
+from ELDAmwl.error_codes import DB_ERROR
 
 NO_ERROR = 0
 UNKNOWN_EXCEPTION = 22
@@ -14,6 +15,23 @@ class ELDAmwlException(Exception):
 
     def __init__(self, prod_id):
         self.prod_id = prod_id
+
+
+class Terminating(Exception):
+    """
+    Marker Exception mixing for terminating Exceptions
+    """
+
+
+class DBErrorTerminating(ELDAmwlException):
+    """
+    Raised when a terminating DB problem occurs
+    """
+
+    return_value = DB_ERROR
+
+    def __init__(self):
+        pass
 
 
 class CsvFileNotFound(ELDAmwlException):
@@ -48,7 +66,7 @@ class OnlyOneOverrideAllowed(ELDAmwlException):
     """
     Raised on attempt to add more than one override to class registry
     """
-    return_value = 101
+    return_value = 101  # Todo Ina these codes have go to error_codes.py
 
     def __init__(self, factory_name):
         self.factory_name = factory_name

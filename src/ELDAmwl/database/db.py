@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+from sqlalchemy.exc import OperationalError
+
 from ELDAmwl.database.tables.system_product import SystemProduct
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from ELDAmwl.exceptions import DBErrorTerminating
+from ELDAmwl.log import logger
 
 try:
     import ELDAmwl.configs.config as cfg
@@ -14,6 +18,7 @@ class DBUtils(object):
     def __init__(self, connect_string=None):
         self.connect_string = connect_string
         self.init_engine()
+        self.test_db()
 
     def get_connect_string(self):
         if self.connect_string:
@@ -30,6 +35,15 @@ class DBUtils(object):
 
         # create a configured "Session" class
         self.session = sessionmaker(bind=self.engine)()
+
+    def test_db(self):
+        tasks = self.session.query(SystemProduct)
+        try:
+            first_task = tasks.first()
+        except OperationalError as e:
+            logger.error("""Database cannot be reached! Please check the database connection
+                            and the db connection settings in your config.py\n{}""".format(e))
+            raise DBErrorTerminating
 
     def read_tasks(self, measurement_id):
         tasks = self.session.query(  # Measurements,

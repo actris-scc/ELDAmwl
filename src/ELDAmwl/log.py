@@ -53,8 +53,6 @@ console_handler.setLevel(cfg.log_level_console)
 logger.addHandler(console_handler)
 
 
-
-
 def create_logger(meas_id):
     if not os.path.exists(cfg.LOG_PATH):
         log(ERROR,

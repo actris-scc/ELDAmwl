@@ -3,8 +3,10 @@ import sys
 import traceback
 
 from ELDAmwl.constants import ELDA_MWL_VERSION
+from ELDAmwl.database.db_functions import create_db_utils
 from ELDAmwl.elda_mwl_factories import RunELDAmwl
-from ELDAmwl.exceptions import ELDAmwlException, UNKNOWN_EXCEPTION, WrongCommandLineParameter, NO_ERROR
+from ELDAmwl.exceptions import ELDAmwlException, UNKNOWN_EXCEPTION, WrongCommandLineParameter, NO_ERROR, Terminating, \
+    DBErrorTerminating
 from ELDAmwl.log import create_logger
 from ELDAmwl.log import logger
 # This import is mandatory
@@ -88,6 +90,7 @@ def main():
         except Exception:
             raise WrongCommandLineParameter
 
+        # Todo Ina separate inner code and exception handling into two functions
         create_logger(meas_id)
         # register_plugins()
 
@@ -95,6 +98,8 @@ def main():
                    multi-wavelengths measurements (ELDAmwl)')
         logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
         logger.info('analyze measurement number: ' + meas_id)
+
+        create_db_utils()
 
         elda_mwl = RunELDAmwl(meas_id)
         elda_mwl.read_tasks()
@@ -125,5 +130,4 @@ def main():
 
 
 if __name__ == '__main__':
-
     main()

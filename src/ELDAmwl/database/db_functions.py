@@ -30,7 +30,13 @@ from ELDAmwl.log import logger
 from sqlalchemy.orm import aliased
 
 
-dbutils = DBUtils()
+dbutils = None
+
+
+def create_db_utils():
+    """Initializing dbutils. ToDo db_functions has to become a class with DBUtils() as member"""
+    global dbutils
+    dbutils = DBUtils()
 
 
 def read_signal_filenames(measurement_id):
