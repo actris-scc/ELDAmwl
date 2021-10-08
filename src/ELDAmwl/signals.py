@@ -115,10 +115,10 @@ class Signals(Columns):
 
     emission_wavelength = np.nan
     detection_wavelength = np.nan
-    channel_id = np.nan
+    channel_id = None
     detection_type = np.nan
     channel_idx_in_ncfile = np.nan
-    scatterer = np.nan
+    scatterer = None
     alt_range = np.nan
     pol_channel_conf = np.nan
     scale_factor_shots = None
