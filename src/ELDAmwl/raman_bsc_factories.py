@@ -146,6 +146,8 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
             bsc = RamanBackscatters.from_sigratio(
                 sig_ratio, self.param, self.calibr_window)
 
+        else:
+            bsc = None
             # todo
             # if self.kwargs['autosmooth']:
             # get auto smooht resolution
@@ -155,9 +157,9 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
             #     ).run()
             #    self.data_storage.set_binres_auto_smooth(self.param.prod_id_str, smooth_res)
 
-            result = bsc
+        result = bsc
 
-        return result   # ToDo Ina debug
+        return result
 
 
 class CalcRamanBscProfile(BaseOperationFactory):

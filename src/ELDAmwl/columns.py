@@ -18,12 +18,12 @@ class Columns(object):
             {'data': (['time', 'level'], np.empty((0, 0))),
              'err': (['time', 'level'], np.empty((0, 0))),
              'qf': (['time', 'level'], np.empty((0, 0), dtype=np.int8)),
-             'binres': (['time', 'level'], np.empty((0, 0), dtype=np.int)),
+             'binres': (['time', 'level'], np.empty((0, 0), dtype=np.int64)),
              'time_bounds': (['time', 'nv'],
                              np.empty((0, 0), dtype=np.datetime64)),
              },
-            coords={'time': (['time'], np.empty((0), dtype=np.datetime64)),  # ToDo Ina debug
-                    'level': (['level'], np.empty((0), dtype=np.int64)),
+            coords={'time': (['time'], np.empty((0,), dtype=np.datetime64)),
+                    'level': (['level'], np.empty((0,), dtype=np.int64)),
                     'altitude': (['time', 'level'], np.empty((0, 0))),
                     })
         self.station_altitude = None
@@ -50,13 +50,14 @@ class Columns(object):
 
         """
 
-        dct = {}
-        dct['dims'] = ('time',)  # ToDo Ina debug
-        dct['coords'] = {
-            'time': {
-                'dims': angle_var.coords['time'].dims,
-                'data': angle_var.coords['time'].data
-            }
+        dct = {
+            'dims': ('time',),
+            'coords': {
+                'time': {
+                    'dims': angle_var.coords['time'].dims,
+                    'data': angle_var.coords['time'].data,
+                    },
+                },
         }
 
         if 'level' in data_var.dims:
