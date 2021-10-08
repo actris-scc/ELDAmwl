@@ -128,6 +128,10 @@ class Signals(Columns):
     calc_eff_bin_res_routine = None
     calc_used_bin_res_routine = None
 
+    h = None
+    g = None
+    pol_channel_geometry = None
+
     @classmethod
     def as_sig_ratio(cls, enumerator, denominator):
         """creates a Signals instance from the ratio of two Signals
@@ -407,9 +411,9 @@ class Signals(Columns):
                                  drop=True)
         else:
             # first valid level
-            fvl = self.height_to_level(min_h)
+            fvl = self.height_to_levels(min_h)
             # last valid level
-            lvl = self.height_to_level(max_h)
+            lvl = self.height_to_levels(max_h)
 
             if boundaries == 'extend_with_binres':
                 fvl = max(fvl - self.ds.binres[fvl] // 2, 0)
@@ -464,12 +468,11 @@ class Signals(Columns):
 
     @property
     def is_WV_sig(self):
-        # ToDo Ina make comment to clearify
-        return (self.scatterer == WATER_VAPOR).values
+        return bool(self.scatterer == WATER_VAPOR)
 
     @property
     def is_elast_sig(self):
-        return ((self.scatterer & PARTICLE) == PARTICLE).values
+        return bool((self.scatterer & PARTICLE) == PARTICLE)
 
     @property
     def is_Raman_sig(self):
@@ -477,31 +480,31 @@ class Signals(Columns):
 
     @property
     def is_nr_signal(self):
-        return (self.alt_range == NEAR_RANGE).values
+        return bool(self.alt_range == NEAR_RANGE)
 
     @property
     def is_fr_signal(self):
-        return (self.alt_range == FAR_RANGE).values
+        return bool(self.alt_range == FAR_RANGE)
 
     @property
     def is_total_sig(self):
-        return (self.pol_channel_conf == TOTAL).values
+        return bool(self.pol_channel_conf == TOTAL)
 
     @property
     def is_cross_sig(self):
-        return (self.pol_channel_conf == CROSS).values
+        return bool(self.pol_channel_conf == CROSS)
 
     @property
     def is_parallel_sig(self):
-        return (self.pol_channel_conf == PARALLEL).values
+        return bool(self.pol_channel_conf == PARALLEL)
 
     @property
     def is_transm_sig(self):
-        return (self.pol_channel_geometry == TRANSMITTED).values
+        return bool(self.pol_channel_geometry == TRANSMITTED)
 
     @property
     def is_refl_sig(self):
-        return (self.pol_channel_geometry == REFLECTED).values
+        return bool(self.pol_channel_geometry == REFLECTED)
 
     def eff_to_used_binres(self, an_eff_binres):
         """
