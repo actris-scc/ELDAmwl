@@ -11,6 +11,7 @@ import os
 
 
 from ELDAmwl.exceptions import LogPathNotExists
+from ELDAmwl.utils.path_utils import dir_not_found_hint
 
 try:
     import ELDAmwl.configs.config as cfg
@@ -52,11 +53,13 @@ console_handler.setLevel(cfg.log_level_console)
 logger.addHandler(console_handler)
 
 
+
+
 def create_logger(meas_id):
     if not os.path.exists(cfg.LOG_PATH):
         log(ERROR,
-            'Log file directory does not exists {path}, please create it '.
-            format(path=cfg.LOG_PATH))
+            """Log file directory "{path}" does not exists""".format(path=cfg.LOG_PATH))
+        dir_not_found_hint(cfg.LOG_PATH)
         raise LogPathNotExists
 
     file_handler = FileHandler(os.path.join(cfg.LOG_PATH,
