@@ -17,94 +17,250 @@ Base = declarative_base()
 class SystemProduct(Base):
     __tablename__ = 'system_product'
 
-    ID = Column(INTEGER, primary_key=True)
-    _system_ID = Column(INTEGER, nullable=False, index=True)
-    _Product_ID = Column(INTEGER, nullable=False, index=True)
+    ID = Column(
+        INTEGER,
+        primary_key=True
+    )
+    _system_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True
+    )
+    _Product_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True
+    )
 
 
 class MWLproductProduct(Base):
     __tablename__ = 'mwlproduct_product'
 
-    ID = Column(INTEGER, primary_key=True)
-    _mwl_product_ID = Column(INTEGER, nullable=False, index=True)
-    _Product_ID = Column(INTEGER, nullable=False, index=True)
-    create_with_hr = Column(INTEGER, nullable=False, index=False)
-    create_with_lr = Column(INTEGER, nullable=False, index=False)
+    ID = Column(
+        INTEGER,
+        primary_key=True
+    )
+    _mwl_product_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True
+    )
+    _Product_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True
+    )
+    create_with_hr = Column(
+        INTEGER,
+        nullable=False,
+        index=False
+    )
+    create_with_lr = Column(
+        INTEGER,
+        nullable=False,
+        index=False
+    )
 
 
 class Products(Base):
     __tablename__ = 'products'
 
-    ID = Column(INTEGER, primary_key=True)
-    _usecase_ID = Column(INTEGER)
-    _prod_type_ID = Column(INTEGER, nullable=False, index=True)
-    _hoi_stations_ID = Column('__hoi_stations__ID', CHAR(3))
-    _hirelpp_product_option_ID = Column(INTEGER)
+    ID = Column(
+        INTEGER,
+        primary_key=True
+    )
+    _usecase_ID = Column(
+        INTEGER
+    )
+    _prod_type_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True
+    )
+    _hoi_stations_ID = Column(
+        '__hoi_stations__ID',
+        CHAR(3)
+    )
+    _hirelpp_product_option_ID = Column(
+        INTEGER
+    )
 
 
 class ProductTypes(Base):
     __tablename__ = '_product_types'
 
-    ID = Column(INTEGER, primary_key=True)
-    product_type = Column(CHAR(100), nullable=False)
+    ID = Column(
+        INTEGER,
+        primary_key=True
+    )
+    product_type = Column(
+        CHAR(100),
+        nullable=False
+    )
     # Changed to Nullable for csv import to work.
-    better_name = Column(CHAR(100), nullable=True)
-    nc_file_id = Column(CHAR(1), nullable=False)
-    processor_ID = Column(INTEGER, nullable=False)
+    better_name = Column(
+        CHAR(100),
+        nullable=True
+    )
+    nc_file_id = Column(
+        CHAR(1),
+        nullable=False
+    )
+    processor_ID = Column(
+        INTEGER,
+        nullable=False
+    )
     # Changed to Nullable for csv import to work.
-    is_mwl_only_product = Column(INTEGER, nullable=True)
+    is_mwl_only_product = Column(
+        INTEGER,
+        nullable=True
+    )
     # Changed to Nullable for csv import to work.
-    is_in_mwl_products = Column(INTEGER, nullable=True)
+    is_in_mwl_products = Column(
+        INTEGER,
+        nullable=True
+    )
     # Changed to Nullable for csv import to work.
-    is_basic_product = Column(INTEGER, nullable=True)
+    is_basic_product = Column(
+        INTEGER,
+        nullable=True
+    )
 
 
 class PreProcOptions(Base):
     __tablename__ = 'preproc_options'
 
-    ID = Column(INTEGER, primary_key=True)
-    _product_ID = Column(INTEGER, nullable=False)
-    min_height = Column(DECIMAL(10, 4), nullable=False)
-    max_height = Column(DECIMAL(10, 4), nullable=False)
-    preprocessing_integration_time = Column(INTEGER, nullable=False)
-    preprocessing_vertical_resolution = Column(DECIMAL(10, 4), nullable=False)
-    interpolation_id = Column(INTEGER, nullable=False)
+    ID = Column(
+        INTEGER,
+        primary_key=True
+    )
+    _product_ID = Column(
+        INTEGER,
+        nullable=False
+    )
+    min_height = Column(
+        DECIMAL(10, 4),
+        nullable=False
+    )
+    max_height = Column(
+        DECIMAL(10, 4),
+        nullable=False
+    )
+    preprocessing_integration_time = Column(
+        INTEGER,
+        nullable=False
+    )
+    preprocessing_vertical_resolution = Column(
+        DECIMAL(10, 4),
+        nullable=False
+    )
+    interpolation_id = Column(
+        INTEGER,
+        nullable=False
+    )
 
 
 class SmoothOptions(Base):
     __tablename__ = 'smooth_options'
 
-    ID = Column(INTEGER, primary_key=True)
-    _product_ID = Column(INTEGER, nullable=False)
-    _lowrange_error_threshold_ID = Column(INTEGER, nullable=False, index=True)
-    _highrange_error_threshold_ID = Column(INTEGER, nullable=False, index=True)
-    detection_limit = Column(DECIMAL(11, 11), nullable=False)
-    transition_zone_from = Column(DECIMAL(10, 4), nullable=True)
-    transition_zone_to = Column(DECIMAL(10, 4), nullable=True)
-    lowres_lowrange_vertical_resolution = Column(DECIMAL(10, 4), nullable=True)
-    lowres_highrange_vertical_resolution = Column(DECIMAL(10, 4), nullable=True)
-    highres_lowrange_vertical_resolution = Column(DECIMAL(10, 4), nullable=True)
-    highres_highrange_vertical_resolution = Column(DECIMAL(10, 4), nullable=True)
-    lowres_lowrange_integration_time = Column(INTEGER, nullable=True)
-    lowres_highrange_integration_time = Column(INTEGER, nullable=True)
-    highres_lowrange_integration_time = Column(INTEGER, nullable=True)
-    highres_highrange_integration_time = Column(INTEGER, nullable=True)
-    _smooth_type = Column(INTEGER, nullable=False)
+    ID = Column(
+        INTEGER,
+        primary_key=True
+    )
+    _product_ID = Column(
+        INTEGER,
+        nullable=False
+    )
+    _lowrange_error_threshold_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True
+    )
+    _highrange_error_threshold_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True
+    )
+    detection_limit = Column(
+        DECIMAL(11, 11),
+        nullable=False
+    )
+    transition_zone_from = Column(
+        DECIMAL(10, 4),
+        nullable=True
+    )
+    transition_zone_to = Column(
+        DECIMAL(10, 4),
+        nullable=True
+    )
+    lowres_lowrange_vertical_resolution = Column(
+        DECIMAL(10, 4),
+        nullable=True
+    )
+    lowres_highrange_vertical_resolution = Column(
+        DECIMAL(10, 4),
+        nullable=True
+    )
+    highres_lowrange_vertical_resolution = Column(
+        DECIMAL(10, 4),
+        nullable=True
+    )
+    highres_highrange_vertical_resolution = Column(
+        DECIMAL(10, 4),
+        nullable=True
+    )
+    lowres_lowrange_integration_time = Column(
+        INTEGER,
+        nullable=True
+    )
+    lowres_highrange_integration_time = Column(
+        INTEGER,
+        nullable=True
+    )
+    highres_lowrange_integration_time = Column(
+        INTEGER,
+        nullable=True
+    )
+    highres_highrange_integration_time = Column(
+        INTEGER,
+        nullable=True
+    )
+    _smooth_type = Column(
+        INTEGER,
+        nullable=False
+    )
 
 
 class ErrorThresholds(Base):
     __tablename__ = '_error_thresholds'
 
-    ID = Column('Id', INTEGER, primary_key=True)
-    value = Column(Float, nullable=False)
-    name = Column(String(100), nullable=False)
+    ID = Column(
+        'Id',
+        INTEGER,
+        primary_key=True
+    )
+    value = Column(
+        Float,
+        nullable=False
+    )
+    name = Column(
+        String(100),
+        nullable=False
+    )
 
 
 class SmoothTypes(Base):
     __tablename__ = '_smooth_types'
 
-    ID = Column('Id', INTEGER, primary_key=True)
-    smooth_type = Column(String(50), nullable=False)
+    ID = Column(
+        'Id',
+        INTEGER,
+        primary_key=True
+    )
+    smooth_type = Column(
+        String(50),
+        nullable=False
+    )
 
 
 class SmoothMethod(Base):
@@ -118,48 +274,73 @@ class SmoothMethod(Base):
 
     __tablename__ = '_smooth_methods'
 
-    ID = Column(INTEGER,
-                primary_key=True,
-                server_default=text("'0'"))
-    method = Column(String(100),
-                    nullable=False,
-                    server_default=text("''"))
-    python_classname = Column(String(100),
-                              nullable=False,
-                              server_default=text("''"))
-    python_classname_get_used_binres = Column(String(100),
-                                              nullable=False,
-                                              server_default=text("''"))
-    python_classname_get_effective_binres = Column(String(100),
-                                                   nullable=False,
-                                                   server_default=text("''"))
-
-# class ErrorMethod(Base):
-#     __tablename__ = '_error_method'
-#
-#     id = Column(INTEGER,
-#                 primary_key=True,
-#                 server_default=text("'0'"))
-#     method = Column(String(100),
-#                     nullable=False,
-#                     server_default=text("''"))
-#
-#
+    ID = Column(
+        INTEGER,
+        primary_key=True,
+        server_default=text("'0'")
+    )
+    method = Column(
+        String(100),
+        nullable=False,
+        server_default=text("''")
+    )
+    python_classname = Column(
+        String(100),
+        nullable=False,
+        server_default=text("''")
+    )
+    python_classname_get_used_binres = Column(
+        String(100),
+        nullable=False,
+        server_default=text("''")
+    )
+    python_classname_get_effective_binres = Column(
+        String(100),
+        nullable=False,
+        server_default=text("''")
+    )
 
 
 class PreparedSignalFile(Base):
     __tablename__ = 'prepared_signal_files'
 
-    ID = Column(INTEGER, primary_key=True)
-    _measurements_ID = Column('__measurements__ID', String(15), index=True)
-    _Product_ID = Column(INTEGER, nullable=False, index=True)
-    _scc_version_ID = Column(INTEGER, nullable=False)
-    filename = Column(String(100), nullable=False)
+    ID = Column(
+        INTEGER,
+        primary_key=True
+    )
+    _measurements_ID = Column(
+        '__measurements__ID',
+        String(15),
+        index=True
+    )
+    _Product_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True
+    )
+    _scc_version_ID = Column(
+        INTEGER,
+        nullable=False
+    )
+    filename = Column(
+        String(100),
+        nullable=False
+    )
 
 
 class MCOption(Base):
     __tablename__ = 'mc_options'
 
-    ID = Column(INTEGER, primary_key=True)
-    _product_ID = Column(INTEGER, nullable=False, index=True)
-    iteration_count = Column(INTEGER, nullable=False)
+    ID = Column(
+        INTEGER,
+        primary_key=True
+    )
+    _product_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True
+    )
+    iteration_count = Column(
+        INTEGER,
+        nullable=False
+    )
