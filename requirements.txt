@@ -1,6 +1,6 @@
 #setuptools==38.2.4
 #zc.buildout==2.10.0
-pytest
+pytest~=6.2.5
 flake8-todo
 flake8-string-format
 flake8-quotes
@@ -20,3 +20,11 @@ pandas>=0.24
 sphinxcontrib-serializinghtml
 sphinxcontrib-qthelp
 sphinx
+zope.interfaces
+zope.component
+
+xarray~=0.19.0
+numpy~=1.21.1
+sqlalchemy~=1.4.25
+addict~=2.4.0
+scipy~=1.6.1

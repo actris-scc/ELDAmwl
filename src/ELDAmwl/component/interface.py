@@ -11,5 +11,3 @@ class ILogger(interface.Interface):
     """
     Marker Interface for logger utility
     """
-
-

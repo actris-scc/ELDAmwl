@@ -46,12 +46,12 @@ class DBFunc(DBUtils):
 
     def db_log(self, level, datetime, measurement_id, product_id, module_version, msg):
         log_msg = ELDALogs(
-            meas_id = measurement_id,
-            level = level,
-            datetime = datetime,
-            product_id = product_id,
-            module_version = module_version,
-            message = msg
+            meas_id=measurement_id,
+            level=level,
+            datetime=datetime,
+            product_id=product_id,
+            module_version=module_version,
+            message=msg
         )
         self.session.add(log_msg)
         self.session.commit()
@@ -71,8 +71,9 @@ class DBFunc(DBUtils):
         if signals.count() > 0:
             return signals
         else:
-            self.logger.error('no prepared signal files for measurement {0}'
-                         .format(measurement_id))
+            self.logger.error(
+                'no prepared signal files for measurement {0}'.format(measurement_id)
+            )
 
     def read_algorithm(self, method_id, method_table):
         """ read from db which algorithm shall be used for product retrieval.
@@ -92,9 +93,9 @@ class DBFunc(DBUtils):
             result = methods.first().python_classname
             return result
         else:
-            self.logger.error('wrong number ({0}) of available methods'
-                         .format(methods.count()))
-
+            self.logger.error(
+                'wrong number ({0}) of available methods'.format(methods.count())
+            )
 
     def read_effbin_algorithm(self, method_id, method_table):
         """ read from db which algorithm shall be used for the
@@ -116,8 +117,9 @@ class DBFunc(DBUtils):
             result = methods.first().python_classname_get_effective_binres
             return result
         else:
-            self.logger.error('wrong number ({0}) of available methods'
-                         .format(methods.count()))
+            self.logger.error(
+                'wrong number ({0}) of available methods'.format(methods.count())
+            )
 
     def read_usedbin_algorithm(self, method_id, method_table):
         """ read from db which algorithm shall be used to calculate how
@@ -138,9 +140,9 @@ class DBFunc(DBUtils):
             result = methods.first().python_classname_get_used_binres
             return result
         else:
-            self.logger.error('wrong number ({0}) of available methods'
-                         .format(methods.count()))
-
+            self.logger.error(
+                'wrong number ({0}) of available methods'.format(methods.count())
+            )
 
     def read_algorithm_options(self, method_table):
         """read id's and names of all algorithm options from table
@@ -178,8 +180,9 @@ class DBFunc(DBUtils):
             result = options.first()._ext_method_ID
             return result
         else:
-            self.logger.error('wrong number of extinction options ({0})'
-                         .format(options.count()))
+            self.logger.error(
+                'wrong number of extinction options ({0})'.format(options.count())
+            )
 
     def read_extinction_algorithm(self, product_id):
         """ read from db which algorithm shall be used for the slope
@@ -225,7 +228,6 @@ class DBFunc(DBUtils):
         method_id = self.read_ext_method_id(product_id)
         return self.read_usedbin_algorithm(method_id, ExtMethod)
 
-
     def read_raman_bsc_method_id(self, product_id):
         """
         read from db which algorithm (id) shall be used for the retrieval of this Raman bsc product
@@ -243,8 +245,9 @@ class DBFunc(DBUtils):
             result = options.first()._ram_bsc_method_ID
             return result
         else:
-            self.logger.error('wrong number of Raman bsc options ({0})'
-                         .format(options.count()))
+            self.logger.error(
+                'wrong number of Raman bsc options ({0})'.format(options.count())
+            )
 
     def read_raman_bsc_smooth_method_id(self, product_id):
         """
@@ -263,8 +266,9 @@ class DBFunc(DBUtils):
             result = options.first()._smooth_method_ID
             return result
         else:
-            self.logger.error('wrong number of Raman bsc options ({0})'
-                         .format(options.count()))
+            self.logger.error(
+                'wrong number of Raman bsc options ({0})'.format(options.count())
+            )
 
     def read_raman_bsc_algorithm(self, product_id):
         """ read from db which algorithm shall be used for
@@ -310,7 +314,6 @@ class DBFunc(DBUtils):
         method_id = self.read_raman_bsc_smooth_method_id(product_id)
         return self.read_usedbin_algorithm(method_id, SmoothMethod)
 
-
     def read_elast_bsc_method_id(self, product_id):
         """
         read from db which algorithm (id) shall be used for the retrieval of this elastic bsc product
@@ -328,8 +331,9 @@ class DBFunc(DBUtils):
             result = options.first()._elast_bsc_method_ID
             return result
         else:
-            self.logger.error('wrong number of elastic bsc options ({0})'
-                         .format(options.count()))
+            self.logger.error(
+                'wrong number of elastic bsc options ({0})'.format(options.count())
+            )
 
     def read_elast_bsc_smooth_method_id(self, product_id):
         """
@@ -348,8 +352,9 @@ class DBFunc(DBUtils):
             result = options.first()._smooth_method_ID
             return result
         else:
-            self.logger.error('wrong number of elastic bsc options ({0})'
-                         .format(options.count()))
+            self.logger.error(
+                'wrong number of elastic bsc options ({0})'.format(options.count())
+            )
 
     def read_elast_bsc_algorithm(self, product_id):
         """ read from db which algorithm shall be used for
@@ -395,7 +400,6 @@ class DBFunc(DBUtils):
         method_id = self.read_elast_bsc_smooth_method_id(product_id)
         return self.read_usedbin_algorithm(method_id, SmoothMethod)
 
-
     def read_lidar_ratio_params(self, product_id):
         """ function to read options of an lidar ratio product from db.
 
@@ -415,9 +419,9 @@ class DBFunc(DBUtils):
         if options.count() == 1:
             return options[0]
         else:
-            self.logger.error('wrong number of lidar ratio options ({0})'
-                         .format(options.count()))
-
+            self.logger.error(
+                'wrong number of lidar ratio options ({0})'.format(options.count())
+            )
 
     def read_extinction_params(self, product_id):
         """ function to read options of an extinction product from db.
@@ -432,9 +436,8 @@ class DBFunc(DBUtils):
                 ??: options
 
             """
-        options = self.session.query(ExtMethod,
-                                        ExtinctionOption)\
-            .filter(ExtMethod.ID == ExtinctionOption._ext_method_ID)\
+        options = self.session.query(ExtMethod, ExtinctionOption) \
+            .filter(ExtMethod.ID == ExtinctionOption._ext_method_ID) \
             .filter(ExtinctionOption._product_ID == product_id)
 
         if options.count() == 1:
@@ -442,16 +445,16 @@ class DBFunc(DBUtils):
                 overlap_correction = False
                 overlap_file = None
             else:
-                o_file = self.session.query(OverlapFile,
-                                               ExtinctionOption) \
+                o_file = self.session.query(OverlapFile, ExtinctionOption) \
                     .filter(OverlapFile.ID == ExtinctionOption._overlap_file_ID) \
                     .filter(ExtinctionOption._product_ID == product_id)
                 if o_file.count() == 1:
                     overlap_correction = True
                     overlap_file = o_file.first().OverlapFile.filename
                 else:
-                    self.logger.error('cannot find overlap file with id {0} in db'
-                                 .format(options('_overlap_file_ID')))
+                    self.logger.error(
+                        'cannot find overlap file with id {0} in db'.format(options('_overlap_file_ID'))
+                    )
 
             result = {'angstroem': float(options.first().ExtinctionOption.angstroem),
                       'ext_method': options.first().ExtinctionOption._ext_method_ID,
@@ -461,9 +464,9 @@ class DBFunc(DBUtils):
                       }
             return result
         else:
-            self.logger.error('wrong number of extinction options ({0})'
-                         .format(options.count()))
-
+            self.logger.error(
+                'wrong number of extinction options ({0})'.format(options.count())
+            )
 
     def get_products_query(self, mwl_prod_id, measurement_id):
         """ read from db which of the products correlated to
@@ -525,7 +528,6 @@ class DBFunc(DBUtils):
         else:
             self.logger.error('no individual products for mwl product')
 
-
     def get_general_params_query(self, prod_id):
         """ read general params of a product from db
 
@@ -574,9 +576,9 @@ class DBFunc(DBUtils):
         if options.count() == 1:
             return options[0]
         else:
-            self.logger.error('wrong number of product options ({0})'
-                         .format(options.count()))
-
+            self.logger.error(
+                'wrong number of product options ({0})'.format(options.count())
+            )
 
     def get_smooth_params_query(self, prod_id):
         """ read smooth params of a product from db
@@ -597,9 +599,9 @@ class DBFunc(DBUtils):
         if options.count() == 1:
             return options[0]
         else:
-            self.logger.error('wrong number of product options ({0})'
-                         .format(options.count()))
-
+            self.logger.error(
+                'wrong number of product options ({0})'.format(options.count())
+            )
 
     def get_quality_params_query(self, prod_id):
         """ read quality params of a product from db
@@ -631,8 +633,9 @@ class DBFunc(DBUtils):
         if options.count() == 1:
             return options[0]
         else:
-            self.logger.error('wrong number of product options ({0})'
-                         .format(options.count()))
+            self.logger.error(
+                'wrong number of product options ({0})'.format(options.count())
+            )
 
     def read_elast_bsc_params(self, product_id):
         """ function to read options of an elast bsc product from db.
@@ -669,9 +672,9 @@ class DBFunc(DBUtils):
 
             return result
         else:
-            self.logger.error('wrong number of elast bsc options ({0})'
-                         .format(options.count()))
-
+            self.logger.error(
+                'wrong number of elast bsc options ({0})'.format(options.count())
+            )
 
     def read_iter_bsc_params(self, product_id):
         """ function to read options of an iterative bsc product from db.
@@ -686,9 +689,8 @@ class DBFunc(DBUtils):
                 options : {'conv_crit', 'max_iteration_count', 'ram_bsc_method'}
 
             """
-        options = self.session.query(IterBackscatterOption,
-                                        ElastBackscatterOption)\
-            .filter(ElastBackscatterOption._product_ID == product_id)\
+        options = self.session.query(IterBackscatterOption, ElastBackscatterOption) \
+            .filter(ElastBackscatterOption._product_ID == product_id) \
             .filter(ElastBackscatterOption._iter_bsc_options_id ==
                     IterBackscatterOption.ID)
 
@@ -700,9 +702,9 @@ class DBFunc(DBUtils):
 
             return result
         else:
-            self.logger.error('wrong number of iterative bsc options ({0})'
-                         .format(options.count()))
-
+            self.logger.error(
+                'wrong number of iterative bsc options ({0})'.format(options.count())
+            )
 
     def read_raman_bsc_params(self, product_id):
         """ function to read options of a Raman bsc product from db.
@@ -727,8 +729,9 @@ class DBFunc(DBUtils):
                       }
             return result
         else:
-            self.logger.error('wrong number of Raman bsc options ({0})'
-                         .format(options.count()))
+            self.logger.error(
+                'wrong number of Raman bsc options ({0})'.format(options.count())
+            )
 
     def get_mc_params_query(self, prod_id):
         """read from db which params shall be used for the Monte-Carlo error retrieval
@@ -736,15 +739,13 @@ class DBFunc(DBUtils):
             prod_id (int): product id
 
         """
-        mc_params = self.session.query(MCOption,
-        ).filter(
-            MCOption._product_ID == prod_id)
+        mc_params = self.session.query(MCOption) \
+            .filter(MCOption._product_ID == prod_id)
 
         if mc_params.count() == 1:
             return mc_params[0]
         else:
             raise(NOMCOptions, prod_id)
-
 
     def get_bsc_cal_params_query(self, bsc_prod_id, bsc_type):
         """ read from db which params shall be used to get the calibration of a sc product.
@@ -775,7 +776,6 @@ class DBFunc(DBUtils):
         else:
             raise(NoBscCalOptions(bsc_prod_id))
 
-
     def read_mwl_product_id(self, system_id):
         """ read from db which of the products correlated
             to this system is the mwl product.
@@ -787,18 +787,17 @@ class DBFunc(DBUtils):
                 product id of mwl product
 
             """
-        products = self.session.query(SystemProduct,
-                                         Products)\
-            .filter(SystemProduct._system_ID == system_id)\
-            .filter(SystemProduct._Product_ID == Products.ID)\
+        products = self.session.query(SystemProduct, Products) \
+            .filter(SystemProduct._system_ID == system_id) \
+            .filter(SystemProduct._Product_ID == Products.ID) \
             .filter(Products._prod_type_ID == MWL)
 
         if products.count() == 1:
             return products.first().Products.ID
         else:
-            self.logger.error('wrong number of mwl products ({0})'
-                         .format(products.count()))
-
+            self.logger.error(
+                'wrong number of mwl products ({0})'.format(products.count())
+            )
 
     def read_system_id(self, measurement_id):
         """ function to read from db which products shall be derived .
@@ -857,4 +856,3 @@ class DBFunc(DBUtils):
 
             """
         return self.read_algorithm(method_id, SmoothMethod)
-

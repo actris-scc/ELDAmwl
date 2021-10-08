@@ -17,6 +17,10 @@ except ImportError:
 
 
 class DBUtils(object):
+
+    engine = None
+    session = None
+
     def __init__(self, connect_string=None):
         self.logger = component.queryUtility(ILogger)
         self.connect_string = connect_string
@@ -42,18 +46,18 @@ class DBUtils(object):
     def test_db(self):
         tasks = self.session.query(SystemProduct)
         try:
-            first_task = tasks.first()
+            _first_task = tasks.first()
         except OperationalError as e:
             self.logger.error(""""Database cannot be reached! Please check the database connection
                             and the db connection settings in your config.py\n{}""".format(e))
             raise DBErrorTerminating
 
-    def read_tasks(self, measurement_id):
-        tasks = self.session.query(  # Measurements,
-                                   SystemProduct)
+#    def read_tasks(self, measurement_id):
+#        tasks = self.session.query(  # Measurements,
+#                                   SystemProduct)
         # .filter(SystemProduct._system_ID == Measurements._hoi_system_ID)
-        for task in tasks:
-            pass
+#        for task in tasks:
+#            pass
 #        measurements = self.Base.classes.measurements
 #        sypro = self.Base.classes.system_product
 #        psf = self.Base.classes.prepared_signal_files

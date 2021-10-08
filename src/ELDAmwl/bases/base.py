@@ -36,8 +36,8 @@ class Params(object):
                 class_name = object.__getattribute__(sp, '__class__').__name__
             else:
                 class_name = object.__getattribute__(self, '__class__').__name__
-
-            raise AttributeError('class {0} has no attribute {1}'.format(class_name, item))
+            msg = 'class {} has no attribute {}'.format(class_name, item)
+            raise AttributeError(msg)
 
 
 class DataPoint(object):
@@ -93,4 +93,3 @@ class ELDABase:
 
     def __init__(self):
         self.logger = component.queryUtility(ILogger)
-

@@ -21,7 +21,6 @@ isort = "^5.5.0"
 "zope.interface" = "^5.4.0"
 "zope.component" = "^5.0.1"
 
-
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.3"
 flake8-blind-except = "^0.1.1"
