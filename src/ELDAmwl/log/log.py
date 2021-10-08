@@ -47,27 +47,27 @@ class Logger:
         out_msg = '{}: {}'.format(prod_id, msg)
         return out_msg
 
-    def critical(self, prod_id, msg):
+    def critical(self, msg, prod_id=None):
         self.logger.critical(self.log_message(prod_id, msg))
         self.db_log(SYSLOG_ERROR, prod_id, msg)
 
-    def fatal(self, prod_id, msg):
+    def fatal(self, msg, prod_id=None):
         self.logger.fatal(self.log_message(prod_id, msg))
         self.db_log(SYSLOG_ERROR, prod_id, msg)
 
-    def error(self, prod_id, msg):
+    def error(self, msg, prod_id=None):
         self.logger.error(self.log_message(prod_id, msg))
         self.db_log(SYSLOG_ERROR, prod_id, msg)
 
-    def warning(self, prod_id, msg):
+    def warning(self, msg, prod_id=None):
         self.logger.warning(self.log_message(prod_id, msg))
         self.db_log(SYSLOG_WARN, prod_id, msg)
 
-    def info(self, prod_id, msg):
+    def info(self, msg, prod_id=None):
         self.logger.info(self.log_message(prod_id, msg))
         self.db_log(SYSLOG_INFO, prod_id, msg)
 
-    def debug(self, prod_id, msg):
+    def debug(self, msg, prod_id=None):
         self.logger.debug(self.log_message(prod_id, msg))
         self.db_log(SYSLOG_DEBUG, prod_id, msg)
 

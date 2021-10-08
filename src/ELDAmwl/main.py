@@ -103,10 +103,10 @@ class Main:
             else:
                 self.logger.setLevel(args.ll_file)
 
-        self.logger.info("PROD_ID",'welcome to the EARLINET Lidar Data Analyzer for \
+        self.logger.info('welcome to the EARLINET Lidar Data Analyzer for \
                            multi-wavelengths measurements (ELDAmwl)')
-        self.logger.info("PROD_ID",'ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
-        self.logger.info("PROD_ID",'analyze measurement number: ' + meas_id)
+        self.logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
+        self.logger.info('analyze measurement number: ' + meas_id)
 
         register_db_utils()
 
@@ -130,7 +130,7 @@ class Main:
         elda_mwl.quality_control()
         elda_mwl.write_mwl_output()
 
-        self.logger.info("PROD_ID",'the end')
+        self.logger.info('the end')
 
     def run(self):
 
@@ -140,7 +140,7 @@ class Main:
             sys.exit(NO_ERROR)
 
         except ELDAmwlException as e:
-            self.logger.error("PROD_ID", 'exception raised {0} {1}'.format(e.return_value, e))
+            self.logger.error('exception raised {0} {1}'.format(e.return_value, e))
             sys.exit(e.return_value)
 
         except Exception as e:

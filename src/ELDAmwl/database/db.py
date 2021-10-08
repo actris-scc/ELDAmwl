@@ -44,7 +44,7 @@ class DBUtils(object):
         try:
             first_task = tasks.first()
         except OperationalError as e:
-            self.logger.error("PROD_ID", """"Database cannot be reached! Please check the database connection
+            self.logger.error(""""Database cannot be reached! Please check the database connection
                             and the db connection settings in your config.py\n{}""".format(e))
             raise DBErrorTerminating
 

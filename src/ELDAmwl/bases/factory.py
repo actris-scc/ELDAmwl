@@ -2,7 +2,7 @@
 """base Classes for factories and operators"""
 from zope import component
 
-from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.interface import IDBFunc, ILogger
 from ELDAmwl.component.registry import registry
 
 
@@ -52,6 +52,8 @@ class BaseOperation(object):
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs
+        self.db_func = component.queryUtility(IDBFunc)
+        self.logger = component.queryUtility(ILogger)
 
     @property
     def params(self):

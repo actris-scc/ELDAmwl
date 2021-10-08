@@ -70,7 +70,7 @@ class ElppData(object):
         self.cloud_mask = nc_ds.cloud_mask.astype(int)
         data_storage.cloud_mask = self.cloud_mask
 
-        self.header = Header.from_nc_file(nc_ds)
+        self.header = Header.from_nc_file(elpp_file, nc_ds)
         data_storage.header = self.header
 
         for idx in range(nc_ds.dims['channel']):

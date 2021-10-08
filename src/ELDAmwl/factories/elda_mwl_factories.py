@@ -47,7 +47,7 @@ class MeasurementParams(Params):
 
         self.measurement_params.meas_id = measurement_id
         self.measurement_params.system_id = self.db_func.read_system_id(self.meas_id)
-        self.measurement_params.mwl_product_id = read_mwl_product_id(self.system_id)  # noqa E501
+        self.measurement_params.mwl_product_id = self.db_func.read_mwl_product_id(self.system_id)  # noqa E501
 
         self.smooth_params = SmoothParams.from_db(self.measurement_params.mwl_product_id)
 

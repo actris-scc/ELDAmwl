@@ -71,7 +71,7 @@ class Header(ELDABase):
         self.mwl_struct = MWLFileStructure()
 
     @classmethod
-    def from_nc_file(cls, nc_ds):
+    def from_nc_file(cls, nc_file, nc_ds):
         """reads header information from an ELPP file
 
         Args:
@@ -100,7 +100,7 @@ class Header(ELDABase):
         result.attrs.hoi_configuration_ID = nc_ds.hoi_configuration_ID
 
         result.attrs.elpp_history = nc_ds.history
-        result.attrs.input_file = basename(nc_ds._file_obj._filename)  # ToDo Volker
+        result.attrs.input_file = basename(nc_file)  # ToDo Volker
         if 'molecular_calculation_source_file' in nc_ds.attrs:
             result.attrs.molecular_calculation_source_file = \
                 nc_ds.molecular_calculation_source_file
