@@ -18,22 +18,35 @@ class ExtBscOption(Base):
 
     __tablename__ = 'ext_bsc_options'
 
-    ID = Column(INTEGER, primary_key=True)
-    _product_ID = Column(INTEGER,
-                         nullable=False,
-                         server_default=text("'-1'"))
-    _extinction_options_product_ID = Column(INTEGER,
-                                            nullable=False,
-                                            index=True,
-                                            server_default=text("'-1'"))
-    _raman_backscatter_options_product_ID = Column(INTEGER,
-                                                   nullable=False,
-                                                   index=True,
-                                                   server_default=text("'-1'"))
-    _error_method_ID = Column(INTEGER,
-                              nullable=False,
-                              index=True,
-                              server_default=text("'-1'"))
-    min_BscRatio_for_LR = Column(DECIMAL(10, 4),
-                                 nullable=False,
-                                 server_default=text("'1.0000'"))
+    ID = Column(
+        INTEGER,
+        primary_key=True
+    )
+    _product_ID = Column(
+        INTEGER,
+        nullable=False,
+        server_default=text("'-1'")
+    )
+    _extinction_options_product_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'")
+    )
+    _raman_backscatter_options_product_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'")
+    )
+    _error_method_ID = Column(
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'")
+    )
+    min_BscRatio_for_LR = Column(
+        DECIMAL(10, 4),
+        nullable=False,
+        server_default=text("'1.0000'")
+    )
