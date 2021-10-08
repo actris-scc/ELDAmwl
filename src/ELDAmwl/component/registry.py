@@ -2,7 +2,7 @@
 """Class registry"""
 
 from addict import Dict
-from ELDAmwl.exceptions import OnlyOneOverrideAllowed
+from ELDAmwl.errors.exceptions import OnlyOneOverrideAllowed
 
 
 OVERRIDE = '__OVERRIDE__'

@@ -4,9 +4,9 @@ from copy import deepcopy
 
 from addict import Dict
 
-from ELDAmwl.constants import HIGHRES, LOWRES, RESOLUTION_STR, NC_FILL_BYTE
-from ELDAmwl.exceptions import DifferentCloudMaskExists
-from ELDAmwl.exceptions import NotFoundInStorage
+from ELDAmwl.utils.constants import HIGHRES, LOWRES, RESOLUTION_STR, NC_FILL_BYTE
+from ELDAmwl.errors.exceptions import DifferentCloudMaskExists
+from ELDAmwl.errors.exceptions import NotFoundInStorage
 from ELDAmwl.products import Products
 
 import numpy as np
@@ -189,7 +189,7 @@ class DataStorage(object):
         """one prepared signal
 
         The preparation includes normalization by number of laser shots,
-        combination of depolarization components(where necessary),
+        combination of depolarization component(where necessary),
         and correction for molecular transmission (except for KF retrieval).
 
         Args:

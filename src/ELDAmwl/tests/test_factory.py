@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Tests for Signals"""
 
-from ELDAmwl.factory import BaseOperation
-from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.registry import Registry
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.component.registry import Registry
 
 import pytest
 
@@ -44,7 +44,7 @@ def test_factory_registration():
 
 def test_factory(db, mocker):
 
-    from ELDAmwl.registry import registry
+    from ELDAmwl.component.registry import registry
 
     for klass_name, klass in db:
         registry.register_class(Factory, klass_name, klass)

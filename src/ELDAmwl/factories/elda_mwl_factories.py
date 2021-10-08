@@ -2,33 +2,29 @@
 """ELDAmwl factories"""
 
 from addict import Dict
-from ELDAmwl.base import Params
-from ELDAmwl.constants import EBSC, LOWRES, HIGHRES
-from ELDAmwl.constants import EXT
-from ELDAmwl.constants import LR
-from ELDAmwl.constants import RBSC
-from ELDAmwl.constants import RESOLUTION_STR
-from ELDAmwl.data_storage import DataStorage
-from ELDAmwl.database.db_functions import get_products_query
-from ELDAmwl.database.db_functions import read_mwl_product_id
-from ELDAmwl.database.db_functions import read_system_id
-from ELDAmwl.elast_bsc_factories import ElastBscParams
-from ELDAmwl.exceptions import ProductNotUnique
-from ELDAmwl.extinction_factories import ExtinctionParams
-from ELDAmwl.factory import BaseOperation
+from ELDAmwl.bases.base import Params
+from ELDAmwl.utils.constants import EBSC, LOWRES, HIGHRES
+from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import LR
+from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.utils.constants import RESOLUTION_STR
+from ELDAmwl.storage.data_storage import DataStorage
+from ELDAmwl.factories.elast_bsc_factories import ElastBscParams
+from ELDAmwl.errors.exceptions import ProductNotUnique
+from ELDAmwl.factories.extinction_factories import ExtinctionParams
+from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.get_basic_products import GetBasicProducts
-from ELDAmwl.mwl_product_factories import GetProductMatrix, QualityControl
-from ELDAmwl.lidar_ratio_factories import LidarRatioParams
-from ELDAmwl.log import logger
+from ELDAmwl.factories.mwl_product_factories import GetProductMatrix, QualityControl
+from ELDAmwl.factories.lidar_ratio_factories import LidarRatioParams
 from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams, SmoothParams
-from ELDAmwl.raman_bsc_factories import RamanBscParams
+from ELDAmwl.factories.raman_bsc_factories import RamanBscParams
 from ELDAmwl.signals import ElppData
 
 import pandas as pd
 import numpy as np
 
-from ELDAmwl.write_mwl_output import WriteMWLOutput
+from ELDAmwl.output.write_mwl_output import WriteMWLOutput
 
 try:
     import ELDAmwl.configs.config as cfg  # noqa E401
@@ -50,7 +46,7 @@ class MeasurementParams(Params):
         self.measurement_params = Params()
 
         self.measurement_params.meas_id = measurement_id
-        self.measurement_params.system_id = read_system_id(self.meas_id)
+        self.measurement_params.system_id = self.db_func.read_system_id(self.meas_id)
         self.measurement_params.mwl_product_id = read_mwl_product_id(self.system_id)  # noqa E501
 
         self.smooth_params = SmoothParams.from_db(self.measurement_params.mwl_product_id)
@@ -218,7 +214,7 @@ class MeasurementParams(Params):
         product_list (dict) from where
         they can be assessed by their product_id_str (str).
         """
-        p_query = get_products_query(
+        p_query = self.db_func.get_products_query(
             self.mwl_product_id,
             self.measurement_params.meas_id)
         for q in p_query:
@@ -271,7 +267,7 @@ class MeasurementParams(Params):
         if ids.size == 1:
             return ids.values[0]
         elif ids.size >= 1:
-            logger.warning('more than one product id for wavelength {} and produc type {}'.format(wl, prod_type))
+            self.logger.warning('more than one product id for wavelength {} and produc type {}'.format(wl, prod_type))
             return None
         else:
             return None
@@ -289,55 +285,55 @@ class RunELDAmwl(BaseOperation):
         self._data = DataStorage()
 
     def read_tasks(self):
-        logger.info('read tasks from db')
+        self.logger.info('read tasks from db')
         self.params.read_product_list()
         # todo: check params (e.g. whether all
         #  time and vert. resolutions are equal)
 
     def read_elpp_data(self):
-        logger.info('read ELPP files')
+        self.logger.info('read ELPP files')
         for p_param in self.params.basic_products():
             ElppData().read_nc_file(self.data, p_param)
 
     def prepare_signals(self):
-        logger.info('prepare signals')
+        self.logger.info('prepare signals')
         PrepareSignals()(
             data_storage=self.data,
             products=self.params.basic_products(),
             ).run()
 
     def get_basic_products(self):
-        logger.info('calc basic products ')
+        self.logger.info('calc basic products ')
         GetBasicProducts()(
             data_storage=self.data,
             product_params=self.params,
             ).run()
 
     def get_derived_products(self):
-        logger.info('calc derived products ')
+        self.logger.info('calc derived products ')
 
     def get_product_matrix(self):
-        logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
+        self.logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
         GetProductMatrix()(
             data_storage=self.data,
             product_params=self.params,
             ).run()
 
     def quality_control(self):
-        logger.info('synergistic quality control of all products ')
+        self.logger.info('synergistic quality control of all products ')
         QualityControl()(
             data_storage=self.data,
             product_params=self.params,
             ).run()
 
     def write_single_output(self):
-        logger.info('write products into NetCDF files ')
+        self.logger.info('write products into NetCDF files ')
 #        self.data.basic_product_common_smooth('377', LOWRES).save_to_netcdf()
 #        for p_param in self.params.basic_products():
 #            self.data.basic_product_common_smooth(p_param.prod_id_str, 'lowres').save_to_netcdf()
 
     def write_mwl_output(self):
-        logger.info('write all products into one NetCDF file ')
+        self.logger.info('write all products into one NetCDF file ')
         WriteMWLOutput()(
             data_storage=self.data,
             product_params=self.params,

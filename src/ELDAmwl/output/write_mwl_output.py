@@ -5,13 +5,14 @@ import os
 import xarray as xr
 
 from addict import Dict
-from ELDAmwl.factory import BaseOperation
-from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.mwl_file_structure import GENERAL, META_DATA, WRITE_MODE, GROUP_NAME, RES_GROUP, MAIN_GROUPS, NC_VAR_NAMES
-from ELDAmwl.registry import registry
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+#    GENERAL, META_DATA, WRITE_MODE, GROUP_NAME, RES_GROUP, MAIN_GROUPS, NC_VAR_NAMES
+from ELDAmwl.component.registry import registry
 from ELDAmwl.configs.config import PRODUCT_PATH
-from ELDAmwl.constants import ELDA_MWL_VERSION, MWL, EXT, LOWRES, HIGHRES, RBSC
-from ELDAmwl.constants import RESOLUTIONS
+from ELDAmwl.utils.constants import ELDA_MWL_VERSION, MWL, EXT, LOWRES, HIGHRES, RBSC
+from ELDAmwl.utils.constants import RESOLUTIONS
 
 
 class WriteMWLOutputDefault(BaseOperation):
@@ -39,7 +40,7 @@ class WriteMWLOutputDefault(BaseOperation):
         return result
 
     def collect_header_info(self):
-        for group in [GENERAL, META_DATA]:
+        for group in [MWLFileStructure.GENERAL, MWLFileStructure.META_DATA]:
             # create empty container for global attributes and variables
             header_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
             # fill container with header information
@@ -60,7 +61,7 @@ class WriteMWLOutputDefault(BaseOperation):
                 prod.to_meta_ds_dict(self.meta_data)
 
     def write_groups(self):
-        for group in MAIN_GROUPS:
+        for group in MWLFileStructure.MAIN_GROUPS:
             # todo: pass if group is empty
             # convert Dict into Dataset
             ds = xr.Dataset(data_vars=self.data[group].data_vars,
@@ -69,8 +70,8 @@ class WriteMWLOutputDefault(BaseOperation):
             # write attributes and variables into netCDF file
             # ToDo ina indentation
             ds.to_netcdf(path=self.out_filename,
-                                mode=WRITE_MODE[group],
-                                group=GROUP_NAME[group],
+                                mode=MWLFileStructure.WRITE_MODE[group],
+                                group=MWLFileStructure.GROUP_NAME[group],
                                 format='NETCDF4')
             ds.close()
 
@@ -80,7 +81,7 @@ class WriteMWLOutputDefault(BaseOperation):
                             attrs=md.attrs)
             ds.to_netcdf(path=self.out_filename,
                                 mode='a',
-                                group='{}/{}'.format(GROUP_NAME[META_DATA], mwl_id),
+                                group='{}/{}'.format(MWLFileStructure.GROUP_NAME[MWLFileStructure.META_DATA], mwl_id),
                                 format='NETCDF4')
             ds.close()
 
@@ -109,12 +110,12 @@ class WriteMWLOutputDefault(BaseOperation):
 
             for ptype in p_types:
                 p_matrix = self.data_storage.final_product_matrix(ptype, res)
-                var_name = NC_VAR_NAMES[ptype]
+                var_name = MWLFileStructure.NC_VAR_NAMES[ptype]
                 group_data.data_vars[var_name] = p_matrix.data
                 group_data.data_vars['error_{}'.format(var_name)] = p_matrix.absolute_statistical_uncertainty
                 group_data.data_vars['{}_meta_data'.format(var_name)] = p_matrix.meta_data
 
-            self.data[RES_GROUP[res]] = group_data
+            self.data[MWLFileStructure.RES_GROUP[res]] = group_data
 
         self.write_groups()
 

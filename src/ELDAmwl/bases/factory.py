@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """base Classes for factories and operators"""
+from zope import component
 
-from ELDAmwl.registry import registry
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.registry import registry
 
 
 try:
@@ -26,7 +28,7 @@ class BaseOperationFactory(object):
     name = 'BaseFactory'
 
     def __init__(self):
-        pass
+        self.db_func = component.queryUtility(IDBFunc)
 
     def __call__(self, *args, **kwargs):
         klass = self.get_class()

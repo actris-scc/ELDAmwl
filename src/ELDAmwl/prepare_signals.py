@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 """Classes for preparation of signals
-(combining depol components, temporal integration, .."""
+(combining depol component, temporal integration, .."""
 from copy import deepcopy
-from ELDAmwl.constants import EBSC
-from ELDAmwl.constants import EXT
-from ELDAmwl.constants import KF
-from ELDAmwl.constants import RBSC
-from ELDAmwl.factory import BaseOperation
-from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.log import logger
-from ELDAmwl.registry import registry
+from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import KF
+from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
 
 
 class PrepareBscSignalsDefault(BaseOperation):
     """prepare ELPP signals for extinction retrieval with the steps:
     1) normalization by number of shots
-    2) combination of depol components (if needed)
+    2) combination of depol component (if needed)
     3) correction of atmospheric transmission due to molecular scattering
     (not for Klett-Fernald)
 
@@ -25,7 +24,7 @@ class PrepareBscSignalsDefault(BaseOperation):
     bsc_param = None
 
     def combine_depol_components(self, p_param):
-        logger.debug('PrepareBscSignalsDefault.combine_depol_components')
+        self.logger.debug('PrepareBscSignalsDefault.combine_depol_components')
         pid = p_param.prod_id_str
         transm_sig = self.data_storage.prepared_signal(pid,
                                                        p_param.transm_sig_id)

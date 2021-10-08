@@ -21,8 +21,8 @@ from ELDAmwl.database.tables.system_product import PreparedSignalFile
 from ELDAmwl.database.tables.system_product import Products
 from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SystemProduct
-from ELDAmwl.exceptions import CsvFileNotFound
-from ELDAmwl.exceptions import FillTableFailed
+from ELDAmwl.errors.exceptions import CsvFileNotFound
+from ELDAmwl.errors.exceptions import FillTableFailed
 from ELDAmwl.log import logger
 from sqlalchemy import DateTime
 from sqlalchemy import inspect

@@ -2,26 +2,25 @@
 """Classes for signals"""
 
 from copy import deepcopy
-from ELDAmwl.base import DataPoint
-from ELDAmwl.columns import Columns
-from ELDAmwl.constants import ALL_OK, RESOLUTION_STR
-from ELDAmwl.constants import ANALOG
-from ELDAmwl.constants import CROSS
-from ELDAmwl.constants import FAR_RANGE
-from ELDAmwl.constants import NC_FILL_BYTE
-from ELDAmwl.constants import NEAR_RANGE
-from ELDAmwl.constants import PARALLEL
-from ELDAmwl.constants import PARTICLE
-from ELDAmwl.constants import REFLECTED
-from ELDAmwl.constants import TOTAL
-from ELDAmwl.constants import TRANSMITTED
-from ELDAmwl.constants import WATER_VAPOR
-from ELDAmwl.exceptions import ELPPFileNotFound, CannotOpenELLPFile
-from ELDAmwl.factory import BaseOperation
-from ELDAmwl.factory import BaseOperationFactory
+from ELDAmwl.bases.base import DataPoint
+from ELDAmwl.bases.columns import Columns
+from ELDAmwl.utils.constants import ALL_OK, RESOLUTION_STR
+from ELDAmwl.utils.constants import ANALOG
+from ELDAmwl.utils.constants import CROSS
+from ELDAmwl.utils.constants import FAR_RANGE
+from ELDAmwl.utils.constants import NC_FILL_BYTE
+from ELDAmwl.utils.constants import NEAR_RANGE
+from ELDAmwl.utils.constants import PARALLEL
+from ELDAmwl.utils.constants import PARTICLE
+from ELDAmwl.utils.constants import REFLECTED
+from ELDAmwl.utils.constants import TOTAL
+from ELDAmwl.utils.constants import TRANSMITTED
+from ELDAmwl.utils.constants import WATER_VAPOR
+from ELDAmwl.errors.exceptions import ELPPFileNotFound, CannotOpenELLPFile
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.header import Header
-from ELDAmwl.log import logger
-from ELDAmwl.registry import registry
+from ELDAmwl.component.registry import registry
 
 import numpy as np
 import os
@@ -290,7 +289,7 @@ class Signals(Columns):
 
     @classmethod
     def from_depol_components(cls, transm_sig, refl_sig):
-        """Creates a total signal from two depolarization components.
+        """Creates a total signal from two depolarization component.
 
         A Signals instance (which represents a total signal)
         is created from the combination of
@@ -343,7 +342,7 @@ class Signals(Columns):
         if np.all(abs(diff[:] - d0) < 1e-10):
             self.raw_heightres = d0
         else:
-            logger.error('height axis is not equidistant')
+            self.logger.error('height axis is not equidistant')
 
     def heights_to_levels(self, heights):
         """converts a series of height value into a series of level (dim=time)
@@ -352,7 +351,7 @@ class Signals(Columns):
         """
         times = self.ds.dims['time']
         if heights.shape[0] != times:
-            logger.error('dataset and heights have '
+            self.logger.error('dataset and heights have '
                          'different lenghts (time dimension)')
             return None
 
@@ -519,7 +518,7 @@ class Signals(Columns):
         if self.calc_used_bin_res_routine:
             return self.calc_used_bin_res_routine.run(eff_binres=an_eff_binres)
         else:
-            logger.warning('no method implemented for effective-to-used bin resolution')
+            self.logger.warning('no method implemented for effective-to-used bin resolution')
             return an_eff_binres
 
     def get_binres_from_fixed_smooth(self, smooth_params, res, used_binres_routine=None):
@@ -559,7 +558,7 @@ class Signals(Columns):
 
 class CombineDepolComponentsDefault(BaseOperation):
     """
-    Calculates a combined signal from depol components
+    Calculates a combined signal from depol component
 
     params : Dict...
     """
@@ -609,7 +608,7 @@ class CombineDepolComponents(BaseOperationFactory):
     """
     Returns an instance of BaseOperation which
     calculates a total signal from two signals with
-    depolarization components. In this case, it will be
+    depolarization component. In this case, it will be
     always an instance of GetCombinedSignal().
 
     Args:

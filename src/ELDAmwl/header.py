@@ -4,15 +4,16 @@
 from addict import Dict
 import pandas as pd
 
-from ELDAmwl.constants import NC_FILL_STR
-from ELDAmwl.exceptions import DifferentHeaderExists
-from ELDAmwl.log import logger
+from ELDAmwl.bases.base import ELDABase
+from ELDAmwl.utils.constants import NC_FILL_STR
+from ELDAmwl.errors.exceptions import DifferentHeaderExists
 from os.path import basename
 
-from ELDAmwl.mwl_file_structure import TITLE, REFERENCES, PROCESSOR_NAME, HEADER_ATTRS, HEADER_VARS
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+# TITLE, REFERENCES, PROCESSOR_NAME, HEADER_ATTRS, HEADER_VARS
 
 
-class Person(object):
+class Person:
     name = NC_FILL_STR
 
     @classmethod
@@ -55,7 +56,7 @@ class Person(object):
             ds[ds_att_name] = self.__dict__[att]
 
 
-class Header(object):
+class Header(ELDABase):
     attrs = None
     vars = None
     start_time = None
@@ -64,8 +65,10 @@ class Header(object):
                         'data_originator': 'Data_Originator'})
 
     def __init__(self):
+        super(Header, self).__init__()
         self.attrs = Dict()
         self.vars = Dict()
+        self.mwl_struct = MWLFileStructure()
 
     @classmethod
     def from_nc_file(cls, nc_ds):
@@ -74,12 +77,14 @@ class Header(object):
         Args:
             nc_ds (xarray.Dataset): content of the ELPP file.
         """
+        mwl_struct = MWLFileStructure()
+
         result = cls()
         result.attrs.measurement_ID = nc_ds.measurement_ID
         result.attrs.comment = nc_ds.comment
-        result.attrs.title = TITLE
+        result.attrs.title = mwl_struct.TITLE
         result.attrs.source = nc_ds.source
-        result.attrs.references = REFERENCES
+        result.attrs.references = mwl_struct.REFERENCES
 
         result.attrs.station_ID = nc_ds.station_ID
         result.attrs.location = nc_ds.location
@@ -99,7 +104,7 @@ class Header(object):
         if 'molecular_calculation_source_file' in nc_ds.attrs:
             result.attrs.molecular_calculation_source_file = \
                 nc_ds.molecular_calculation_source_file
-        result.attrs.processor_name = PROCESSOR_NAME
+        result.attrs.processor_name = mwl_struct.PROCESSOR_NAME
         # result.processor_version =
         # result.__file_format_version = cfg.FILE_FORMAT_VERSION
         # result.scc_version = nc_ds.scc_version
@@ -151,8 +156,8 @@ class Header(object):
 
         """
 
-        write_attrs = HEADER_ATTRS[group]
-        write_vars = HEADER_VARS[group]
+        write_attrs = self.mwl_struct.HEADER_ATTRS[group]
+        write_vars = self.mwl_struct.HEADER_VARS[group]
 
         for att in self.attrs:
             if att in write_attrs:
@@ -161,7 +166,7 @@ class Header(object):
                 elif self.attrs[att] != {}:
                     ds.attrs[att] = self.attrs[att]
                 else:
-                    logger.warning('cannot write empty attribute {} in mwl file'.format(att))
+                    self.logger.warning('cannot write empty attribute {} in mwl file'.format(att))
 
         if 'measurement_start_datetime' in write_attrs:
             ds.measurement_start_datetime = self.start_time.strftime('%Y-%m-%dT%H:%M:%SZ')

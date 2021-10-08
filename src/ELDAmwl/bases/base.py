@@ -5,6 +5,9 @@
 
 """
 import xarray as xr
+from zope import component
+
+from ELDAmwl.component.interface import ILogger, IDBFunc
 
 
 class Params(object):
@@ -14,6 +17,8 @@ class Params(object):
 
     def __init__(self):
         self.sub_params = []
+        self.db_func = component.queryUtility(IDBFunc)
+        self.logger = component.queryUtility(ILogger)
 
     def __getattribute__(self, item):
         try:
@@ -82,3 +87,10 @@ class DataPoint(object):
     @property
     def sys_error(self):
         return float(self.data.systematic_error_error)
+
+
+class ELDABase:
+
+    def __init__(self):
+        self.logger = component.queryUtility(ILogger)
+

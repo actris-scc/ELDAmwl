@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Tests for Signals"""
-from ELDAmwl.data_storage import DataStorage
+from ELDAmwl.storage.data_storage import DataStorage
 from ELDAmwl.products import ProductParams
 from ELDAmwl.signals import Signals
 

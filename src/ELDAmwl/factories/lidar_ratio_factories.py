@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """Classes for lidar ratio calculation"""
 
-from ELDAmwl.constants import ERROR_METHODS
-from ELDAmwl.database.db_functions import read_lidar_ratio_params
-from ELDAmwl.extinction_factories import ExtinctionParams
+from ELDAmwl.utils.constants import ERROR_METHODS
+#from ELDAmwl.database.db_functions import read_lidar_ratio_params
+from ELDAmwl.factories.extinction_factories import ExtinctionParams
 from ELDAmwl.products import ProductParams
-from ELDAmwl.raman_bsc_factories import RamanBscParams
+from ELDAmwl.factories.raman_bsc_factories import RamanBscParams
 
 
 class LidarRatioParams(ProductParams):
@@ -23,7 +23,7 @@ class LidarRatioParams(ProductParams):
     def from_db(self, general_params):
         super(LidarRatioParams, self).from_db(general_params)
 
-        query = read_lidar_ratio_params(general_params.prod_id)
+        query = self.db_func.read_lidar_ratio_params(general_params.prod_id)
         self.bsc_prod_id = query._raman_backscatter_options_product_ID
         self.ext_prod_id = query._extinction_options_product_ID
         self.general_params.error_method = ERROR_METHODS[query._error_method_ID]  # noqa E501

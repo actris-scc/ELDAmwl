@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 """Classes for Raman backscatter calculation"""
+from zope import component
 
-from ELDAmwl.backscatter_factories import BackscatterParams
-from ELDAmwl.base import Params
-from ELDAmwl.constants import IT, ELAST
-from ELDAmwl.constants import NC_FILL_INT
-from ELDAmwl.database.db_functions import read_elast_bsc_params
-from ELDAmwl.database.db_functions import read_iter_bsc_params
-from ELDAmwl.factory import BaseOperation
-from ELDAmwl.factory import BaseOperationFactory
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.factories.backscatter_factories import BackscatterParams
+from ELDAmwl.bases.base import Params
+from ELDAmwl.utils.constants import IT, ELAST
+from ELDAmwl.utils.constants import NC_FILL_INT
+#from ELDAmwl.database.db_functions import read_elast_bsc_params
+#from ELDAmwl.database.db_functions import read_iter_bsc_params
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
 
 import numpy as np
 
-from ELDAmwl.mwl_file_structure import elast_bsc_algorithm_var
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+#    elast_bsc_algorithm_var
 
 
 class ElastBscParams(BackscatterParams):
@@ -29,7 +32,7 @@ class ElastBscParams(BackscatterParams):
     def from_db(self, general_params):
         super(ElastBscParams, self).from_db(general_params)
 
-        ebp = read_elast_bsc_params(general_params.prod_id)
+        ebp = self.db_func.read_elast_bsc_params(general_params.prod_id)
 
         self.elast_bsc_algorithm = ebp['elast_bsc_method']
         if self.elast_bsc_algorithm == IT:
@@ -50,7 +53,7 @@ class ElastBscParams(BackscatterParams):
 
         """
         super(ElastBscParams, self).to_meta_ds_dict(dct)
-        dct.data_vars.evaluation_algorithm = elast_bsc_algorithm_var(self.elast_bsc_algorithm)
+        dct.data_vars.evaluation_algorithm = MWLFileStructure().elast_bsc_algorithm_var(self.elast_bsc_algorithm)
         if self.iter_params is not None:
             self.iter_params.to_meta_ds_dict(dct)
 
@@ -64,8 +67,8 @@ class IterBscParams(Params):
     @classmethod
     def from_db(cls, general_params):
         result = cls
-
-        ibp = read_iter_bsc_params(general_params.prod_id)
+        db_func = component.queryUtility(IDBFunc)
+        ibp = db_func.read_iter_bsc_params(general_params.prod_id)
 
         result.conv_crit = ibp['conv_crit']
         result.max_iteration_count = ibp['max_iteration_count']

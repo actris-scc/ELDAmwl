@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
 
-from ELDAmwl.constants import NC_FILL_BYTE
-from ELDAmwl.constants import NC_FILL_INT
+from ELDAmwl.utils.constants import NC_FILL_BYTE
+from ELDAmwl.utils.constants import NC_FILL_INT
 
 import numpy as np
 import xarray as xr

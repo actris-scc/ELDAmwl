@@ -2,18 +2,18 @@
 """Classes for getting basic products
 """
 from copy import deepcopy
-from ELDAmwl.backscatter_factories import FindCommonBscCalibrWindow
-from ELDAmwl.constants import EBSC
-from ELDAmwl.constants import EXT
-from ELDAmwl.constants import RBSC
-from ELDAmwl.elast_bsc_factories import ElastBscUsedBinRes, ElastBscEffBinRes
-from ELDAmwl.exceptions import UseCaseNotImplemented
-from ELDAmwl.extinction_factories import ExtinctionFactory, ExtUsedBinRes, ExtEffBinRes
-from ELDAmwl.factory import BaseOperation
-from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.raman_bsc_factories import RamanBackscatterFactory, RamBscUsedBinRes, RamBscEffBinRes
-from ELDAmwl.registry import registry
-from ELDAmwl.constants import AUTO, FIXED, RESOLUTIONS
+from ELDAmwl.factories.backscatter_factories import FindCommonBscCalibrWindow
+from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.factories.elast_bsc_factories import ElastBscUsedBinRes, ElastBscEffBinRes
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented
+from ELDAmwl.factories.extinction_factories import ExtinctionFactory, ExtUsedBinRes, ExtEffBinRes
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.factories.raman_bsc_factories import RamanBackscatterFactory, RamBscUsedBinRes, RamBscEffBinRes
+from ELDAmwl.component.registry import registry
+from ELDAmwl.utils.constants import AUTO, FIXED, RESOLUTIONS
 
 
 # classes to convert effective bin resolution into bin resolution to use in retrievals

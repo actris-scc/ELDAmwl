@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from sqlalchemy.exc import OperationalError
 
+from ELDAmwl.component.interface import ILogger
 from ELDAmwl.database.tables.system_product import SystemProduct
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from ELDAmwl.exceptions import DBErrorTerminating
-from ELDAmwl.log import logger
+from ELDAmwl.errors.exceptions import DBErrorTerminating
+
+from zope import component
 
 try:
     import ELDAmwl.configs.config as cfg
@@ -16,6 +18,7 @@ except ImportError:
 
 class DBUtils(object):
     def __init__(self, connect_string=None):
+        self.logger = component.queryUtility(ILogger)
         self.connect_string = connect_string
         self.init_engine()
         self.test_db()
@@ -41,7 +44,7 @@ class DBUtils(object):
         try:
             first_task = tasks.first()
         except OperationalError as e:
-            logger.error("""Database cannot be reached! Please check the database connection
+            self.logger.error("PROD_ID", """"Database cannot be reached! Please check the database connection
                             and the db connection settings in your config.py\n{}""".format(e))
             raise DBErrorTerminating
 

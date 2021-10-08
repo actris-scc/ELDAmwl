@@ -2,21 +2,26 @@
 """Classes for extinction calculation"""
 from addict import Dict
 from copy import deepcopy
+
+from zope import component
+
+from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.configs.config_default import RANGE_BOUNDARY
-from ELDAmwl.constants import ABOVE_MAX_ALT
-from ELDAmwl.constants import BELOW_OVL
-from ELDAmwl.constants import MC
-from ELDAmwl.constants import NC_FILL_STR
-from ELDAmwl.database.db_functions import read_extinction_algorithm, read_ext_effbin_algorithm, \
-    read_ext_usedbin_algorithm
-from ELDAmwl.database.db_functions import read_extinction_params
-from ELDAmwl.factory import BaseOperation
-from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.log import logger
-from ELDAmwl.mwl_file_structure import ext_algorithm_var
+from ELDAmwl.utils.constants import ABOVE_MAX_ALT
+from ELDAmwl.utils.constants import BELOW_OVL
+from ELDAmwl.utils.constants import MC
+from ELDAmwl.utils.constants import NC_FILL_STR
+#from ELDAmwl.database.db_functions import read_extinction_algorithm, read_ext_effbin_algorithm, \
+#    read_ext_usedbin_algorithm
+#from ELDAmwl.database.db_functions import read_extinction_params
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+#from ELDAmwl.log import logger
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+#    ext_algorithm_var
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
-from ELDAmwl.registry import registry
+from ELDAmwl.component.registry import registry
 from math import sqrt
 
 import numpy as np
@@ -36,7 +41,7 @@ class ExtinctionParams(ProductParams):
     def from_db(self, general_params):
         super(ExtinctionParams, self).from_db(general_params)
 
-        ep = read_extinction_params(general_params.prod_id)
+        ep = self.db_func.read_extinction_params(general_params.prod_id)
 
         self.angstroem = ep['angstroem']
         self.correct_ovl = ep['overlap_correction']
@@ -50,7 +55,7 @@ class ExtinctionParams(ProductParams):
         if signal.is_Raman_sig:
             self.raman_sig_id = signal.channel_id_str
         else:
-            logger.debug('channel {0} is no Raman signal'.
+            self.logger.debug('channel {0} is no Raman signal'.
                          format(signal.channel_id_str))
 
     @property
@@ -84,7 +89,7 @@ class ExtinctionParams(ProductParams):
         """
         # super(ExtinctionParams, self).to_meta_ds_dict(dict)   # ToDo Ina debug
         dct.data_vars.assumed_angstroem_exponent = self.ang_exp_asDataArray
-        dct.data_vars.evaluation_algorithm = ext_algorithm_var(self.ext_method)
+        dct.data_vars.evaluation_algorithm = MWLFileStructure().ext_algorithm_var(self.ext_method)
 
         if self.correct_ovl:
             dct.attrs.overlap_correction_file = self.ovl_filename
@@ -382,7 +387,8 @@ class ExtEffBinRes(BaseOperationFactory):
 
         Returns: name of the class for the calculation of the effective bin resolution of the slope retrieval
         """
-        return read_ext_effbin_algorithm(self.prod_id)
+        db_func = component.queryUtility(IDBFunc)
+        return db_func.read_ext_effbin_algorithm(self.prod_id)
 
 
 class ExtUsedBinRes(BaseOperationFactory):
@@ -409,7 +415,7 @@ class ExtUsedBinRes(BaseOperationFactory):
 
         Returns: name of the class for the calculation of the used bin resolution of the slope retrieval
         """
-        return read_ext_usedbin_algorithm(self.prod_id)
+        return self.db_func.read_ext_usedbin_algorithm(self.prod_id)
 
 
 class SignalSlope(BaseOperationFactory):
@@ -435,7 +441,7 @@ class SignalSlope(BaseOperationFactory):
 
         Returns: name of the class for the slope calculation
         """
-        return read_extinction_algorithm(self.prod_id)
+        return self.db_func.read_extinction_algorithm(self.prod_id)
 
 
 class LinFit(BaseOperation):

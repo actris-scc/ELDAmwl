@@ -2,25 +2,31 @@
 """base classes for products"""
 from addict import Dict
 from copy import deepcopy
-from ELDAmwl.base import Params
-from ELDAmwl.cached_functions import sg_coeffs, smooth_routine_from_db
+
+from zope import component
+
+from ELDAmwl.bases.base import Params
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.storage.cached_functions import sg_coeffs, smooth_routine_from_db
 from ELDAmwl.configs.config import RANGE_BOUNDARY_KM
-from ELDAmwl.constants import COMBINE_DEPOL_USE_CASES, MC, FIXED, HIGHRES, LOWRES, RESOLUTION_STR,  \
+from ELDAmwl.utils.constants import COMBINE_DEPOL_USE_CASES, MC, FIXED, HIGHRES, LOWRES, RESOLUTION_STR,  \
     CALC_WINDOW_OUTSIDE_PROFILE
-from ELDAmwl.constants import EBSC
-from ELDAmwl.constants import EXT
-from ELDAmwl.constants import MERGE_PRODUCT_USE_CASES
-from ELDAmwl.constants import NC_FILL_BYTE
-from ELDAmwl.constants import NC_FILL_INT
-from ELDAmwl.constants import RBSC
-from ELDAmwl.factory import BaseOperationFactory, BaseOperation
-from ELDAmwl.mwl_file_structure import UNITS
-from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query, get_smooth_params_query, \
-    get_quality_params_query
-from ELDAmwl.exceptions import DetectionLimitZero, NotEnoughMCIterations, SizeMismatch, UseCaseNotImplemented
-from ELDAmwl.mwl_file_structure import NC_VAR_NAMES, error_method_var
+from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import MERGE_PRODUCT_USE_CASES
+from ELDAmwl.utils.constants import NC_FILL_BYTE
+from ELDAmwl.utils.constants import NC_FILL_INT
+from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.bases.factory import BaseOperationFactory, BaseOperation
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+# UNITS
+#from ELDAmwl.database.db_functions import get_general_params_query, get_mc_params_query, get_smooth_params_query, \
+#    get_quality_params_query
+from ELDAmwl.errors.exceptions import DetectionLimitZero, NotEnoughMCIterations, SizeMismatch, UseCaseNotImplemented
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+# NC_VAR_NAMES, error_method_var
 from ELDAmwl.rayleigh import RayleighLidarRatio
-from ELDAmwl.registry import registry
+from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
 
 import numpy as np
@@ -55,7 +61,7 @@ class Products(Signals):
         result.emission_wavelength = signal.emission_wavelength
         result.num_scan_angles = signal.num_scan_angles
 
-        result.mwl_meta_id = '{}_{}'.format(NC_VAR_NAMES[p_params.general_params.product_type],
+        result.mwl_meta_id = '{}_{}'.format(MWLFileStructure.NC_VAR_NAMES[p_params.general_params.product_type],
                                             round(float(result.emission_wavelength)))
 
         if result.params.smooth_method is not None:
@@ -136,7 +142,7 @@ class Products(Signals):
     def to_meta_ds_dict(self, meta_data):
         dct = Dict({'attrs': Dict(), 'data_vars': Dict()})
 
-        dct.data_vars.error_retrieval_method = error_method_var(self.params.general_params.error_method)
+        dct.data_vars.error_retrieval_method = MWLFileStructure().error_method_var(self.params.general_params.error_method)
         meta_data[self.mwl_meta_id] = dct
 
 
@@ -185,7 +191,7 @@ class ProductParams(Params):
 
     @property
     def det_limit_asDataArray(self):
-        units = UNITS[self.general_params.product_type]
+        units = MWLFileStructure.UNITS[self.general_params.product_type]
         return xr.DataArray(self.quality_params.detection_limit,
                             name='detection_limit',
                             attrs={'long_name': 'detection limit',
@@ -363,7 +369,8 @@ class GeneralProductParams(Params):
 
     @classmethod
     def from_id(cls, prod_id):
-        query = get_general_params_query(prod_id)
+        db_func = component.queryUtility(IDBFunc)
+        query = db_func.get_general_params_query(prod_id)
         result = cls.from_query(query)
         return result
 
@@ -374,7 +381,8 @@ class MCParams(Params):
     @classmethod
     def from_db(cls, prod_id):
         result = cls()
-        query = get_mc_params_query(prod_id)
+        db_func = component.queryUtility(IDBFunc)
+        query = db_func.get_mc_params_query(prod_id)
         result.nb_of_iterations = query.iteration_count
 
         if result.nb_of_iterations <= 1:
@@ -409,7 +417,8 @@ class QualityParams(Params):
 
     @classmethod
     def from_db(cls, prod_id):
-        query = get_quality_params_query(prod_id)
+        db_func = component.queryUtility(IDBFunc)
+        query = db_func.get_quality_params_query(prod_id)
         result = cls.from_query(query)
         return result
 
@@ -481,7 +490,9 @@ class SmoothParams(Params):
 
     @classmethod
     def from_db(cls, prod_id):
-        query = get_smooth_params_query(prod_id)
+        db_func = component.queryUtility(IDBFunc)
+
+        query = db_func.get_smooth_params_query(prod_id)
         result = cls.from_query(query)
         return result
 

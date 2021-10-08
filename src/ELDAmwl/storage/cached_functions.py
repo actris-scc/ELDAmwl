@@ -3,8 +3,9 @@
 
 from functools import lru_cache
 from scipy.signal import savgol_coeffs
+from zope import component
 
-from ELDAmwl.database.db_functions import read_smooth_routine
+from ELDAmwl.component.interface import IDBFunc
 
 
 @lru_cache(maxsize=100)
@@ -22,7 +23,8 @@ def sg_used_binres(eff_binres):
 
 @lru_cache()
 def smooth_routine_from_db(method_id):
-    return read_smooth_routine(method_id)
+    db_func = component.queryUtility(IDBFunc)
+    return db_func.read_smooth_routine(method_id)
 
 
 # other candidates are functions for

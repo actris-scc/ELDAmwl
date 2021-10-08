@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 """Classes for backscatter calculation"""
 from addict import Dict
-from ELDAmwl.base import Params
-from ELDAmwl.constants import RBSC
-from ELDAmwl.database.db_functions import get_bsc_cal_params_query
-from ELDAmwl.exceptions import BscCalParamsNotEqual
-from ELDAmwl.exceptions import CalRangeHigherThanValid
-from ELDAmwl.factory import BaseOperation
-from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.log import logger
-from ELDAmwl.mwl_file_structure import bsc_method_var, bsc_calibr_method_var, cal_search_range_var, bsc_calibr_value_var
+from zope import component
+
+from ELDAmwl.bases.base import Params
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
+from ELDAmwl.errors.exceptions import CalRangeHigherThanValid
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
-from ELDAmwl.registry import registry
+from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
 from scipy.stats import sem
 
@@ -33,8 +34,8 @@ class BscCalibrationParams(Params):
     @classmethod
     def from_db(cls, general_params):
         result = cls()
-
-        query = get_bsc_cal_params_query(general_params.prod_id,
+        db_func = component.queryUtility(IDBFunc)
+        query = db_func.get_bsc_cal_params_query(general_params.prod_id,
                                          general_params.product_type)
 
         result.cal_range_search_algorithm = \
@@ -73,9 +74,10 @@ class BscCalibrationParams(Params):
         Returns:
 
         """
-        dct.data_vars.calibration_range_search_algorithm = bsc_calibr_method_var(self.cal_range_search_algorithm)
-        dct.data_vars.calibration_search_range = cal_search_range_var(self.cal_interval)
-        dct.data_vars.calibration_value = bsc_calibr_value_var(self.cal_value)
+        mwl_struct = MWLFileStructure()
+        dct.data_vars.calibration_range_search_algorithm = mwl_struct.bsc_calibr_method_var(self.cal_range_search_algorithm)
+        dct.data_vars.calibration_search_range = mwl_struct.cal_search_range_var(self.cal_interval)
+        dct.data_vars.calibration_value = mwl_struct.bsc_calibr_value_var(self.cal_value)
 
 
 class BackscatterParams(ProductParams):
@@ -113,7 +115,7 @@ class BackscatterParams(ProductParams):
             if signal.is_refl_sig:
                 self.refl_sig_id = signal.channel_id_str
         else:
-            logger.debug('channel {0} is no elast signal'.
+            self.logger.debug('channel {0} is no elast signal'.
                          format(signal.channel_id_str))
 
     def to_meta_ds_dict(self, dct):
@@ -126,7 +128,8 @@ class BackscatterParams(ProductParams):
         Returns:
 
         """
-        dct.data_vars.retrieval_method = bsc_method_var(self.bsc_method)
+        mwl_struct = MWLFileStructure()
+        dct.data_vars.retrieval_method = mwl_struct.bsc_method_var(self.bsc_method)
         self.calibration_params.to_meta_ds_dict(dct)
 
 

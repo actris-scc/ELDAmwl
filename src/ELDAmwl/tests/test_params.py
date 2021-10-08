@@ -2,7 +2,7 @@
 """Tests for Signals"""
 
 
-from ELDAmwl.base import Params
+from ELDAmwl.bases.base import Params
 
 
 class ParamsA(Params):

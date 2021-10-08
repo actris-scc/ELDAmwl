@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """plugin for preparation of ELPP for extinction retrieval"""
-from ELDAmwl.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.log import logger
 from ELDAmwl.prepare_signals import PrepareExtSignals
-from ELDAmwl.registry import registry
+from ELDAmwl.component.registry import registry
 
 
 class PrepareExtSignalsBetter(BaseOperation):

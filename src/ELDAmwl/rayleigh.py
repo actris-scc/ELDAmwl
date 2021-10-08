@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Classes for Rayleigh calculations"""
-from ELDAmwl.constants import RAYL_LR
-from ELDAmwl.factory import BaseOperationFactory, BaseOperation
-from ELDAmwl.registry import registry
+from ELDAmwl.utils.constants import RAYL_LR
+from ELDAmwl.bases.factory import BaseOperationFactory, BaseOperation
+from ELDAmwl.component.registry import registry
 
 
 class RayleighLidarRatio(BaseOperationFactory):

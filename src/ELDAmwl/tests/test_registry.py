@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Tests for Signals"""
 
-from ELDAmwl.factory import BaseOperation
-from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.registry import Registry
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.component.registry import Registry
 
 
 class Factory(BaseOperationFactory):

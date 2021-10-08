@@ -2,23 +2,21 @@
 """Classes for Raman backscatter calculation"""
 from addict import Dict
 from copy import deepcopy
-from ELDAmwl.backscatter_factories import BackscatterFactory
-from ELDAmwl.backscatter_factories import BackscatterFactoryDefault
-from ELDAmwl.backscatter_factories import BackscatterParams
-from ELDAmwl.backscatter_factories import Backscatters
-from ELDAmwl.base import DataPoint
+from ELDAmwl.factories.backscatter_factories import BackscatterFactory
+from ELDAmwl.factories.backscatter_factories import BackscatterFactoryDefault
+from ELDAmwl.factories.backscatter_factories import BackscatterParams
+from ELDAmwl.factories.backscatter_factories import Backscatters
+from ELDAmwl.bases.base import DataPoint
 
-from ELDAmwl.constants import NC_FILL_STR, RAMAN
-from ELDAmwl.constants import RAYL_LR
-from ELDAmwl.database.db_functions import read_raman_bsc_algorithm, read_raman_bsc_effbin_algorithm, \
-    read_raman_bsc_usedbin_algorithm
-from ELDAmwl.database.db_functions import read_raman_bsc_params
-from ELDAmwl.exceptions import NoValidDataPointsForCalibration
-from ELDAmwl.exceptions import UseCaseNotImplemented
-from ELDAmwl.factory import BaseOperation
-from ELDAmwl.factory import BaseOperationFactory
-from ELDAmwl.mwl_file_structure import ram_bsc_algorithm_var
-from ELDAmwl.registry import registry
+from ELDAmwl.utils.constants import NC_FILL_STR, RAMAN
+from ELDAmwl.utils.constants import RAYL_LR
+from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+#    ram_bsc_algorithm_var
+from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
 
 import numpy as np
@@ -37,7 +35,7 @@ class RamanBscParams(BackscatterParams):
     def from_db(self, general_params):
         super(RamanBscParams, self).from_db(general_params)
 
-        rbp = read_raman_bsc_params(general_params.prod_id)
+        rbp = self.db_func.read_raman_bsc_params(general_params.prod_id)
         self.raman_bsc_algorithm = rbp['ram_bsc_method']
         self.get_error_params(rbp)
         self.smooth_params.smooth_method = rbp['smooth_method']
@@ -58,7 +56,7 @@ class RamanBscParams(BackscatterParams):
 
         """
         super(RamanBscParams, self).to_meta_ds_dict(dct)
-        dct.data_vars.evaluation_algorithm = ram_bsc_algorithm_var(self.raman_bsc_algorithm)
+        dct.data_vars.evaluation_algorithm = MWLFileStructure().ram_bsc_algorithm_var(self.raman_bsc_algorithm)
 
 
 class RamanBackscatters(Backscatters):
@@ -184,7 +182,7 @@ class CalcRamanBscProfile(BaseOperationFactory):
 
         Returns: name of the class for the bsc calculation
         """
-        return read_raman_bsc_algorithm(self.prod_id)
+        return self.db_func.read_raman_bsc_algorithm(self.prod_id)
 
     pass
 
@@ -379,7 +377,7 @@ class RamBscEffBinRes(BaseOperationFactory):
 
         Returns: name of the class for the bsc calculation
         """
-        return read_raman_bsc_effbin_algorithm(self.prod_id)
+        return self.db_func.read_raman_bsc_effbin_algorithm(self.prod_id)
 
 
 class RamBscUsedBinRes(BaseOperationFactory):
@@ -403,7 +401,7 @@ class RamBscUsedBinRes(BaseOperationFactory):
 
         Returns: name of the class for the bsc calculation
         """
-        return read_raman_bsc_usedbin_algorithm(self.prod_id)
+        return self.db_func.read_raman_bsc_usedbin_algorithm(self.prod_id)
 
 
 registry.register_class(RamBscUsedBinRes,
