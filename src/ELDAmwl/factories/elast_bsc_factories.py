@@ -7,15 +7,12 @@ from ELDAmwl.factories.backscatter_factories import BackscatterParams
 from ELDAmwl.bases.base import Params
 from ELDAmwl.utils.constants import IT, ELAST
 from ELDAmwl.utils.constants import NC_FILL_INT
-#from ELDAmwl.database.db_functions import read_elast_bsc_params
-#from ELDAmwl.database.db_functions import read_iter_bsc_params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 
 import numpy as np
 
-from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-#    elast_bsc_algorithm_var
+from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 
 
 class ElastBscParams(BackscatterParams):
@@ -53,7 +50,7 @@ class ElastBscParams(BackscatterParams):
 
         """
         super(ElastBscParams, self).to_meta_ds_dict(dct)
-        dct.data_vars.evaluation_algorithm = MWLFileStructure().elast_bsc_algorithm_var(self.elast_bsc_algorithm)
+        dct.data_vars.evaluation_algorithm = MWLFileVarsFromDB().elast_bsc_algorithm_var(self.elast_bsc_algorithm)
         if self.iter_params is not None:
             self.iter_params.to_meta_ds_dict(dct)
 

@@ -8,7 +8,6 @@ from addict import Dict
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-#    GENERAL, META_DATA, WRITE_MODE, GROUP_NAME, RES_GROUP, MAIN_GROUPS, NC_VAR_NAMES
 from ELDAmwl.component.registry import registry
 from ELDAmwl.configs.config import PRODUCT_PATH
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION, MWL, EXT, LOWRES, HIGHRES, RBSC

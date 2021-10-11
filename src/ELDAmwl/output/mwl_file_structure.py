@@ -115,6 +115,47 @@ class MWLFileStructure:
                                   '_FillValue': NC_FILL_BYTE})
         return var
 
+    def cal_search_range_var(self, value):
+        """
+
+        Args:
+            value: addict.Dict() with 2 items
+
+        Returns:
+
+        """
+        data = list(value.values())
+        var = xr.DataArray(data,
+                           dims=('nv',),
+                           name='calibration_search_range',
+                           attrs={'long_name': 'height range wherein calibration range is searched',
+                                  '_FillValue': np.nan,
+                                  'units': 'm'})
+        return var
+
+    def bsc_calibr_value_var(self, value):
+        """
+
+        Args:
+            value (dbl):
+
+        Returns:
+
+        """
+        var = xr.DataArray(np.float(value),
+                           name='calibration_value',
+                           attrs={'long_name': 'assumed backscatter-ratio value (unitless) in calibration range',
+                                  '_FillValue': np.nan,
+                                  'units': '1'})
+        return var
+
+
+
+class MWLFileVarsFromDB:
+
+    def __init__(self):
+        self.db_func = component.queryUtility(IDBFunc)
+
     def method_var_from_db(self, value, db_table, name, long_name):
         """ read available algorithms or methods from db into a DataArray.
 
@@ -176,36 +217,3 @@ class MWLFileStructure:
 
         return result
 
-    def cal_search_range_var(self, value):
-        """
-
-        Args:
-            value: addict.Dict() with 2 items
-
-        Returns:
-
-        """
-        data = list(value.values())
-        var = xr.DataArray(data,
-                           dims=('nv',),
-                           name='calibration_search_range',
-                           attrs={'long_name': 'height range wherein calibration range is searched',
-                                  '_FillValue': np.nan,
-                                  'units': 'm'})
-        return var
-
-    def bsc_calibr_value_var(self, value):
-        """
-
-        Args:
-            value (dbl):
-
-        Returns:
-
-        """
-        var = xr.DataArray(np.float(value),
-                           name='calibration_value',
-                           attrs={'long_name': 'assumed backscatter-ratio value (unitless) in calibration range',
-                                  '_FillValue': np.nan,
-                                  'units': '1'})
-        return var

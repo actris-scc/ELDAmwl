@@ -13,7 +13,7 @@ from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import NC_FILL_STR
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.component.registry import registry
@@ -85,7 +85,8 @@ class ExtinctionParams(ProductParams):
         """
         # super(ExtinctionParams, self).to_meta_ds_dict(dict)   # ToDo Ina debug
         dct.data_vars.assumed_angstroem_exponent = self.ang_exp_asDataArray
-        dct.data_vars.evaluation_algorithm = MWLFileStructure().ext_algorithm_var(self.ext_method)
+        mwl_vars = MWLFileVarsFromDB()
+        dct.data_vars.evaluation_algorithm = mwl_vars.ext_algorithm_var(self.ext_method)
 
         if self.correct_ovl:
             dct.attrs.overlap_correction_file = self.ovl_filename

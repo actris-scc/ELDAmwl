@@ -14,8 +14,7 @@ from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-#    ram_bsc_algorithm_var
+from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
 
@@ -56,7 +55,7 @@ class RamanBscParams(BackscatterParams):
 
         """
         super(RamanBscParams, self).to_meta_ds_dict(dct)
-        dct.data_vars.evaluation_algorithm = MWLFileStructure().ram_bsc_algorithm_var(self.raman_bsc_algorithm)
+        dct.data_vars.evaluation_algorithm = MWLFileVarsFromDB().ram_bsc_algorithm_var(self.raman_bsc_algorithm)
 
 
 class RamanBackscatters(Backscatters):

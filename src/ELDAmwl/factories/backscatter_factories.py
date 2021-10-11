@@ -10,7 +10,7 @@ from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
 from ELDAmwl.errors.exceptions import CalRangeHigherThanValid
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure, MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.component.registry import registry
@@ -74,8 +74,9 @@ class BscCalibrationParams(Params):
 
         """
         mwl_struct = MWLFileStructure()
+        mwl_vars = MWLFileVarsFromDB()
         dct.data_vars.calibration_range_search_algorithm = \
-            mwl_struct.bsc_calibr_method_var(self.cal_range_search_algorithm)
+            mwl_vars.bsc_calibr_method_var(self.cal_range_search_algorithm)
         dct.data_vars.calibration_search_range = mwl_struct.cal_search_range_var(self.cal_interval)
         dct.data_vars.calibration_value = mwl_struct.bsc_calibr_value_var(self.cal_value)
 
@@ -129,8 +130,8 @@ class BackscatterParams(ProductParams):
         Returns:
 
         """
-        mwl_struct = MWLFileStructure()
-        dct.data_vars.retrieval_method = mwl_struct.bsc_method_var(self.bsc_method)
+        mwl_vars = MWLFileVarsFromDB()
+        dct.data_vars.retrieval_method = mwl_vars.bsc_method_var(self.bsc_method)
         self.calibration_params.to_meta_ds_dict(dct)
 
 

@@ -152,6 +152,7 @@ class RamanBackscatterOption(Base):
         INTEGER,
         primary_key=True
     )
+    # Todo Ina: Change to non underscore names.
     _product_ID = Column(
         INTEGER,
         nullable=False,

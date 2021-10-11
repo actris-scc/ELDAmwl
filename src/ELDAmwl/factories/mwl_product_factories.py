@@ -7,7 +7,6 @@ from ELDAmwl.utils.constants import RESOLUTIONS
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-#    GROUP_NAME, META_DATA, data_attrs, err_attrs
 from ELDAmwl.component.registry import registry
 
 import numpy as np
@@ -81,15 +80,25 @@ class GetProductMatrixDefault(BaseOperation):
                 # with common shape and empty data variables
                 array = np.ones(self.shape.shape) * np.nan
                 # ToDo Ina reformat dicts
-                ds = xr.Dataset(data_vars={'altitude': self.shape.alt,
-                                          'wavelength': self.shape.wl,
-                                          'data':
-                                              (['wavelength', 'time', 'level'], deepcopy(array), MWLFileStructure.data_attrs(ptype)),
-                                          'absolute_statistical_uncertainty':
-                                              (['wavelength', 'time', 'level'], deepcopy(array), MWLFileStructure.err_attrs(ptype)),
-                                          'meta_data': (['wavelength', ], np.empty(len(wavelengths), dtype=object),
-                                                        {'long_name': 'path to meta data'}),
-                                           })
+                ds = xr.Dataset(data_vars={
+                    'altitude': self.shape.alt,
+                    'wavelength': self.shape.wl,
+                    'data': (
+                         ['wavelength', 'time', 'level'],
+                         deepcopy(array),
+                         MWLFileStructure.data_attrs(ptype)
+                    ),
+                    'absolute_statistical_uncertainty': (
+                         ['wavelength', 'time', 'level'],
+                         deepcopy(array),
+                         MWLFileStructure.err_attrs(ptype)
+                    ),
+                    'meta_data': (
+                        ['wavelength', ],
+                        np.empty(len(wavelengths), dtype=object),
+                        {'long_name': 'path to meta data'}
+                    ),
+                })
 
                 for wl in wavelengths:
                     # get the product param related to products type and wavelength;
@@ -104,8 +113,10 @@ class GetProductMatrixDefault(BaseOperation):
                             prod.write_data_in_ds(ds)
 
                             wl_idx = wavelengths.index(wl)
-                            ds.meta_data[wl_idx] = '/{}/{}'.format(MWLFileStructure.GROUP_NAME[MWLFileStructure.META_DATA],
-                                                                   prod.mwl_meta_id)
+                            ds.meta_data[wl_idx] = '/{}/{}'.format(
+                                MWLFileStructure.GROUP_NAME[MWLFileStructure.META_DATA],
+                                prod.mwl_meta_id
+                            )
 
                 self.data_storage.set_final_product_matrix(ptype, res, ds)
 
