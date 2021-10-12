@@ -265,3 +265,12 @@ class NoBscCalOptions(ELDAmwlException):
         return('no backscatter calibration options are '
                'provided in SCC db for product {0}'
                .format(self.prod_id))
+
+
+class SciPyWrapperAxisError(ELDAmwlException):
+    """Raised when the scipy axis wrapper detects more than one dimension
+    """
+
+    def __init__(self):
+        pass
+

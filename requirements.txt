@@ -22,6 +22,7 @@ sphinxcontrib-qthelp
 sphinx
 zope.interfaces
 zope.component
+zope
 
 xarray~=0.19.0
 numpy~=1.21.1

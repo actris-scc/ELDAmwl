@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for backscatter calculation"""
 from addict import Dict
-from numpy.core.fromnumeric import _std_dispatcher, array_function_dispatch
-from zope import component
+from zope.component import queryUtility
 
 from ELDAmwl.bases.base import Params
 from ELDAmwl.component.interface import IDBFunc
@@ -21,6 +20,8 @@ from scipy.stats import sem
 import numpy as np
 import xarray as xr
 
+from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
+
 
 class BscCalibrationParams(Params):
 
@@ -35,7 +36,7 @@ class BscCalibrationParams(Params):
     @classmethod
     def from_db(cls, general_params):
         result = cls()
-        db_func = component.queryUtility(IDBFunc)
+        db_func = queryUtility(IDBFunc)
         query = db_func.get_bsc_cal_params_query(general_params.prod_id, general_params.product_type)
 
         result.cal_range_search_algorithm = \
@@ -231,13 +232,6 @@ class FindCommonBscCalibrWindow(BaseOperationFactory):
     def get_classname_from_db(self):
         return FindBscCalibrWindowAsInELDA.__name__
 
-#
-# @array_function_dispatch(_std_dispatcher)
-# def sem(a, axis=None, dtype=None, out=None, ddof=0, keepdims=np._NoValue, *,
-#         where=np._NoValue):
-#     std = np.std(a, axis=axis, dtype=dtype, out=out, ddof=ddof, keepdims=keepdims, where=where)
-#     return std
-
 
 class FindBscCalibrWindowAsInELDA(BaseOperation):
     """find bsc calibration windows as in ELDA
@@ -296,7 +290,8 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
             # get means and sems at once
             if np.all(w_width == ww0):
                 means = ds.data.rolling(level=ww0).reduce(np.mean)
-                sems = ds.data.rolling(level=ww0).reduce(np.std) / np.sqrt(ww0)
+                # the use of scipy_reduce_wrapper is needed to deal with incompatible axis types
+                sems = ds.data.rolling(level=ww0).reduce(scipy_reduce_wrapper(sem))
 
             # else do it for each time slice separately
             else:
@@ -305,8 +300,8 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
                 for t in range(ds.dims.time):
                     mean = ds.data[t].rolling(level=w_width[t, 0]).reduce(np.mean)
                     m_list.append(mean)
-                    std = ds.data[t].rolling(level=w_width[t, 0]).reduce(np.std)
-                    s_list.append(std / np.sqrt(w_width[t, 0]))
+                    sems = ds.data[t].rolling(level=w_width[t, 0]).reduce(sem)
+                    s_list.append(sems)
 
                 means = xr.concat(m_list, 'time')
                 sems = xr.concat(s_list, 'time')
