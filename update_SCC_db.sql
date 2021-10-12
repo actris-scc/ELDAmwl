@@ -112,6 +112,9 @@ UPDATE `_ext_methods` set `python_classname_get_effective_binres` = 'LinFitEffBi
 ALTER TABLE `_ram_bsc_methods`
 ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
 
+UPDATE `_ram_bsc_methods` set `python_classname` = 'CalcRamanBscProfileAsAnsmann' where ID=0;
+UPDATE `_ram_bsc_methods` set `python_classname` = 'CalcRamanBscProfileViaBR' where ID=1;
+
 #-------------------------
 
 INSERT INTO `eldaexitcodes` (`exit_code`, `description`) VALUES
