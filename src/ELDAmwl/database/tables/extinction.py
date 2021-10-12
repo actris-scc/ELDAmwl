@@ -59,24 +59,28 @@ class ExtinctionOption(Base):
         INTEGER,
         primary_key=True
     )
-    _product_ID = Column(
+    product_id = Column(
+        "_product_ID",
         INTEGER,
         nullable=False,
         server_default=text("'-1'")
     )
-    _ext_method_ID = Column(
-        INTEGER,
-        nullable=False,
-        index=True,
-        server_default=text("'-1'")
-    )
-    _error_method_ID = Column(
+    ext_method_id = Column(
+        "_ext_method_ID",
         INTEGER,
         nullable=False,
         index=True,
         server_default=text("'-1'")
     )
-    _overlap_file_ID = Column(
+    error_method_id = Column(
+        "_error_method_ID",
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'")
+    )
+    overlap_file_id = Column(
+        "_overlap_file_ID",
         INTEGER,
         nullable=False,
         index=True,
@@ -97,7 +101,7 @@ class OverlapFile(Base):
         primary_key=True)
 
     # Rule is: If a column has two underscores reduce to one
-    _hoi_stations_ID = Column(
+    hoi_stations_id = Column(
         '__hoi_stations__ID',
         CHAR(3)
     )
@@ -112,7 +116,8 @@ class OverlapFile(Base):
         nullable=False,
         server_default=text("''")
     )
-    _interpolation_id = Column(
+    interpolation_id = Column(
+        "_interpolation_id",
         INTEGER
     )
     submission_date = Column(

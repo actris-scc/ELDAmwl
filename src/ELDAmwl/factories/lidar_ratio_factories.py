@@ -23,9 +23,9 @@ class LidarRatioParams(ProductParams):
         super(LidarRatioParams, self).from_db(general_params)
 
         query = self.db_func.read_lidar_ratio_params(general_params.prod_id)
-        self.bsc_prod_id = query._raman_backscatter_options_product_ID
-        self.ext_prod_id = query._extinction_options_product_ID
-        self.general_params.error_method = ERROR_METHODS[query._error_method_ID]  # noqa E501
+        self.bsc_prod_id = query.raman_backscatter_options_product_id
+        self.ext_prod_id = query.extinction_options_product_id
+        self.general_params.error_method = ERROR_METHODS[query.error_method_id]  # noqa E501
         self.min_BscRatio_for_LR = query.min_BscRatio_for_LR
 
         bsc_general_params = self.from_id(self.bsc_prod_id)

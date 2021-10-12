@@ -22,24 +22,28 @@ class ExtBscOption(Base):
         INTEGER,
         primary_key=True
     )
-    _product_ID = Column(
+    product_id = Column(
+        "_product_ID",
         INTEGER,
         nullable=False,
         server_default=text("'-1'")
     )
-    _extinction_options_product_ID = Column(
-        INTEGER,
-        nullable=False,
-        index=True,
-        server_default=text("'-1'")
-    )
-    _raman_backscatter_options_product_ID = Column(
+    extinction_options_product_id = Column(
+        "_extinction_options_product_ID",
         INTEGER,
         nullable=False,
         index=True,
         server_default=text("'-1'")
     )
-    _error_method_ID = Column(
+    raman_backscatter_options_product_id = Column(
+        "_raman_backscatter_options_product_ID",
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'")
+    )
+    error_method_id = Column(
+        "_error_method_ID",
         INTEGER,
         nullable=False,
         index=True,

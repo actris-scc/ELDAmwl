@@ -19,12 +19,14 @@ class ProductChannels(Base):
         INTEGER,
         primary_key=True
     )
-    _prod_ID = Column(
+    prod_id = Column(
+        "_prod_ID",
         INTEGER,
         nullable=False,
         index=True
     )
-    _channel_ID = Column(
+    channel_id = Column(
+        "_channel_ID",
         INTEGER,
         nullable=False,
         index=True
@@ -48,17 +50,20 @@ class Channels(Base):
         nullable=False,
         server_default=text("''")
     )
-    _telescope_ID = Column(
+    telescope_id = Column(
+        "_telescope_ID",
         INTEGER,
         nullable=False,
         server_default=text("0")
     )
-    _laser_ID = Column(
+    laser_id = Column(
+        "_laser_ID",
         INTEGER,
         nullable=False,
         server_default=text("0")
     )
-    _scat_mechanism_ID = Column(
+    scat_mechanism_id = Column(
+        "_scat_mechanism_ID",
         INTEGER,
         nullable=False,
         server_default=text("0")
@@ -88,7 +93,8 @@ class Channels(Base):
         nullable=False,
         server_default=text("'0.0000'")
     )
-    _dead_time_corr_type_id = Column(
+    dead_time_corr_type_id = Column(
+        "_dead_time_corr_type_id",
         INTEGER,
         nullable=False,
         server_default=text("0")
@@ -107,17 +113,20 @@ class Channels(Base):
         INTEGER,
         nullable=False
     )
-    _background_mode_id = Column(
+    background_mode_id = Column(
+        "_background_mode_id",
         INTEGER,
         nullable=False,
         server_default=text("0")
     )
-    _signal_type_id = Column(
+    signal_type_id = Column(
+        "_signal_type_id",
         INTEGER,
         nullable=False,
         server_default=text("0")
     )
-    _detection_mode_ID = Column(
+    detection_mode_id = Column(
+        "_detection_mode_ID",
         String(5),
         nullable=False,
         server_default=text("0")

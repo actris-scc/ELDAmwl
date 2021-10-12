@@ -43,7 +43,8 @@ class BscCalibrOption(Base):
         nullable=False,
         server_default=text("'0.0000'")
     )
-    _calRangeSearchMethod_ID = Column(
+    calRangeSearchMethod_ID = Column(
+        "_calRangeSearchMethod_ID",
         INTEGER,
         nullable=False,
         server_default=text("'-1'")
@@ -153,30 +154,35 @@ class RamanBackscatterOption(Base):
         primary_key=True
     )
     # Todo Ina: Change to non underscore names.
-    _product_ID = Column(
+    product_id = Column(
+        "_product_ID",
         INTEGER,
         nullable=False,
         server_default=text("'-1'")
     )
-    _ram_bsc_method_ID = Column(
-        INTEGER,
-        nullable=False,
-        index=True,
-        server_default=text("'-1'")
-    )
-    _bsc_calibr_options_ID = Column(
+    ram_bsc_method_id = Column(
+        "_ram_bsc_method_ID",
         INTEGER,
         nullable=False,
         index=True,
         server_default=text("'-1'")
     )
-    _error_method_ID = Column(
+    bsc_calibr_options_id = Column(
+        "_bsc_calibr_options_ID",
         INTEGER,
         nullable=False,
         index=True,
         server_default=text("'-1'")
     )
-    _smooth_method_ID = Column(
+    error_method_id = Column(
+        "_error_method_ID",
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'")
+    )
+    smooth_method_id = Column(
+        "_smooth_method_ID",
         INTEGER,
         nullable=False,
         index=True,
@@ -195,30 +201,35 @@ class ElastBackscatterOption(Base):
         INTEGER,
         primary_key=True
     )
-    _product_ID = Column(
+    product_id = Column(
+        "_product_ID",
         INTEGER,
         nullable=False,
         server_default=text("'-1'")
     )
-    _elast_bsc_method_ID = Column(
-        INTEGER,
-        nullable=False,
-        index=True,
-        server_default=text("'-1'")
-    )
-    _bsc_calibr_options_ID = Column(
+    elast_bsc_method_id = Column(
+        "_elast_bsc_method_ID",
         INTEGER,
         nullable=False,
         index=True,
         server_default=text("'-1'")
     )
-    _error_method_ID = Column(
+    bsc_calibr_options_id = Column(
+        "_bsc_calibr_options_ID",
         INTEGER,
         nullable=False,
         index=True,
         server_default=text("'-1'")
     )
-    _lr_input_method_id = Column(
+    error_method_id = Column(
+        "_error_method_ID",
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'")
+    )
+    lr_input_method_id = Column(
+        "_lr_input_method_id",
         INTEGER,
         nullable=False,
         index=True,
@@ -234,13 +245,15 @@ class ElastBackscatterOption(Base):
         nullable=False,
         server_default=text("'0.0000'")
     )
-    _iter_bsc_options_id = Column(
+    iter_bsc_options_id = Column(
+        "_iter_bsc_options_id",
         INTEGER,
         nullable=False,
         index=True,
         server_default=text("'-1'")
     )
-    _smooth_method_ID = Column(
+    smooth_method_id = Column(
+        "_smooth_method_ID",
         INTEGER,
         nullable=False,
         index=True,
@@ -265,7 +278,8 @@ class IterBackscatterOption(Base):
         index=True,
         server_default=text("'0.0100'")
     )
-    _ram_bsc_method_id = Column(
+    ram_bsc_method_id = Column(
+        "_ram_bsc_method_id",
         INTEGER,
         nullable=False,
         index=True,
@@ -291,7 +305,7 @@ class LRFile(Base):
         primary_key=True
     )
     # Rule is: If a column has two underscores reduce to one
-    _hoi_stations_ID = Column(
+    hoi_stations_id = Column(
         '__hoi_stations__ID',
         CHAR(3)
     )
@@ -306,7 +320,8 @@ class LRFile(Base):
         nullable=False,
         server_default=text("''")
     )
-    _interpolation_id = Column(
+    interpolation_id = Column(
+        "_interpolation_id",
         INTEGER
     )
     submission_date = Column(

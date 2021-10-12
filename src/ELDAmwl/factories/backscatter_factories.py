@@ -39,7 +39,7 @@ class BscCalibrationParams(Params):
         query = db_func.get_bsc_cal_params_query(general_params.prod_id, general_params.product_type)
 
         result.cal_range_search_algorithm = \
-            query.BscCalibrOption._calRangeSearchMethod_ID
+            query.BscCalibrOption.calRangeSearchMethod_ID
         result.window_width = \
             float(query.BscCalibrOption.WindowWidth)
         result.cal_value = \

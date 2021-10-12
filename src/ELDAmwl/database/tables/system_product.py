@@ -21,12 +21,14 @@ class SystemProduct(Base):
         INTEGER,
         primary_key=True
     )
-    _system_ID = Column(
+    system_id = Column(
+        "_system_ID",
         INTEGER,
         nullable=False,
         index=True
     )
-    _Product_ID = Column(
+    product_id = Column(
+        "_Product_ID",
         INTEGER,
         nullable=False,
         index=True
@@ -40,12 +42,14 @@ class MWLproductProduct(Base):
         INTEGER,
         primary_key=True
     )
-    _mwl_product_ID = Column(
+    mwl_product_id = Column(
+        "_mwl_product_ID",
         INTEGER,
         nullable=False,
         index=True
     )
-    _Product_ID = Column(
+    product_id = Column(
+        "_Product_ID",
         INTEGER,
         nullable=False,
         index=True
@@ -69,19 +73,22 @@ class Products(Base):
         INTEGER,
         primary_key=True
     )
-    _usecase_ID = Column(
+    usecase_id = Column(
+        "_usecase_ID",
         INTEGER
     )
-    _prod_type_ID = Column(
+    prod_type_id = Column(
+        "_prod_type_ID",
         INTEGER,
         nullable=False,
         index=True
     )
-    _hoi_stations_ID = Column(
+    hoi_stations_id = Column(
         '__hoi_stations__ID',
         CHAR(3)
     )
-    _hirelpp_product_option_ID = Column(
+    hirelpp_product_option_id = Column(
+        "_hirelpp_product_option_ID",
         INTEGER
     )
 
@@ -134,7 +141,8 @@ class PreProcOptions(Base):
         INTEGER,
         primary_key=True
     )
-    _product_ID = Column(
+    product_id = Column(
+        "_product_ID",
         INTEGER,
         nullable=False
     )
@@ -167,16 +175,19 @@ class SmoothOptions(Base):
         INTEGER,
         primary_key=True
     )
-    _product_ID = Column(
+    product_id = Column(
+        "_product_ID",
         INTEGER,
         nullable=False
     )
-    _lowrange_error_threshold_ID = Column(
+    lowrange_error_threshold_id = Column(
+        "_lowrange_error_threshold_ID",
         INTEGER,
         nullable=False,
         index=True
     )
-    _highrange_error_threshold_ID = Column(
+    highrange_error_threshold_id = Column(
+        "_highrange_error_threshold_ID",
         INTEGER,
         nullable=False,
         index=True
@@ -225,7 +236,8 @@ class SmoothOptions(Base):
         INTEGER,
         nullable=True
     )
-    _smooth_type = Column(
+    smooth_type_id = Column(
+        "_smooth_type",
         INTEGER,
         nullable=False
     )
@@ -308,17 +320,19 @@ class PreparedSignalFile(Base):
         INTEGER,
         primary_key=True
     )
-    _measurements_ID = Column(
+    measurements_id = Column(
         '__measurements__ID',
         String(15),
         index=True
     )
-    _Product_ID = Column(
+    product_id = Column(
+        "_Product_ID",
         INTEGER,
         nullable=False,
         index=True
     )
-    _scc_version_ID = Column(
+    scc_version_id = Column(
+        "_scc_version_ID",
         INTEGER,
         nullable=False
     )
@@ -335,7 +349,8 @@ class MCOption(Base):
         INTEGER,
         primary_key=True
     )
-    _product_ID = Column(
+    product_id = Column(
+        "_product_ID",
         INTEGER,
         nullable=False,
         index=True

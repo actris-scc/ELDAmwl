@@ -66,7 +66,7 @@ class DBFunc(DBUtils):
 
         """
         signals = self.session.query(PreparedSignalFile)\
-            .filter(PreparedSignalFile._measurements_ID == measurement_id)
+            .filter(PreparedSignalFile.measurements_id == measurement_id)
 
         if signals.count() > 0:
             return signals
@@ -174,10 +174,10 @@ class DBFunc(DBUtils):
 
         """
         options = self.session.query(ExtinctionOption)\
-            .filter(ExtinctionOption._product_ID == product_id)
+            .filter(ExtinctionOption.product_id == product_id)
 
         if options.count() == 1:
-            result = options.first()._ext_method_ID
+            result = options.first().ext_method_id
             return result
         else:
             self.logger.error(
@@ -239,10 +239,10 @@ class DBFunc(DBUtils):
 
         """
         options = self.session.query(RamanBackscatterOption)\
-            .filter(RamanBackscatterOption._product_ID == product_id)
+            .filter(RamanBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
-            result = options.first()._ram_bsc_method_ID
+            result = options.first().ram_bsc_method_id
             return result
         else:
             self.logger.error(
@@ -260,10 +260,10 @@ class DBFunc(DBUtils):
 
         """
         options = self.session.query(RamanBackscatterOption)\
-            .filter(RamanBackscatterOption._product_ID == product_id)
+            .filter(RamanBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
-            result = options.first()._smooth_method_ID
+            result = options.first().smooth_method_id
             return result
         else:
             self.logger.error(
@@ -325,10 +325,10 @@ class DBFunc(DBUtils):
 
         """
         options = self.session.query(ElastBackscatterOption)\
-            .filter(ElastBackscatterOption._product_ID == product_id)
+            .filter(ElastBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
-            result = options.first()._elast_bsc_method_ID
+            result = options.first().elast_bsc_method_id
             return result
         else:
             self.logger.error(
@@ -346,10 +346,10 @@ class DBFunc(DBUtils):
 
         """
         options = self.session.query(ElastBackscatterOption)\
-            .filter(ElastBackscatterOption._product_ID == product_id)
+            .filter(ElastBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
-            result = options.first()._smooth_method_ID
+            result = options.first().smooth_method_id
             return result
         else:
             self.logger.error(
@@ -414,7 +414,7 @@ class DBFunc(DBUtils):
 
             """
         options = self.session.query(ExtBscOption)\
-            .filter(ExtBscOption._product_ID == product_id)
+            .filter(ExtBscOption.product_id == product_id)
 
         if options.count() == 1:
             return options[0]
@@ -437,17 +437,17 @@ class DBFunc(DBUtils):
 
             """
         options = self.session.query(ExtMethod, ExtinctionOption) \
-            .filter(ExtMethod.ID == ExtinctionOption._ext_method_ID) \
-            .filter(ExtinctionOption._product_ID == product_id)
+            .filter(ExtMethod.ID == ExtinctionOption.ext_method_id) \
+            .filter(ExtinctionOption.product_id == product_id)
 
         if options.count() == 1:
-            if options.first().ExtinctionOption._overlap_file_ID == -1:
+            if options.first().ExtinctionOption.overlap_file_id == -1:
                 overlap_correction = False
                 overlap_file = None
             else:
                 o_file = self.session.query(OverlapFile, ExtinctionOption) \
-                    .filter(OverlapFile.ID == ExtinctionOption._overlap_file_ID) \
-                    .filter(ExtinctionOption._product_ID == product_id)
+                    .filter(OverlapFile.ID == ExtinctionOption.overlap_file_id) \
+                    .filter(ExtinctionOption.product_id == product_id)
                 if o_file.count() == 1:
                     overlap_correction = True
                     overlap_file = o_file.first().OverlapFile.filename
@@ -457,10 +457,10 @@ class DBFunc(DBUtils):
                     )
 
             result = {'angstroem': float(options.first().ExtinctionOption.angstroem),
-                      'ext_method': options.first().ExtinctionOption._ext_method_ID,
+                      'ext_method': options.first().ExtinctionOption.ext_method_id,
                       'overlap_correction': overlap_correction,
                       'overlap_file': overlap_file,
-                      'error_method': options.first().ExtinctionOption._error_method_ID,
+                      'error_method': options.first().ExtinctionOption.error_method_id,
                       }
             return result
         else:
@@ -498,29 +498,29 @@ class DBFunc(DBUtils):
             ProductChannels,
             Channels
         ).filter(
-            MWLproductProduct._mwl_product_ID == mwl_prod_id,
+            MWLproductProduct.mwl_product_id == mwl_prod_id,
         ).filter(
-            MWLproductProduct._Product_ID == Products.ID,
+            MWLproductProduct.product_id == Products.ID,
         ).filter(
-            Products._prod_type_ID == ProductTypes.ID,
+            Products.prod_type_id == ProductTypes.ID,
         ).filter(
             ProductTypes.is_in_mwl_products == 1,
         ).filter(
-            SmoothOptions._product_ID == Products.ID,
+            SmoothOptions.product_id == Products.ID,
         ).filter(
-            PreProcOptions._product_ID == Products.ID,
+            PreProcOptions.product_id == Products.ID,
         ).filter(
-            SmoothOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
+            SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
         ).filter(
-            SmoothOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
+            SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
         ).filter(
-            ProductChannels._prod_ID == Products.ID,
+            ProductChannels.prod_id == Products.ID,
         ).filter(
-            ProductChannels._channel_ID == Channels.ID,
+            ProductChannels.channel_id == Channels.ID,
         ).filter(
-            PreparedSignalFile._Product_ID == Products.ID,
+            PreparedSignalFile.product_id == Products.ID,
         ).filter(
-            PreparedSignalFile._measurements_ID == measurement_id,
+            PreparedSignalFile.measurements_id == measurement_id,
         ).group_by(Products.ID)
 
         if products.count() > 0:
@@ -554,21 +554,21 @@ class DBFunc(DBUtils):
             ProductChannels,
             Channels
         ).filter(
-            PreProcOptions._product_ID == Products.ID,
+            PreProcOptions.product_id == Products.ID,
         ).filter(
-            SmoothOptions._product_ID == Products.ID,
+            SmoothOptions.product_id == Products.ID,
         ).filter(
-            Products._prod_type_ID == ProductTypes.ID,
+            Products.prod_type_id == ProductTypes.ID,
         ).filter(
             ProductTypes.is_in_mwl_products == 1,
         ).filter(
-            SmoothOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
+            SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
         ).filter(
-            SmoothOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID,
+            SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
         ).filter(
-            ProductChannels._prod_ID == Products.ID,
+            ProductChannels.prod_id == Products.ID,
         ).filter(
-            ProductChannels._channel_ID == Channels.ID,
+            ProductChannels.channel_id == Channels.ID,
         ).filter(
             Products.ID == prod_id,
         ).group_by(Products.ID)
@@ -594,7 +594,7 @@ class DBFunc(DBUtils):
         options = self.session.query(
             SmoothOptions
         ).filter(
-            SmoothOptions._product_ID == prod_id,)
+            SmoothOptions.product_id == prod_id,)
 
         if options.count() == 1:
             return options[0]
@@ -624,11 +624,11 @@ class DBFunc(DBUtils):
             ErrorThresholdsLow,
             ErrorThresholdsHigh
         ).filter(
-            SmoothOptions._product_ID == prod_id,
+            SmoothOptions.product_id == prod_id,
         ).filter(
-            SmoothOptions._lowrange_error_threshold_ID == ErrorThresholdsLow.ID,
+            SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
         ).filter(
-            SmoothOptions._highrange_error_threshold_ID == ErrorThresholdsHigh.ID)
+            SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID)
 
         if options.count() == 1:
             return options[0]
@@ -651,13 +651,13 @@ class DBFunc(DBUtils):
 
             """
         options = self.session.query(ElastBackscatterOption)\
-            .filter(ElastBackscatterOption._product_ID == product_id)
+            .filter(ElastBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
-            result = {'elast_bsc_method': options.first()._elast_bsc_method_ID,
-                      'lr_input_method': options.first()._lr_input_method_id,
-                      'error_method': options.first()._error_method_ID,
-                      'smooth_method': options.first()._smooth_method_ID,
+            result = {'elast_bsc_method': options.first().elast_bsc_method_id,
+                      'lr_input_method': options.first().lr_input_method_id,
+                      'error_method': options.first().error_method_id,
+                      'smooth_method': options.first().smooth_method_id,
                       }
 
             # if options.first()._lr_input_method_id == PROFILE:
@@ -690,14 +690,14 @@ class DBFunc(DBUtils):
 
             """
         options = self.session.query(IterBackscatterOption, ElastBackscatterOption) \
-            .filter(ElastBackscatterOption._product_ID == product_id) \
-            .filter(ElastBackscatterOption._iter_bsc_options_id ==
+            .filter(ElastBackscatterOption.product_id == product_id) \
+            .filter(ElastBackscatterOption.iter_bsc_options_id ==
                     IterBackscatterOption.ID)
 
         if options.count() == 1:
             result = {'conv_crit': options.first().IterBackscatterOption.iter_conv_crit,
                       'max_iteration_count': options.first().IterBackscatterOption.max_iteration_count,
-                      'ram_bsc_method': options.first().IterBackscatterOption._ram_bsc_method_id,
+                      'ram_bsc_method': options.first().IterBackscatterOption.ram_bsc_method_id,
                       }
 
             return result
@@ -720,12 +720,12 @@ class DBFunc(DBUtils):
 
             """
         options = self.session.query(RamanBackscatterOption)\
-            .filter(RamanBackscatterOption._product_ID == product_id)
+            .filter(RamanBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
-            result = {'ram_bsc_method': options.first()._ram_bsc_method_ID,
-                      'error_method': options.first()._error_method_ID,
-                      'smooth_method': options.first()._smooth_method_ID,
+            result = {'ram_bsc_method': options.first().ram_bsc_method_id,
+                      'error_method': options.first().error_method_id,
+                      'smooth_method': options.first().smooth_method_id,
                       }
             return result
         else:
@@ -740,7 +740,7 @@ class DBFunc(DBUtils):
 
         """
         mc_params = self.session.query(MCOption) \
-            .filter(MCOption._product_ID == prod_id)
+            .filter(MCOption.product_id == prod_id)
 
         if mc_params.count() == 1:
             return mc_params[0]
@@ -768,8 +768,8 @@ class DBFunc(DBUtils):
         cal_params = self.session.query(
             BscCalibrOption, BackscatterOption,
         ).filter(
-            BscCalibrOption.ID == BackscatterOption._bsc_calibr_options_ID,
-        ).filter(BackscatterOption._product_ID == bsc_prod_id)
+            BscCalibrOption.ID == BackscatterOption.bsc_calibr_options_id,
+        ).filter(BackscatterOption.product_id == bsc_prod_id)
 
         if cal_params.count() > 0:
             return cal_params[0]
@@ -788,9 +788,9 @@ class DBFunc(DBUtils):
 
             """
         products = self.session.query(SystemProduct, Products) \
-            .filter(SystemProduct._system_ID == system_id) \
-            .filter(SystemProduct._Product_ID == Products.ID) \
-            .filter(Products._prod_type_ID == MWL)
+            .filter(SystemProduct.system_id == system_id) \
+            .filter(SystemProduct.product_id == Products.ID) \
+            .filter(Products.prod_type_id == MWL)
 
         if products.count() == 1:
             return products.first().Products.ID
@@ -817,7 +817,7 @@ class DBFunc(DBUtils):
             .filter(Measurements.ID == measurement_id)
 
         if sys_id.count() == 1:
-            return sys_id.first()._hoi_system_ID
+            return sys_id.first().hoi_system_id
         else:
             self.logger.error('wrong number of system IDs ({0})'.format(sys_id.count()))
 

@@ -331,8 +331,8 @@ class GeneralProductParams(Params):
         result = cls()
 
         result.prod_id = query.Products.ID
-        result.product_type = query.Products._prod_type_ID
-        result.usecase = query.Products._usecase_ID
+        result.product_type = query.Products.prod_type_id
+        result.usecase = query.Products.usecase_id
         result.emission_wavelength = float(query.Channels.emission_wavelength)
 
         result.is_basic_product = query.ProductTypes.is_basic_product == 1
@@ -450,7 +450,7 @@ class SmoothParams(Params):
     def from_query(cls, query):
         result = cls()
 
-        result.smooth_type = query._smooth_type
+        result.smooth_type = query.smooth_type_id
 
         # if result.smooth_type == AUTO:
         #     result.error_threshold.lowrange = query.ErrorThresholdsLow.value

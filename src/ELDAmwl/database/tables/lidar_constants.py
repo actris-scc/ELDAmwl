@@ -18,20 +18,23 @@ class LidarConstants(Base):
         primary_key=True
     )
     # Rule is: If a column has two underscores reduce to one
-    _measurements__ID = Column(
+    measurements_id = Column(
         '__measurements__ID',
         VARCHAR(15),
         nullable=True
     )
-    _product_ID = Column(
+    product_id = Column(
+        "_product_ID",
         INTEGER,
         nullable=False
     )
-    _channel_ID = Column(
+    channel_id = Column(
+        "_channel_ID",
         INTEGER,
         nullable=False
     )
-    _hoi_system_ID = Column(
+    hoi_system_id = Column(
+        "_hoi_system_ID",
         INTEGER,
         nullable=False
     )

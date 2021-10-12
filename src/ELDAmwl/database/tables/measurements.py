@@ -28,12 +28,13 @@ class Measurements(Base):
         VARCHAR(15),
         nullable=False
     )
-    _hoi_stations_ID = Column(
+    hoi_stations_id = Column(
         '__hoi_stations__ID',
         CHAR(3),
         index=True
     )
-    _hoi_system_ID = Column(
+    hoi_system_id = Column(
+        "_hoi_system_ID",
         INTEGER,
         nullable=False,
         index=True
