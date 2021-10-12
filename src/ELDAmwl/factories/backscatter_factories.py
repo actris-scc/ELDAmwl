@@ -154,7 +154,7 @@ class Backscatters(Products):
             p_params (:class:`BackscatterParams`):
                         calculation params of the backscatter product
             calibr_window (tuple):
-                        first and last height of the calibration window [m]
+                        first and last height_axis of the calibration window [m]
         """
         result = super(Backscatters, cls).from_signal(signal, p_params)
         # cls.calibr_window = calibr_window  ToDo: Ina debug
@@ -250,21 +250,32 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
     data_storage = None
     bsc_params = None
 
-    def backscatter_calibration_range(self, ds, height, win_first_idx, win_last_idx):
+    def backscatter_calibration_range(self, ds, height_axis, win_first_idx, win_last_idx):
+        """
+        Create a backscatter calibration window
+
+        Args:
+            ds : the signal
+            height_axis : The height axis of the elastic signal
+            win_first_idx, win_last_idx : The min/max indexes of the window
+
+        Returns:
+            Dataarray describing the window heights.
+        """
         da = xr.DataArray(np.zeros((ds.dims['time'], ds.dims['nv'])),
                           coords=[ds.time, ds.nv],
                           dims=['time', 'nv'])
         da.name = 'backscatter_calibration_range'
-        da.attrs = {'long_name': 'height range where '
+        da.attrs = {'long_name': 'height_axis range where '
                                  'calibration was calculated',
                     'units': 'm'}
         for t in range(ds.dims['time']):
-            da[t, 0] = height[t, win_first_idx[t]].values
-            da[t, 1] = height[t, win_last_idx[t]].values
+            da[t, 0] = height_axis[t, win_first_idx[t]].values
+            da[t, 1] = height_axis[t, win_last_idx[t]].values
 
         return da
 
-    def get_window_params(self, bp):
+    def get_signal_window_params(self, bp):
         """
         Args:
             bp : Backscatter product
@@ -272,7 +283,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         Returns:
             ds : The dataset to operate on
             w_width : The window widths
-            el_sig.height : The height axis to use
+            el_sig.height_axis : The height_axis axis to use
             error_threshold : The error threshold
         """
 
@@ -311,15 +322,15 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         # Todo Ina find better variable names
         for bp in self.bsc_params:
             # get the parameters for the rolling mean calculation
-            ds, w_width, height, error_threshold = self.get_window_params(bp)
+            ds, w_width, height, error_threshold = self.get_signal_window_params(bp)
             # calculate the rolling means/sems with the given window widths
             means, sems = calc_rolling_means_sems(ds, w_width)
             # Calculate the min/max indexes of the minimum error
             win_first_idx, win_last_idx = calc_minimal_window_indexes(means, sems, w_width, error_threshold)
             # Create a calibration window from win_first_idx, win_last_idx
-            calibr_window = self.backscatter_calibration_range(ds, height, win_first_idx, win_last_idx)
+            calibration_window = self.backscatter_calibration_range(ds, height, win_first_idx, win_last_idx)
             # Store the calibration window
-            bp.calibr_window = calibr_window
+            bp.calibr_window = calibration_window
 
         return None
 
