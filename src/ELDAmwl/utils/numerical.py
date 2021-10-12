@@ -13,7 +13,7 @@ def rolling_mean_sem(data, level):
     return means, sems
 
 
-def calc_rolling_means_sems(ds, w_width, error_threshold):
+def calc_rolling_means_sems(ds, w_width):
     ww0 = w_width[0, 0]
     # calculate rolling means, std errs of mean, and rel sem
     # if window_width are equal for all time slices,
@@ -33,6 +33,10 @@ def calc_rolling_means_sems(ds, w_width, error_threshold):
         means = xr.concat(m_list, 'time')
         sems = xr.concat(s_list, 'time')
 
+    return means, sems
+
+
+def calc_minimal_window_indexes(means, sems, w_width, error_threshold):
     rel_sem = sems / means
 
     # find all means with rel_sem < error threshold:
