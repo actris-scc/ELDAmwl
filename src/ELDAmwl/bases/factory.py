@@ -36,7 +36,7 @@ class BaseOperationFactory(object):
         return res
 
     def get_classname_from_db(self):
-        pass
+        raise NotImplementedError
 
     def get_class(self):
         klass_name = self.get_classname_from_db()
