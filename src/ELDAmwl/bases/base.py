@@ -56,6 +56,7 @@ class DataPoint(object):
                                     'statistical_error': stat_err,
                                     'systematic_error': sys_err,
                                     })
+        result.data.load()
         return result
 
     @classmethod

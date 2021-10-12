@@ -99,6 +99,7 @@ class GetProductMatrixDefault(BaseOperation):
                         {'long_name': 'path to meta data'}
                     ),
                 })
+                ds.load()
 
                 for wl in wavelengths:
                     # get the product param related to products type and wavelength;

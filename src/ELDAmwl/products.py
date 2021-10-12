@@ -50,6 +50,7 @@ class Products(Signals):
         result.ds['qf'][:] = NC_FILL_BYTE
         result.ds['binres'][:] = NC_FILL_INT
 
+        result.station_altitude = signal.station_altitude
         result.params = p_params
 
         # todo: copy other general parameter

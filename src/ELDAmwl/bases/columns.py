@@ -16,7 +16,6 @@ class Columns(object):
     """
 
     def __init__(self):
-        self.logger = component.queryUtility(ILogger)
         self.ds = xr.Dataset(
             {'data': (['time', 'level'], np.empty((0, 0))),
              'err': (['time', 'level'], np.empty((0, 0))),
@@ -29,7 +28,12 @@ class Columns(object):
                     'level': (['level'], np.empty((0,), dtype=np.int64)),
                     'altitude': (['time', 'level'], np.empty((0, 0))),
                     })
+        self.ds.load()
         self.station_altitude = None
+
+    @property
+    def logger(self):
+        return component.queryUtility(ILogger)
 
     def set_invalid_point(self, time, level, qf):
         self.ds['data'][time, level] = np.nan

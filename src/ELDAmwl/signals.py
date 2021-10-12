@@ -75,6 +75,7 @@ class ElppData(object):
 
         for idx in range(nc_ds.dims['channel']):
             sig = Signals.from_nc_file(nc_ds, idx)
+            sig.ds.load()
             data_storage.set_elpp_signal(p_param.prod_id_str, sig)  # noqa E501
             sig.register(p_param)
 
