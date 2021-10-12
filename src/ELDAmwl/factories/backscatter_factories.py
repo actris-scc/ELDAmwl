@@ -301,7 +301,14 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
             ds = el_sig.data_in_vertical_range(
                 bp.calibration_params.cal_interval)
 
-        w_width = (bp.calibration_params.window_width // el_sig.raw_heightres).astype(int)
+        # width of window [bins] = width of calibration window [m] / raw resolution of signal [m]
+        # window_width need to be rounded and converted to integer
+        # number of bins used for sliding window operations (rolling) must be window_width +1
+        # because those operations use slices [n:n+window_width]
+        w_width = np.around(
+            bp.calibration_params.window_width /
+            el_sig.raw_heightres
+        ).astype(int) + 1
 
         return ds, w_width, el_sig.height, error_threshold
 

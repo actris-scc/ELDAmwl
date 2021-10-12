@@ -48,8 +48,9 @@ def calc_minimal_window_indexes(means, sems, w_width, error_threshold):
     valid_means = (rel_sem.where(rel_sem.data < error_threshold) /
                    rel_sem * means)
 
-    # find idx of smallest mean, win_last_idx is the end of rolling window
-    win_last_idx = np.nanargmin(valid_means.data, axis=1)
+    # min_idx is the last bin of rolling window with smallest mean
+    min_idx = np.nanargmin(valid_means.data, axis=1)
+    win_last_idx = min_idx + 1
     win_first_idx = (win_last_idx[:] - w_width[:, 0])
 
     return win_first_idx, win_last_idx
