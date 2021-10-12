@@ -20,7 +20,7 @@ from scipy.stats import sem
 import numpy as np
 import xarray as xr
 
-from ELDAmwl.utils.numerical import rolling_mean_sem
+from ELDAmwl.utils.numerical import rolling_mean_sem, calc_rolling_means_sems
 from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
 
 
@@ -252,12 +252,45 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
     data_storage = None
     bsc_params = None
 
+    def backscatter_calibration_range(self, ds, height, win_first_idx, win_last_idx):
+        da = xr.DataArray(np.zeros((ds.dims['time'], ds.dims['nv'])),
+                          coords=[ds.time, ds.nv],
+                          dims=['time', 'nv'])
+        da.name = 'backscatter_calibration_range'
+        da.attrs = {'long_name': 'height range where '
+                                 'calibration was calculated',
+                    'units': 'm'}
+        for t in range(ds.dims['time']):
+            da[t, 0] = height[t, win_first_idx[t]].values
+            da[t, 1] = height[t, win_last_idx[t]].values
+
+        return da
+
+    def get_window_params(self, bp):
+        el_sig = self.data_storage.prepared_signal(bp.prod_id_str,
+                                                   bp.total_sig_id)
+        error_threshold = bp.quality_params.error_threshold.highrange
+
+        if bp.general_params.product_type == RBSC:
+            r_sig = self.data_storage.prepared_signal(
+                bp.prod_id_str, bp.raman_sig_id)
+            sigratio = Signals.as_sig_ratio(el_sig, r_sig)
+            ds = sigratio.data_in_vertical_range(
+                bp.calibration_params.cal_interval)
+        else:
+            ds = el_sig.data_in_vertical_range(
+                bp.calibration_params.cal_interval)
+
+        w_width = (bp.calibration_params.window_width //
+           el_sig.raw_heightres).astype(int)
+
+        return ds, w_width, el_sig.height, error_threshold
+
     def run(self):
         """
-
         Returns: None (results are assigned to individual BackscatterParams)
-
         """
+
         self.data_storage = self.kwargs['data_storage']
         self.bsc_params = self.kwargs['bsc_params']
 
@@ -269,66 +302,12 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
                                            bp.prod_id)
 
         for bp in self.bsc_params:
-            el_sig = self.data_storage.prepared_signal(bp.prod_id_str,
-                                                       bp.total_sig_id)
-            error_threshold = bp.quality_params.error_threshold.highrange
-            w_width = (bp.calibration_params.window_width //
-                       el_sig.raw_heightres).astype(int)
-            ww0 = w_width[0, 0]
 
-            if bp.general_params.product_type == RBSC:
-                r_sig = self.data_storage.prepared_signal(
-                    bp.prod_id_str, bp.raman_sig_id)
-                sigratio = Signals.as_sig_ratio(el_sig, r_sig)
-                ds = sigratio.data_in_vertical_range(
-                    bp.calibration_params.cal_interval)
-            else:
-                ds = el_sig.data_in_vertical_range(
-                    bp.calibration_params.cal_interval)
+            ds, w_width, height, error_threshold = self.get_window_params(bp)
 
-            # calculate rolling means, std errs of mean, and rel sem
-            # if window_width are equal for all time slices,
-            # get means and sems at once
-            if np.all(w_width == ww0):
-                means, sems = rolling_mean_sem(ds.data, ww0)
+            win_first_idx, win_last_idx = calc_rolling_means_sems(ds, w_width, error_threshold)
 
-            # else do it for each time slice separately
-            else:
-                m_list = []
-                s_list = []
-                for t in range(ds.dims.time):
-                    mean, sems = rolling_mean_sem(ds.data[t], w_width[t, 0])
-                    m_list.append(mean)
-                    s_list.append(sems)
-
-                means = xr.concat(m_list, 'time')
-                sems = xr.concat(s_list, 'time')
-
-            rel_sem = sems / means
-
-            # find all means with rel_sem < error threshold:
-            # rel_sem.where(rel_sem.data < error_threshold)
-            #           => rel_sem values and nans
-            # rel_sem.where(rel_sem.data < error_threshold) / rel_sem
-            #           => ones and nans
-            # valid_means = means and nans
-            valid_means = (rel_sem.where(rel_sem.data < error_threshold) /
-                           rel_sem * means)
-
-            # find idx of smallest mean, win_last_idx is the end of rolling window
-            win_last_idx = np.nanargmin(valid_means.data, axis=1)
-            win_first_idx = (win_last_idx[:] - w_width[:, 0])
-
-            da = xr.DataArray(np.zeros((ds.dims['time'], ds.dims['nv'])),
-                              coords=[ds.time, ds.nv],
-                              dims=['time', 'nv'])
-            da.name = 'backscatter_calibration_range'
-            da.attrs = {'long_name': 'height range where '
-                                     'calibration was calculated',
-                        'units': 'm'}
-            for t in range(ds.dims['time']):
-                da[t, 0] = el_sig.height[t, win_first_idx[t]].values
-                da[t, 1] = el_sig.height[t, win_last_idx[t]].values
+            da = self.backscatter_calibration_range(ds, height, win_first_idx, win_last_idx)
 
             bp.calibr_window = da
 
