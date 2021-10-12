@@ -150,11 +150,11 @@ class MWLFileStructure:
         return var
 
 
-
 class MWLFileVarsFromDB:
 
-    def __init__(self):
-        self.db_func = component.queryUtility(IDBFunc)
+    @property
+    def db_func(self):
+        return component.queryUtility(IDBFunc)
 
     def method_var_from_db(self, value, db_table, name, long_name):
         """ read available algorithms or methods from db into a DataArray.

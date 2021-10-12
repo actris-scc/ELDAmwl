@@ -5,6 +5,8 @@ from zope.component import queryUtility
 
 from ELDAmwl.bases.base import Params
 from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.configs.config import CREATE_PICKLE_DATA
+from ELDAmwl.tests.pickle_data import pickle_data
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
 from ELDAmwl.errors.exceptions import CalRangeHigherThanValid
@@ -15,7 +17,6 @@ from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
-
 import numpy as np
 import xarray as xr
 
@@ -312,6 +313,8 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
 
         return ds, w_width, el_sig.height, error_threshold
 
+
+
     def run(self):
         """
         Returns: None (results are assigned to individual BackscatterParams)
@@ -319,6 +322,12 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
 
         self.data_storage = self.kwargs['data_storage']
         self.bsc_params = self.kwargs['bsc_params']
+
+        if CREATE_PICKLE_DATA:
+            pickle_data(self.name, {
+                'data_storage': self.data_storage,
+                'bsc_params': self.bsc_params,
+            })
 
         # check whether all calibration params are equal
         for bp in self.bsc_params[1:]:

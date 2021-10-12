@@ -11,6 +11,14 @@ from logging import INFO
 FILE_FORMAT_VERSION = 1.0
 
 # ===================
+# Test data generation
+# ===================
+
+# Create new Pickle Test data
+CREATE_PICKLE_DATA = True
+PICKLE_DATA_DIR = 'data'
+
+# ===================
 # Directories
 # ===================
 

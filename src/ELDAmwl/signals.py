@@ -124,6 +124,7 @@ class Signals(Columns):
     scale_factor_shots = None
     pol_calibr = None
     raw_heightres = np.nan
+    station_altitude = None
 
     calc_eff_bin_res_routine = None
     calc_used_bin_res_routine = None
@@ -131,6 +132,10 @@ class Signals(Columns):
     h = None
     g = None
     pol_channel_geometry = None
+
+    @property
+    def name(self):
+        return hex(id(self))
 
     @classmethod
     def as_sig_ratio(cls, enumerator, denominator):
@@ -210,6 +215,8 @@ class Signals(Columns):
                                  }
 
         result.station_altitude = nc_ds.station_altitude
+        result.station_altitude.load()
+
         result.ds['altitude'] = nc_ds.altitude
 
         result.ds['time_bounds'] = nc_ds.time_bounds
@@ -242,7 +249,9 @@ class Signals(Columns):
         result.channel_id = nc_ds.range_corrected_signal_channel_id[idx_in_file].astype(int)  # noqa E501
         result.detection_type = nc_ds.range_corrected_signal_detection_mode[idx_in_file].astype(int)  # noqa E501
         result.detection_wavelength = nc_ds.range_corrected_signal_detection_wavelength[idx_in_file]  # noqa E501
+        result.detection_wavelength.load()
         result.emission_wavelength = nc_ds.range_corrected_signal_emission_wavelength[idx_in_file]  # noqa E501
+        result.emission_wavelength.load()
         result.scatterer = nc_ds.range_corrected_signal_scatterers[idx_in_file].astype(int)  # noqa E501
         result.alt_range = nc_ds.range_corrected_signal_range[idx_in_file].astype(int)  # noqa E501
 

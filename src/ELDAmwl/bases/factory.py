@@ -27,13 +27,14 @@ class BaseOperationFactory(object):
     """
     name = 'BaseFactory'
 
-    def __init__(self):
-        self.db_func = component.queryUtility(IDBFunc)
-
     def __call__(self, *args, **kwargs):
         klass = self.get_class()
         res = klass(*args, **kwargs)
         return res
+
+    @property
+    def db_func(self):
+        return component.queryUtility(IDBFunc)
 
     def get_classname_from_db(self):
         raise NotImplementedError
@@ -52,8 +53,15 @@ class BaseOperation(object):
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs
-        self.db_func = component.queryUtility(IDBFunc)
-        self.logger = component.queryUtility(ILogger)
+
+    @property
+    def db_func(self):
+        return component.queryUtility(IDBFunc)
+
+    @property
+    def logger(self):
+        return component.queryUtility(ILogger)
+
 
     @property
     def params(self):

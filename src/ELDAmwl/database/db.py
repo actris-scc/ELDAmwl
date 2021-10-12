@@ -22,10 +22,13 @@ class DBUtils(object):
     session = None
 
     def __init__(self, connect_string=None):
-        self.logger = component.queryUtility(ILogger)
         self.connect_string = connect_string
         self.init_engine()
         self.test_db()
+
+    @property
+    def logger(self):
+        return component.queryUtility(ILogger)
 
     def get_connect_string(self):
         if self.connect_string:

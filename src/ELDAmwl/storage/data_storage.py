@@ -24,6 +24,9 @@ class DataStorage(object):
     intelligent memory caching in future (if needed).
 
     """
+
+    name = 'Datastorage'
+
     def __init__(self):
         self.data = Dict({'elpp_signals': Dict(),
                           'prepared_signals': Dict(),

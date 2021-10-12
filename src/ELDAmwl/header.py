@@ -111,10 +111,15 @@ class Header(ELDABase):
         # result.scc_version_description = nc_ds.scc_version_description
 
         result.vars.cloud_mask_type = nc_ds.cloud_mask_type
+        result.vars.cloud_mask_type.load()
         result.vars.scc_product_type = nc_ds.scc_product_type
+        result.vars.scc_product_type.load()
         result.vars.molecular_calculation_source = nc_ds.molecular_calculation_source
+        result.vars.molecular_calculation_source.load()
         result.vars.station_latitude = nc_ds.latitude
+        result.vars.station_latitude.load()
         result.vars.station_longitude = nc_ds.longitude
+        result.vars.station_longitude.load()
         result.vars.station_altitude = nc_ds.station_altitude
 
         # it is really painful to do these conversions. Unfortunately, I found no better solution

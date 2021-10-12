@@ -17,8 +17,14 @@ class Params(object):
 
     def __init__(self):
         self.sub_params = []
-        self.db_func = component.queryUtility(IDBFunc)
-        self.logger = component.queryUtility(ILogger)
+
+    @property
+    def logger(self):
+        return component.queryUtility(ILogger)
+
+    @property
+    def db_func(self):
+        return component.queryUtility(IDBFunc)
 
     def __getattribute__(self, item):
         try:
@@ -92,5 +98,6 @@ class DataPoint(object):
 
 class ELDABase:
 
-    def __init__(self):
-        self.logger = component.queryUtility(ILogger)
+    @property
+    def logger(self):
+        return component.queryUtility(ILogger)
