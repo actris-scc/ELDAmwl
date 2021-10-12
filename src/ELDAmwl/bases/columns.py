@@ -112,5 +112,5 @@ class Columns(object):
 
 #    def height_to_bin(self, a_height):
 #        # todo: try also scipy bisect
-#        closest_bin = (abs(self.height - a_height)).argmin(dim='level')
+#        closest_bin = (abs(self.height - a_height)).nanargmin(dim='level')
 #        return closest_bin

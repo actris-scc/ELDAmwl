@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for backscatter calculation"""
 from addict import Dict
+from numpy.core.fromnumeric import _std_dispatcher, array_function_dispatch
 from zope import component
 
 from ELDAmwl.bases.base import Params
@@ -230,6 +231,13 @@ class FindCommonBscCalibrWindow(BaseOperationFactory):
     def get_classname_from_db(self):
         return FindBscCalibrWindowAsInELDA.__name__
 
+#
+# @array_function_dispatch(_std_dispatcher)
+# def sem(a, axis=None, dtype=None, out=None, ddof=0, keepdims=np._NoValue, *,
+#         where=np._NoValue):
+#     std = np.std(a, axis=axis, dtype=dtype, out=out, ddof=ddof, keepdims=keepdims, where=where)
+#     return std
+
 
 class FindBscCalibrWindowAsInELDA(BaseOperation):
     """find bsc calibration windows as in ELDA
@@ -288,17 +296,17 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
             # get means and sems at once
             if np.all(w_width == ww0):
                 means = ds.data.rolling(level=ww0).reduce(np.mean)
-                sems = ds.data.rolling(level=ww0).reduce(sem)
+                sems = ds.data.rolling(level=ww0).reduce(np.std) / np.sqrt(ww0)
 
             # else do it for each time slice separately
             else:
                 m_list = []
                 s_list = []
                 for t in range(ds.dims.time):
-                    m_list.append(ds.data[t].rolling(level=w_width[t, 0]).
-                                  reduce(np.mean))
-                    s_list.append(ds.data[t].rolling(level=w_width[t, 0]).
-                                  reduce(sem))
+                    mean = ds.data[t].rolling(level=w_width[t, 0]).reduce(np.mean)
+                    m_list.append(mean)
+                    std = ds.data[t].rolling(level=w_width[t, 0]).reduce(np.std)
+                    s_list.append(std / np.sqrt(w_width[t, 0]))
 
                 means = xr.concat(m_list, 'time')
                 sems = xr.concat(s_list, 'time')
@@ -314,9 +322,9 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
             valid_means = (rel_sem.where(rel_sem.data < error_threshold) /
                            rel_sem * means)
 
-            # find pos of minima, pos is the beginning of rolling window
-            min_pos = np.argmin(valid_means, axis=1)
-            max_pos = (min_pos[:] + w_width[:, 0])
+            # find idx of smallest mean, win_last_idx is the end of rolling window
+            win_last_idx = np.nanargmin(valid_means.data, axis=1)
+            win_first_idx = (win_last_idx[:] - w_width[:, 0])
 
             da = xr.DataArray(np.zeros((ds.dims['time'], ds.dims['nv'])),
                               coords=[ds.time, ds.nv],
@@ -325,8 +333,9 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
             da.attrs = {'long_name': 'height range where '
                                      'calibration was calculated',
                         'units': 'm'}
-            da[:, 0] = el_sig.height[:, min_pos[:]].values
-            da[:, 1] = el_sig.height[:, max_pos[:]].values
+            for t in range(ds.dims['time']):
+                da[t, 0] = el_sig.height[t, win_first_idx[t]].values
+                da[t, 1] = el_sig.height[t, win_last_idx[t]].values
 
             bp.calibr_window = da
 

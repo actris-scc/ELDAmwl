@@ -356,7 +356,7 @@ class Signals(Columns):
             )
             return None
 
-        closest_bin = (abs(self.height - heights)).argmin(dim='level')
+        closest_bin = (abs(self.height - heights)).nanargmin(dim='level')
         return closest_bin
 #        result = []
 #        for t in range(times):
@@ -370,7 +370,7 @@ class Signals(Columns):
         Returns: level (xarray) closest to the requested height
         """
         # todo: try also scipy bisect
-        closest_bin = (abs(self.height - height)).argmin(dim='level')
+        closest_bin = (abs(self.height - height)).nanargmin(dim='level')
         return closest_bin
 
     def data_in_vertical_range(self, v_range, boundaries=None):

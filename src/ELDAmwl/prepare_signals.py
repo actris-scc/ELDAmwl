@@ -49,7 +49,7 @@ class PrepareBscSignalsDefault(BaseOperation):
             self.combine_depol_components(self.bsc_param)
 
         if (self.bsc_param.product_type == EBSC) and \
-                (self.bsc_param.elast_bsc_method == KF):
+                (self.bsc_param.elast_bsc_algorithm == KF):
             pass
         else:
             for sig in self.data_storage.prepared_signals(pid):
