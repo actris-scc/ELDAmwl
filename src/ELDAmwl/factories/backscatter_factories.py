@@ -20,6 +20,7 @@ from scipy.stats import sem
 import numpy as np
 import xarray as xr
 
+from ELDAmwl.utils.numerical import rolling_mean_sem
 from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
 
 
@@ -289,18 +290,15 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
             # if window_width are equal for all time slices,
             # get means and sems at once
             if np.all(w_width == ww0):
-                means = ds.data.rolling(level=ww0).reduce(np.mean)
-                # the use of scipy_reduce_wrapper is needed to deal with incompatible axis types
-                sems = ds.data.rolling(level=ww0).reduce(scipy_reduce_wrapper(sem))
+                means, sems = rolling_mean_sem(ds.data, ww0)
 
             # else do it for each time slice separately
             else:
                 m_list = []
                 s_list = []
                 for t in range(ds.dims.time):
-                    mean = ds.data[t].rolling(level=w_width[t, 0]).reduce(np.mean)
+                    mean, sems = rolling_mean_sem(ds.data[t], w_width[t, 0])
                     m_list.append(mean)
-                    sems = ds.data[t].rolling(level=w_width[t, 0]).reduce(sem)
                     s_list.append(sems)
 
                 means = xr.concat(m_list, 'time')
