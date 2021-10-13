@@ -4,7 +4,7 @@
 from copy import deepcopy
 from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.bases.columns import Columns
-from ELDAmwl.utils.constants import ALL_OK, RESOLUTION_STR
+from ELDAmwl.utils.constants import ALL_OK, RESOLUTION_STR, ALL_RANGE
 from ELDAmwl.utils.constants import ANALOG
 from ELDAmwl.utils.constants import CROSS
 from ELDAmwl.utils.constants import FAR_RANGE
@@ -119,8 +119,8 @@ class Signals(Columns):
     detection_type = np.nan
     channel_idx_in_ncfile = np.nan
     scatterer = None
-    alt_range = np.nan
-    pol_channel_conf = np.nan
+    alt_range = None
+    pol_channel_conf = None
     scale_factor_shots = None
     pol_calibr = None
     raw_heightres = np.nan
@@ -436,7 +436,10 @@ class Signals(Columns):
 
     @property
     def channel_id_str(self):
-        return str(self.channel_id.values)
+        if self.channel_id is not None:
+            return str(self.channel_id.values)
+        else:
+            return None
 
     def register(self, p_params):
         p_params.general_params.signals.append(self.channel_id_str)
@@ -478,43 +481,80 @@ class Signals(Columns):
 
     @property
     def is_WV_sig(self):
-        return bool(self.scatterer == WATER_VAPOR)
+        if self.scatterer is not None:
+            return bool(self.scatterer == WATER_VAPOR)
+        else:
+            return False
 
     @property
     def is_elast_sig(self):
-        return bool((self.scatterer & PARTICLE) == PARTICLE)
+        if self.scatterer is not None:
+            return bool((self.scatterer & PARTICLE) == PARTICLE)
+        else:
+            return False
 
     @property
     def is_Raman_sig(self):
-        return (not self.is_WV_sig) & (not self.is_elast_sig)
+        if self.scatterer is not None:
+            return (not self.is_WV_sig) & (not self.is_elast_sig)
+        else:
+            return False
 
     @property
     def is_nr_signal(self):
-        return bool(self.alt_range == NEAR_RANGE)
+        if self.alt_range is not None:
+            return bool(self.alt_range == NEAR_RANGE)
+        else:
+            return False
 
     @property
     def is_fr_signal(self):
-        return bool(self.alt_range == FAR_RANGE)
+        if self.alt_range is not None:
+            return bool(self.alt_range == FAR_RANGE)
+        else:
+            return False
+
+    @property
+    def is_all_range_signal(self):
+        if self.alt_range is not None:
+            return bool(self.alt_range == ALL_RANGE)
+        else:
+            return False
 
     @property
     def is_total_sig(self):
-        return bool(self.pol_channel_conf == TOTAL)
+        if self.pol_channel_conf is not None:
+            return bool(self.pol_channel_conf == TOTAL)
+        else:
+            return False
 
     @property
     def is_cross_sig(self):
-        return bool(self.pol_channel_conf == CROSS)
+        if self.pol_channel_conf is not None:
+            return bool(self.pol_channel_conf == CROSS)
+        else:
+            return False
 
     @property
     def is_parallel_sig(self):
-        return bool(self.pol_channel_conf == PARALLEL)
+        if self.pol_channel_conf is not None:
+            return bool(self.pol_channel_conf == PARALLEL)
+        else:
+            return False
 
     @property
     def is_transm_sig(self):
-        return bool(self.pol_channel_geometry == TRANSMITTED)
+        if self.pol_channel_geometry is not None:
+            return bool(self.pol_channel_geometry == TRANSMITTED)
+        else:
+            return False
 
     @property
     def is_refl_sig(self):
-        return bool(self.pol_channel_geometry == REFLECTED)
+        if self.pol_channel_geometry is not None:
+            return bool(self.pol_channel_geometry == REFLECTED)
+        else:
+            return False
 
     def eff_to_used_binres(self, an_eff_binres):
         """

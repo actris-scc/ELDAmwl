@@ -41,6 +41,7 @@ GLUED = ANALOG + PH_CNT
 DETECTION_TYPES = [ANALOG, PH_CNT, GLUED]
 
 # ====== signal altitude ranges ======
+ALL_RANGE = 0
 ULTRA_NEAR_RANGE = 1
 NEAR_RANGE = 2
 FAR_RANGE = 4

@@ -86,12 +86,12 @@ class GetProductMatrixDefault(BaseOperation):
                     'data': (
                          ['wavelength', 'time', 'level'],
                          deepcopy(array),
-                         MWLFileStructure.data_attrs(ptype)
+                         MWLFileStructure.data_attrs(MWLFileStructure, ptype)
                     ),
                     'absolute_statistical_uncertainty': (
                          ['wavelength', 'time', 'level'],
                          deepcopy(array),
-                         MWLFileStructure.err_attrs(ptype)
+                         MWLFileStructure.err_attrs(MWLFileStructure, ptype)
                     ),
                     'meta_data': (
                         ['wavelength', ],
