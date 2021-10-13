@@ -342,6 +342,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         """
         Returns: None (results are assigned to individual BackscatterParams)
         """
+        self.init()
 
         # check whether all calibration params are equal
         for bp in self.bsc_params[1:]:
