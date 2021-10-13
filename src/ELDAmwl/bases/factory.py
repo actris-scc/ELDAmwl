@@ -54,6 +54,9 @@ class BaseOperation(object):
     def __init__(self, **kwargs):
         self.kwargs = kwargs
 
+    def init(self):
+        pass
+
     @property
     def db_func(self):
         return component.queryUtility(IDBFunc)

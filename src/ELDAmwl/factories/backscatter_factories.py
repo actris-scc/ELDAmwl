@@ -313,13 +313,22 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
 
         return ds, w_width, el_sig.height, error_threshold
 
+    def get_bp_calibration_window(self, bp):
+        # get the parameters for the rolling mean calculation
+        ds, w_width, height, error_threshold = self.get_signal_window_params(bp)
+        # calculate the rolling means/sems with the given window widths
+        means, sems = calc_rolling_means_sems(ds, w_width)
+        # Calculate the min/max indexes of the minimum error
+        win_first_idx, win_last_idx = calc_minimal_window_indexes(means, sems, w_width, error_threshold)
+        # Create a calibration window from win_first_idx, win_last_idx
+        calibration_window = self.backscatter_calibration_range(ds, height, win_first_idx, win_last_idx)
+        # Store the calibration window
+        bp.calibr_window = calibration_window
 
+        if CREATE_PICKLE_DATA:
+            pickle_data(self.name + '_get_bp_calibration_window', calibration_window)
 
-    def run(self):
-        """
-        Returns: None (results are assigned to individual BackscatterParams)
-        """
-
+    def init(self):
         self.data_storage = self.kwargs['data_storage']
         self.bsc_params = self.kwargs['bsc_params']
 
@@ -329,6 +338,11 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
                 'bsc_params': self.bsc_params,
             })
 
+    def run(self):
+        """
+        Returns: None (results are assigned to individual BackscatterParams)
+        """
+
         # check whether all calibration params are equal
         for bp in self.bsc_params[1:]:
             if not self.bsc_params[0].calibration_params.equal(
@@ -337,16 +351,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
                                            bp.prod_id)
         # Todo Ina find better variable names
         for bp in self.bsc_params:
-            # get the parameters for the rolling mean calculation
-            ds, w_width, height, error_threshold = self.get_signal_window_params(bp)
-            # calculate the rolling means/sems with the given window widths
-            means, sems = calc_rolling_means_sems(ds, w_width)
-            # Calculate the min/max indexes of the minimum error
-            win_first_idx, win_last_idx = calc_minimal_window_indexes(means, sems, w_width, error_threshold)
-            # Create a calibration window from win_first_idx, win_last_idx
-            calibration_window = self.backscatter_calibration_range(ds, height, win_first_idx, win_last_idx)
-            # Store the calibration window
-            bp.calibr_window = calibration_window
+            self.get_bp_calibration_window(bp)
 
         return None
 
