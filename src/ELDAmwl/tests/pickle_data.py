@@ -99,7 +99,7 @@ def write_test_data(**kwargs):
         )
     elif 'cls' in kwargs:
         cls =  kwargs['cls']
-        file_name = cls.__class__.__name__
+        file_name = cls.__name__
     else:
         raise AttributeError
 
