@@ -113,9 +113,6 @@ class Extinctions(Products):
                            'angstroem_exponent': p_params.ang_exp_asDataArray,
                            })
 
-        num_times = signal.ds.dims['time']
-        num_levels = signal.ds.dims['level']
-
         slope_routine = SignalSlope()(prod_id=p_params.prod_id_str)
         cls.calc_eff_bin_res_routine = ExtEffBinRes()(prod_id=p_params.prod_id_str)
 
@@ -124,15 +121,17 @@ class Extinctions(Products):
         yerr_data = np.array(signal.ds.err)
         qf_data = np.array(signal.ds.qf)
 
-        for t in range(num_times):
-            for lev in range(num_levels):
+        for t in range(signal.num_times):
+            fvb = signal.first_valid_bin(t)
+            lvb = signal.last_valid_bin(t)
+            for lev in range(fvb, lvb):
                 window = int(signal.ds.binres[t, lev])
                 half_win = window // 2
 
-                if lev < half_win:
+                if lev < (fvb + half_win):
                     result.set_invalid_point(t, lev, BELOW_OVL)
 
-                elif lev >= (num_levels-half_win):
+                elif lev >= (lvb-half_win):
                     result.set_invalid_point(t, lev, ABOVE_MAX_ALT)
 
                 else:

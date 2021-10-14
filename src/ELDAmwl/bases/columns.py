@@ -122,6 +122,25 @@ class Columns(object):
     def num_levels(self):
         return self.ds.dims['level']
 
+    def first_valid_bin(self, time):
+        try:
+            fvb = np.where(
+                ~np.isnan(self.data[time]) &
+                ~np.isnan(self.err[time])
+            )[0][0]
+        except IndexError:
+            fvb = None
+        return fvb
+
+    def last_valid_bin(self, time):
+        try:
+            lvb = np.where(
+                ~np.isnan(self.data[time]) &
+                ~np.isnan(self.err[time])
+            )[0][-1]
+        except IndexError:
+            lvb = None
+        return lvb
 
 #    def height_to_bin(self, a_height):
 #        # todo: try also scipy bisect
