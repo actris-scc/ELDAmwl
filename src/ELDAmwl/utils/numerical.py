@@ -36,7 +36,7 @@ def calc_rolling_means_sems(ds, w_width):
     return means, sems
 
 
-def calc_minimal_window_indexes(means, sems, w_width, error_threshold):
+def find_minimum_window(means, sems, w_width, error_threshold):
     rel_sem = sems / means
 
     # find all means with rel_sem < error threshold:

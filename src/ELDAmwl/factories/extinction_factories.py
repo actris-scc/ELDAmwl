@@ -201,6 +201,7 @@ class SlopeToExtinctionDefault(BaseOperation):
 
         wl_factor = 1. / (1. + pow((em_wl / det_wl), ang_exp))
 
+        # todo ina: test whether this copy makes sense and is necessary
         result = deepcopy(slope)
         result['data'] = -1. * slope.data * wl_factor
         result['err'] = slope.err * wl_factor
@@ -282,6 +283,7 @@ class ExtinctionAutosmoothDefault(BaseOperation):
         return smooth_res
 
     def run(self):
+        # todo ina: test whether this copy makes sense and is necessary
         self.signal = deepcopy(self.kwargs['signal'])
         self.smooth_params = self.kwargs['smooth_params']
 
@@ -340,6 +342,7 @@ class ExtinctionFactoryDefault(BaseOperation):
             else:
                 smooth_res = self.data_storage.binres_common_smooth(self.param.prod_id_str, resolution)
 
+            # todo ina: test whether this copy makes sense and is necessary
             smoothed_sig = deepcopy(raman_sig)
             smoothed_sig.ds['binres'] = deepcopy(smooth_res)
             result = Extinctions.from_signal(smoothed_sig, self.param)

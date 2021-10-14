@@ -80,7 +80,8 @@ class GetProductMatrixDefault(BaseOperation):
                 # create a common Dataset for each product type
                 # with common shape and empty data variables
                 array = np.ones(self.shape.shape) * np.nan
-                # ToDo Ina reformat dicts
+                # todo ina: test whether these copies makes sense and is necessary
+
                 ds = xr.Dataset(data_vars={
                     'altitude': self.shape.alt,
                     'wavelength': self.shape.wl,

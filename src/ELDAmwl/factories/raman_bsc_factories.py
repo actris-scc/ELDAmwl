@@ -254,6 +254,7 @@ class CalcRamanBscProfileViaBR(BaseOperation):
                                   coords=[sigratio.time])
 
         # 2) calculate backscatter ratio
+        # todo ina: test whether this copy makes sense and is necessary
         bsc = deepcopy(sigratio)
         bsc['data'] = sigratio.data * cf
         bsc['error'] = bsc.data * np.sqrt(np.square(sigratio.err / sigratio.data) + sqr_cf_err)
