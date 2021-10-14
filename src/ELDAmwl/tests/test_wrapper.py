@@ -1,7 +1,7 @@
-import unittest
-
 from ELDAmwl.errors.exceptions import SciPyWrapperAxisError
 from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
+
+import unittest
 
 
 def scipy_func(_a, axis=None, **_kwargs):
@@ -17,7 +17,7 @@ class TestWrapper(unittest.TestCase):
         with self.assertRaises(SciPyWrapperAxisError):
             _x = scipy_reduce_wrapper(scipy_func)(5, axis=())
         with self.assertRaises(SciPyWrapperAxisError):
-            _x = scipy_reduce_wrapper(scipy_func)(5, axis=(1, 2))
+            _x = scipy_reduce_wrapper(scipy_func)(5, axis=(1, 2))  # noqa F841
 
     def test_int(self):
         assert scipy_reduce_wrapper(scipy_func)(5, axis=3) == 3
@@ -26,4 +26,4 @@ class TestWrapper(unittest.TestCase):
         with self.assertRaises(SciPyWrapperAxisError):
             _x = scipy_reduce_wrapper(scipy_func)(5)
         with self.assertRaises(SciPyWrapperAxisError):
-            _x = scipy_reduce_wrapper(scipy_func)(5, axis='time')
+            _x = scipy_reduce_wrapper(scipy_func)(5, axis='time')  # noqa F841

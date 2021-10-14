@@ -1,10 +1,10 @@
+from ELDAmwl.tests.config import PICKLE_DATA_DIR
+from pickle import dump
+from pickle import load
+
+import pathlib
 import pickle
 
-
-from pickle import dump, load
-import pathlib
-
-from ELDAmwl.tests.config import PICKLE_DATA_DIR
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 
@@ -32,7 +32,7 @@ def get_unpicklable(instance, exception=None, string='', first_only=False):
                 pickle.dumps(k)
             except BaseException as e:
                 problems.extend(get_unpicklable(
-                    k, e, string + f'[key type={type(k).__name__}]'
+                    k, e, string + f'[key type={type(k).__name__}]',
                 ))
                 if first_only:
                     break
@@ -43,10 +43,10 @@ def get_unpicklable(instance, exception=None, string='', first_only=False):
                 if hasattr(v, 'name'):
                     _name = v.name
                 else:
-                    _name = ''
+                    _name = ''  # noqa F841
 
                 problems.extend(get_unpicklable(
-                    v, e, string + f'[{type(v).__name__} {k}]'
+                    v, e, string + f'[{type(v).__name__} {k}]',
                 ))
                 if first_only:
                     break
@@ -62,9 +62,7 @@ def get_unpicklable(instance, exception=None, string='', first_only=False):
     # empty), yet no member was a problem (problems is empty), thus instance itself
     # is the problem.
     if string != '' and not problems:
-        problems.append(
-            string + f" (Type '{type(instance).__name__}' caused: {exception})"
-        )
+        problems.append(string + f" (Type '{type(instance).__name__}' caused: {exception})")
 
     return problems
 
@@ -76,7 +74,6 @@ def pickle_data(file_name, data):
             dump(data, out_file, protocol=-1)
     except TypeError:
         a = get_unpicklable(data)
-        print(a)
 
 
 def un_pickle_data(file_name):
@@ -100,6 +97,10 @@ def write_test_data(**kwargs):
             func.__name__,
 
         )
+    elif 'cls' in kwargs:
+        cls =  kwargs['cls']
+        file_name = cls.__class__.__name__
     else:
-        file_name = self.__class__.__name__
+        raise AttributeError
+
     pickle_data(file_name, data)

@@ -327,7 +327,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
     def init(self):
         self.bsc_params = self.kwargs['bsc_params']
 
-        # write_test_data(
+        # write_test_data(cls=FindBscCalibrWindowAsInELDA,
         #     data_storage=self.data_storage,
         #     bsc_params=self.bsc_params
         # )

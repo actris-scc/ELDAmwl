@@ -19,7 +19,7 @@ class ParamsA(Params):
         self.measurement_params.d = 16
 
     def funcaplusb(self, a, b):
-        return a+b
+        return a + b
 
     @property
     def aplusb(self):
