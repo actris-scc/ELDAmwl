@@ -2,14 +2,20 @@
 """Classes for signals"""
 
 from copy import deepcopy
-
-from zope import component
-
 from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.bases.columns import Columns
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDataStorage
-from ELDAmwl.utils.constants import ALL_OK, RESOLUTION_STR, ALL_RANGE, BELOW_OVL, ABOVE_MAX_ALT
+from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import CannotOpenELLPFile
+from ELDAmwl.errors.exceptions import ELPPFileNotFound
+from ELDAmwl.header import Header
+from ELDAmwl.utils.constants import ABOVE_MAX_ALT
+from ELDAmwl.utils.constants import ALL_OK
+from ELDAmwl.utils.constants import ALL_RANGE
 from ELDAmwl.utils.constants import ANALOG
+from ELDAmwl.utils.constants import BELOW_OVL
 from ELDAmwl.utils.constants import CROSS
 from ELDAmwl.utils.constants import FAR_RANGE
 from ELDAmwl.utils.constants import NC_FILL_BYTE
@@ -17,14 +23,11 @@ from ELDAmwl.utils.constants import NEAR_RANGE
 from ELDAmwl.utils.constants import PARALLEL
 from ELDAmwl.utils.constants import PARTICLE
 from ELDAmwl.utils.constants import REFLECTED
+from ELDAmwl.utils.constants import RESOLUTION_STR
 from ELDAmwl.utils.constants import TOTAL
 from ELDAmwl.utils.constants import TRANSMITTED
 from ELDAmwl.utils.constants import WATER_VAPOR
-from ELDAmwl.errors.exceptions import ELPPFileNotFound, CannotOpenELLPFile
-from ELDAmwl.bases.factory import BaseOperation
-from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.header import Header
-from ELDAmwl.component.registry import registry
+from zope import component
 
 import numpy as np
 import os
@@ -156,8 +159,7 @@ class Signals(Columns):
 
         result.ds['data'] = enumerator.ds.data / denominator.ds.data
         result.ds['err'] = result.ds.data * \
-            np.sqrt(np.square(enumerator.rel_err) +
-                    np.square(denominator.rel_err))
+            np.sqrt(np.square(enumerator.rel_err) + np.square(denominator.rel_err))
         result.ds['qf'] = enumerator.ds.qf | denominator.ds.qf
 
         result.channel_id = xr.concat([enumerator.channel_id,
@@ -191,34 +193,36 @@ class Signals(Columns):
         result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file]  # noqa E501
 
         # initiate bin resolution with value 1
-        result.ds['binres'] = xr.DataArray(np.ones((nc_ds.dims['time'],
-                                                 nc_ds.dims['level'])).astype(np.int),  # noqa E501
-                                       coords=[nc_ds.time, nc_ds.level],
-                                       dims=['time', 'level'])
+        result.ds['binres'] = xr.DataArray(
+            np.ones((nc_ds.dims['time'],
+            nc_ds.dims['level'])).astype(np.int),  # noqa E501
+            coords=[nc_ds.time, nc_ds.level],
+            dims=['time', 'level'])
         result.ds['binres'].attrs = {'long_name': 'vertical resolution',
                                      'units': 'bins',
                                      }
 
         # initiate quality flag with values 'ALL_OK'
-        result.ds['qf'] = xr.DataArray(np.ones((nc_ds.dims['time'],
-                                                 nc_ds.dims['level'])).astype(np.int8)  # noqa E501
-                                       * ALL_OK,
-                                       coords=[nc_ds.time, nc_ds.level],
-                                       dims=['time', 'level'])
-        result.ds['qf'].attrs = {'long_name': 'quality_flag',
-                                 'flag_meanings': 'data_ok '
-                                        'negative_data '
-                                        'incomplete_overlap_not_correctable '
-                                        'above_max_altitude_range '
-                                        'cloud_contamination '
-                                        'above_Klett_reference_height '
-                                        'depol_ratio_larger_100% '
-                                        'backscatter_ratio_below_required_min_value',  # noqa E501
-                                 'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64],
-                                 'valid_range': [0, 107],
-                                 'units': '1',
-                                 '_FillValue': NC_FILL_BYTE,
-                                 }
+        qf = np.ones((nc_ds.dims['time'], nc_ds.dims['level'])).astype(np.int8) * ALL_OK
+        result.ds['qf'] = xr.DataArray(
+            qf,
+            coords=[nc_ds.time, nc_ds.level],
+            dims=['time', 'level'])
+        result.ds['qf'].attrs = {
+            'long_name': 'quality_flag',
+            'flag_meanings': 'data_ok '
+            'negative_data '
+            'incomplete_overlap_not_correctable '
+            'above_max_altitude_range '
+            'cloud_contamination '
+            'above_Klett_reference_height '
+            'depol_ratio_larger_100% '
+            'backscatter_ratio_below_required_min_value',  # noqa E501
+            'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64],
+            'valid_range': [0, 107],
+            'units': '1',
+            '_FillValue': NC_FILL_BYTE,
+        }
 
         result.station_altitude = nc_ds.station_altitude
         result.station_altitude.load()
@@ -367,9 +371,7 @@ class Signals(Columns):
         """
         times = self.ds.dims['time']
         if heights.shape[0] != times:
-            self.logger.error(
-                'dataset and heights have different lenghts (time dimension)'
-            )
+            self.logger.error('dataset and heights have different lenghts (time dimension)')
             return None
 
         closest_bin = (abs(self.height - heights)).argmin(dim='level')
@@ -422,9 +424,7 @@ class Signals(Columns):
             min_alt = min_h + self.station_altitude.values
             max_alt = max_h + self.station_altitude.values
 
-            return self.ds.where((self.ds.altitude > min_alt) &
-                                 (self.ds.altitude < max_alt),
-                                 drop=True)
+            return self.ds.where((self.ds.altitude > min_alt) & (self.ds.altitude < max_alt), drop=True)
         else:
             # first valid level
             fvl = self.height_to_levels(min_h)
@@ -673,15 +673,15 @@ class CombineDepolComponentsDefault(BaseOperation):
         GT = float(calibr_params['GT'].value)
 
         factor = etaS / K * HR
-        denom = (HR*GT - HT*GR)
+        denom = (HR * GT - HT * GR)
 
         result = deepcopy(transm_sig)  # todo ina: is this copy necessary?
-        result['data'] = (factor * transm_sig.data -
-                          HT * refl_sig.data) / denom
-        result['err'] = np.sqrt(np.square(HT * refl_sig.err) +
-                                np.square(factor * transm_sig.err) +
-                                np.square(HR / K * transm_sig.data * err_etaS) +  # noqa E501
-                                np.square(HR / K / K * transm_sig.data * err_K)) / denom  # noqa E501
+        result['data'] = (factor * transm_sig.data - HT * refl_sig.data) / denom
+        result['err'] = np.sqrt(
+            np.square(HT * refl_sig.err) +   # noqa W504
+            np.square(factor * transm_sig.err) +    # noqa W504
+            np.square(HR / K * transm_sig.data * err_etaS) +    # noqa W504
+            np.square(HR / K / K * transm_sig.data * err_K)) / denom    # noqa W504
 
         result['qf'] = transm_sig.qf | refl_sig.qf
 

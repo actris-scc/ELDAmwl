@@ -2,14 +2,14 @@
 """Classes for preparation of signals
 (combining depol component, temporal integration, .."""
 
-from ELDAmwl.utils.constants import EBSC
-from ELDAmwl.utils.constants import EXT
-from ELDAmwl.utils.constants import KF
-from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
+from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import KF
+from ELDAmwl.utils.constants import RBSC
 
 
 class PrepareBscSignalsDefault(BaseOperation):

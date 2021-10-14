@@ -2,15 +2,15 @@
 """Classes for header information"""
 
 from addict import Dict
+from ELDAmwl.bases.base import ELDABase
+from ELDAmwl.errors.exceptions import DifferentHeaderExists
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+from ELDAmwl.utils.constants import NC_FILL_STR
+from os.path import basename
 
 import pandas as pd
 
-from ELDAmwl.bases.base import ELDABase
-from ELDAmwl.utils.constants import NC_FILL_STR
-from ELDAmwl.errors.exceptions import DifferentHeaderExists
-from os.path import basename
 
-from ELDAmwl.output.mwl_file_structure import MWLFileStructure
 # TITLE, REFERENCES, PROCESSOR_NAME, HEADER_ATTRS, HEADER_VARS
 
 

@@ -2,18 +2,25 @@
 """Classes for getting basic products
 """
 from copy import deepcopy
-from ELDAmwl.factories.backscatter_factories import FindCommonBscCalibrWindow
-from ELDAmwl.utils.constants import EBSC
-from ELDAmwl.utils.constants import EXT
-from ELDAmwl.utils.constants import RBSC
-from ELDAmwl.factories.elast_bsc_factories import ElastBscUsedBinRes, ElastBscEffBinRes
-from ELDAmwl.errors.exceptions import UseCaseNotImplemented
-from ELDAmwl.factories.extinction_factories import ExtinctionFactory, ExtUsedBinRes, ExtEffBinRes
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.factories.raman_bsc_factories import RamanBackscatterFactory, RamBscUsedBinRes, RamBscEffBinRes
 from ELDAmwl.component.registry import registry
-from ELDAmwl.utils.constants import AUTO, FIXED, RESOLUTIONS
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented
+from ELDAmwl.factories.backscatter_factories import FindCommonBscCalibrWindow
+from ELDAmwl.factories.elast_bsc_factories import ElastBscEffBinRes
+from ELDAmwl.factories.elast_bsc_factories import ElastBscUsedBinRes
+from ELDAmwl.factories.extinction_factories import ExtEffBinRes
+from ELDAmwl.factories.extinction_factories import ExtinctionFactory
+from ELDAmwl.factories.extinction_factories import ExtUsedBinRes
+from ELDAmwl.factories.raman_bsc_factories import RamanBackscatterFactory
+from ELDAmwl.factories.raman_bsc_factories import RamBscEffBinRes
+from ELDAmwl.factories.raman_bsc_factories import RamBscUsedBinRes
+from ELDAmwl.utils.constants import AUTO
+from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import FIXED
+from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.utils.constants import RESOLUTIONS
 
 
 # classes to convert effective bin resolution into bin resolution to use in retrievals
@@ -21,14 +28,14 @@ GET_USED_BINRES_CLASSES = {
     RBSC: RamBscUsedBinRes,
     EBSC: ElastBscUsedBinRes,
     EXT: ExtUsedBinRes,
-    }
+}
 
 # classes to convert bin resolution used in retrievals into effective resolution
 GET_EFF_BINRES_CLASSES = {
     RBSC: RamBscEffBinRes,
     EBSC: ElastBscEffBinRes,
     EXT: ExtEffBinRes,
-    }
+}
 
 
 class GetBasicProductsDefault(BaseOperation):
@@ -46,8 +53,7 @@ class GetBasicProductsDefault(BaseOperation):
 
         self.bsc_calibr_window = FindCommonBscCalibrWindow()(
             data_storage=self.data_storage,
-            bsc_params=self.product_params.all_bsc_products(),
-            ).run()
+            bsc_params=self.product_params.all_bsc_products()).run()
 
         if self.smooth_type == AUTO:
             self.get_auto_smooth_products()
@@ -90,7 +96,7 @@ class GetBasicProductsDefault(BaseOperation):
                         binres = dummy_sig.get_binres_from_fixed_smooth(
                             sp,
                             res,
-                            used_binres_routine=used_binres_routine
+                            used_binres_routine=used_binres_routine,
                         )
                         self.data_storage.set_binres_common_smooth(pid, res, binres)
 
@@ -136,7 +142,7 @@ class GetBasicProductsDefault(BaseOperation):
                         data_storage=self.data_storage,
                         ext_param=ext_param,
                         autosmooth=False,
-                        resolution=res
+                        resolution=res,
                     ).get_product()
                     self.data_storage.set_basic_product_common_smooth(
                         ext_param.prod_id_str, res, extinction)

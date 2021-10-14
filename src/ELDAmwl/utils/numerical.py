@@ -1,8 +1,8 @@
-import numpy as np
-import xarray as xr
+from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
 from scipy.stats import sem
 
-from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
+import numpy as np
+import xarray as xr
 
 
 def rolling_mean_sem(data, level):
@@ -45,8 +45,7 @@ def calc_minimal_window_indexes(means, sems, w_width, error_threshold):
     # rel_sem.where(rel_sem.data < error_threshold) / rel_sem
     #           => ones and nans
     # valid_means = means and nans
-    valid_means = (rel_sem.where(rel_sem.data < error_threshold) /
-                   rel_sem * means)
+    valid_means = (rel_sem.where(rel_sem.data < error_threshold) / rel_sem * means)
 
     # min_idx is the last bin of rolling window with smallest mean
     win_last_idx = np.nanargmin(valid_means.data, axis=1)
