@@ -26,31 +26,31 @@ class ExtBscOption(Base):
         '_product_ID',
         INTEGER,
         nullable=False,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     extinction_options_product_id = Column(
         '_extinction_options_product_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     raman_backscatter_options_product_id = Column(
         '_raman_backscatter_options_product_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     error_method_id = Column(
         '_error_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     min_BscRatio_for_LR = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'1.0000'"),
+        server_default=text('1.0000'),
     )

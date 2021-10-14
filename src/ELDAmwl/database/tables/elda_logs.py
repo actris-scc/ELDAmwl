@@ -26,23 +26,23 @@ class ELDALogs(Base):
         '__measurements__ID',
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
     product_id = Column(
         'product_ID',
         INTEGER,
         nullable=False,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     level = Column(
         INTEGER,
         nullable=False,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     module_version = Column(
         String(45),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
     datetime = Column(
         DateTime,
@@ -51,5 +51,5 @@ class ELDALogs(Base):
     message = Column(
         String(400),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )

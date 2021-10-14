@@ -27,28 +27,28 @@ class BscCalibrOption(Base):
     LowestHeight = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     TopHeight = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     WindowWidth = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     calValue = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     calRangeSearchMethod_ID = Column(
         '_calRangeSearchMethod_ID',
         INTEGER,
         nullable=False,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
 
 
@@ -62,17 +62,17 @@ class BscCalibrMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text("'0'"),
+        server_default=text('0'),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
     python_classname = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
 
 
@@ -86,12 +86,12 @@ class BscMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text("'0'"),
+        server_default=text('0'),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
 
 
@@ -105,17 +105,17 @@ class RamanBscMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text("'0'"),
+        server_default=text('0'),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
     python_classname = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
 
 
@@ -129,17 +129,17 @@ class ElastBscMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text("'0'"),
+        server_default=text('0'),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
     python_classname = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
 
 
@@ -159,35 +159,35 @@ class RamanBackscatterOption(Base):
         '_product_ID',
         INTEGER,
         nullable=False,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     ram_bsc_method_id = Column(
-        '"_ram_bsc_method_ID',
+        '_ram_bsc_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     bsc_calibr_options_id = Column(
         '_bsc_calibr_options_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     error_method_id = Column(
         '_error_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     smooth_method_id = Column(
-        '"_smooth_method_ID',
+        '_smooth_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'0'"),
+        server_default=text('0'),
     )
 
 
@@ -203,62 +203,62 @@ class ElastBackscatterOption(Base):
         primary_key=True,
     )
     product_id = Column(
-        '"_product_ID',
+        '_product_ID',
         INTEGER,
         nullable=False,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     elast_bsc_method_id = Column(
         '_elast_bsc_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     bsc_calibr_options_id = Column(
         '_bsc_calibr_options_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     error_method_id = Column(
         '_error_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     lr_input_method_id = Column(
         '_lr_input_method_id',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     fixed_lr = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'50.0000'"),
+        server_default=text('50.0000'),
     )
     fixed_lr_error = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     iter_bsc_options_id = Column(
         '_iter_bsc_options_id',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     smooth_method_id = Column(
         '_smooth_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'0'"),
+        server_default=text('0'),
     )
 
 
@@ -277,20 +277,20 @@ class IterBackscatterOption(Base):
         DECIMAL,
         nullable=False,
         index=True,
-        server_default=text("'0.0100'"),
+        server_default=text('0.0100'),
     )
     ram_bsc_method_id = Column(
         '_ram_bsc_method_id',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+        server_default=text('-1'),
     )
     max_iteration_count = Column(
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'10'"),
+        server_default=text('10'),
     )
 
 
@@ -319,7 +319,7 @@ class LRFile(Base):
     filename = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
     interpolation_id = Column(
         '_interpolation_id',

@@ -43,12 +43,12 @@ class Channels(Base):
     string_ID = Column(
         String(20),
         nullable=True,
-        server_default=text("''"),
+        server_default=text(''),
     )
     name = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
     telescope_id = Column(
         '_telescope_ID',
@@ -71,27 +71,27 @@ class Channels(Base):
     IF_center = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     IF_FWHM = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     emission_wavelength = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     FOV = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     raw_range_resolution = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     dead_time_corr_type_id = Column(
         '_dead_time_corr_type_id',
@@ -102,12 +102,12 @@ class Channels(Base):
     dead_time = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     trigger_delay = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'"),
+        server_default=text('0.0000'),
     )
     trigger_delay_interp_id = Column(
         INTEGER,

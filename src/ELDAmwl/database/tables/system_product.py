@@ -88,7 +88,7 @@ class Products(Base):
         CHAR(3),
     )
     hirelpp_product_option_id = Column(
-        '"_hirelpp_product_option_ID',
+        '_hirelpp_product_option_ID',
         INTEGER,
     )
 
@@ -181,7 +181,7 @@ class SmoothOptions(Base):
         nullable=False,
     )
     lowrange_error_threshold_id = Column(
-        '"_lowrange_error_threshold_ID',
+        '_lowrange_error_threshold_ID',
         INTEGER,
         nullable=False,
         index=True,
@@ -289,27 +289,27 @@ class SmoothMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text("'0'"),
+        server_default=text('0'),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
     python_classname = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
     python_classname_get_used_binres = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
     python_classname_get_effective_binres = Column(
         String(100),
         nullable=False,
-        server_default=text("''"),
+        server_default=text(''),
     )
 
 
