@@ -65,7 +65,6 @@ class BaseOperation(object):
     def logger(self):
         return component.queryUtility(ILogger)
 
-
     @property
     def params(self):
         """

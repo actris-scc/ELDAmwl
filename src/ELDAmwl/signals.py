@@ -4,7 +4,7 @@
 from copy import deepcopy
 from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.bases.columns import Columns
-from ELDAmwl.utils.constants import ALL_OK, RESOLUTION_STR, ALL_RANGE
+from ELDAmwl.utils.constants import ALL_OK, RESOLUTION_STR, ALL_RANGE, BELOW_OVL, ABOVE_MAX_ALT
 from ELDAmwl.utils.constants import ANALOG
 from ELDAmwl.utils.constants import CROSS
 from ELDAmwl.utils.constants import FAR_RANGE
@@ -181,7 +181,7 @@ class Signals(Columns):
         result.channel_idx_in_ncfile = idx_in_file
         result.num_scan_angles = nc_ds.dims['angle']
 
-        #result.ds = nc_ds.range_corrected_signal[idx_in_file].to_dataset(name='data')  # noqa E501
+        # result.ds = nc_ds.range_corrected_signal[idx_in_file].to_dataset(name='data')  # noqa E501
         result.ds = xr.Dataset()
         result.ds['data'] = nc_ds.range_corrected_signal[idx_in_file]
         result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file]  # noqa E501
@@ -386,7 +386,7 @@ class Signals(Columns):
         return closest_bin
 
     def data_in_vertical_range(self, v_range, boundaries=None):
-        """data in vertical range
+        """ returns subset of data within vertical range
 
         Args:
             v_range(addict.Dict): with keys 'min_height' and \
@@ -450,6 +450,33 @@ class Signals(Columns):
     def normalize_by_shots(self):
         self.ds['err'] = self.ds['err'] * self.scale_factor_shots
         self.ds['data'] = self.ds['data'] * self.scale_factor_shots
+
+    def set_valid_height_range(self, v_range):
+        """ set data levels below and above v_range as invalid
+
+        levels below v_range are labeled with self.qf = BELOW_OVL
+        levels above v_range are labeled as self.qf = ABOVE_MAX_ALT
+
+        Args:
+            v_range(addict.Dict): with keys 'min_height' and \
+                    'max_height' which are heights in m a.g.)
+        Returns:
+            None
+        """
+
+        min_h = v_range.min_height
+        max_h = v_range.max_height
+
+        # first valid level
+        fvl = self.height_to_levels(min_h).data
+        # last valid level
+        lvl = self.height_to_levels(max_h).data
+
+        for t in range(self.num_times):
+            for level in range(fvl[t]):
+                self.set_invalid_point(t, level, BELOW_OVL)
+            for level in range(lvl[t] + 1, self.num_levels):
+                self.set_invalid_point(t, level, ABOVE_MAX_ALT)
 
     def correct_for_mol_transmission(self):
         self.ds['data'] = self.ds['data'] / \

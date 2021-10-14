@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for preparation of signals
 (combining depol component, temporal integration, .."""
+from addict import Dict
 from copy import deepcopy
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
@@ -14,9 +15,10 @@ from ELDAmwl.signals import Signals
 
 class PrepareBscSignalsDefault(BaseOperation):
     """prepare ELPP signals for extinction retrieval with the steps:
-    1) normalization by number of shots
-    2) combination of depol component (if needed)
-    3) correction of atmospheric transmission due to molecular scattering
+    1) set data points outside valid altitude range as invalid
+    2) normalization by number of shots
+    3) combination of depol component (if needed)
+    4) correction of atmospheric transmission due to molecular scattering
     (not for Klett-Fernald)
 
     """
@@ -43,6 +45,7 @@ class PrepareBscSignalsDefault(BaseOperation):
         pid = self.bsc_param.prod_id_str
         for sig in self.data_storage.elpp_signals(pid):
             new_sig = deepcopy(sig)
+            new_sig.set_valid_height_range(self.bsc_param.valid_alt_range)
             new_sig.normalize_by_shots()
             self.data_storage.set_prepared_signal(pid, new_sig)
         if self.bsc_param.is_bsc_from_depol_components():
@@ -83,9 +86,10 @@ class PrepareBscSignals(BaseOperationFactory):
 
 class PrepareExtSignalsDefault(BaseOperation):
     """prepare ELPP signals for extinction retrieval with the steps:
-    1) normalization by number of shots
-    2) correction of atmospheric transmission due to molecular scattering
-    3) divide by Rayleigh scattering and calculate logarithm
+    1) set data points outside valid altitude range as invalid
+    2) normalization by number of shots
+    3) correction of atmospheric transmission due to molecular scattering
+    4) divide by Rayleigh scattering and calculate logarithm
 
     """
     data_storage = None
@@ -99,6 +103,7 @@ class PrepareExtSignalsDefault(BaseOperation):
         for sig in self.data_storage.elpp_signals(pid):
             if sig.is_Raman_sig:
                 new_sig = deepcopy(sig)
+                new_sig.set_valid_height_range(self.ext_param.valid_alt_range)
                 new_sig.normalize_by_shots()
                 new_sig.correct_for_mol_transmission()
                 new_sig.prepare_for_extinction()

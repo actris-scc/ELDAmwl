@@ -345,8 +345,8 @@ class GeneralProductParams(Params):
 #        if result.detection_limit == 0.0:
 #            raise(DetectionLimitZero, result.prod_id)
 
-        result.valid_alt_range.min_height = query.PreProcOptions.min_height
-        result.valid_alt_range.max_height = query.PreProcOptions.max_height
+        result.valid_alt_range.min_height = float(query.PreProcOptions.min_height)
+        result.valid_alt_range.max_height = float(query.PreProcOptions.max_height)
 
         # the MWLproducProduct and PreparedSignalFile tables
         # are not available if query is
