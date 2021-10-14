@@ -1,5 +1,11 @@
+from sqlalchemy import BIGINT
+from sqlalchemy import CHAR
 from sqlalchemy import Column
-from sqlalchemy import BIGINT, CHAR, INTEGER, FLOAT, DateTime, String, VARCHAR
+from sqlalchemy import DateTime
+from sqlalchemy import FLOAT
+from sqlalchemy import INTEGER
+from sqlalchemy import String
+from sqlalchemy import VARCHAR
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -15,88 +21,88 @@ class LidarConstants(Base):
 
     ID = Column(
         BIGINT,
-        primary_key=True
+        primary_key=True,
     )
     # Rule is: If a column has two underscores reduce to one
     measurements_id = Column(
         '__measurements__ID',
         VARCHAR(15),
-        nullable=True
+        nullable=True,
     )
     product_id = Column(
-        "_product_ID",
+        '_product_ID',
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     channel_id = Column(
-        "_channel_ID",
+        '_channel_ID',
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     hoi_system_id = Column(
-        "_hoi_system_ID",
+        '_hoi_system_ID',
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     filename = Column(
         String(100),
-        nullable=False
+        nullable=False,
     )
     calibr_factor = Column(
         FLOAT,
-        nullable=True
+        nullable=True,
     )
     calibr_factor_sys_err = Column(
         FLOAT,
-        nullable=True
+        nullable=True,
     )
     calibr_factor_stat_err = Column(
         FLOAT,
-        nullable=True
+        nullable=True,
     )
     lidar_const = Column(
         FLOAT,
-        nullable=True
+        nullable=True,
     )
     lidar_const_sys_err = Column(
         FLOAT,
-        nullable=True
+        nullable=True,
     )
     lidar_const_stat_err = Column(
         FLOAT,
-        nullable=True
+        nullable=True,
     )
     detection_wavelength = Column(
         FLOAT,
-        nullable=True
+        nullable=True,
     )
     profile_start_time = Column(
         DateTime,
-        nullable=False
+        nullable=False,
     )
     profile_end_time = Column(
         DateTime,
-        nullable=False
+        nullable=False,
     )
     calibr_window_bottom = Column(
         FLOAT,
-        nullable=True
+        nullable=True,
     )
     calibr_window_top = Column(
         FLOAT,
-        nullable=True
+        nullable=True,
     )
     InscribedAt = Column(
         DateTime,
-        nullable=False
+        nullable=False,
     )
     ELDA_version = Column(
         CHAR(50),
-        nullable=True
+        nullable=True,
     )
     is_latest_value = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
 
 
@@ -130,12 +136,12 @@ duplicates = res.fetchall()
 del_ids = []
 for row in duplicates:
     statement=('select id, InscribedAt from lidar_constants '
-                 'where __measurements__ID = "{}" and '
+                 'where __measurements__ID = '{}' and '
                  '_product_ID = {} and '
                  '_hoi_system_ID={} and '
                  '_channel_ID={} and '
-                 'profile_start_time = "{}" and '
-                 'profile_end_time = "{}" and '
+                 'profile_start_time = '{}' and '
+                 'profile_end_time = '{}' and '
                  'is_latest_value = 1 order by InscribedAt desc;').format(row[0],
                                                                           row[1],
                                                                           row[2],

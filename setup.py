@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Installer for the ELDAmwl package."""
 
-from setuptools import find_packages
 from setuptools import setup
 
 
@@ -63,7 +62,7 @@ setup(
         'sphinxcontrib-qthelp',
         'sphinxcontrib-serializinghtml',
         'sphinx-rtd-theme',
-        'xarray'
+        'xarray',
     ],
     extras_require={
         'test': [

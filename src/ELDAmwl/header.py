@@ -2,6 +2,7 @@
 """Classes for header information"""
 
 from addict import Dict
+
 import pandas as pd
 
 from ELDAmwl.bases.base import ELDABase

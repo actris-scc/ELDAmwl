@@ -97,7 +97,7 @@ class Registry(object):
             factory.name,
             klass_name,
             klass,
-            override=override
+            override=override,
         )
 
     def find_class_by_name(self, factory, klass_name):

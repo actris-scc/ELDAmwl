@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """base Classes for factories and operators"""
+from ELDAmwl.component.interface import IDataStorage
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.interface import ILogger
+from ELDAmwl.component.registry import registry
 from zope import component
 
-from ELDAmwl.component.interface import IDBFunc, ILogger, IDataStorage
-from ELDAmwl.component.registry import registry
-from ELDAmwl.tests.pickle_data import pickle_data
 
 try:
     import ELDAmwl.configs.config as cfg  # noqa E401

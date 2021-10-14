@@ -4,10 +4,11 @@
 .. moduleauthor:: Volker Jaenisch <volker.jaenisch@inqbus.de>
 
 """
-import xarray as xr
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.interface import ILogger
 from zope import component
 
-from ELDAmwl.component.interface import ILogger, IDBFunc
+import xarray as xr
 
 
 class Params(object):

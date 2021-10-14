@@ -12,8 +12,10 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('../src'))
 
 
@@ -152,8 +154,12 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (docs start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'mwl', 'MWL Documentation',
-     [author], 1)
+    (master_doc,
+     'mwl',
+     'MWL Documentation',
+     [author],
+     1,
+     ),
 ]
 
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for preparation of signals
 (combining depol component, temporal integration, .."""
-from addict import Dict
+
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import KF
@@ -50,8 +50,7 @@ class PrepareBscSignalsDefault(BaseOperation):
         for sig in self.data_storage.elpp_signals(pid):
             sig.set_valid_height_range(self.bsc_param.valid_alt_range)
             sig.normalize_by_shots()
-            if (self.bsc_param.product_type == EBSC) and \
-                (self.bsc_param.elast_bsc_algorithm == KF):
+            if (self.bsc_param.product_type == EBSC) and (self.bsc_param.elast_bsc_algorithm == KF):
                 pass
             else:
                 sig.correct_for_mol_transmission()

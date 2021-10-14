@@ -19,19 +19,19 @@ class SystemProduct(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     system_id = Column(
-        "_system_ID",
+        '_system_ID',
         INTEGER,
         nullable=False,
-        index=True
+        index=True,
     )
     product_id = Column(
-        "_Product_ID",
+        '_Product_ID',
         INTEGER,
         nullable=False,
-        index=True
+        index=True,
     )
 
 
@@ -40,29 +40,29 @@ class MWLproductProduct(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     mwl_product_id = Column(
-        "_mwl_product_ID",
+        '_mwl_product_ID',
         INTEGER,
         nullable=False,
-        index=True
+        index=True,
     )
     product_id = Column(
-        "_Product_ID",
+        '_Product_ID',
         INTEGER,
         nullable=False,
-        index=True
+        index=True,
     )
     create_with_hr = Column(
         INTEGER,
         nullable=False,
-        index=False
+        index=False,
     )
     create_with_lr = Column(
         INTEGER,
         nullable=False,
-        index=False
+        index=False,
     )
 
 
@@ -71,25 +71,25 @@ class Products(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     usecase_id = Column(
-        "_usecase_ID",
-        INTEGER
+        '_usecase_ID',
+        INTEGER,
     )
     prod_type_id = Column(
-        "_prod_type_ID",
+        '_prod_type_ID',
         INTEGER,
         nullable=False,
-        index=True
+        index=True,
     )
     hoi_stations_id = Column(
         '__hoi_stations__ID',
-        CHAR(3)
+        CHAR(3),
     )
     hirelpp_product_option_id = Column(
-        "_hirelpp_product_option_ID",
-        INTEGER
+        '"_hirelpp_product_option_ID',
+        INTEGER,
     )
 
 
@@ -98,39 +98,39 @@ class ProductTypes(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     product_type = Column(
         CHAR(100),
-        nullable=False
+        nullable=False,
     )
     # Changed to Nullable for csv import to work.
     better_name = Column(
         CHAR(100),
-        nullable=True
+        nullable=True,
     )
     nc_file_id = Column(
         CHAR(1),
-        nullable=False
+        nullable=False,
     )
     processor_ID = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     # Changed to Nullable for csv import to work.
     is_mwl_only_product = Column(
         INTEGER,
-        nullable=True
+        nullable=True,
     )
     # Changed to Nullable for csv import to work.
     is_in_mwl_products = Column(
         INTEGER,
-        nullable=True
+        nullable=True,
     )
     # Changed to Nullable for csv import to work.
     is_basic_product = Column(
         INTEGER,
-        nullable=True
+        nullable=True,
     )
 
 
@@ -139,32 +139,32 @@ class PreProcOptions(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     product_id = Column(
-        "_product_ID",
+        '_product_ID',
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     min_height = Column(
         DECIMAL(10, 4),
-        nullable=False
+        nullable=False,
     )
     max_height = Column(
         DECIMAL(10, 4),
-        nullable=False
+        nullable=False,
     )
     preprocessing_integration_time = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     preprocessing_vertical_resolution = Column(
         DECIMAL(10, 4),
-        nullable=False
+        nullable=False,
     )
     interpolation_id = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
 
 
@@ -173,73 +173,73 @@ class SmoothOptions(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     product_id = Column(
-        "_product_ID",
+        '_product_ID',
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     lowrange_error_threshold_id = Column(
-        "_lowrange_error_threshold_ID",
+        '"_lowrange_error_threshold_ID',
         INTEGER,
         nullable=False,
-        index=True
+        index=True,
     )
     highrange_error_threshold_id = Column(
-        "_highrange_error_threshold_ID",
+        '_highrange_error_threshold_ID',
         INTEGER,
         nullable=False,
-        index=True
+        index=True,
     )
     detection_limit = Column(
         DECIMAL(11, 11),
-        nullable=False
+        nullable=False,
     )
     transition_zone_from = Column(
         DECIMAL(10, 4),
-        nullable=True
+        nullable=True,
     )
     transition_zone_to = Column(
         DECIMAL(10, 4),
-        nullable=True
+        nullable=True,
     )
     lowres_lowrange_vertical_resolution = Column(
         DECIMAL(10, 4),
-        nullable=True
+        nullable=True,
     )
     lowres_highrange_vertical_resolution = Column(
         DECIMAL(10, 4),
-        nullable=True
+        nullable=True,
     )
     highres_lowrange_vertical_resolution = Column(
         DECIMAL(10, 4),
-        nullable=True
+        nullable=True,
     )
     highres_highrange_vertical_resolution = Column(
         DECIMAL(10, 4),
-        nullable=True
+        nullable=True,
     )
     lowres_lowrange_integration_time = Column(
         INTEGER,
-        nullable=True
+        nullable=True,
     )
     lowres_highrange_integration_time = Column(
         INTEGER,
-        nullable=True
+        nullable=True,
     )
     highres_lowrange_integration_time = Column(
         INTEGER,
-        nullable=True
+        nullable=True,
     )
     highres_highrange_integration_time = Column(
         INTEGER,
-        nullable=True
+        nullable=True,
     )
     smooth_type_id = Column(
-        "_smooth_type",
+        '_smooth_type',
         INTEGER,
-        nullable=False
+        nullable=False,
     )
 
 
@@ -249,15 +249,15 @@ class ErrorThresholds(Base):
     ID = Column(
         'Id',
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     value = Column(
         Float,
-        nullable=False
+        nullable=False,
     )
     name = Column(
         String(100),
-        nullable=False
+        nullable=False,
     )
 
 
@@ -267,11 +267,11 @@ class SmoothTypes(Base):
     ID = Column(
         'Id',
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     smooth_type = Column(
         String(50),
-        nullable=False
+        nullable=False,
     )
 
 
@@ -289,27 +289,27 @@ class SmoothMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text("'0'")
+        server_default=text("'0'"),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
     python_classname = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
     python_classname_get_used_binres = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
     python_classname_get_effective_binres = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
 
 
@@ -318,27 +318,27 @@ class PreparedSignalFile(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     measurements_id = Column(
         '__measurements__ID',
         String(15),
-        index=True
+        index=True,
     )
     product_id = Column(
-        "_Product_ID",
+        '_Product_ID',
         INTEGER,
         nullable=False,
-        index=True
+        index=True,
     )
     scc_version_id = Column(
-        "_scc_version_ID",
+        '_scc_version_ID',
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     filename = Column(
         String(100),
-        nullable=False
+        nullable=False,
     )
 
 
@@ -347,15 +347,15 @@ class MCOption(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     product_id = Column(
-        "_product_ID",
+        '_product_ID',
         INTEGER,
         nullable=False,
-        index=True
+        index=True,
     )
     iteration_count = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
