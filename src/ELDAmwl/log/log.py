@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.interface import ILogger
+from ELDAmwl.errors.exceptions import LogPathNotExists
+from ELDAmwl.utils.path_utils import dir_not_found_hint
 from logging import ERROR
 from logging import FileHandler
 from logging import Formatter
 from logging import getLogger
 from logging import StreamHandler
 from sys import stdout
-import zope
-
-import os
-
 from zope import component
 
-from ELDAmwl.component.interface import ILogger, IDBFunc
-from ELDAmwl.errors.exceptions import LogPathNotExists
-from ELDAmwl.utils.path_utils import dir_not_found_hint
+import os
+import zope
 
 
 try:
@@ -81,8 +80,9 @@ class Logger:
         Check if a colored log is possible. Return get_logger and formatter instance.
         """
         try:
-            import colorlog
             from colorlog import ColoredFormatter
+
+            import colorlog
 
             formatter = ColoredFormatter(
                 '%(log_color)s%(asctime)s [%(process)d] '
@@ -102,7 +102,7 @@ class Logger:
             formatter = Formatter(
                 '%(asctime)s [%(process)d] '
                 '%(levelname)-8s %(message)s',
-                '%Y-%m-%d %H:%M:%S'
+                '%Y-%m-%d %H:%M:%S',
             )
         return get_logger, formatter
 
@@ -126,7 +126,7 @@ class Logger:
 
         log_file_path = os.path.join(
             cfg.LOG_PATH,
-            '{id}.log'.format(id=self.meas_id)
+            '{id}.log'.format(id=self.meas_id),
         )
         file_handler = FileHandler(log_file_path)
         file_handler_formatter = formatter

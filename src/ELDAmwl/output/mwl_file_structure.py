@@ -1,19 +1,33 @@
 # -*- coding: utf-8 -*-
 """constants describing the structure of mwl output file"""
 
-import xarray as xr
-import numpy as np
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.database.tables.backscatter import BscCalibrMethod
+from ELDAmwl.database.tables.backscatter import BscMethod
+from ELDAmwl.database.tables.backscatter import ElastBscMethod
+from ELDAmwl.database.tables.backscatter import RamanBscMethod
+from ELDAmwl.database.tables.extinction import ExtMethod
+from ELDAmwl.utils.constants import AE
+from ELDAmwl.utils.constants import ASS
+from ELDAmwl.utils.constants import CR
+from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import HIGHRES
+from ELDAmwl.utils.constants import LOWRES
+from ELDAmwl.utils.constants import LR
+from ELDAmwl.utils.constants import MC
+from ELDAmwl.utils.constants import NC_FILL_BYTE
+from ELDAmwl.utils.constants import PLDR
+from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.utils.constants import RESOLUTION_STR
+from ELDAmwl.utils.constants import VLDR
 from zope import component
 
-from ELDAmwl.component.interface import IDBFunc
-from ELDAmwl.utils.constants import LOWRES, HIGHRES, RESOLUTION_STR, NC_FILL_BYTE, MC, ASS
-from ELDAmwl.utils.constants import RBSC, EBSC, EXT, LR, AE, CR, VLDR, PLDR
-from ELDAmwl.database.tables.backscatter import RamanBscMethod, ElastBscMethod, BscMethod, BscCalibrMethod
-from ELDAmwl.database.tables.extinction import ExtMethod
+import numpy as np
+import xarray as xr
 
 
 class MWLFileStructure:
-
 
     GENERAL = 0
     META_DATA = 1
@@ -50,10 +64,10 @@ class MWLFileStructure:
                               'data_processing_institution', 'comment', 'title',
                               'source', 'references', 'processor_name',
                               'measurement_start_datetime', 'measurement_stop_datetime'],
-                    META_DATA: ['hoi_system_ID',
-                                'hoi_configuration_ID',
-    #                            'elpp_history',
-                                'molecular_calculation_source_file'],
+                    META_DATA: [
+                        'hoi_system_ID',
+                        'hoi_configuration_ID',
+                        'molecular_calculation_source_file'],
                     }
 
     TITLE = 'Profiles of aerosol optical properties'
@@ -80,31 +94,33 @@ class MWLFileStructure:
              PLDR: '1',
              }
 
-    LONG_NAMES = {RBSC: 'particle backscatter coefficient',
-             EBSC: 'particle backscatter coefficient',
-             EXT: 'particle extinction coefficient',
-             LR: 'particle lidar ratio',
-    #         AE: 'particle angstroem exponent',
-    #         CR: 'color ratio',
-             VLDR: 'volume linear depolarization ratio',
-             PLDR: 'particle linear depolarization ratio',
-             }
+    LONG_NAMES = {
+        RBSC: 'particle backscatter coefficient',
+        EBSC: 'particle backscatter coefficient',
+        EXT: 'particle extinction coefficient',
+        LR: 'particle lidar ratio',
+        #         AE: 'particle angstroem exponent',
+        #         CR: 'color ratio',
+        VLDR: 'volume linear depolarization ratio',
+        PLDR: 'particle linear depolarization ratio',
+    }
 
     COO_ATTR = 'longitude latitude'
-    ANC_VAR_ATT = 'error_{} vertical_resolution'
+    ANC_VAR_ATT = 'error_{} vertical_resolution'  # noqa P103
 
     def data_attrs(self, p_type):
-        return {'long_name': self.LONG_NAMES[p_type],
-                'units': self.UNITS[p_type],
-                'ancillary_variables': self.ANC_VAR_ATT.format(self.NC_VAR_NAMES[p_type]),
-    #            'coordinates': COO_ATTR,
-                }
+        return {
+            'long_name': self.LONG_NAMES[p_type],
+            'units': self.UNITS[p_type],
+            'ancillary_variables': self.ANC_VAR_ATT.format(self.NC_VAR_NAMES[p_type]),
+        }
 
     def err_attrs(self, p_type):
-        return {'long_name': 'absolute statistical uncertainty of {}'.format(self.NC_VAR_NAMES[p_type]),
-                'units': self.UNITS[p_type],
-                'coordinates': self.COO_ATTR,
-                }
+        return {
+            'long_name': 'absolute statistical uncertainty of {}'.format(self.NC_VAR_NAMES[p_type]),
+            'units': self.UNITS[p_type],
+            'coordinates': self.COO_ATTR,
+        }
 
     def error_method_var(self, value):
         var = xr.DataArray(np.int8(value),
@@ -161,7 +177,7 @@ class MWLFileVarsFromDB:
 
         """
         methods = self.db_func.read_algorithm_options(db_table)
-        values=[]
+        values = []
         meanings = []
         for v, m in methods.items():
             values.append(np.int8(v))
@@ -177,43 +193,52 @@ class MWLFileVarsFromDB:
         return var
 
     def ext_algorithm_var(self, value):
-        result = self.method_var_from_db(value,
-                                    ExtMethod,
-                                    'evaluation_algorithm',
-                                    'algorithm used for the extinction retrieval')
+        result = self.method_var_from_db(
+            value,
+            ExtMethod,
+            'evaluation_algorithm',
+            'algorithm used for the extinction retrieval',
+        )
 
         return result
 
     def ram_bsc_algorithm_var(self, value):
-        result = self.method_var_from_db(value,
-                                    RamanBscMethod,
-                                    'evaluation_algorithm',
-                                    'algorithm used for the retrieval of the Raman backscatter profile')
+        result = self.method_var_from_db(
+            value,
+            RamanBscMethod,
+            'evaluation_algorithm',
+            'algorithm used for the retrieval of the Raman backscatter profile',
+        )
 
         return result
 
     def elast_bsc_algorithm_var(self, value):
-        result = self.method_var_from_db(value,
-                                    ElastBscMethod,
-                                    'evaluation_algorithm',
-                                    'algorithm used for the retrieval of the elastic backscatter profile')
+        result = self.method_var_from_db(
+            value,
+            ElastBscMethod,
+            'evaluation_algorithm',
+            'algorithm used for the retrieval of the elastic backscatter profile',
+        )
 
         return result
 
     def bsc_method_var(self, value):
-        result = self.method_var_from_db(value,
-                                    BscMethod,
-                                    'backscatter_retrieval_method',
-                                    'method used for the backscatter retrieval')
+        result = self.method_var_from_db(
+            value,
+            BscMethod,
+            'backscatter_retrieval_method',
+            'method used for the backscatter retrieval',
+        )
 
         return result
 
     def bsc_calibr_method_var(self, value):
         # todo different values for min of signal ratio and min of elast signal
-        result = self.method_var_from_db(value,
-                                    BscCalibrMethod,
-                                    'backscatter_calibration_range_search_algorithm',
-                                    'algorithm used for the search of the calibration_range')
+        result = self.method_var_from_db(
+            value,
+            BscCalibrMethod,
+            'backscatter_calibration_range_search_algorithm',
+            'algorithm used for the search of the calibration_range',
+        )
 
         return result
-
