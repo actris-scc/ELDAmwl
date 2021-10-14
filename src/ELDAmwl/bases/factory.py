@@ -2,9 +2,9 @@
 """base Classes for factories and operators"""
 from zope import component
 
-from ELDAmwl.component.interface import IDBFunc, ILogger
+from ELDAmwl.component.interface import IDBFunc, ILogger, IDataStorage
 from ELDAmwl.component.registry import registry
-
+from ELDAmwl.tests.pickle_data import pickle_data
 
 try:
     import ELDAmwl.configs.config as cfg  # noqa E401
@@ -26,6 +26,9 @@ class BaseOperationFactory(object):
     they are automatically passed to the BaseOperation instance.
     """
     name = 'BaseFactory'
+
+    def __init__(self):
+        self.data_storage = component.queryUtility(IDataStorage)
 
     def __call__(self, *args, **kwargs):
         klass = self.get_class()
@@ -53,6 +56,7 @@ class BaseOperation(object):
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs
+        self.data_storage = component.queryUtility(IDataStorage)
 
     def init(self):
         pass

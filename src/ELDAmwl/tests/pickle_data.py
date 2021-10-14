@@ -1,9 +1,10 @@
 import pickle
 
-from pickle import dump, load, dumps
-import dill
+
+from pickle import dump, load
 import pathlib
 
+from ELDAmwl.tests.config import PICKLE_DATA_DIR
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 
@@ -40,9 +41,9 @@ def get_unpicklable(instance, exception=None, string='', first_only=False):
                 pickle.dumps(v)
             except BaseException as e:
                 if hasattr(v, 'name'):
-                    name = v.name
+                    _name = v.name
                 else:
-                    name = ''
+                    _name = ''
 
                 problems.extend(get_unpicklable(
                     v, e, string + f'[{type(v).__name__} {k}]'
@@ -82,3 +83,23 @@ def un_pickle_data(file_name):
     with open(BASE_DIR / PICKLE_DATA_DIR / file_name, 'rb') as in_file:
         data = load(in_file)
         return data
+
+
+def write_test_data(**kwargs):
+    """
+    Writes a pickle of the current state
+    """
+    data = kwargs
+
+    if 'file_name' in kwargs:
+        file_name = kwargs['file_name']
+    elif 'func' in kwargs:
+        func = kwargs['func']
+        file_name = '{}.{}'.format(
+            func.__self__.__class__.__name__,
+            func.__name__,
+
+        )
+    else:
+        file_name = self.__class__.__name__
+    pickle_data(file_name, data)

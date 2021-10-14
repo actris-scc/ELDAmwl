@@ -2,8 +2,11 @@
 """ELDAmwl factories"""
 from copy import deepcopy
 
+import zope
 from addict import Dict
+from zope import component
 
+from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.utils.constants import HIGHRES, LOWRES, RESOLUTION_STR, NC_FILL_BYTE
 from ELDAmwl.errors.exceptions import DifferentCloudMaskExists
 from ELDAmwl.errors.exceptions import NotFoundInStorage
@@ -13,7 +16,8 @@ import numpy as np
 import xarray as xr
 
 
-class DataStorage(object):
+@zope.interface.implementer(IDataStorage)
+class DataStorage:
     """ global __data storage
 
     All signals, intermediate products, products etc. are stored
@@ -508,3 +512,9 @@ class DataStorage(object):
             self.__data.header = new_header
         else:
             self.header.append(new_header)
+
+
+def register_datastorage(data_storage=None):
+    if data_storage is None:
+        data_storage = DataStorage()
+    component.provideUtility(data_storage, IDataStorage)

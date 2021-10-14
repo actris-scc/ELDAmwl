@@ -61,7 +61,6 @@ class GetProductMatrixDefault(BaseOperation):
                      })
 
     def run(self):
-        self.data_storage = self.kwargs['data_storage']
         self.product_params = self.kwargs['product_params']
 
         for res in RESOLUTIONS:
@@ -138,7 +137,6 @@ class GetProductMatrix(BaseOperationFactory):
     name = 'GetProductMatrix'
 
     def __call__(self, **kwargs):
-        assert 'data_storage' in kwargs
         assert 'product_params' in kwargs
 
         res = super(GetProductMatrix, self).__call__(**kwargs)
@@ -161,7 +159,6 @@ class QualityControlDefault(BaseOperation):
     product_params = None
 
     def run(self):
-        self.data_storage = self.kwargs['data_storage']
         self.product_params = self.kwargs['product_params']
 
         # todo: implement quality control
@@ -170,14 +167,12 @@ class QualityControlDefault(BaseOperation):
 class QualityControl(BaseOperationFactory):
     """
     Args:
-        data_storage (ELDAmwl.data_storage.DataStorage): global data storage
         product_params: global MeasurementParams
     """
 
     name = 'QualityControl'
 
     def __call__(self, **kwargs):
-        assert 'data_storage' in kwargs
         assert 'product_params' in kwargs
 
         res = super(QualityControl, self).__call__(**kwargs)

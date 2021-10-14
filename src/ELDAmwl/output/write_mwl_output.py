@@ -85,7 +85,6 @@ class WriteMWLOutputDefault(BaseOperation):
             ds.close()
 
     def run(self):
-        self.data_storage = self.kwargs['data_storage']
         self.product_params = self.kwargs['product_params']
         self.out_filename = os.path.join(PRODUCT_PATH, self.mwl_filename())
 
@@ -122,14 +121,12 @@ class WriteMWLOutputDefault(BaseOperation):
 class WriteMWLOutput(BaseOperationFactory):
     """
     Args:
-        data_storage (ELDAmwl.data_storage.DataStorage): global data storage
         product_params: global MeasurementParams
     """
 
     name = 'WriteMWLOutput'
 
     def __call__(self, **kwargs):
-        assert 'data_storage' in kwargs
         assert 'product_params' in kwargs
         res = super(WriteMWLOutput, self).__call__(**kwargs)
         return res

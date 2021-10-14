@@ -1,9 +1,9 @@
 import unittest
 
-import numpy as np
 from numpy import array_equal
 
 from ELDAmwl.factories.backscatter_factories import FindBscCalibrWindowAsInELDA
+from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.tests.pickle_data import un_pickle_data
 
 
@@ -14,13 +14,11 @@ class Test(unittest.TestCase):
     def setUp(self):
         # get state
         self.data = un_pickle_data(self.data_name)
+        register_datastorage(self.data['data_storage'])
         self.op = FindBscCalibrWindowAsInELDA(
-            data_storage = self.data['data_storage'],
             bsc_params = self.data['bsc_params']
         )
         self.op.init()
-
-        # get results
 
     def test_run(self):
         self.op.run()
@@ -30,13 +28,9 @@ class Test(unittest.TestCase):
         calibration_window = self.op.get_bp_calibration_window(bp)
         res = calibration_window.data
 
-#        ref_data = self.get_bp_calibration_window_ref(bp)
-        ref = np.array(
-            [[5880.64007628, 6419.32466342],
-            [4773.34398049, 5312.02856763]]
-        )
-        assert array_equal(res, ref)
+        data = un_pickle_data('FindBscCalibrWindowAsInELDA.get_bp_calibration_window')
 
+        assert array_equal(res, data['result'])
 
 
 

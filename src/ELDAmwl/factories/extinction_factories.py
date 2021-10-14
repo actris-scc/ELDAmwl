@@ -327,7 +327,6 @@ class ExtinctionFactoryDefault(BaseOperation):
     data_storage = None
 
     def get_product(self):
-        self.data_storage = self.kwargs['data_storage']
         self.param = self.kwargs['ext_param']
         resolution = self.kwargs['resolution']
 

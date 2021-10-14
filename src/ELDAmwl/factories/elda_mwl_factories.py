@@ -2,7 +2,10 @@
 """ELDAmwl factories"""
 
 from addict import Dict
+from zope import component
+
 from ELDAmwl.bases.base import Params
+from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.utils.constants import EBSC, LOWRES, HIGHRES
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import LR
@@ -282,7 +285,7 @@ class RunELDAmwl(BaseOperation):
         super(RunELDAmwl, self).__init__()
         # todo: read current scc version
         self._params = MeasurementParams(measurement_id)
-        self._data = DataStorage()
+#        self._data = DataStorage()
 
     def read_tasks(self):
         self.logger.info('read tasks from db')
@@ -293,19 +296,19 @@ class RunELDAmwl(BaseOperation):
     def read_elpp_data(self):
         self.logger.info('read ELPP files')
         for p_param in self.params.basic_products():
-            ElppData().read_nc_file(self.data, p_param)
+            ElppData().read_nc_file(p_param)
 
     def prepare_signals(self):
         self.logger.info('prepare signals')
         PrepareSignals()(
-            data_storage=self.data,
+#            data_storage=self.data,
             products=self.params.basic_products(),
             ).run()
 
     def get_basic_products(self):
         self.logger.info('calc basic products ')
         GetBasicProducts()(
-            data_storage=self.data,
+#            data_storage=self.data,
             product_params=self.params,
             ).run()
 
@@ -315,14 +318,14 @@ class RunELDAmwl(BaseOperation):
     def get_product_matrix(self):
         self.logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
         GetProductMatrix()(
-            data_storage=self.data,
-            product_params=self.params,
+#           data_storage=self.data,
+           product_params=self.params,
             ).run()
 
     def quality_control(self):
         self.logger.info('synergistic quality control of all products ')
         QualityControl()(
-            data_storage=self.data,
+#            data_storage=self.data,
             product_params=self.params,
             ).run()
 
@@ -335,7 +338,7 @@ class RunELDAmwl(BaseOperation):
     def write_mwl_output(self):
         self.logger.info('write all products into one NetCDF file ')
         WriteMWLOutput()(
-            data_storage=self.data,
+#            data_storage=self.data,
             product_params=self.params,
             ).run()
 
@@ -345,4 +348,4 @@ class RunELDAmwl(BaseOperation):
         Return the global data
         :returns: a dict with all global data
         """
-        return self._data
+        return component.queryUtility(IDataStorage)

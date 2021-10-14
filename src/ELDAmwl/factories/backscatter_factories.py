@@ -5,8 +5,7 @@ from zope.component import queryUtility
 
 from ELDAmwl.bases.base import Params
 from ELDAmwl.component.interface import IDBFunc
-from ELDAmwl.configs.config import CREATE_PICKLE_DATA
-from ELDAmwl.tests.pickle_data import pickle_data
+from ELDAmwl.tests.pickle_data import write_test_data
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
 from ELDAmwl.errors.exceptions import CalRangeHigherThanValid
@@ -203,7 +202,6 @@ class BackscatterFactoryDefault(BaseOperation):
     param = None
 
     def get_product(self):
-        self.data_storage = self.kwargs['data_storage']
         self.param = self.kwargs['bsc_param']
         self.calibr_window = self.kwargs['calibr_window']
 
@@ -217,7 +215,6 @@ class FindCommonBscCalibrWindow(BaseOperationFactory):
     """ fins a common calibration window for all bsc products
 
     Keyword Args:
-        data_storage
         bsc_params (list of :class:`BackscatterParams`): \
                 list of params of all backscatter products
     """
@@ -325,18 +322,19 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         # Store the calibration window
         bp.calibr_window = calibration_window
 
-        if CREATE_PICKLE_DATA:
-            pickle_data(self.name + '_get_bp_calibration_window', calibration_window)
+        write_test_data(
+            func=self.get_bp_calibration_window,
+            result=calibration_window,
+        )
+        return calibration_window
 
     def init(self):
-        self.data_storage = self.kwargs['data_storage']
         self.bsc_params = self.kwargs['bsc_params']
 
-        if CREATE_PICKLE_DATA:
-            pickle_data(self.name, {
-                'data_storage': self.data_storage,
-                'bsc_params': self.bsc_params,
-            })
+        # write_test_data(
+        #     data_storage=self.data_storage,
+        #     bsc_params=self.bsc_params
+        # )
 
     def run(self):
         """

@@ -2,8 +2,12 @@
 """Classes for signals"""
 
 from copy import deepcopy
+
+from zope import component
+
 from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.bases.columns import Columns
+from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.utils.constants import ALL_OK, RESOLUTION_STR, ALL_RANGE, BELOW_OVL, ABOVE_MAX_ALT
 from ELDAmwl.utils.constants import ANALOG
 from ELDAmwl.utils.constants import CROSS
@@ -42,15 +46,15 @@ class ElppData(object):
         self.signals = None
         self.cloud_mask = None
         self.header = None
+        self.data_storage = component.queryUtility(IDataStorage)
 
-    def read_nc_file(self, data_storage, p_param):
+    def read_nc_file(self, p_param):
         """ reading an ELPP file
 
         Signals, cloud mask, and the header are read
         from an ELPP file and put into the data_storage
 
         Args:
-            data_storage (:obj:`DataStorage`): global data storage instance
             p_param:
 
         """
@@ -68,15 +72,15 @@ class ElppData(object):
             raise(CannotOpenELLPFile(elpp_file))
 
         self.cloud_mask = nc_ds.cloud_mask.astype(int)
-        data_storage.cloud_mask = self.cloud_mask
+        self.data_storage.cloud_mask = self.cloud_mask
 
         self.header = Header.from_nc_file(elpp_file, nc_ds)
-        data_storage.header = self.header
+        self.data_storage.header = self.header
 
         for idx in range(nc_ds.dims['channel']):
             sig = Signals.from_nc_file(nc_ds, idx)
             sig.ds.load()
-            data_storage.set_elpp_signal(p_param.prod_id_str, sig)  # noqa E501
+            self.data_storage.set_elpp_signal(p_param.prod_id_str, sig)  # noqa E501
             sig.register(p_param)
 
         nc_ds.close()

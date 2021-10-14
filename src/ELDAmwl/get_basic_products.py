@@ -41,7 +41,6 @@ class GetBasicProductsDefault(BaseOperation):
     bsc_calibr_window = None
 
     def run(self):
-        self.data_storage = self.kwargs['data_storage']
         self.product_params = self.kwargs['product_params']
         self.smooth_type = self.product_params.smooth_params.smooth_type
 
@@ -185,7 +184,6 @@ class GetBasicProductsDefault(BaseOperation):
 class GetBasicProducts(BaseOperationFactory):
     """
     Args:
-        data_storage (ELDAmwl.data_storage.DataStorage): global data storage
         product_params: global MeasurementParams
     """
 
@@ -193,7 +191,6 @@ class GetBasicProducts(BaseOperationFactory):
     smooth_type = None
 
     def __call__(self, **kwargs):
-        assert 'data_storage' in kwargs
         assert 'product_params' in kwargs
 
         self.smooth_type = kwargs['product_params'].smooth_params.smooth_type

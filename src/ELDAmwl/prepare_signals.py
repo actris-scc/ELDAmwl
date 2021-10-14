@@ -43,7 +43,6 @@ class PrepareBscSignalsDefault(BaseOperation):
         del refl_sig
 
     def run(self):
-        self.data_storage = self.kwargs['data_storage']
         self.bsc_param = self.kwargs['prod_param']
 
         pid = self.bsc_param.prod_id_str
@@ -66,8 +65,6 @@ class PrepareBscSignalsDefault(BaseOperation):
 class PrepareBscSignals(BaseOperationFactory):
     """
     Args:
-        data_storage (:class:`ELDAmwl.data_storage.DataStorage`):
-                            global data storage
         prod_param (:class:`ELDAmwl.products.ProductParams`):
                             params of the product
     """
@@ -100,7 +97,6 @@ class PrepareExtSignalsDefault(BaseOperation):
     ext_param = None
 
     def run(self):
-        self.data_storage = self.kwargs['data_storage']
         self.ext_param = self.kwargs['prod_param']
 
         pid = self.ext_param.prod_id_str
@@ -118,8 +114,6 @@ class PrepareExtSignalsDefault(BaseOperation):
 class PrepareExtSignals(BaseOperationFactory):
     """
     Args:
-        data_storage (:class:`ELDAmwl.data_storage.DataStorage`):
-                            global data storage
         prod_param (:class:`ELDAmwl.products.ProductParams`):
                             params of the product
     """
@@ -153,7 +147,6 @@ class PrepareSignalsDefault(BaseOperation):
     data_storage = None
 
     def run(self):
-        self.data_storage = self.kwargs['data_storage']
         products = self.kwargs['products']
 
         for p_param in products:
@@ -167,8 +160,6 @@ class PrepareSignalsDefault(BaseOperation):
 class PrepareSignals(BaseOperationFactory):
     """
     Args:
-        data_storage: global data storage
-                (:class:`ELDAmwl.data_storage.DataStorage`)
         products: list of parameters of all basic
                 products (list of :class:
                 `ELDAmwl.products.ProductParams`)
@@ -177,7 +168,6 @@ class PrepareSignals(BaseOperationFactory):
     name = 'PrepareSignals'
 
     def __call__(self, **kwargs):
-        assert 'data_storage' in kwargs
         assert 'products' in kwargs
         res = super(PrepareSignals, self).__call__(**kwargs)
         return res

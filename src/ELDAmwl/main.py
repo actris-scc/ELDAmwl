@@ -4,6 +4,7 @@ import sys
 import traceback
 
 from ELDAmwl.errors.error_codes import NO_ERROR, UNKNOWN_EXCEPTION
+from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
 from ELDAmwl.database.db_functions import register_db_utils
 from ELDAmwl.factories.elda_mwl_factories import RunELDAmwl
@@ -108,7 +109,11 @@ class Main:
         self.logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
         self.logger.info('analyze measurement number: ' + meas_id)
 
+        # Bring up the global db_access
         register_db_utils()
+
+        # Bring up the global data storage
+        register_datastorage()
 
         return meas_id
 
