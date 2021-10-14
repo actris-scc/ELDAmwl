@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
 
     def test_get_bp_calibration_window(self):
         bp = self.data['bsc_params'][0]
-        calibration_window = self.op.get_bp_calibration_window(bp)
+        calibration_window = self.op.find_calibration_window(bp)
         res = calibration_window.data
 
         data = un_pickle_data('FindBscCalibrWindowAsInELDA.get_bp_calibration_window')

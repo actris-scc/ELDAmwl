@@ -19,7 +19,7 @@ from ELDAmwl.signals import Signals
 import numpy as np
 import xarray as xr
 
-from ELDAmwl.utils.numerical import calc_rolling_means_sems, calc_minimal_window_indexes
+from ELDAmwl.utils.numerical import calc_rolling_means_sems, find_minimum_window
 
 
 class BscCalibrationParams(Params):
@@ -248,21 +248,24 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
     data_storage = None
     bsc_params = None
 
-    def backscatter_calibration_range(self, ds, height_axis, win_first_idx, win_last_idx):
+    def create_calibration_window_datarray(self, ds, height_axis, win_first_idx, win_last_idx):
         """
         Create a backscatter calibration window
 
         Args:
-            ds : the signal
+            ds : the dataset of the signal (contains the time and time_bounds variables)
             height_axis : The height axis of the elastic signal
-            win_first_idx, win_last_idx : The min/max indexes of the window
+            win_first_idx : The first indexes of the window
+            win_last_idx : The last indexes of the window
 
         Returns:
-            Dataarray describing the window heights.
+            DataArray with bottom and top height [m a.g.] of the calibration window for each time slice.
         """
-        da = xr.DataArray(np.zeros((ds.dims['time'], ds.dims['nv'])),
-                          coords=[ds.time, ds.nv],
-                          dims=['time', 'nv'])
+        da = xr.DataArray(
+            np.zeros((ds.dims['time'], ds.dims['nv'])),
+            coords=[ds.time, ds.nv],
+            dims=['time', 'nv']
+        )
         da.name = 'backscatter_calibration_range'
         da.attrs = {'long_name': 'height_axis range where '
                                  'calibration was calculated',
@@ -273,57 +276,62 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
 
         return da
 
-    def get_signal_window_params(self, bp):
+    def get_rolling_window_properties(self, bsc_param):
         """
         Args:
-            bp : Backscatter product
+            bsc_param (BackscatterParams): Backscatter params
 
         Returns:
             ds : The dataset to operate on
-            w_width : The window widths
+            w_width : The window widths [bins]
             el_sig.height_axis : The height_axis axis to use
             error_threshold : The error threshold
         """
 
-        el_sig = self.data_storage.prepared_signal(bp.prod_id_str,
-                                                   bp.total_sig_id)
-        error_threshold = bp.quality_params.error_threshold.highrange
+        el_sig = self.data_storage.prepared_signal(bsc_param.prod_id_str,
+                                                   bsc_param.total_sig_id)
+        error_threshold = bsc_param.quality_params.error_threshold.highrange
 
-        if bp.general_params.product_type == RBSC:
+        if bsc_param.general_params.product_type == RBSC:
             r_sig = self.data_storage.prepared_signal(
-                bp.prod_id_str, bp.raman_sig_id)
+                bsc_param.prod_id_str, bsc_param.raman_sig_id)
             sigratio = Signals.as_sig_ratio(el_sig, r_sig)
             ds = sigratio.data_in_vertical_range(
-                bp.calibration_params.cal_interval)
+                bsc_param.calibration_params.cal_interval)
         else:
             ds = el_sig.data_in_vertical_range(
-                bp.calibration_params.cal_interval)
+                bsc_param.calibration_params.cal_interval)
 
         # width of window [bins] = width of calibration window [m] / raw resolution of signal [m]
         # window_width need to be rounded and converted to integer
         # number of bins used for sliding window operations (rolling) must be window_width +1
         # because those operations use slices [n:n+window_width]
         w_width = np.around(
-            bp.calibration_params.window_width /
+            bsc_param.calibration_params.window_width /
             el_sig.raw_heightres
         ).astype(int) + 1
 
         return ds, w_width, el_sig.height, error_threshold
 
-    def get_bp_calibration_window(self, bp):
+    def find_calibration_window(self, bsc_param):
+
         # get the parameters for the rolling mean calculation
-        ds, w_width, height, error_threshold = self.get_signal_window_params(bp)
-        # calculate the rolling means/sems with the given window widths
-        means, sems = calc_rolling_means_sems(ds, w_width)
-        # Calculate the min/max indexes of the minimum error
-        win_first_idx, win_last_idx = calc_minimal_window_indexes(means, sems, w_width, error_threshold)
+        data_set, w_width, height, error_threshold = self.get_rolling_window_properties(bsc_param)
+
+        # calculate the rolling means and standard errors of the means (sems) with the given window properties
+        means, sems = calc_rolling_means_sems(data_set, w_width)
+
+        # find the min/max indexes of the window with the minimum data
+        win_first_idx, win_last_idx = find_minimum_window(means, sems, w_width, error_threshold)
+
         # Create a calibration window from win_first_idx, win_last_idx
-        calibration_window = self.backscatter_calibration_range(ds, height, win_first_idx, win_last_idx)
+        calibration_window = self.create_calibration_window_datarray(data_set, height, win_first_idx, win_last_idx)
+
         # Store the calibration window
-        bp.calibr_window = calibration_window
+        bsc_param.calibr_window = calibration_window
 
         write_test_data(
-            func=self.get_bp_calibration_window,
+            func=self.find_calibration_window,
             result=calibration_window,
         )
         return calibration_window
@@ -348,9 +356,8 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
                     bp.calibration_params):
                 raise BscCalParamsNotEqual(self.bsc_params[0].prod_id,
                                            bp.prod_id)
-        # Todo Ina find better variable names
         for bp in self.bsc_params:
-            self.get_bp_calibration_window(bp)
+            self.find_calibration_window(bp)
 
         return None
 

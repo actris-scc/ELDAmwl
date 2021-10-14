@@ -63,25 +63,34 @@ class WriteMWLOutputDefault(BaseOperation):
         for group in MWLFileStructure.MAIN_GROUPS:
             # todo: pass if group is empty
             # convert Dict into Dataset
-            ds = xr.Dataset(data_vars=self.data[group].data_vars,
-                            coords={},
-                            attrs=self.data[group].attrs)
+            ds = xr.Dataset(
+                data_vars=self.data[group].data_vars,
+                coords={},
+                attrs=self.data[group].attrs
+            )
             # write attributes and variables into netCDF file
-            # ToDo ina indentation
-            ds.to_netcdf(path=self.out_filename,
-                                mode=MWLFileStructure.WRITE_MODE[group],
-                                group=MWLFileStructure.GROUP_NAME[group],
-                                format='NETCDF4')
+            ds.to_netcdf(
+                path=self.out_filename,
+                mode=MWLFileStructure.WRITE_MODE[group],
+                group=MWLFileStructure.GROUP_NAME[group],
+                format='NETCDF4'
+            )
             ds.close()
 
         for mwl_id, md in self.meta_data.items():
-            ds = xr.Dataset(data_vars=md.data_vars,
-                            coords={},
-                            attrs=md.attrs)
-            ds.to_netcdf(path=self.out_filename,
-                                mode='a',
-                                group='{}/{}'.format(MWLFileStructure.GROUP_NAME[MWLFileStructure.META_DATA], mwl_id),
-                                format='NETCDF4')
+            ds = xr.Dataset(
+                data_vars=md.data_vars,
+                coords={},
+                attrs=md.attrs
+            )
+            ds.to_netcdf(
+                path=self.out_filename,
+                mode='a',
+                group='{}/{}'.format(
+                    MWLFileStructure.GROUP_NAME[MWLFileStructure.META_DATA], mwl_id
+                ),
+                format='NETCDF4'
+            )
             ds.close()
 
     def run(self):
