@@ -14,11 +14,11 @@ import xarray as xr
 
 
 class DataStorage(object):
-    """ global data storage
+    """ global __data storage
 
     All signals, intermediate products, products etc. are stored
     in the central :obj:`Dict` of this class.
-    The access to the stored data (reading and writing) must
+    The access to the stored __data (reading and writing) must
     occur exclusively via the implemented properties and methods.
     This restriction allows to implement e.g.
     intelligent memory caching in future (if needed).
@@ -28,7 +28,7 @@ class DataStorage(object):
     name = 'Datastorage'
 
     def __init__(self):
-        self.data = Dict({'elpp_signals': Dict(),
+        self.__data = Dict({'elpp_signals': Dict(),
                           'prepared_signals': Dict(),
 
                           'basic_products_raw': Dict(),
@@ -41,48 +41,48 @@ class DataStorage(object):
                                 HIGHRES: Dict()
                                 }
                           ),
-                          'basic_products_common_smooth': Dict(
+                            'basic_products_common_smooth': Dict(
                               {
                                 LOWRES: Dict(),
                                 HIGHRES: Dict()
                               }
                           ),
-                          'derived_products_common_smooth': Dict(
+                            'derived_products_common_smooth': Dict(
                               {
                                 LOWRES: Dict(),
                                 HIGHRES: Dict()
                               }
                           ),
-                          'final_product_matrix': Dict(
+                            'final_product_matrix': Dict(
                               {
                                 LOWRES: Dict(),
                                 HIGHRES: Dict()
                               }
                           ),
 
-                          'header': None,
-                          'cloud_mask': None,
-                          })
+                            'header': None,
+                            'cloud_mask': None,
+                            })
 
     def set_elpp_signal(self, prod_id_str, new_signal):
         """write new ELPP signal to storage"""
 
-        self.data.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
+        self.__data.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_prepared_signal(self, prod_id_str, new_signal):
         """write new prepared signal to storage"""
 
-        self.data.prepared_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
+        self.__data.prepared_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_basic_product_raw(self, prod_id_str, new_product):
         """write new un-smoothed basic product to storage
         """
-        self.data.basic_products_raw[prod_id_str] = new_product  # noqa E501
+        self.__data.basic_products_raw[prod_id_str] = new_product  # noqa E501
 
     def set_basic_product_auto_smooth(self, prod_id_str, new_product):
         """write new auto smoothed basic product to storage
         """
-        self.data.basic_products_auto_smooth[prod_id_str] = new_product  # noqa E501
+        self.__data.basic_products_auto_smooth[prod_id_str] = new_product  # noqa E501
 
     def set_binres_auto_smooth(self, prod_id_str, new_res_array):
         """write new auto smoothed basic product to storage
@@ -92,19 +92,19 @@ class DataStorage(object):
             new_res_array: xarray.DataArray
 
         """
-        self.data.binres_auto_smooth[prod_id_str] = new_res_array  # noqa E501
+        self.__data.binres_auto_smooth[prod_id_str] = new_res_array  # noqa E501
 
     def set_basic_product_common_smooth(self, prod_id_str, res, new_product):
         """write a basic product that was smoothed with onto a common grid to storage
         """
-        self.data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
+        self.__data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
 
     def set_final_product_matrix(self, prod_type, res, new_dataset):
         """write a dataset with common grid (wavelength, time, altitude) to storage
 
         one dataset per product type and resolution
         """
-        self.data.final_product_matrix[res][prod_type] = new_dataset  # noqa E501
+        self.__data.final_product_matrix[res][prod_type] = new_dataset  # noqa E501
 
     def set_binres_common_smooth(self, prod_id_str, resolution, new_res_array):
         """
@@ -115,7 +115,7 @@ class DataStorage(object):
             new_res_array: xarray.DataArray
 
         """
-        self.data.binres_common_smooth[resolution][prod_id_str] = new_res_array
+        self.__data.binres_common_smooth[resolution][prod_id_str] = new_res_array
 
     def elpp_signals(self, prod_id_str):
         """all ELPP signals of one product
@@ -136,8 +136,8 @@ class DataStorage(object):
         """
         try:
             result = []
-            for ch_id in self.data.elpp_signals[prod_id_str]:
-                result.append(self.data.elpp_signals[prod_id_str][ch_id])
+            for ch_id in self.__data.elpp_signals[prod_id_str]:
+                result.append(self.__data.elpp_signals[prod_id_str][ch_id])
             return result
         except AttributeError:
             raise NotFoundInStorage('ELPP signals',
@@ -158,7 +158,7 @@ class DataStorage(object):
                 and signal id was found in storage
         """
         try:
-            return self.data.elpp_signals[prod_id_str][ch_id_str]
+            return self.__data.elpp_signals[prod_id_str][ch_id_str]
         except AttributeError:
             raise NotFoundInStorage('ELPP signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
@@ -181,8 +181,8 @@ class DataStorage(object):
         """
         try:
             result = []
-            for ch_id in self.data.prepared_signals[prod_id_str]:
-                result.append(self.data.prepared_signals[prod_id_str][ch_id])
+            for ch_id in self.__data.prepared_signals[prod_id_str]:
+                result.append(self.__data.prepared_signals[prod_id_str][ch_id])
             return result
         except AttributeError:
             raise NotFoundInStorage('prepared signals',
@@ -207,7 +207,7 @@ class DataStorage(object):
                 and signal id was found in storage
         """
         try:
-            return self.data.prepared_signals[prod_id_str][ch_id_str]
+            return self.__data.prepared_signals[prod_id_str][ch_id_str]
         except AttributeError:
             raise NotFoundInStorage('prepared signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
@@ -215,9 +215,9 @@ class DataStorage(object):
     def get_prod_res_entry(self, prod_id_str, resolution, source, what_str, where_str):
         try:
             if resolution is not None:
-                result = self.data[source][resolution][prod_id_str]
+                result = self.__data[source][resolution][prod_id_str]
             else:
-                result = self.data[source][prod_id_str]
+                result = self.__data[source][prod_id_str]
         except AttributeError:
             raise NotFoundInStorage('{0} {1}'.format(what_str, prod_id_str),
                                     '{0} {1}'.format(where_str, RESOLUTION_STR[resolution]))
@@ -387,12 +387,12 @@ class DataStorage(object):
         return result
 
     def final_product_matrix(self, prod_type, res):
-        """ 3-dimensional (wavelength, time, altitude) data matrix
+        """ 3-dimensional (wavelength, time, altitude) __data matrix
 
         Product matrix contains all product profiles and cloud mask.
-        All data are on the same grid of time, altitude and wavelength.
+        All __data are on the same grid of time, altitude and wavelength.
         Except cloud mask, which has no wavelength dimension.
-        Missing data are filled with nan.
+        Missing __data are filled with nan.
 
         Args:
             prod_type :
@@ -401,7 +401,7 @@ class DataStorage(object):
         Returns: xarray.Dataset
 
         """
-        return self.data.final_product_matrix[res][prod_type]
+        return self.__data.final_product_matrix[res][prod_type]
 
     @property
     def cloud_mask(self):
@@ -414,11 +414,11 @@ class DataStorage(object):
 
         Raises:
             DifferentCloudMaskExists: if a cloud_mask
-            shall be written to the data storage but
+            shall be written to the __data storage but
             there is already one from a previously read ELPP file
             which is different from the new one
         """
-        return self.data.cloud_mask
+        return self.__data.cloud_mask
 
     @cloud_mask.setter
     def cloud_mask(self, new_mask):
@@ -426,7 +426,7 @@ class DataStorage(object):
             if not self.cloud_mask.equals(new_mask):
                 raise DifferentCloudMaskExists
 
-        self.data.cloud_mask = new_mask
+        self.__data.cloud_mask = new_mask
 
     def get_max_binres(self, res):
         """
@@ -437,10 +437,10 @@ class DataStorage(object):
         Returns:
             xr.DataArray with same shape as single binres arrays
         """
-        if self.data.binres_common_smooth[res] == {}:
+        if self.__data.binres_common_smooth[res] == {}:
             return None
 
-        all_binres = xr.concat(list(self.data.binres_common_smooth[res].values()), 'x')
+        all_binres = xr.concat(list(self.__data.binres_common_smooth[res].values()), 'x')
         maxres = all_binres.max('x')
 
         return maxres
@@ -478,15 +478,15 @@ class DataStorage(object):
             header (:obj:`Header`): header of the measurement
 
         Raises: DifferentHeaderExists: if a header
-            shall be written to the data storage but
+            shall be written to the __data storage but
             there is already one from a previously read ELPP file
             which is different from the new one
         """
-        return self.data.header
+        return self.__data.header
 
     @header.setter
     def header(self, new_header):
         if self.header is None:
-            self.data.header = new_header
+            self.__data.header = new_header
         else:
             self.header.append(new_header)
