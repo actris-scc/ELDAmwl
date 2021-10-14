@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 """Classes for backscatter calculation"""
 from addict import Dict
-from zope.component import queryUtility
-
 from ELDAmwl.bases.base import Params
-from ELDAmwl.component.interface import IDBFunc
-from ELDAmwl.tests.pickle_data import write_test_data
-from ELDAmwl.utils.constants import RBSC
-from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
-from ELDAmwl.errors.exceptions import CalRangeHigherThanValid
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.output.mwl_file_structure import MWLFileStructure, MWLFileVarsFromDB
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
+from ELDAmwl.errors.exceptions import CalRangeHigherThanValid
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
-from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
+from ELDAmwl.tests.pickle_data import write_test_data
+from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.utils.numerical import calc_minimal_window_indexes
+from ELDAmwl.utils.numerical import calc_rolling_means_sems
+from zope.component import queryUtility
+
 import numpy as np
 import xarray as xr
-
-from ELDAmwl.utils.numerical import calc_rolling_means_sems, calc_minimal_window_indexes
 
 
 class BscCalibrationParams(Params):
@@ -54,12 +55,10 @@ class BscCalibrationParams(Params):
     def equal(self, other):
         result = True
         if (self.cal_interval.min_height != other.cal_interval.min_height) or \
-                (self.cal_interval.max_height !=
-                 other.cal_interval.max_height) or \
+                (self.cal_interval.max_height != other.cal_interval.max_height) or \
                 (self.window_width != other.window_width) or \
                 (self.cal_value != other.cal_value) or \
-                (self.cal_range_search_algorithm !=
-                 other.cal_range_search_algorithm):
+                (self.cal_range_search_algorithm != other.cal_range_search_algorithm):
             result = False
 
         return result
@@ -118,7 +117,7 @@ class BackscatterParams(ProductParams):
                 self.refl_sig_id = signal.channel_id_str
         else:
             self.logger.debug(
-                'channel {0} is no elast signal'.format(signal.channel_id_str)
+                'channel {0} is no elast signal'.format(signal.channel_id_str),
             )
 
     def to_meta_ds_dict(self, dct):
@@ -303,10 +302,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         # window_width need to be rounded and converted to integer
         # number of bins used for sliding window operations (rolling) must be window_width +1
         # because those operations use slices [n:n+window_width]
-        w_width = np.around(
-            bp.calibration_params.window_width /
-            el_sig.raw_heightres
-        ).astype(int) + 1
+        w_width = np.around(bp.calibration_params.window_width / el_sig.raw_heightres).astype(int) + 1
 
         return ds, w_width, el_sig.height, error_threshold
 

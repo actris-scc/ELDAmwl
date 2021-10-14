@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 """Classes for Raman backscatter calculation"""
-from zope import component
-
-from ELDAmwl.component.interface import IDBFunc
-from ELDAmwl.factories.backscatter_factories import BackscatterParams
 from ELDAmwl.bases.base import Params
-from ELDAmwl.utils.constants import IT, ELAST
-from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.factories.backscatter_factories import BackscatterParams
+from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
+from ELDAmwl.utils.constants import ELAST
+from ELDAmwl.utils.constants import IT
+from ELDAmwl.utils.constants import NC_FILL_INT
+from zope import component
 
 import numpy as np
-
-from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 
 
 class ElastBscParams(BackscatterParams):

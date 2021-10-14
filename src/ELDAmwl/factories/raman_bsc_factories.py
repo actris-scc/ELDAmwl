@@ -2,21 +2,21 @@
 """Classes for Raman backscatter calculation"""
 from addict import Dict
 from copy import deepcopy
+from ELDAmwl.bases.base import DataPoint
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.factories.backscatter_factories import BackscatterFactory
 from ELDAmwl.factories.backscatter_factories import BackscatterFactoryDefault
 from ELDAmwl.factories.backscatter_factories import BackscatterParams
 from ELDAmwl.factories.backscatter_factories import Backscatters
-from ELDAmwl.bases.base import DataPoint
-
-from ELDAmwl.utils.constants import NC_FILL_STR, RAMAN
-from ELDAmwl.utils.constants import RAYL_LR
-from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
-from ELDAmwl.errors.exceptions import UseCaseNotImplemented
-from ELDAmwl.bases.factory import BaseOperation
-from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
-from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
+from ELDAmwl.utils.constants import NC_FILL_STR
+from ELDAmwl.utils.constants import RAMAN
+from ELDAmwl.utils.constants import RAYL_LR
 
 import numpy as np
 import xarray as xr
@@ -243,10 +243,8 @@ class CalcRamanBscProfileViaBR(BaseOperation):
             else:
                 calibr_factor[t] = calibration.calibr_value.value / mean
                 calibr_factor_err[t] = calibr_factor[t] * \
-                    np.sqrt(np.square(rel_sem) +
-                            np.square(calibration.calibr_value.rel_error))
-                sqr_rel_calibr_err[t] = np.square(calibr_factor_err[t] /
-                                                  calibr_factor[t])
+                    np.sqrt(np.square(rel_sem) + np.square(calibration.calibr_value.rel_error))
+                sqr_rel_calibr_err[t] = np.square(calibr_factor_err[t] / calibr_factor[t])
 
         cf = xr.DataArray(calibr_factor,
                           dims=['time'],
@@ -258,8 +256,7 @@ class CalcRamanBscProfileViaBR(BaseOperation):
         # 2) calculate backscatter ratio
         bsc = deepcopy(sigratio)
         bsc['data'] = sigratio.data * cf
-        bsc['error'] = bsc.data * np.sqrt(np.square(sigratio.err/sigratio.data)
-                                          + sqr_cf_err)
+        bsc['error'] = bsc.data * np.sqrt(np.square(sigratio.err / sigratio.data) + sqr_cf_err)
 
         # 3) calculate backscatter coefficient
         bsc['data'] = (bsc.data - 1.) * rayl_bsc

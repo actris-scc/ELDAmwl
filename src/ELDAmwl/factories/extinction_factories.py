@@ -2,22 +2,20 @@
 """Classes for extinction calculation"""
 from addict import Dict
 from copy import deepcopy
-
-from zope import component
-
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.registry import registry
 from ELDAmwl.configs.config_default import RANGE_BOUNDARY
+from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
+from ELDAmwl.products import ProductParams
+from ELDAmwl.products import Products
 from ELDAmwl.utils.constants import ABOVE_MAX_ALT
 from ELDAmwl.utils.constants import BELOW_OVL
 from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import NC_FILL_STR
-from ELDAmwl.bases.factory import BaseOperation
-from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
-from ELDAmwl.products import ProductParams
-from ELDAmwl.products import Products
-from ELDAmwl.component.registry import registry
 from math import sqrt
+from zope import component
 
 import numpy as np
 import xarray as xr
@@ -50,9 +48,7 @@ class ExtinctionParams(ProductParams):
         if signal.is_Raman_sig:
             self.raman_sig_id = signal.channel_id_str
         else:
-            self.logger.debug(
-                'channel {0} is no Raman signal'.format(signal.channel_id_str)
-            )
+            self.logger.debug('channel {0} is no Raman signal'.format(signal.channel_id_str))
 
     @property
     def ang_exp_asDataArray(self):
@@ -131,19 +127,19 @@ class Extinctions(Products):
                 if lev < (fvb + half_win):
                     result.set_invalid_point(t, lev, BELOW_OVL)
 
-                elif lev >= (lvb-half_win):
+                elif lev >= (lvb - half_win):
                     result.set_invalid_point(t, lev, ABOVE_MAX_ALT)
 
                 else:
                     fb = lev - half_win
                     lb = lev + half_win
-                    window_data = Dict({'x_data': x_data[t, fb:lb+1],
-                                        'y_data': y_data[t, fb:lb+1],
-                                        'yerr_data': yerr_data[t, fb:lb+1],
+                    window_data = Dict({'x_data': x_data[t, fb:lb + 1],
+                                        'y_data': y_data[t, fb:lb + 1],
+                                        'yerr_data': yerr_data[t, fb:lb + 1],
                                         })
 
                     sig_slope = slope_routine.run(signal=window_data)
-                    qf = np.bitwise_or.reduce(qf_data[t, fb:lb+1])
+                    qf = np.bitwise_or.reduce(qf_data[t, fb:lb + 1])
 
                     result.ds['data'][t, lev] = sig_slope.slope
                     result.ds['err'][t, lev] = sig_slope.slope_err
@@ -203,7 +199,7 @@ class SlopeToExtinctionDefault(BaseOperation):
         em_wl = ext_params.emission_wavelength
         ang_exp = ext_params.angstroem_exponent
 
-        wl_factor = 1. / (1. + pow((em_wl/det_wl), ang_exp))
+        wl_factor = 1. / (1. + pow((em_wl / det_wl), ang_exp))
 
         result = deepcopy(slope)
         result['data'] = -1. * slope.data * wl_factor
@@ -271,13 +267,13 @@ class ExtinctionAutosmoothDefault(BaseOperation):
             # continuously increase bin resolution (transition zone)
             b_inc = low_bins[0][-1] + 1
             while (b_inc < levels - 1) and \
-                    (smooth_res[t][b_inc-1] < mbr_high):
+                    (smooth_res[t][b_inc - 1] < mbr_high):
                 # (b_inc < levels -1 )
                 #           => not yet end of profile
                 # smooth_res[t][b_inc-1] < mbr_high
                 #           => not yet binres of high altitudes
 
-                smooth_res[t][b_inc] = smooth_res[t][b_inc-1] + mb_delta
+                smooth_res[t][b_inc] = smooth_res[t][b_inc - 1] + mb_delta
                 b_inc += 1
 
             # use mbr_high for bins above transition zone
@@ -461,7 +457,7 @@ class LinFit(BaseOperation):
         self.data = kwargs['signal']
 
         if self.kwargs['weight']:
-            weight = 1/self.data.yerr_data
+            weight = 1 / self.data.yerr_data
         else:
             weight = None
 
