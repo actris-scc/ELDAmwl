@@ -118,7 +118,7 @@ class DataStorage(object):
         self.__data.binres_common_smooth[resolution][prod_id_str] = new_res_array
 
     def elpp_signals(self, prod_id_str):
-        """all ELPP signals of one product
+        """copies of all ELPP signals of one product
 
         Those are the original signals of one basic product from
         the corresponding ELPP file.
@@ -127,7 +127,7 @@ class DataStorage(object):
             prod_id_str (str):  product id
 
         Returns:
-            :obj:`list` of :obj:`Signals`: list of all signals related
+            :obj:`list` of :obj:`Signals`: list with deepcopies of all signals related
                                             to the product id
 
         Raises:
@@ -137,34 +137,34 @@ class DataStorage(object):
         try:
             result = []
             for ch_id in self.__data.elpp_signals[prod_id_str]:
-                result.append(self.__data.elpp_signals[prod_id_str][ch_id])
+                result.append(deepcopy(self.__data.elpp_signals[prod_id_str][ch_id]))
             return result
         except AttributeError:
             raise NotFoundInStorage('ELPP signals',
                                     'product {0}'.format(prod_id_str))
 
     def elpp_signal(self, prod_id_str, ch_id_str):
-        """one ELPP signal
+        """copy of an ELPP signal
 
         Args:
             prod_id_str (str):  product id
             ch_id_str (str):  channel id
 
         Returns:
-            :obj:`Signals`: the requested ELPP signal
+            :obj:`Signals`: deepcopy of the requested ELPP signal
 
         Raises:
              NotFoundInStorage: if no entry for the given product id
                 and signal id was found in storage
         """
         try:
-            return self.__data.elpp_signals[prod_id_str][ch_id_str]
+            return deepcopy(self.__data.elpp_signals[prod_id_str][ch_id_str])
         except AttributeError:
             raise NotFoundInStorage('ELPP signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
 
     def prepared_signals(self, prod_id_str):
-        """all prepared signals of one product
+        """copies of all prepared signals of one product
 
         Those are the prepared signals of one basic product .
 
@@ -172,7 +172,7 @@ class DataStorage(object):
             prod_id_str (str):  product id
 
         Returns:
-            :obj:`list` of :obj:`Signals`: list of all signals related
+            :obj:`list` of :obj:`Signals`: list with deepcopies of all signals related
                                             to the product id
 
         Raises:
@@ -182,14 +182,14 @@ class DataStorage(object):
         try:
             result = []
             for ch_id in self.__data.prepared_signals[prod_id_str]:
-                result.append(self.__data.prepared_signals[prod_id_str][ch_id])
+                result.append(deepcopy(self.__data.prepared_signals[prod_id_str][ch_id]))
             return result
         except AttributeError:
             raise NotFoundInStorage('prepared signals',
                                     'product {0}'.format(prod_id_str))
 
     def prepared_signal(self, prod_id_str, ch_id_str):
-        """one prepared signal
+        """copy of an prepared signal
 
         The preparation includes normalization by number of laser shots,
         combination of depolarization component(where necessary),
@@ -200,19 +200,34 @@ class DataStorage(object):
             ch_id_str (str):  channel id
 
         Returns:
-            :obj:`Signals`: the requested prepared signal
+            :obj:`Signals`: deepcopy of the requested prepared signal
 
         Raises:
              NotFoundInStorage: if no entry for the given product id
                 and signal id was found in storage
         """
         try:
-            return self.__data.prepared_signals[prod_id_str][ch_id_str]
+            return deepcopy(self.__data.prepared_signals[prod_id_str][ch_id_str])
         except AttributeError:
             raise NotFoundInStorage('prepared signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
 
-    def get_prod_res_entry(self, prod_id_str, resolution, source, what_str, where_str):
+    def _get_prod_res_entry(self, prod_id_str, resolution, source, what_str, where_str):
+        """copy of a result with a certain resolution
+
+        Args:
+            prod_id_str (str):  product id
+            resolution (int): can be None or LOWRES (=0) or HIGHRES (=1)
+            source (str): part of the DataStorage where to look
+            what_str (str): description of searched object (used for log output)
+            where_str (str): description of the source (used for log output)
+
+        Returns:
+            :obj:`xarray.DataArray` or :obj:'Products': deepcopy of the requested result
+
+        Raises:
+             NotFoundInStorage: if no entry for the given parameter was found in storage
+        """
         try:
             if resolution is not None:
                 result = self.__data[source][resolution][prod_id_str]
@@ -223,9 +238,9 @@ class DataStorage(object):
                                     '{0} {1}'.format(where_str, RESOLUTION_STR[resolution]))
 
         if isinstance(result, xr.DataArray):
-            return result
+            return deepcopy(result)
         elif isinstance(result, Products):
-            return result
+            return deepcopy(result)
         else:
             # Dict returns {} instead of AttributeError
             if resolution is not None:
@@ -236,45 +251,45 @@ class DataStorage(object):
                                         '{0}'.format(where_str))
 
     def basic_product_raw(self, prod_id_str):
-        """a basic product, derived without smoothing
+        """copy of a basic product, derived without smoothing
 
         Args:
             prod_id_str (str):  product id
 
         Returns:
-            :obj:`Products` the requested product
+            :obj:`Products` deepcopy of the requested product
 
         Raises:
              NotFoundInStorage: if no product for the given product id
                 is found in storage
         """
 
-        return self.get_prod_res_entry(prod_id_str, None,
+        return self._get_prod_res_entry(prod_id_str, None,
                                        'basic_products_raw',
                                        'product',
                                        'basic products without smoothing')
 
     def basic_product_auto_smooth(self, prod_id_str):
-        """a basic product, derived with automatic smooth
+        """copy of a basic product, derived with automatic smooth
 
         Args:
             prod_id_str (str):  product id
 
         Returns:
-            :obj:`Products` the requested product
+            :obj:`Products` deepcopy of the requested product
 
         Raises:
              NotFoundInStorage: if no product for the given product id
                 is found in storage
         """
 
-        return self.get_prod_res_entry(prod_id_str, None,
+        return self._get_prod_res_entry(prod_id_str, None,
                                        'basic_products_auto_smooth',
                                        'product',
                                        'basic products with automatic smoothing')
 
     def binres_auto_smooth(self, prod_id_str):
-        """ bin resolution profile of a product
+        """ copy of the bin resolution profile of a product
 
         The bin resolution corresponds to the automatically derived vertical resolution
         of a basic product.
@@ -285,19 +300,20 @@ class DataStorage(object):
         Args:
             prod_id_str (str): product id
 
-        Returns: xarray.DataArray
+        Returns:
+            :obj:`xarray.DataArray`: copy of the bin resolution profile
 
         Raises:
              NotFoundInStorage: if no entry for the given product id
                 and resolution was found in storage
         """
-        return self.get_prod_res_entry(prod_id_str, None,
+        return self._get_prod_res_entry(prod_id_str, None,
                                        'binres_auto_smooth',
                                        'automatically derived bin resolution profile',
                                        'product {0}'.format(prod_id_str))
 
     def binres_common_smooth(self, prod_id_str, resolution):
-        """ bin resolution profile of a product
+        """ copy of a bin resolution profile of a product
 
         The bin resolution corresponds to the common vertical resolution
         of all basic and derived products. Some products are smoothed with
@@ -310,66 +326,67 @@ class DataStorage(object):
             prod_id_str (str): product id
             resolution (int): can be LOWRES (=0) or HIGHRES (=1)
 
-        Returns: xarray.DataArray
+        Returns:
+            :obj:`xarray.DataArray`: deepcopy of the requested resolution profile
 
         Raises:
              NotFoundInStorage: if no entry for the given product id
                 and resolution was found in storage
         """
-        return self.get_prod_res_entry(prod_id_str, resolution,
+        return self._get_prod_res_entry(prod_id_str, resolution,
                                        'binres_common_smooth',
                                        'common bin resolution profile',
                                        'product {0} in '.format(prod_id_str))
 
     def basic_product_common_smooth(self, prod_id_str, resolution):
-        """a basic product, derived with common smooth
+        """copy of a basic product, derived with common smooth
 
         Args:
             prod_id_str (str):  product id
             resolution (int): can be LOWRES (=0) or HIGHRES (=1)
 
         Returns:
-            :obj:`Products` the requested product
+            :obj:`Products` deepcopy of the requested product
 
         Raises:
              NotFoundInStorage: if no product for the given product id
                 is found in storage
         """
 
-        return self.get_prod_res_entry(prod_id_str, resolution,
+        return self._get_prod_res_entry(prod_id_str, resolution,
                                        'basic_products_common_smooth',
                                        'product',
                                        'basic products with common smoothing with')
 
     def derived_product_common_smooth(self, prod_id_str, resolution):
-        """a basic product, derived with common smooth
+        """copy of a basic product, derived with common smooth
 
         Args:
             prod_id_str (str):  product id
             resolution (int): can be LOWRES (=0) or HIGHRES (=1)
 
         Returns:
-            :obj:`Products` the requested product
+            :obj:`Products`: deepcopy of the requested product
 
         Raises:
              NotFoundInStorage: if no product for the given product id
                 is found in storage
         """
 
-        return self.get_prod_res_entry(prod_id_str, resolution,
+        return self._get_prod_res_entry(prod_id_str, resolution,
                                        'derived_products_common_smooth',
                                        'product',
                                        'derived products with common smoothing with')
 
     def product_common_smooth(self, prod_id_str, resolution):
-        """a product, derived with common smooth
+        """copy of a product, derived with common smooth
 
         Args:
             prod_id_str (str):  product id
             resolution (int): can be LOWRES (=0) or HIGHRES (=1)
 
         Returns:
-            :obj:`Products` the requested product
+            :obj:`Products`: deepcopy of the requested product
 
         Raises:
              NotFoundInStorage: if no product for the given product id
@@ -387,21 +404,22 @@ class DataStorage(object):
         return result
 
     def final_product_matrix(self, prod_type, res):
-        """ 3-dimensional (wavelength, time, altitude) __data matrix
+        """ 3-dimensional (wavelength, time, altitude) data matrix
 
         Product matrix contains all product profiles and cloud mask.
-        All __data are on the same grid of time, altitude and wavelength.
+        All data are on the same grid of time, altitude and wavelength.
         Except cloud mask, which has no wavelength dimension.
-        Missing __data are filled with nan.
+        Missing data are filled with nan.
 
         Args:
             prod_type :
             res (int): can be LOWRES (=0) or HIGHRES (=1)
 
-        Returns: xarray.Dataset
+        Returns:
+            :obj:'xarray.Dataset': deepcopy of the final product matrix
 
         """
-        return self.__data.final_product_matrix[res][prod_type]
+        return deepcopy(self.__data.final_product_matrix[res][prod_type])
 
     @property
     def cloud_mask(self):

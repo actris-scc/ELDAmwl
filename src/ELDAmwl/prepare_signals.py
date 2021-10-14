@@ -28,6 +28,7 @@ class PrepareBscSignalsDefault(BaseOperation):
     def combine_depol_components(self, p_param):
         self.logger.debug('PrepareBscSignalsDefault.combine_depol_components')
         pid = p_param.prod_id_str
+        # transm_sig and refl_sig are deepcopies from the data storage
         transm_sig = self.data_storage.prepared_signal(pid,
                                                        p_param.transm_sig_id)
         refl_sig = self.data_storage.prepared_signal(pid,
@@ -38,25 +39,29 @@ class PrepareBscSignalsDefault(BaseOperation):
                                               total_sig)
         total_sig.register(p_param)
 
+        # free the copies
+        del transm_sig
+        del refl_sig
+
     def run(self):
         self.data_storage = self.kwargs['data_storage']
         self.bsc_param = self.kwargs['prod_param']
 
         pid = self.bsc_param.prod_id_str
+        # sig is a deepcopy from the data storage
         for sig in self.data_storage.elpp_signals(pid):
-            new_sig = deepcopy(sig)
-            new_sig.set_valid_height_range(self.bsc_param.valid_alt_range)
-            new_sig.normalize_by_shots()
-            self.data_storage.set_prepared_signal(pid, new_sig)
+            sig.set_valid_height_range(self.bsc_param.valid_alt_range)
+            sig.normalize_by_shots()
+            if (self.bsc_param.product_type == EBSC) and \
+                (self.bsc_param.elast_bsc_algorithm == KF):
+                pass
+            else:
+                sig.correct_for_mol_transmission()
+
+            self.data_storage.set_prepared_signal(pid, sig)
+
         if self.bsc_param.is_bsc_from_depol_components():
             self.combine_depol_components(self.bsc_param)
-
-        if (self.bsc_param.product_type == EBSC) and \
-                (self.bsc_param.elast_bsc_algorithm == KF):
-            pass
-        else:
-            for sig in self.data_storage.prepared_signals(pid):
-                sig.correct_for_mol_transmission()
 
 
 class PrepareBscSignals(BaseOperationFactory):
@@ -100,15 +105,15 @@ class PrepareExtSignalsDefault(BaseOperation):
         self.ext_param = self.kwargs['prod_param']
 
         pid = self.ext_param.prod_id_str
+        # sig is deepcopy from data storage
         for sig in self.data_storage.elpp_signals(pid):
             if sig.is_Raman_sig:
-                new_sig = deepcopy(sig)
-                new_sig.set_valid_height_range(self.ext_param.valid_alt_range)
-                new_sig.normalize_by_shots()
-                new_sig.correct_for_mol_transmission()
-                new_sig.prepare_for_extinction()
+                sig.set_valid_height_range(self.ext_param.valid_alt_range)
+                sig.normalize_by_shots()
+                sig.correct_for_mol_transmission()
+                sig.prepare_for_extinction()
 
-                self.data_storage.set_prepared_signal(pid, new_sig)
+                self.data_storage.set_prepared_signal(pid, sig)
 
 
 class PrepareExtSignals(BaseOperationFactory):
