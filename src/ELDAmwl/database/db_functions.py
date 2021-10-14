@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 """functions for db handling"""
 from addict import Dict
-
 from ELDAmwl.component.interface import IDBFunc
-from ELDAmwl.database.tables.elda_logs import ELDALogs
-from ELDAmwl.utils.constants import EBSC
-from ELDAmwl.utils.constants import MWL
-from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.backscatter import BscCalibrOption
 from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
@@ -14,22 +9,32 @@ from ELDAmwl.database.tables.backscatter import ElastBscMethod
 from ELDAmwl.database.tables.backscatter import IterBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBscMethod
-from ELDAmwl.database.tables.channels import ProductChannels, Channels
+from ELDAmwl.database.tables.channels import Channels
+from ELDAmwl.database.tables.channels import ProductChannels
+from ELDAmwl.database.tables.elda_logs import ELDALogs
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
-from ELDAmwl.database.tables.system_product import ErrorThresholds, MCOption, SmoothMethod
+from ELDAmwl.database.tables.system_product import ErrorThresholds
+from ELDAmwl.database.tables.system_product import MCOption
 from ELDAmwl.database.tables.system_product import MWLproductProduct
 from ELDAmwl.database.tables.system_product import PreparedSignalFile
-from ELDAmwl.database.tables.system_product import SmoothOptions, PreProcOptions
+from ELDAmwl.database.tables.system_product import PreProcOptions
 from ELDAmwl.database.tables.system_product import Products
 from ELDAmwl.database.tables.system_product import ProductTypes
+from ELDAmwl.database.tables.system_product import SmoothMethod
+from ELDAmwl.database.tables.system_product import SmoothOptions
 from ELDAmwl.database.tables.system_product import SystemProduct
-from ELDAmwl.errors.exceptions import NOMCOptions, NoBscCalOptions
+from ELDAmwl.errors.exceptions import NoBscCalOptions
+from ELDAmwl.errors.exceptions import NOMCOptions
+from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import MWL
+from ELDAmwl.utils.constants import RBSC
 from sqlalchemy.orm import aliased
-from zope import interface, component
+from zope import component
+from zope import interface
 
 
 def register_db_utils():
@@ -51,7 +56,7 @@ class DBFunc(DBUtils):
             datetime=datetime,
             product_id=product_id,
             module_version=module_version,
-            message=msg
+            message=msg,
         )
         self.session.add(log_msg)
         self.session.commit()
@@ -72,7 +77,7 @@ class DBFunc(DBUtils):
             return signals
         else:
             self.logger.error(
-                'no prepared signal files for measurement {0}'.format(measurement_id)
+                'no prepared signal files for measurement {0}'.format(measurement_id),
             )
 
     def read_algorithm(self, method_id, method_table):
@@ -94,7 +99,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number ({0}) of available methods'.format(methods.count())
+                'wrong number ({0}) of available methods'.format(methods.count()),
             )
 
     def read_effbin_algorithm(self, method_id, method_table):
@@ -118,7 +123,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number ({0}) of available methods'.format(methods.count())
+                'wrong number ({0}) of available methods'.format(methods.count()),
             )
 
     def read_usedbin_algorithm(self, method_id, method_table):
@@ -141,7 +146,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number ({0}) of available methods'.format(methods.count())
+                'wrong number ({0}) of available methods'.format(methods.count()),
             )
 
     def read_algorithm_options(self, method_table):
@@ -181,7 +186,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number of extinction options ({0})'.format(options.count())
+                'wrong number of extinction options ({0})'.format(options.count()),
             )
 
     def read_extinction_algorithm(self, product_id):
@@ -246,7 +251,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number of Raman bsc options ({0})'.format(options.count())
+                'wrong number of Raman bsc options ({0})'.format(options.count()),
             )
 
     def read_raman_bsc_smooth_method_id(self, product_id):
@@ -267,7 +272,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number of Raman bsc options ({0})'.format(options.count())
+                'wrong number of Raman bsc options ({0})'.format(options.count()),
             )
 
     def read_raman_bsc_algorithm(self, product_id):
@@ -332,7 +337,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number of elastic bsc options ({0})'.format(options.count())
+                'wrong number of elastic bsc options ({0})'.format(options.count()),
             )
 
     def read_elast_bsc_smooth_method_id(self, product_id):
@@ -353,7 +358,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number of elastic bsc options ({0})'.format(options.count())
+                'wrong number of elastic bsc options ({0})'.format(options.count()),
             )
 
     def read_elast_bsc_algorithm(self, product_id):
@@ -420,7 +425,7 @@ class DBFunc(DBUtils):
             return options[0]
         else:
             self.logger.error(
-                'wrong number of lidar ratio options ({0})'.format(options.count())
+                'wrong number of lidar ratio options ({0})'.format(options.count()),
             )
 
     def read_extinction_params(self, product_id):
@@ -453,7 +458,7 @@ class DBFunc(DBUtils):
                     overlap_file = o_file.first().OverlapFile.filename
                 else:
                     self.logger.error(
-                        'cannot find overlap file with id {0} in db'.format(options('_overlap_file_ID'))
+                        'cannot find overlap file with id {0} in db'.format(options('_overlap_file_ID')),
                     )
 
             result = {'angstroem': float(options.first().ExtinctionOption.angstroem),
@@ -465,7 +470,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number of extinction options ({0})'.format(options.count())
+                'wrong number of extinction options ({0})'.format(options.count()),
             )
 
     def get_products_query(self, mwl_prod_id, measurement_id):
@@ -496,7 +501,7 @@ class DBFunc(DBUtils):
             ErrorThresholdsHigh,
             PreparedSignalFile,
             ProductChannels,
-            Channels
+            Channels,
         ).filter(
             MWLproductProduct.mwl_product_id == mwl_prod_id,
         ).filter(
@@ -552,7 +557,7 @@ class DBFunc(DBUtils):
             ErrorThresholdsLow,
             ErrorThresholdsHigh,
             ProductChannels,
-            Channels
+            Channels,
         ).filter(
             PreProcOptions.product_id == Products.ID,
         ).filter(
@@ -577,7 +582,7 @@ class DBFunc(DBUtils):
             return options[0]
         else:
             self.logger.error(
-                'wrong number of product options ({0})'.format(options.count())
+                'wrong number of product options ({0})'.format(options.count()),
             )
 
     def get_smooth_params_query(self, prod_id):
@@ -592,15 +597,15 @@ class DBFunc(DBUtils):
             """
 
         options = self.session.query(
-            SmoothOptions
+            SmoothOptions,
         ).filter(
-            SmoothOptions.product_id == prod_id,)
+            SmoothOptions.product_id == prod_id)
 
         if options.count() == 1:
             return options[0]
         else:
             self.logger.error(
-                'wrong number of product options ({0})'.format(options.count())
+                'wrong number of product options ({0})'.format(options.count()),
             )
 
     def get_quality_params_query(self, prod_id):
@@ -622,7 +627,7 @@ class DBFunc(DBUtils):
         options = self.session.query(
             SmoothOptions,
             ErrorThresholdsLow,
-            ErrorThresholdsHigh
+            ErrorThresholdsHigh,
         ).filter(
             SmoothOptions.product_id == prod_id,
         ).filter(
@@ -634,7 +639,7 @@ class DBFunc(DBUtils):
             return options[0]
         else:
             self.logger.error(
-                'wrong number of product options ({0})'.format(options.count())
+                'wrong number of product options ({0})'.format(options.count()),
             )
 
     def read_elast_bsc_params(self, product_id):
@@ -673,7 +678,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number of elast bsc options ({0})'.format(options.count())
+                'wrong number of elast bsc options ({0})'.format(options.count()),
             )
 
     def read_iter_bsc_params(self, product_id):
@@ -691,8 +696,7 @@ class DBFunc(DBUtils):
             """
         options = self.session.query(IterBackscatterOption, ElastBackscatterOption) \
             .filter(ElastBackscatterOption.product_id == product_id) \
-            .filter(ElastBackscatterOption.iter_bsc_options_id ==
-                    IterBackscatterOption.ID)
+            .filter(ElastBackscatterOption.iter_bsc_options_id == IterBackscatterOption.ID)
 
         if options.count() == 1:
             result = {'conv_crit': options.first().IterBackscatterOption.iter_conv_crit,
@@ -703,7 +707,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number of iterative bsc options ({0})'.format(options.count())
+                'wrong number of iterative bsc options ({0})'.format(options.count()),
             )
 
     def read_raman_bsc_params(self, product_id):
@@ -730,7 +734,7 @@ class DBFunc(DBUtils):
             return result
         else:
             self.logger.error(
-                'wrong number of Raman bsc options ({0})'.format(options.count())
+                'wrong number of Raman bsc options ({0})'.format(options.count()),
             )
 
     def get_mc_params_query(self, prod_id):
@@ -796,7 +800,7 @@ class DBFunc(DBUtils):
             return products.first().Products.ID
         else:
             self.logger.error(
-                'wrong number of mwl products ({0})'.format(products.count())
+                'wrong number of mwl products ({0})'.format(products.count()),
             )
 
     def read_system_id(self, measurement_id):

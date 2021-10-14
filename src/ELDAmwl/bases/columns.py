@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
-from zope import component
-
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
+from zope import component
 
 import numpy as np
 import xarray as xr
@@ -63,15 +62,15 @@ class Columns(object):
                 'time': {
                     'dims': angle_var.coords['time'].dims,
                     'data': angle_var.coords['time'].data,
-                    },
                 },
+            },
         }
 
         if 'level' in data_var.dims:
             dct['dims'] = ('time', 'level')
             dct['coords']['level'] = {
-                'dims': data_var.coords['level'].dims,  # noqa E501
-                'data': data_var.coords['level'].data
+                'dims': data_var.coords['level'].dims,
+                'data': data_var.coords['level'].data,
             }  # noqa E501
 
         dct['attrs'] = data_var.attrs
@@ -124,20 +123,14 @@ class Columns(object):
 
     def first_valid_bin(self, time):
         try:
-            fvb = np.where(
-                ~np.isnan(self.data[time]) &
-                ~np.isnan(self.err[time])
-            )[0][0]
+            fvb = np.where(~np.isnan(self.data[time]) & ~np.isnan(self.err[time]))[0][0]
         except IndexError:
             fvb = None
         return fvb
 
     def last_valid_bin(self, time):
         try:
-            lvb = np.where(
-                ~np.isnan(self.data[time]) &
-                ~np.isnan(self.err[time])
-            )[0][-1]
+            lvb = np.where(~np.isnan(self.data[time]) & ~np.isnan(self.err[time]))[0][-1]
         except IndexError:
             lvb = None
         return lvb

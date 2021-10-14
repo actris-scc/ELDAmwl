@@ -3,12 +3,13 @@
 
 from sqlalchemy import CHAR
 from sqlalchemy import Column
-from sqlalchemy import DECIMAL
 from sqlalchemy import DateTime
+from sqlalchemy import DECIMAL
 from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy import text
 from sqlalchemy.ext.declarative import declarative_base
+
 
 Base = declarative_base()
 
@@ -21,33 +22,33 @@ class BscCalibrOption(Base):
     __tablename__ = 'bsc_calibr_options'
 
     ID = Column(
-        INTEGER, primary_key=True
+        INTEGER, primary_key=True,
     )
     LowestHeight = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'")
+        server_default=text("'0.0000'"),
     )
     TopHeight = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'")
+        server_default=text("'0.0000'"),
     )
     WindowWidth = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'")
+        server_default=text("'0.0000'"),
     )
     calValue = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'")
+        server_default=text("'0.0000'"),
     )
     calRangeSearchMethod_ID = Column(
-        "_calRangeSearchMethod_ID",
+        '_calRangeSearchMethod_ID',
         INTEGER,
         nullable=False,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
 
 
@@ -61,17 +62,17 @@ class BscCalibrMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text("'0'")
+        server_default=text("'0'"),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
     python_classname = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
 
 
@@ -85,12 +86,12 @@ class BscMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text("'0'")
+        server_default=text("'0'"),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
 
 
@@ -104,17 +105,17 @@ class RamanBscMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text("'0'")
+        server_default=text("'0'"),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
     python_classname = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
 
 
@@ -128,17 +129,17 @@ class ElastBscMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text("'0'")
+        server_default=text("'0'"),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
     python_classname = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
 
 
@@ -151,42 +152,42 @@ class RamanBackscatterOption(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     # Todo Ina: Change to non underscore names.
     product_id = Column(
-        "_product_ID",
+        '_product_ID',
         INTEGER,
         nullable=False,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     ram_bsc_method_id = Column(
-        "_ram_bsc_method_ID",
+        '"_ram_bsc_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     bsc_calibr_options_id = Column(
-        "_bsc_calibr_options_ID",
+        '_bsc_calibr_options_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     error_method_id = Column(
-        "_error_method_ID",
+        '_error_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     smooth_method_id = Column(
-        "_smooth_method_ID",
+        '"_smooth_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'0'")
+        server_default=text("'0'"),
     )
 
 
@@ -199,65 +200,65 @@ class ElastBackscatterOption(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     product_id = Column(
-        "_product_ID",
+        '"_product_ID',
         INTEGER,
         nullable=False,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     elast_bsc_method_id = Column(
-        "_elast_bsc_method_ID",
+        '_elast_bsc_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     bsc_calibr_options_id = Column(
-        "_bsc_calibr_options_ID",
+        '_bsc_calibr_options_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     error_method_id = Column(
-        "_error_method_ID",
+        '_error_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     lr_input_method_id = Column(
-        "_lr_input_method_id",
+        '_lr_input_method_id',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     fixed_lr = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'50.0000'")
+        server_default=text("'50.0000'"),
     )
     fixed_lr_error = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text("'0.0000'")
+        server_default=text("'0.0000'"),
     )
     iter_bsc_options_id = Column(
-        "_iter_bsc_options_id",
+        '_iter_bsc_options_id',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     smooth_method_id = Column(
-        "_smooth_method_ID",
+        '_smooth_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'0'")
+        server_default=text("'0'"),
     )
 
 
@@ -270,26 +271,26 @@ class IterBackscatterOption(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     iter_conv_crit = Column(
         DECIMAL,
         nullable=False,
         index=True,
-        server_default=text("'0.0100'")
+        server_default=text("'0.0100'"),
     )
     ram_bsc_method_id = Column(
-        "_ram_bsc_method_id",
+        '_ram_bsc_method_id',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'")
+        server_default=text("'-1'"),
     )
     max_iteration_count = Column(
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'10'")
+        server_default=text("'10'"),
     )
 
 
@@ -302,32 +303,32 @@ class LRFile(Base):
 
     ID = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     # Rule is: If a column has two underscores reduce to one
     hoi_stations_id = Column(
         '__hoi_stations__ID',
-        CHAR(3)
+        CHAR(3),
     )
     start = Column(
-        DateTime
+        DateTime,
     )
     stop = Column(
-        DateTime
+        DateTime,
     )
     filename = Column(
         String(100),
         nullable=False,
-        server_default=text("''")
+        server_default=text("''"),
     )
     interpolation_id = Column(
-        "_interpolation_id",
-        INTEGER
+        '_interpolation_id',
+        INTEGER,
     )
     submission_date = Column(
-        DateTime
+        DateTime,
     )
     status = Column(
         String(20),
-        nullable=False
+        nullable=False,
     )

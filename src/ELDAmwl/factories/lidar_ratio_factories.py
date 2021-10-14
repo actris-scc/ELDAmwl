@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """Classes for lidar ratio calculation"""
 
-from ELDAmwl.utils.constants import ERROR_METHODS
 from ELDAmwl.factories.extinction_factories import ExtinctionParams
-from ELDAmwl.products import ProductParams
 from ELDAmwl.factories.raman_bsc_factories import RamanBscParams
+from ELDAmwl.products import ProductParams
+from ELDAmwl.utils.constants import ERROR_METHODS
 
 
 class LidarRatioParams(ProductParams):

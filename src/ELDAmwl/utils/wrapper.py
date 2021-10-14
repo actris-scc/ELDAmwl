@@ -18,11 +18,10 @@ def scipy_reduce_wrapper(scipy_func):
             else:
                 raise SciPyWrapperAxisError  # we have more than one axis, raise an error
         elif isinstance(axis, int):
-            axis_scipy = axis # we assume that
+            axis_scipy = axis  # we assume that
         else:
             raise SciPyWrapperAxisError  # Unknown axis type detected. Raise an error
         # call the wrapped function
         return scipy_func(arr, axis_scipy, **kwargs)
 
     return wrapper
-

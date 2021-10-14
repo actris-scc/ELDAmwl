@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
+from ELDAmwl.database.db_functions import register_db_utils
+from ELDAmwl.errors.error_codes import NO_ERROR
+from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
+from ELDAmwl.errors.exceptions import ELDAmwlException
+from ELDAmwl.errors.exceptions import WrongCommandLineParameter
+from ELDAmwl.factories.elda_mwl_factories import RunELDAmwl
+from ELDAmwl.log.log import register_logger
+from ELDAmwl.storage.data_storage import register_datastorage
+from ELDAmwl.utils.constants import ELDA_MWL_VERSION
+
+import argparse
 import logging
 import sys
 import traceback
-
-from ELDAmwl.errors.error_codes import NO_ERROR, UNKNOWN_EXCEPTION
-from ELDAmwl.storage.data_storage import register_datastorage
-from ELDAmwl.utils.constants import ELDA_MWL_VERSION
-from ELDAmwl.database.db_functions import register_db_utils
-from ELDAmwl.factories.elda_mwl_factories import RunELDAmwl
-from ELDAmwl.errors.exceptions import ELDAmwlException, WrongCommandLineParameter
-from ELDAmwl.log.log import register_logger
-
-import argparse
 
 
 try:
@@ -152,7 +153,7 @@ class Main:
             self.logger.error('unknown exception raised {0}'.format(e))
             exc_type, exc_value, exc_traceback = sys.exc_info()
             for line in traceback.format_tb(exc_traceback):
-                self.logger.error("exception: %s" % (line[:-1]))
+                self.logger.error('exception: {}' % (line[:-1]))  # noqa P103
             sys.exit(UNKNOWN_EXCEPTION)
 
 

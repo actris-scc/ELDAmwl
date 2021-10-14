@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy.exc import OperationalError
-
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.database.tables.system_product import SystemProduct
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
 from ELDAmwl.errors.exceptions import DBErrorTerminating
-
+from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import sessionmaker
 from zope import component
+
 
 try:
     import ELDAmwl.configs.config as cfg
@@ -49,7 +47,7 @@ class DBUtils(object):
     def test_db(self):
         tasks = self.session.query(SystemProduct)
         try:
-            _first_task = tasks.first()
+            _first_task = tasks.first()  # noqa F841
         except OperationalError as e:
             self.logger.error(""""Database cannot be reached! Please check the database connection
                             and the db connection settings in your config.py\n{}""".format(e))

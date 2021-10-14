@@ -1,3 +1,5 @@
+"""Interfaces for the components"""
+
 from zope import interface
 
 
@@ -11,6 +13,7 @@ class ILogger(interface.Interface):
     """
     Marker Interface for logger utility
     """
+
 
 class IDataStorage(interface.Interface):
     """

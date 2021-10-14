@@ -22,174 +22,174 @@ class Measurements(Base):
 
     num_id = Column(
         INTEGER,
-        primary_key=True
+        primary_key=True,
     )
     ID = Column(
         VARCHAR(15),
-        nullable=False
+        nullable=False,
     )
     hoi_stations_id = Column(
         '__hoi_stations__ID',
         CHAR(3),
-        index=True
+        index=True,
     )
     hoi_system_id = Column(
-        "_hoi_system_ID",
+        '_hoi_system_ID',
         INTEGER,
         nullable=False,
-        index=True
+        index=True,
     )
     start = Column(
-        DateTime
+        DateTime,
     )
     stop = Column(
         DateTime,
-        nullable=False
+        nullable=False,
     )
     comment = Column(
         String(100),
-        nullable=False
+        nullable=False,
     )
     calipso = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     cirrus = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     etna = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     rurban = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     stratos = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     dicycles = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     photosmog = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     forfires = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     sahadust = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     climatol = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     upload = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     hirelpp = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     cloudmask = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     elquick = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     elpp = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     elda = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     eldec = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     elic = Column(
         INTEGER,
-        nullable=False
+        nullable=False,
     )
     hirelpp_return_code = Column(
-        INTEGER
+        INTEGER,
     )
     cloudmask_return_code = Column(
-        INTEGER
+        INTEGER,
     )
     elquick_return_code = Column(
-        INTEGER
+        INTEGER,
     )
     elpp_return_code = Column(
         INTEGER,
-        index=True
+        index=True,
     )
     elda_return_code = Column(
-        INTEGER
+        INTEGER,
     )
     eldec_return_code = Column(
-        INTEGER
+        INTEGER,
     )
     elic_return_code = Column(
-        INTEGER
+        INTEGER,
     )
     interface_return_code = Column(
         INTEGER,
-        index=True
+        index=True,
     )
     elpp_current_product_id = Column(
-        INTEGER
+        INTEGER,
     )
     eldec_current_product_id = Column(
-        INTEGER
+        INTEGER,
     )
     hirelpp_current_product_id = Column(
-        INTEGER
+        INTEGER,
     )
     cloudmask_current_product_id = Column(
-        INTEGER
+        INTEGER,
     )
     elda_current_product_id = Column(
-        INTEGER
+        INTEGER,
     )
     elic_current_product_id = Column(
-        INTEGER
+        INTEGER,
     )
     elquick_current_product_id = Column(
-        INTEGER
+        INTEGER,
     )
     creation_date = Column(
-        DateTime
+        DateTime,
     )
     updated_date = Column(
-        DateTime
+        DateTime,
     )
     sounding_file_id = Column(
         INTEGER,
-        index=True
+        index=True,
     )
     lidar_ratio_file_id = Column(
         INTEGER,
-        index=True
+        index=True,
     )
     overlap_file_id = Column(
         INTEGER,
-        index=True
+        index=True,
     )
     creation_auth_user_ID = Column(
-        INTEGER
+        INTEGER,
     )
     update_auth_user_ID = Column(
-        INTEGER
+        INTEGER,
     )

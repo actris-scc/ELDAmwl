@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """functions which are often calles with same parameters. Their results can be cached"""
 
+from ELDAmwl.component.interface import IDBFunc
 from functools import lru_cache
 from scipy.signal import savgol_coeffs
 from zope import component
-
-from ELDAmwl.component.interface import IDBFunc
 
 
 @lru_cache(maxsize=100)
@@ -16,7 +15,7 @@ def sg_coeffs(window_length, order):
 @lru_cache(maxsize=100)
 def sg_used_binres(eff_binres):
     used_binres = (eff_binres + 0.86) / 0.62
-    odd_binres = ((used_binres - 1)/2).round() * 2 + 1
+    odd_binres = ((used_binres - 1) / 2).round() * 2 + 1
 
     return odd_binres.astype(int)
 

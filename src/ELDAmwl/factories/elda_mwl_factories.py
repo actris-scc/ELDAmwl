@@ -2,32 +2,34 @@
 """ELDAmwl factories"""
 
 from addict import Dict
-from zope import component
-
 from ELDAmwl.bases.base import Params
+from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.component.interface import IDataStorage
-from ELDAmwl.utils.constants import EBSC, LOWRES, HIGHRES
+from ELDAmwl.errors.exceptions import ProductNotUnique
+from ELDAmwl.factories.elast_bsc_factories import ElastBscParams
+from ELDAmwl.factories.extinction_factories import ExtinctionParams
+from ELDAmwl.factories.lidar_ratio_factories import LidarRatioParams
+from ELDAmwl.factories.mwl_product_factories import GetProductMatrix
+from ELDAmwl.factories.mwl_product_factories import QualityControl
+from ELDAmwl.factories.raman_bsc_factories import RamanBscParams
+from ELDAmwl.get_basic_products import GetBasicProducts
+from ELDAmwl.output.write_mwl_output import WriteMWLOutput
+from ELDAmwl.prepare_signals import PrepareSignals
+from ELDAmwl.products import GeneralProductParams
+from ELDAmwl.products import SmoothParams
+from ELDAmwl.signals import ElppData
+from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import HIGHRES
+from ELDAmwl.utils.constants import LOWRES
 from ELDAmwl.utils.constants import LR
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR
-from ELDAmwl.storage.data_storage import DataStorage
-from ELDAmwl.factories.elast_bsc_factories import ElastBscParams
-from ELDAmwl.errors.exceptions import ProductNotUnique
-from ELDAmwl.factories.extinction_factories import ExtinctionParams
-from ELDAmwl.bases.factory import BaseOperation
-from ELDAmwl.get_basic_products import GetBasicProducts
-from ELDAmwl.factories.mwl_product_factories import GetProductMatrix, QualityControl
-from ELDAmwl.factories.lidar_ratio_factories import LidarRatioParams
-from ELDAmwl.prepare_signals import PrepareSignals
-from ELDAmwl.products import GeneralProductParams, SmoothParams
-from ELDAmwl.factories.raman_bsc_factories import RamanBscParams
-from ELDAmwl.signals import ElppData
+from zope import component
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from ELDAmwl.output.write_mwl_output import WriteMWLOutput
 
 try:
     import ELDAmwl.configs.config as cfg  # noqa E401
@@ -94,7 +96,7 @@ class MeasurementParams(Params):
         prod_df = self.measurement_params.product_table
 
         if res is not None:
-            all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()
+            all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()  # noqa E712
         else:
             all_wls = prod_df.wl.to_numpy()
 
@@ -112,7 +114,7 @@ class MeasurementParams(Params):
         prod_df = self.measurement_params.product_table
 
         if res is not None:
-            all_ptypes = prod_df['type'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()
+            all_ptypes = prod_df['type'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()   # noqa E712
         else:
             all_ptypes = prod_df.type.to_numpy()
 
@@ -300,34 +302,22 @@ class RunELDAmwl(BaseOperation):
 
     def prepare_signals(self):
         self.logger.info('prepare signals')
-        PrepareSignals()(
-#            data_storage=self.data,
-            products=self.params.basic_products(),
-            ).run()
+        PrepareSignals()(products=self.params.basic_products()).run()
 
     def get_basic_products(self):
         self.logger.info('calc basic products ')
-        GetBasicProducts()(
-#            data_storage=self.data,
-            product_params=self.params,
-            ).run()
+        GetBasicProducts()(product_params=self.params).run()
 
     def get_derived_products(self):
         self.logger.info('calc derived products ')
 
     def get_product_matrix(self):
         self.logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
-        GetProductMatrix()(
-#           data_storage=self.data,
-           product_params=self.params,
-            ).run()
+        GetProductMatrix()(product_params=self.params).run()
 
     def quality_control(self):
         self.logger.info('synergistic quality control of all products ')
-        QualityControl()(
-#            data_storage=self.data,
-            product_params=self.params,
-            ).run()
+        QualityControl()(product_params=self.params).run()
 
     def write_single_output(self):
         self.logger.info('write products into NetCDF files ')
@@ -337,10 +327,7 @@ class RunELDAmwl(BaseOperation):
 
     def write_mwl_output(self):
         self.logger.info('write all products into one NetCDF file ')
-        WriteMWLOutput()(
-#            data_storage=self.data,
-            product_params=self.params,
-            ).run()
+        WriteMWLOutput()(product_params=self.params).run()
 
     @property
     def data(self):

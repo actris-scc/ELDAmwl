@@ -1,5 +1,6 @@
+from logging import ERROR
+from logging import log
 from pathlib import Path
-from logging import log, ERROR
 
 
 def dir_not_found_hint(path_str):

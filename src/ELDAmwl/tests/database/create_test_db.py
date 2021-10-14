@@ -3,23 +3,33 @@
 
 from ELDAmwl.configs.config_default import STRP_DATE_TIME_FORMAT
 from ELDAmwl.database.db import DBUtils
-from ELDAmwl.database.tables.backscatter import BscCalibrOption, BscCalibrMethod, BscMethod, RamanBscMethod, \
-    ElastBscMethod, IterBackscatterOption, LRFile
+from ELDAmwl.database.tables.backscatter import BscCalibrMethod
+from ELDAmwl.database.tables.backscatter import BscCalibrOption
+from ELDAmwl.database.tables.backscatter import BscMethod
 from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
+from ELDAmwl.database.tables.backscatter import ElastBscMethod
+from ELDAmwl.database.tables.backscatter import IterBackscatterOption
+from ELDAmwl.database.tables.backscatter import LRFile
 from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
-from ELDAmwl.database.tables.channels import ProductChannels, Channels
+from ELDAmwl.database.tables.backscatter import RamanBscMethod
+from ELDAmwl.database.tables.channels import Channels
+from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
 from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
-from ELDAmwl.database.tables.system_product import ErrorThresholds, PreProcOptions, SmoothOptions, SmoothTypes, \
-    SmoothMethod, MCOption
+from ELDAmwl.database.tables.system_product import ErrorThresholds
+from ELDAmwl.database.tables.system_product import MCOption
 from ELDAmwl.database.tables.system_product import MWLproductProduct
 from ELDAmwl.database.tables.system_product import PreparedSignalFile
+from ELDAmwl.database.tables.system_product import PreProcOptions
 from ELDAmwl.database.tables.system_product import Products
 from ELDAmwl.database.tables.system_product import ProductTypes
+from ELDAmwl.database.tables.system_product import SmoothMethod
+from ELDAmwl.database.tables.system_product import SmoothOptions
+from ELDAmwl.database.tables.system_product import SmoothTypes
 from ELDAmwl.database.tables.system_product import SystemProduct
 from ELDAmwl.errors.exceptions import CsvFileNotFound
 from ELDAmwl.errors.exceptions import FillTableFailed

@@ -2,27 +2,35 @@
 """base classes for products"""
 from addict import Dict
 from copy import deepcopy
-
-from zope import component
-
 from ELDAmwl.bases.base import Params
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
-from ELDAmwl.storage.cached_functions import sg_coeffs, smooth_routine_from_db
+from ELDAmwl.component.registry import registry
 from ELDAmwl.configs.config import RANGE_BOUNDARY_KM
-from ELDAmwl.utils.constants import COMBINE_DEPOL_USE_CASES, MC, FIXED, HIGHRES, LOWRES, RESOLUTION_STR,  \
-    CALC_WINDOW_OUTSIDE_PROFILE
+from ELDAmwl.errors.exceptions import DetectionLimitZero
+from ELDAmwl.errors.exceptions import NotEnoughMCIterations
+from ELDAmwl.errors.exceptions import SizeMismatch
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+from ELDAmwl.rayleigh import RayleighLidarRatio
+from ELDAmwl.signals import Signals
+from ELDAmwl.storage.cached_functions import sg_coeffs
+from ELDAmwl.storage.cached_functions import smooth_routine_from_db
+from ELDAmwl.utils.constants import CALC_WINDOW_OUTSIDE_PROFILE
+from ELDAmwl.utils.constants import COMBINE_DEPOL_USE_CASES
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import FIXED
+from ELDAmwl.utils.constants import HIGHRES
+from ELDAmwl.utils.constants import LOWRES
+from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import MERGE_PRODUCT_USE_CASES
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.utils.constants import RBSC
-from ELDAmwl.bases.factory import BaseOperationFactory, BaseOperation
-from ELDAmwl.errors.exceptions import DetectionLimitZero, NotEnoughMCIterations, SizeMismatch, UseCaseNotImplemented
-from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.rayleigh import RayleighLidarRatio
-from ELDAmwl.component.registry import registry
-from ELDAmwl.signals import Signals
+from ELDAmwl.utils.constants import RESOLUTION_STR
+from zope import component
 
 import numpy as np
 import xarray as xr
@@ -359,8 +367,7 @@ class GeneralProductParams(Params):
         except AttributeError:
             pass
 
-        result.rayl_lr = RayleighLidarRatio()(
-                wavelength=result.emission_wavelength).run()
+        result.rayl_lr = RayleighLidarRatio()(wavelength=result.emission_wavelength).run()
 
         return result
 
@@ -436,15 +443,18 @@ class SmoothParams(Params):
 
         self.transition_zone = Dict({'bottom': None,
                                      'top': None})
-        self.vert_res = self.time_res = Dict({
-            RESOLUTION_STR[LOWRES]: Dict({
-                'lowrange': None,
-                'highrange': None
-                }),
-            RESOLUTION_STR[HIGHRES]: Dict({
-                'lowrange': None,
-                'highrange': None
-                }),
+        self.vert_res = self.time_res = Dict(
+            {
+                RESOLUTION_STR[LOWRES]: Dict(
+                    {
+                        'lowrange': None,
+                        'highrange': None,
+                    }),
+                RESOLUTION_STR[HIGHRES]: Dict(
+                    {
+                        'lowrange': None,
+                        'highrange': None,
+                    }),
             })
 
     @classmethod
@@ -530,8 +540,8 @@ class SmoothSavGolay(BaseOperation):
         data = kwargs['data']
 
         sgc = sg_coeffs(win, 2)
-        err_sm = np.sqrt(np.sum(np.power(err*sgc, 2)))
-        data_sm = np.sum(data*sgc)
+        err_sm = np.sqrt(np.sum(np.power(err * sgc, 2)))
+        data_sm = np.sum(data * sgc)
 
         return Dict({'data': data_sm, 'err': err_sm})
 
