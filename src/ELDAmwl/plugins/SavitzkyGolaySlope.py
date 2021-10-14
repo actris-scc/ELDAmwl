@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """plugin for calculation of slope with Savitzky-Golay method"""
 
-from ELDAmwl.factories.extinction_factories import SignalSlope
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.component.registry import registry
+from ELDAmwl.factories.extinction_factories import SignalSlope
 
 
 class SavGolaySlope(BaseOperation):

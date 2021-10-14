@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 """ELDAmwl factories"""
-from copy import deepcopy
-
-import zope
 from addict import Dict
-from zope import component
-
+from copy import deepcopy
 from ELDAmwl.component.interface import IDataStorage
-from ELDAmwl.utils.constants import HIGHRES, LOWRES, RESOLUTION_STR, NC_FILL_BYTE
 from ELDAmwl.errors.exceptions import DifferentCloudMaskExists
 from ELDAmwl.errors.exceptions import NotFoundInStorage
 from ELDAmwl.products import Products
+from ELDAmwl.utils.constants import HIGHRES
+from ELDAmwl.utils.constants import LOWRES
+from ELDAmwl.utils.constants import NC_FILL_BYTE
+from ELDAmwl.utils.constants import RESOLUTION_STR
+from zope import component
 
 import numpy as np
 import xarray as xr
+import zope
 
 
 @zope.interface.implementer(IDataStorage)
@@ -32,41 +33,38 @@ class DataStorage:
     name = 'Datastorage'
 
     def __init__(self):
-        self.__data = Dict({'elpp_signals': Dict(),
-                          'prepared_signals': Dict(),
+        self.__data = Dict(
+            {
+                'elpp_signals': Dict(),
+                'prepared_signals': Dict(),
 
-                          'basic_products_raw': Dict(),
-                          'basic_products_auto_smooth': Dict(),
-                          'binres_auto_smooth': Dict(),
+                'basic_products_raw': Dict(),
+                'basic_products_auto_smooth': Dict(),
+                'binres_auto_smooth': Dict(),
 
-                          'binres_common_smooth': Dict(
-                              {
-                                LOWRES: Dict(),
-                                HIGHRES: Dict()
-                                }
-                          ),
-                            'basic_products_common_smooth': Dict(
-                              {
-                                LOWRES: Dict(),
-                                HIGHRES: Dict()
-                              }
-                          ),
-                            'derived_products_common_smooth': Dict(
-                              {
-                                LOWRES: Dict(),
-                                HIGHRES: Dict()
-                              }
-                          ),
-                            'final_product_matrix': Dict(
-                              {
-                                LOWRES: Dict(),
-                                HIGHRES: Dict()
-                              }
-                          ),
-
-                            'header': None,
-                            'cloud_mask': None,
-                            })
+                'binres_common_smooth': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
+                'basic_products_common_smooth': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
+                'derived_products_common_smooth': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
+                'final_product_matrix': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
+                'header': None,
+                'cloud_mask': None,
+            })
 
     def set_elpp_signal(self, prod_id_str, new_signal):
         """write new ELPP signal to storage"""
@@ -268,10 +266,12 @@ class DataStorage:
                 is found in storage
         """
 
-        return self._get_prod_res_entry(prod_id_str, None,
-                                       'basic_products_raw',
-                                       'product',
-                                       'basic products without smoothing')
+        return self._get_prod_res_entry(
+            prod_id_str,
+            None,
+            'basic_products_raw',
+            'product',
+            'basic products without smoothing')
 
     def basic_product_auto_smooth(self, prod_id_str):
         """copy of a basic product, derived with automatic smooth
@@ -287,10 +287,12 @@ class DataStorage:
                 is found in storage
         """
 
-        return self._get_prod_res_entry(prod_id_str, None,
-                                       'basic_products_auto_smooth',
-                                       'product',
-                                       'basic products with automatic smoothing')
+        return self._get_prod_res_entry(
+            prod_id_str,
+            None,
+            'basic_products_auto_smooth',
+            'product',
+            'basic products with automatic smoothing')
 
     def binres_auto_smooth(self, prod_id_str):
         """ copy of the bin resolution profile of a product
@@ -311,10 +313,12 @@ class DataStorage:
              NotFoundInStorage: if no entry for the given product id
                 and resolution was found in storage
         """
-        return self._get_prod_res_entry(prod_id_str, None,
-                                       'binres_auto_smooth',
-                                       'automatically derived bin resolution profile',
-                                       'product {0}'.format(prod_id_str))
+        return self._get_prod_res_entry(
+            prod_id_str,
+            None,
+            'binres_auto_smooth',
+            'automatically derived bin resolution profile',
+            'product {0}'.format(prod_id_str))
 
     def binres_common_smooth(self, prod_id_str, resolution):
         """ copy of a bin resolution profile of a product
@@ -337,10 +341,12 @@ class DataStorage:
              NotFoundInStorage: if no entry for the given product id
                 and resolution was found in storage
         """
-        return self._get_prod_res_entry(prod_id_str, resolution,
-                                       'binres_common_smooth',
-                                       'common bin resolution profile',
-                                       'product {0} in '.format(prod_id_str))
+        return self._get_prod_res_entry(
+            prod_id_str,
+            resolution,
+            'binres_common_smooth',
+            'common bin resolution profile',
+            'product {0} in '.format(prod_id_str))
 
     def basic_product_common_smooth(self, prod_id_str, resolution):
         """copy of a basic product, derived with common smooth
@@ -357,10 +363,12 @@ class DataStorage:
                 is found in storage
         """
 
-        return self._get_prod_res_entry(prod_id_str, resolution,
-                                       'basic_products_common_smooth',
-                                       'product',
-                                       'basic products with common smoothing with')
+        return self._get_prod_res_entry(
+            prod_id_str,
+            resolution,
+            'basic_products_common_smooth',
+            'product',
+            'basic products with common smoothing with')
 
     def derived_product_common_smooth(self, prod_id_str, resolution):
         """copy of a basic product, derived with common smooth
@@ -377,10 +385,12 @@ class DataStorage:
                 is found in storage
         """
 
-        return self._get_prod_res_entry(prod_id_str, resolution,
-                                       'derived_products_common_smooth',
-                                       'product',
-                                       'derived products with common smoothing with')
+        return self._get_prod_res_entry(
+            prod_id_str,
+            resolution,
+            'derived_products_common_smooth',
+            'product',
+            'derived products with common smoothing with')
 
     def product_common_smooth(self, prod_id_str, resolution):
         """copy of a product, derived with common smooth
