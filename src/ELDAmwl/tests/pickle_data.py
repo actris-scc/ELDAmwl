@@ -1,7 +1,5 @@
 import pickle
 
-from ELDAmwl.configs.config_default import PICKLE_DATA_DIR
-
 from pickle import dump, load, dumps
 import dill
 import pathlib

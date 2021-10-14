@@ -316,7 +316,7 @@ class Signals(Columns):
         """
 
         result = deepcopy(transm_sig)  # see also weakref
-        depol_params = {'HR': refl_sig.h.data,   # ToDo Ina debug
+        depol_params = {'HR': refl_sig.h.data,
                         'GR': refl_sig.g.data,
                         'HT': transm_sig.h.data,
                         'GT': transm_sig.g.data,
@@ -671,7 +671,7 @@ class CombineDepolComponentsDefault(BaseOperation):
         factor = etaS / K * HR
         denom = (HR*GT - HT*GR)
 
-        result = deepcopy(transm_sig)
+        result = deepcopy(transm_sig)  # todo ina: is this copy necessary?
         result['data'] = (factor * transm_sig.data -
                           HT * refl_sig.data) / denom
         result['err'] = np.sqrt(np.square(HT * refl_sig.err) +

@@ -85,7 +85,8 @@ class GetBasicProductsDefault(BaseOperation):
             if prod_param.product_type in [EXT, RBSC]:  # todo remove this limit
                 used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
                 for res in RESOLUTIONS:
-                    dummy_sig = deepcopy(self.data_storage.prepared_signals(pid)[0])
+                    # dummy_sig is a deepcopy from data storage
+                    dummy_sig = self.data_storage.prepared_signals(pid)[0]
                     if prod_param in self.product_params.all_products_of_res(res):
                         binres = dummy_sig.get_binres_from_fixed_smooth(
                             sp,
@@ -143,6 +144,8 @@ class GetBasicProductsDefault(BaseOperation):
 
     def get_raman_bsc_auto_smooth(self):
         for bsc_param in self.product_params.raman_bsc_products():
+            prod_id = bsc_param.prod_id_str
+
             bsc = RamanBackscatterFactory()(
                 data_storage=self.data_storage,
                 bsc_param=bsc_param,
@@ -151,15 +154,17 @@ class GetBasicProductsDefault(BaseOperation):
             ).get_product()
 
             self.data_storage.set_basic_product_raw(
-                bsc_param.prod_id_str, bsc)
+                prod_id, bsc)
 
-            smooth_bsc = deepcopy(bsc)
-            smooth_bsc.smooth(self.data_storage.binres_auto_smooth(bsc_param.prod_id_str))
+            smooth_bsc = self.data_storage.basic_product_raw(prod_id)
+            smooth_bsc.smooth(self.data_storage.binres_auto_smooth(prod_id))
             self.data_storage.set_basic_product_auto_smooth(
-                bsc_param.prod_id_str, smooth_bsc)
+                prod_id, smooth_bsc)
 
     def get_raman_bsc_fixed_smooth(self):
         for bsc_param in self.product_params.raman_bsc_products():
+            prod_id = bsc_param.prod_id_str
+            # calc preliminary bsc
             bsc = RamanBackscatterFactory()(
                 data_storage=self.data_storage,
                 bsc_param=bsc_param,
@@ -168,11 +173,13 @@ class GetBasicProductsDefault(BaseOperation):
             ).get_product()
 
             for res in RESOLUTIONS:
+                # if resolution res is required: make a copy of bsc and smooth it
                 if bsc_param in self.product_params.all_products_of_res(res):
                     smooth_bsc = deepcopy(bsc)
-                    smooth_bsc.smooth(self.data_storage.binres_common_smooth(bsc_param.prod_id_str, res))
+                    smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                     self.data_storage.set_basic_product_common_smooth(
-                        bsc_param.prod_id_str, res, smooth_bsc)
+                        prod_id, res, smooth_bsc)
+            del bsc
 
 
 class GetBasicProducts(BaseOperationFactory):

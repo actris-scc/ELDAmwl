@@ -2,7 +2,6 @@
 """Classes for preparation of signals
 (combining depol component, temporal integration, .."""
 from addict import Dict
-from copy import deepcopy
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import KF
