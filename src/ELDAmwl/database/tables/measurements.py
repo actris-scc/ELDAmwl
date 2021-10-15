@@ -1,20 +1,16 @@
 # -*- coding: utf-8 -*-
 """Classes for measurement related db tables"""
 
+# structure geneated with
+# (ELDAmwl) C:\Users\imattis>sqlacodegen mysql+pymysql://earlinet:dwdlidar@localhost/scc_dev_20190228  # noqa E501
+# > k:\auswertung\Mattis\myPrograms\python\ELDAmwl\db_structure.txt
+from ELDAmwl.database.tables.db_base import Base
 from sqlalchemy import CHAR
 from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy import VARCHAR
-from sqlalchemy.ext.declarative import declarative_base
-
-
-Base = declarative_base()
-
-# structure geneated with
-# (ELDAmwl) C:\Users\imattis>sqlacodegen mysql+pymysql://earlinet:dwdlidar@localhost/scc_dev_20190228  # noqa E501
-# > k:\auswertung\Mattis\myPrograms\python\ELDAmwl\db_structure.txt
 
 
 class Measurements(Base):

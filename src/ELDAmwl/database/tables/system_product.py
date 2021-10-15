@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for measurement system-product related db tables"""
 
+from ELDAmwl.database.tables.db_base import Base
 from sqlalchemy import CHAR
 from sqlalchemy import Column
 from sqlalchemy import DECIMAL
@@ -8,10 +9,6 @@ from sqlalchemy import Float
 from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy import text
-from sqlalchemy.ext.declarative import declarative_base
-
-
-Base = declarative_base()
 
 
 class SystemProduct(Base):
