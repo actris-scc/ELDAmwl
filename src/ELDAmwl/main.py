@@ -118,11 +118,10 @@ class Main:
 
         return meas_id
 
-    def elda(self):
+    def elda(self, meas_id):
         """
         Todo Ina Missing doc
         """
-        meas_id = self.elda_init()
 
         elda_mwl = RunELDAmwl(meas_id)
         elda_mwl.read_tasks()
@@ -136,12 +135,13 @@ class Main:
         elda_mwl.quality_control()
         elda_mwl.write_mwl_output()
 
-        self.logger.info('the end')
+        self.logger.info('the happy end')
 
     def run(self):
 
         try:
-            self.elda()
+            meas_id = self.elda_init()
+            self.elda(meas_id)
 
             sys.exit(NO_ERROR)
 
