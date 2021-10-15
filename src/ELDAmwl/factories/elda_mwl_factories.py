@@ -8,11 +8,12 @@ from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.errors.exceptions import ProductNotUnique
 from ELDAmwl.factories.elast_bsc_factories import ElastBscParams
 from ELDAmwl.factories.extinction_factories import ExtinctionParams
+from ELDAmwl.factories.get_derived_products import GetDerivedProducts
 from ELDAmwl.factories.lidar_ratio_factories import LidarRatioParams
 from ELDAmwl.factories.mwl_product_factories import GetProductMatrix
 from ELDAmwl.factories.mwl_product_factories import QualityControl
 from ELDAmwl.factories.raman_bsc_factories import RamanBscParams
-from ELDAmwl.get_basic_products import GetBasicProducts
+from ELDAmwl.factories.get_basic_products import GetBasicProducts
 from ELDAmwl.output.write_mwl_output import WriteMWLOutput
 from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams
@@ -185,6 +186,17 @@ class MeasurementParams(Params):
         """
         return self.raman_bsc_products() + self.elast_bsc_products()
 
+    def lidar_ratio_products(self):
+        """list of parameters of all lidar_ratio products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all lidar ratio products
+        """
+        prod_df = self.measurement_params.product_table
+        ids = prod_df['id'][prod_df.type == LR]
+        return self.filtered_list(ids)
+
     def filtered_list(self, filtered_ids):
         """ converts a filtered subset of the product_table
         into list of product parameter instances`
@@ -310,6 +322,7 @@ class RunELDAmwl(BaseOperation):
 
     def get_derived_products(self):
         self.logger.info('calc derived products ')
+        GetDerivedProducts()(product_params=self.params).run()
 
     def get_product_matrix(self):
         self.logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')

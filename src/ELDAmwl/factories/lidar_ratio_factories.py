@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 """Classes for lidar ratio calculation"""
+from copy import deepcopy
 
+import numpy as np
+from addict import Dict
+import xarray as xr
+
+from ELDAmwl.bases.factory import BaseOperationFactory, BaseOperation
 from ELDAmwl.factories.extinction_factories import ExtinctionParams
 from ELDAmwl.factories.raman_bsc_factories import RamanBscParams
-from ELDAmwl.products import ProductParams
-from ELDAmwl.utils.constants import ERROR_METHODS
+from ELDAmwl.products import ProductParams, Products
+from ELDAmwl.utils.constants import ERROR_METHODS, NC_FILL_STR
+from ELDAmwl.component.registry import registry
 
 
 class LidarRatioParams(ProductParams):
@@ -46,3 +53,178 @@ class LidarRatioParams(ProductParams):
         )
         self.backscatter_params.assign_to_product_list(global_product_list)
         self.extinction_params.assign_to_product_list(global_product_list)
+
+
+class LidarRatioFactory(BaseOperationFactory):
+    """
+     argument resolution, can be LOWRES(=0) or HIGHRES(=1)
+    """
+
+    name = 'LidarRatioFactory'
+
+    def __call__(self, **kwargs):
+        # assert 'data_storage' in kwargs
+        assert 'lr_param' in kwargs
+        assert 'resolution' in kwargs
+        res = super(LidarRatioFactory, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """
+
+        return: always 'lidarRatioFactoryDefault' .
+        """
+        return LidarRatioFactoryDefault.__name__
+
+
+class LidarRatioFactoryDefault(BaseOperation):
+    """
+    derives a single instance of :class:`LidarRatios`.
+    """
+
+    name = 'lidarRatioFactoryDefault'
+
+    param = None
+    resolution = None
+#    data_storage = None
+
+    def get_product(self):
+
+        self.param = self.kwargs['lr_param']
+        self.resolution = self.kwargs['resolution']
+
+        if not self.param.includes_product_merging():
+            # ext and bsc are deepcopies from the data storage
+            ext = self.data_storage.basic_product_common_smooth(self.param.ext_prod_id, self.resolution)
+            bsc = self.data_storage.basic_product_common_smooth(self.param.bsc_prod_id, self.resolution)
+
+            lr = LidarRatios.from_ext_bsc(ext, bsc, self.param)
+
+        else:
+            lr = None
+
+        result = lr
+
+        return result
+
+
+class LidarRatios(Products):
+    """
+    time series of lidar ratio profiles
+    """
+    @classmethod
+    def from_ext_bsc(cls, bsc, ext, p_params, **kwargs):
+        """calculates LidarRatios from a backscatter and an extinction profile.
+
+        Args:
+            bsc (Backscatters): time series of backscatter coefficient profiles
+            ext (Extinctions): time series of extinction coefficient profiles
+            p_params (LidarRatioParams)
+        """
+        result = super(LidarRatios, cls).from_signal(ext, p_params, **kwargs)
+
+        # create Dict with all params which are needed for the calculation
+        lr_params = Dict({
+            'error_method': result.params.error_method,
+            'min_bsc_ratio': result.params.min_BscRatio_for_LR,
+            })
+
+        lr_routine = CalcLidarRatio()(
+            prod_id=p_params.prod_id_str,
+            ext=ext.ds,
+            bsc=bsc.ds,
+            lr_params=lr_params)
+
+        result.ds = lr_routine.run()
+
+        del ext
+        del bsc
+
+        return result
+
+    # def to_meta_ds_dict(self, meta_data):
+    #     # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
+    #     # and attributes it with key self.mwl_meta_id to meta_data
+    #     super(Extinctions, self).to_meta_ds_dict(meta_data)
+    #     dct = meta_data[self.mwl_meta_id]
+    #     self.params.to_meta_ds_dict(dct)
+
+
+class CalcLidarRatio(BaseOperationFactory):
+    """
+    Returns an instance of BaseOperation which calculates the particle
+   lidar ratio from extinction and backscatter. In this case, it
+    will be always an instance of SlopeToExtinctionDefault().
+    """
+
+    name = 'CalcLidarRatio'
+    prod_id = NC_FILL_STR  # Todo Ina into Base class???
+
+    def __call__(self, **kwargs):
+        assert 'prod_id' in kwargs
+        assert 'ext' in kwargs
+        assert 'bsc' in kwargs
+        assert 'lr_params' in kwargs
+        self.prod_id = kwargs['prod_id']
+        res = super(CalcLidarRatio, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """
+
+        return: always 'CalcLidarRatioDefault' .
+        """
+        return 'CalcLidarRatioDefault'
+
+
+class CalcLidarRatioDefault(BaseOperation):
+    """
+    Calculates particle lidar ratio from extinction and backscatter.
+
+    Keyword Args:
+        ext (xarray.DataSet):
+            profiles of particle extincion coefficient with \
+            variables 'data', 'error', 'qf',
+            'binres'
+        bsc (xarray.DataSet):
+            profiles of particle backscatter coefficient with \
+            variables 'data', 'error', 'qf',
+            'binres'
+        lr_params (addict.Dict):
+            with keys 'min_bsc_ratio' (lidar ratios are not calculated for data points with
+                                        backscatter ratios smaller than this value)
+
+    Returns:
+        particle lidar ratio profiles (xarray.Dataset) with \
+            variables 'data', 'error', 'qf',
+            'binres',
+    """
+
+    name = 'CalcLidarRatioDefault'
+
+    def run(self):
+        """
+        """
+
+        ext = self.kwargs['ext']
+        bsc = self.kwargs['bsc']
+        # lr_params = self.kwargs['lr_params']
+
+        result = xr.Dataset()
+        result['data'] = ext.data / bsc.data
+        result['err'] = result['data'] * \
+                        np.sqrt( np.power(ext['err'] / ext['data'], 2) +
+                                 np.power(bsc['err'] / bsc['data'], 2)
+                                 )
+        result['qf'] = ext.qf | bsc.qf
+        result['time_bounds'] = ext.time_bounds
+
+        return result
+
+registry.register_class(CalcLidarRatio,
+                        CalcLidarRatioDefault.__name__,
+                        CalcLidarRatioDefault)
+
+registry.register_class(LidarRatioFactory,
+                        LidarRatioFactoryDefault.__name__,
+                        LidarRatioFactoryDefault)

@@ -41,6 +41,7 @@ GET_EFF_BINRES_CLASSES = {
 class GetBasicProductsDefault(BaseOperation):
     """
     """
+    name = 'GetBasicProductsDefault'
 
     data_storage = None
     product_params = None
@@ -206,7 +207,7 @@ class GetBasicProducts(BaseOperationFactory):
     def get_classname_from_db(self):
         """
 
-        return: always 'DoPrepareSignals' .
+        return: always 'GetBasicProductsDefault' .
         """
         return GetBasicProductsDefault.__name__
 

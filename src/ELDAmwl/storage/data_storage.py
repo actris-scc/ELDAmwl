@@ -96,6 +96,11 @@ class DataStorage:
         """
         self.__data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
 
+    def set_derived_products(self, prod_id_str, res, new_product):
+        """write a derived product to storage
+        """
+        self.__data.derived_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
+
     def set_final_product_matrix(self, prod_type, res, new_dataset):
         """write a dataset with common grid (wavelength, time, altitude) to storage
 
@@ -347,11 +352,11 @@ class DataStorage:
             'product {0} in '.format(prod_id_str)
         )
 
-    def basic_product_common_smooth(self, prod_id_str, resolution):
+    def basic_product_common_smooth(self, prod_id, resolution):
         """copy of a basic product, derived with common smooth
 
         Args:
-            prod_id_str (str):  product id
+            prod_id_str (str) or (int):  product id
             resolution (int): can be LOWRES (=0) or HIGHRES (=1)
 
         Returns:
@@ -363,7 +368,7 @@ class DataStorage:
         """
 
         return self._get_prod_res_entry(
-            prod_id_str,
+            str(prod_id),
             resolution,
             'basic_products_common_smooth',
             'product',
