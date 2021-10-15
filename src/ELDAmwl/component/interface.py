@@ -19,3 +19,9 @@ class IDataStorage(interface.Interface):
     """
     Marker Interface for global data storage
     """
+
+
+class IDBConstructor(interface.Interface):
+    """
+    Marker Interface for global test DB creator
+    """

@@ -262,7 +262,6 @@ class SmoothTypes(Base):
     __tablename__ = '_smooth_types'
 
     ID = Column(
-        'Id',
         INTEGER,
         primary_key=True,
     )
@@ -286,27 +285,27 @@ class SmoothMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text('0'),
+        server_default=text("'0'"),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text(''),
+        server_default=text("''"),
     )
     python_classname = Column(
         String(100),
         nullable=False,
-        server_default=text(''),
+        server_default=text("''"),
     )
     python_classname_get_used_binres = Column(
         String(100),
         nullable=False,
-        server_default=text(''),
+        server_default=text("''"),
     )
     python_classname_get_effective_binres = Column(
         String(100),
         nullable=False,
-        server_default=text(''),
+        server_default=text("''"),
     )
 
 

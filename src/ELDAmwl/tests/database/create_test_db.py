@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+from zope import component
 
-
+from ELDAmwl.component.interface import IDBConstructor, ILogger
 from ELDAmwl.configs.config_default import STRP_DATE_TIME_FORMAT
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.backscatter import BscCalibrMethod
@@ -33,7 +34,6 @@ from ELDAmwl.database.tables.system_product import SmoothTypes
 from ELDAmwl.database.tables.system_product import SystemProduct
 from ELDAmwl.errors.exceptions import CsvFileNotFound
 from ELDAmwl.errors.exceptions import FillTableFailed
-from ELDAmwl.log import logger
 from sqlalchemy import DateTime
 from sqlalchemy import inspect
 from sqlalchemy.orm import sessionmaker
@@ -42,6 +42,7 @@ import csv
 import datetime
 import os
 import sqlalchemy
+import zope
 
 
 # List of all DB tables in the test DB
@@ -88,17 +89,19 @@ TEST_CONNECT_STRING = 'sqlite+pysqlite:///' + TEST_DB_FILEPATH
 CSV_DATA_SOURCE = os.path.join(TEST_DB_PATH, 'csv_sources')
 
 
+@zope.interface.implementer(IDBConstructor)
 class DBConstructor(object):
     """
     Construct a test DB from CSV files
     """
 
     def __init__(self):
-        self.remove_db()
-
+        self.logger = component.queryUtility(ILogger)
         self.engine = DBUtils(TEST_CONNECT_STRING).engine
         self.session = sessionmaker(bind=self.engine)()
 
+    def run(self):
+        self.remove_db()
         self.create_tables()
         self.fill_tables()
 
@@ -117,9 +120,9 @@ class DBConstructor(object):
         """
         for table in ALL_DB_TABLES:
 
-            logger.info('Creating table {0}'.format(table.__tablename__))
+            self.logger.info('Creating table {0}'.format(table.__tablename__))
             table.metadata.create_all(self.engine)
-            logger.info('Created table {0}, sucessfully'.format(table.__tablename__ ))  # noqa E501
+            self.logger.info('Created table {0}, sucessfully'.format(table.__tablename__ ))  # noqa E501
 
     def csv_data(self, table):
         """
@@ -135,7 +138,7 @@ class DBConstructor(object):
         try:
             csvfile = open(file_name)
         except FileNotFoundError:
-            logger.warning('CSV file {0} not found'.format(file_name))
+            self.logger.warning('CSV file {0} not found'.format(file_name))
             raise CsvFileNotFound
         result = csv.DictReader(csvfile, delimiter=',')
 
@@ -150,7 +153,7 @@ class DBConstructor(object):
 
         """
         for table in ALL_DB_TABLES:
-            logger.info('Filling table {0}'.format(table.__tablename__))
+            self.logger.info('Filling table {0}'.format(table.__tablename__))
 
             try:
                 data = self.csv_data(table)
@@ -195,7 +198,7 @@ class DBConstructor(object):
                         # All other cases
                         py_row[col_py_name] = row[col_db_name]
                 except KeyError:
-                    logger.error('Refine data failed. Target table {0} does not have a column {1}'.format(table.__tablename__, col))     # noqa E501
+                    self.logger.error('Refine data failed. Target table {0} does not have a column {1}'.format(table.__tablename__, col))     # noqa E501
                     raise FillTableFailed
 
             py_data.append(py_row)
@@ -217,11 +220,15 @@ class DBConstructor(object):
             try:
                 self.session.add(table(**row))
                 self.session.commit()
-            except sqlalchemy.exc.IntegrityError:
+            except sqlalchemy.exc.IntegrityError as e:
                 self.session.rollback()
-                logger.info('Found bad row for table {0} Row {1}'.format(table.__tablename__, row))  # noqa E501
+                self.logger.warning('Found bad row for table {0} Row {1}'.format(table.__tablename__, row))  # noqa E501
+                raise e
             except Exception as e:
-                logger.info('Found Exception {0} bad row for table {1} Row {2}'.format(e, table.__tablename__, row))  # noqa E501
+                self.logger.warning('Found Exception {0} bad row for table {1} Row {2}'.format(e, table.__tablename__, row))  # noqa E501
+                raise e
 
 
-db_constructor = DBConstructor()
+def register_dbconstructor():
+    db_constructor = DBConstructor()
+    component.provideUtility(db_constructor, IDBConstructor)
