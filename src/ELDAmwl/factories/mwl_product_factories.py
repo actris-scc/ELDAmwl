@@ -6,7 +6,7 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EBSC, LR
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTIONS

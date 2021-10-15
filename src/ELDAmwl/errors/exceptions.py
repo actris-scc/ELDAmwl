@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
 from ELDAmwl.errors.error_codes import DB_ERROR
@@ -190,6 +190,18 @@ class NoValidDataPointsForCalibration(ELDAmwlException):
     def __str__(self):
         return('error of calibration factor larger than '
                'maximum allowable backscatter uncertainty')
+
+
+class NoCalibrWindowFound(ELDAmwlException):
+    """
+    Raised if no calibration window could be found for a
+    backscatter retrieval.
+    """
+    return_value = COULD_NOT_FIND_CALIBR_WINDOW
+
+    def __str__(self):
+        return('no calibration window could be found for product {0}'.
+               format(self.prod_id))
 
 
 class NotEnoughMCIterations(ELDAmwlException):

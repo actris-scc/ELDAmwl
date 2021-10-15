@@ -64,6 +64,7 @@ class Products(Signals):
         # todo: copy other general parameter
         result.emission_wavelength = signal.emission_wavelength
         result.num_scan_angles = signal.num_scan_angles
+        result.ds['time_bounds'] = signal.ds['time_bounds']
 
         result.mwl_meta_id = '{}_{}'.format(MWLFileStructure.NC_VAR_NAMES[p_params.general_params.product_type],
                                             round(float(result.emission_wavelength)))
@@ -96,9 +97,9 @@ class Products(Signals):
 
         for t in range(num_times):
             # first and last smoothable bins
-            fsb = np.where(fb[:, t] >= 0)[0][0]
+            fsb = np.where(fb[:, t] >= self.first_valid_bin(t))[0][0]
             # actually, this is not the last smoothable bin, but the one after that
-            lsb = np.where(nb[:, t] > num_levels)[0][0]
+            lsb = np.where(nb[:, t] > self.last_valid_bin(t))[0][0]
             # keep this notation in order to avoid lsb + 1 everywhere
 
             for lev in range(fsb, lsb):
@@ -443,7 +444,21 @@ class SmoothParams(Params):
 
         self.transition_zone = Dict({'bottom': None,
                                      'top': None})
-        self.vert_res = self.time_res = Dict(
+        self.vert_res = Dict(
+            {
+                RESOLUTION_STR[LOWRES]: Dict(
+                    {
+                        'lowrange': None,
+                        'highrange': None,
+                    }),
+                RESOLUTION_STR[HIGHRES]: Dict(
+                    {
+                        'lowrange': None,
+                        'highrange': None,
+                    }),
+            })
+
+        self.time_res = Dict(
             {
                 RESOLUTION_STR[LOWRES]: Dict(
                     {

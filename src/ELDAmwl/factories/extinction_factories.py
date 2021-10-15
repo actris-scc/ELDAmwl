@@ -146,8 +146,9 @@ class Extinctions(Products):
                     result.ds['qf'][t, lev] = qf
                     result.ds['binres'][t, lev] = window
 
-        result.ds = SlopeToExtinction()(slope=result.ds,
-                                        ext_params=ext_params).run()
+        # SlopeToExtinction converts the slope into extinction coefficients
+        SlopeToExtinction()(slope=result.ds,
+                            ext_params=ext_params).run()
 
         return result
 
@@ -201,12 +202,10 @@ class SlopeToExtinctionDefault(BaseOperation):
 
         wl_factor = 1. / (1. + pow((em_wl / det_wl), ang_exp))
 
-        # todo ina: test whether this copy makes sense and is necessary
-        result = deepcopy(slope)
-        result['data'] = -1. * slope.data * wl_factor
-        result['err'] = slope.err * wl_factor
+        slope['data'] = -1. * slope.data * wl_factor
+        slope['err'] = slope.err * wl_factor
 
-        return result
+        return None
 
 
 class ExtinctionAutosmooth(BaseOperationFactory):
@@ -322,13 +321,14 @@ class ExtinctionFactoryDefault(BaseOperation):
     name = 'ExtinctionFactoryDefault'
     param = None
 
-    data_storage = None
+    # data_storage = None
 
     def get_product(self):
         self.param = self.kwargs['ext_param']
         resolution = self.kwargs['resolution']
 
         if not self.param.includes_product_merging():
+            # raman_sig is a deepcopy from data_storage
             raman_sig = self.data_storage.prepared_signal(
                 self.param.prod_id_str,
                 self.param.raman_sig_id)
@@ -342,10 +342,10 @@ class ExtinctionFactoryDefault(BaseOperation):
             else:
                 smooth_res = self.data_storage.binres_common_smooth(self.param.prod_id_str, resolution)
 
-            # todo ina: test whether this copy makes sense and is necessary
-            smoothed_sig = deepcopy(raman_sig)
-            smoothed_sig.ds['binres'] = deepcopy(smooth_res)
-            result = Extinctions.from_signal(smoothed_sig, self.param)
+            raman_sig.ds['binres'] = smooth_res
+            result = Extinctions.from_signal(raman_sig, self.param)
+
+            del raman_sig
         else:
             # todo: result = Extinctions.from_merged_signals()
             pass

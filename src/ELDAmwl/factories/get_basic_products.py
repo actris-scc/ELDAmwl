@@ -5,7 +5,7 @@ from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import UseCaseNotImplemented
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented, NoCalibrWindowFound
 from ELDAmwl.factories.backscatter_factories import FindCommonBscCalibrWindow
 from ELDAmwl.factories.elast_bsc_factories import ElastBscEffBinRes
 from ELDAmwl.factories.elast_bsc_factories import ElastBscUsedBinRes
@@ -170,11 +170,21 @@ class GetBasicProductsDefault(BaseOperation):
     def get_raman_bsc_fixed_smooth(self):
         for bsc_param in self.product_params.raman_bsc_products():
             prod_id = bsc_param.prod_id_str
+
+            # if no common calibration window for all bsc has been found
+            # -> use calibration window of the individual bsc product
+            if not self.bsc_calibr_window is None:
+                cal_win = self.bsc_calibr_window
+            elif not bsc_param.calibr_window is None:
+                cal_win = bsc_param.calibr_window
+            else:
+                raise NoCalibrWindowFound(prod_id)
+
             # calc preliminary bsc
             bsc = RamanBackscatterFactory()(
                 data_storage=self.data_storage,
                 bsc_param=bsc_param,
-                calibr_window=self.bsc_calibr_window,
+                calibr_window=cal_win,
                 autosmooth=False,
             ).get_product()
 

@@ -113,7 +113,7 @@ class LidarRatios(Products):
     time series of lidar ratio profiles
     """
     @classmethod
-    def from_ext_bsc(cls, bsc, ext, p_params, **kwargs):
+    def from_ext_bsc(cls, ext, bsc, p_params, **kwargs):
         """calculates LidarRatios from a backscatter and an extinction profile.
 
         Args:
@@ -217,7 +217,6 @@ class CalcLidarRatioDefault(BaseOperation):
                                  np.power(bsc['err'] / bsc['data'], 2)
                                  )
         result['qf'] = ext.qf | bsc.qf
-        result['time_bounds'] = ext.time_bounds
 
         return result
 

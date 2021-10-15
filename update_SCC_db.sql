@@ -124,6 +124,8 @@ INSERT INTO `eldaexitcodes` (`exit_code`, `description`) VALUES
 	(44, 'calibration params of backscatter products of the measurement are not equal'),
 	(45, 'No MonteCarlo Options for product'),
 	(46, 'No backscatter calibration options for product'),
+	(47, 'clould not find overlap file in database'),
+	(48, 'could not find calibration window for backscatter retrieval'),
 	(100, 'internal error: cannot fnd requested information in data storage'),
 	(101, 'internal error: more than 1 override to class registry');
 

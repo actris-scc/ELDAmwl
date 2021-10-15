@@ -77,8 +77,8 @@ class RamanBackscatters(Backscatters):
                                     (time, nv: 2)
         """
 
-        if calibr_window is None:
-            calibr_window = p_params.calibr_window
+        # if calibr_window is None:
+        #    calibr_window = p_params.calibr_window
 
         result = super(RamanBackscatters, cls).from_signal(sigratio,
                                                            p_params,
@@ -142,6 +142,8 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
 
             bsc = RamanBackscatters.from_sigratio(
                 sig_ratio, self.param, self.calibr_window)
+
+            del sig_ratio
 
         else:
             bsc = None
@@ -255,13 +257,17 @@ class CalcRamanBscProfileViaBR(BaseOperation):
 
         # 2) calculate backscatter ratio
         # todo ina: test whether this copy makes sense and is necessary
-        bsc = deepcopy(sigratio)
+        # bsc = deepcopy(sigratio)
+        bsc = xr.Dataset()
         bsc['data'] = sigratio.data * cf
-        bsc['error'] = bsc.data * np.sqrt(np.square(sigratio.err / sigratio.data) + sqr_cf_err)
+        bsc['err'] = bsc.data * np.sqrt(np.square(sigratio.err / sigratio.data) + sqr_cf_err)
 
         # 3) calculate backscatter coefficient
         bsc['data'] = (bsc.data - 1.) * rayl_bsc
-        bsc['error'] = abs(bsc.error * rayl_bsc)
+        bsc['err'] = abs(bsc.err * rayl_bsc)
+
+        bsc['qf'] = sigratio.qf
+        bsc['binres'] = sigratio.binres
 
         return bsc
 
