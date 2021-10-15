@@ -41,7 +41,9 @@ class GetProductMatrixDefault(BaseOperation):
             return None
 
         wl_array = np.array(self.product_params.wavelengths(res=res))
-        wl_axis = xr.DataArray(wl_array, dims=['wavelength'], coords=[wl_array])  # Todo Ina debug
+        wl_axis = xr.DataArray(wl_array, coords=dict(wavelength=(['wavelength'],wl_array)))
+        # wl_axis = xr.DataArray(wl_array, coords={'wavelength':[wl_array]})
+
         wl_axis.attrs = {'long_name': 'wavelength of the transmitted laser pulse',
                          'units': 'nm',
                          }
@@ -71,7 +73,7 @@ class GetProductMatrixDefault(BaseOperation):
 
             # todo: remove limit to EXT when other prod types are included
             for pt in p_types:
-                if pt not in [EXT, RBSC]:
+                if pt not in [EXT, RBSC, LR]:
                     p_types.remove(pt)
 
             self.shape = self.get_common_shape(res)

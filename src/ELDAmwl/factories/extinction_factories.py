@@ -79,7 +79,7 @@ class ExtinctionParams(ProductParams):
         Returns:
 
         """
-        # super(ExtinctionParams, self).to_meta_ds_dict(dict)   # ToDo Ina debug
+        super(ExtinctionParams, self).to_meta_ds_dict(dct)
         dct.data_vars.assumed_angstroem_exponent = self.ang_exp_asDataArray
         mwl_vars = MWLFileVarsFromDB()
         dct.data_vars.evaluation_algorithm = mwl_vars.ext_algorithm_var(self.ext_method)
@@ -348,6 +348,7 @@ class ExtinctionFactoryDefault(BaseOperation):
             del raman_sig
         else:
             # todo: result = Extinctions.from_merged_signals()
+            result = None
             pass
 
         if self.param.error_method == MC:

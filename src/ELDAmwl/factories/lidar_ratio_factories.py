@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Classes for lidar ratio calculation"""
-from copy import deepcopy
 
 import numpy as np
 from addict import Dict
@@ -53,6 +52,19 @@ class LidarRatioParams(ProductParams):
         )
         self.backscatter_params.assign_to_product_list(global_product_list)
         self.extinction_params.assign_to_product_list(global_product_list)
+
+    def to_meta_ds_dict(self, dct):
+        """
+        writes parameter content into Dict for further export in mwl file
+        Args:
+            dct (addict.Dict): is a dict which will be converted into dataset.
+                            has the keys 'attrs' and 'data_vars'
+
+        Returns:
+
+        """
+        super(LidarRatioParams, self).to_meta_ds_dict(dct)   # ToDo Ina debug
+        # dct.data_vars.minimum_backscatter_ratio = self.min_BscRatio_for_LR
 
 
 class LidarRatioFactory(BaseOperationFactory):
@@ -142,12 +154,12 @@ class LidarRatios(Products):
 
         return result
 
-    # def to_meta_ds_dict(self, meta_data):
-    #     # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
-    #     # and attributes it with key self.mwl_meta_id to meta_data
-    #     super(Extinctions, self).to_meta_ds_dict(meta_data)
-    #     dct = meta_data[self.mwl_meta_id]
-    #     self.params.to_meta_ds_dict(dct)
+    def to_meta_ds_dict(self, meta_data):
+        # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
+        # and attributes it with key self.mwl_meta_id to meta_data
+        super(LidarRatios, self).to_meta_ds_dict(meta_data)
+        dct = meta_data[self.mwl_meta_id]
+        self.params.to_meta_ds_dict(dct)
 
 
 class CalcLidarRatio(BaseOperationFactory):
@@ -212,13 +224,14 @@ class CalcLidarRatioDefault(BaseOperation):
 
         result = xr.Dataset()
         result['data'] = ext.data / bsc.data
-        result['err'] = result['data'] * \
-                        np.sqrt( np.power(ext['err'] / ext['data'], 2) +
-                                 np.power(bsc['err'] / bsc['data'], 2)
-                                 )
+        result['err'] = result['data'] * np.sqrt(
+            np.power(ext['err'] / ext['data'], 2) +
+            np.power(bsc['err'] / bsc['data'], 2)
+            )
         result['qf'] = ext.qf | bsc.qf
 
         return result
+
 
 registry.register_class(CalcLidarRatio,
                         CalcLidarRatioDefault.__name__,
