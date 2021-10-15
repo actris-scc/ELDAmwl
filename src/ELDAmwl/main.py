@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.database.db_functions import register_db_utils
+from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
 from ELDAmwl.errors.exceptions import ELDAmwlException
@@ -111,7 +111,7 @@ class Main:
         self.logger.info('analyze measurement number: ' + meas_id)
 
         # Bring up the global db_access
-        register_db_utils()
+        register_db_func()
 
         # Bring up the global data storage
         register_datastorage()
