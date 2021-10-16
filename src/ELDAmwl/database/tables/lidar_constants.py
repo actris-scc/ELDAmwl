@@ -151,9 +151,9 @@ for row in duplicates:
         #print(row[0],line)
         del_ids.append(line[0])
 
-outfile = open('d:/temp/delete_ids.txt', 'w')
+outfile = open("'d:/temp/delete_ids.txt', 'w'")
 for id in del_ids:
-    outfile.write('{} '.format(id))
+    outfile.write("'{} '.format(id)")
 
 outfile.close()
 

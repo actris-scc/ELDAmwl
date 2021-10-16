@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.database.db_functions import register_db_utils
+from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
 from ELDAmwl.errors.exceptions import ELDAmwlException
@@ -111,18 +111,17 @@ class Main:
         self.logger.info('analyze measurement number: ' + meas_id)
 
         # Bring up the global db_access
-        register_db_utils()
+        register_db_func()
 
         # Bring up the global data storage
         register_datastorage()
 
         return meas_id
 
-    def elda(self):
+    def elda(self, meas_id):
         """
         Todo Ina Missing doc
         """
-        meas_id = self.elda_init()
 
         elda_mwl = RunELDAmwl(meas_id)
         elda_mwl.read_tasks()
@@ -136,12 +135,13 @@ class Main:
         elda_mwl.quality_control()
         elda_mwl.write_mwl_output()
 
-        self.logger.info('the end')
+        self.logger.info('the happy end')
 
     def run(self):
 
         try:
-            self.elda()
+            meas_id = self.elda_init()
+            self.elda(meas_id)
 
             sys.exit(NO_ERROR)
 

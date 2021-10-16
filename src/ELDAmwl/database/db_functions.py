@@ -37,8 +37,8 @@ from zope import component
 from zope import interface
 
 
-def register_db_utils():
-    db_func = DBFunc()
+def register_db_func(connect_string=None):
+    db_func = DBFunc(connect_string)
     component.provideUtility(db_func, IDBFunc)
     return db_func
 
@@ -46,8 +46,8 @@ def register_db_utils():
 @interface.implementer(IDBFunc)
 class DBFunc(DBUtils):
 
-    def __init__(self):
-        super(DBFunc, self).__init__()
+    def __init__(self, connect_string=None):
+        super(DBFunc, self).__init__(connect_string)
 
     def db_log(self, level, datetime, measurement_id, product_id, module_version, msg):
         log_msg = ELDALogs(

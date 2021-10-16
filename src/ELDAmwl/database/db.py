@@ -22,7 +22,7 @@ class DBUtils(object):
     def __init__(self, connect_string=None):
         self.connect_string = connect_string
         self.init_engine()
-        self.test_db()
+#        self.test_db()
 
     @property
     def logger(self):

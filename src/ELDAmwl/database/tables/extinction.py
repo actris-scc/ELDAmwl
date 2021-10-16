@@ -22,27 +22,27 @@ class ExtMethod(Base):
     ID = Column(
         INTEGER,
         primary_key=True,
-        server_default=text('0'),
+        server_default=text("'0'"),
     )
     method = Column(
         String(100),
         nullable=False,
-        server_default=text(''),
+        server_default=text("''"),
     )
     python_classname = Column(
         String(100),
         nullable=False,
-        server_default=text(''),
+        server_default=text("''"),
     )
     python_classname_get_used_binres = Column(
         String(100),
         nullable=False,
-        server_default=text(''),
+        server_default=text("''"),
     )
     python_classname_get_effective_binres = Column(
         String(100),
         nullable=False,
-        server_default=text(''),
+        server_default=text("''"),
     )
 
 
@@ -61,33 +61,33 @@ class ExtinctionOption(Base):
         '_product_ID',
         INTEGER,
         nullable=False,
-        server_default=text('-1'),
+        server_default=text("'-1'"),
     )
     ext_method_id = Column(
         '_ext_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text('-1'),
+        server_default=text("'-1'"),
     )
     error_method_id = Column(
         '_error_method_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text('-1'),
+        server_default=text("'-1'"),
     )
     overlap_file_id = Column(
         '_overlap_file_ID',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text('-1'),
+        server_default=text("'-1'"),
     )
     angstroem = Column(
         DECIMAL(10, 4),
         nullable=False,
-        server_default=text('0.0000'),
+        server_default=text("'0.0000'"),
     )
 
 
@@ -113,7 +113,7 @@ class OverlapFile(Base):
     filename = Column(
         String(100),
         nullable=False,
-        server_default=text(''),
+        server_default=text("''"),
     )
     interpolation_id = Column(
         '_interpolation_id',
