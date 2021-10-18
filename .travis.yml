@@ -1,0 +1,30 @@
+sudo: false
+language: python
+python:
+  - 3.8
+cache:
+  pip: true
+  directories:
+env:
+matrix:
+  fast_finish: true
+  include:
+    - name: "Python 3.8 on Xenial Linux"
+      python: 3.8           # this works for Linux but is ignored on macOS or Windows
+      dist: xenial          # required for Python >= 3.8
+before_install:
+  - pip uninstall -y six
+install:
+  - poetry install
+before_script:
+  - # sudo blazegraph start
+script:
+  - bin/code-analysis
+  - bin/test
+after_success:
+  - travis_wait 45 bin/createcoverage
+  - pip install coveralls
+  - coveralls
+notifications:
+  email:
+    - volker.jaenisch@inqbus.de
