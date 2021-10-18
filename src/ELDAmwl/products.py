@@ -7,7 +7,6 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.registry import registry
-from ELDAmwl.configs.config import RANGE_BOUNDARY_KM
 from ELDAmwl.errors.exceptions import DetectionLimitZero
 from ELDAmwl.errors.exceptions import NotEnoughMCIterations
 from ELDAmwl.errors.exceptions import SizeMismatch
@@ -34,6 +33,12 @@ from zope import component
 
 import numpy as np
 import xarray as xr
+
+
+try:
+    import ELDAmwl.configs._config as cfg
+except ImportError:
+    import ELDAmwl.configs.config_default as cfg
 
 
 class Products(Signals):
@@ -211,7 +216,7 @@ class ProductParams(Params):
                             attrs={'long_name': 'threshold for the '
                                                 'relative statistical error '
                                                 'below {0} km height'.
-                                                format(RANGE_BOUNDARY_KM),
+                                                format(cfg.RANGE_BOUNDARY_KM),
                                    'units': '1'})
 
     @property
@@ -221,7 +226,7 @@ class ProductParams(Params):
                             attrs={'long_name': 'threshold for the '
                                                 'relative statistical error '
                                                 'above {0} km height'.
-                                                format(RANGE_BOUNDARY_KM),
+                                                format(cfg.RANGE_BOUNDARY_KM),
                                    'units': '1'})
 
     @property

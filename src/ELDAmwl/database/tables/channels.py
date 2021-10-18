@@ -35,7 +35,6 @@ class ProductChannels(Base):
     )
 
 
-
 class Channels(Base):
     __tablename__ = 'hoi_channels'
 

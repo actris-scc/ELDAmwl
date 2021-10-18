@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Classes for Raman backscatter calculation"""
 from addict import Dict
-from copy import deepcopy
 from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory

@@ -8,7 +8,7 @@ from zope import component
 
 
 try:
-    import ELDAmwl.configs.config as cfg  # noqa E401
+    import ELDAmwl.configs._config as cfg  # noqa E401
 except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg  # noqa E401
 

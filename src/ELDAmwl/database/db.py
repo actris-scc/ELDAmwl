@@ -9,7 +9,7 @@ from zope import component
 
 
 try:
-    import ELDAmwl.configs.config as cfg
+    import ELDAmwl.configs._config as cfg
 except ImportError:
     import ELDAmwl.configs.config_default as cfg
 
@@ -49,7 +49,7 @@ class DBUtils(object):
             _first_task = tasks.first()  # noqa F841
         except OperationalError as e:
             self.logger.error(""""Database cannot be reached! Please check the database connection
-                            and the db connection settings in your config.py\n{}""".format(e))
+                            and the db connection settings in your _config.py\n{}""".format(e))
             raise DBErrorTerminating
 
 #    def read_tasks(self, measurement_id):

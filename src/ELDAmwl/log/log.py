@@ -16,7 +16,7 @@ import zope
 
 
 try:
-    import ELDAmwl.configs.config as cfg
+    import ELDAmwl.configs._config as cfg
 except ImportError:
     import ELDAmwl.configs.config_default as cfg
 
@@ -155,8 +155,8 @@ class Logger:
     def db_log(self, level, prod_id, msg):
         if self.db_log_func is None:
             return
+        return  # ToDo Volker implement DB logging routine
         self.db_log_func(level, prod_id, msg)
-        # ToDo Volker implement DB logging routine
 
 
 def register_logger(meas_id):

@@ -5,7 +5,8 @@ from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import UseCaseNotImplemented, NoCalibrWindowFound
+from ELDAmwl.errors.exceptions import NoCalibrWindowFound
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.factories.backscatter_factories import FindCommonBscCalibrWindow
 from ELDAmwl.factories.elast_bsc_factories import ElastBscEffBinRes
 from ELDAmwl.factories.elast_bsc_factories import ElastBscUsedBinRes
@@ -173,9 +174,9 @@ class GetBasicProductsDefault(BaseOperation):
 
             # if no common calibration window for all bsc has been found
             # -> use calibration window of the individual bsc product
-            if not self.bsc_calibr_window is None:
+            if self.bsc_calibr_window is not None:
                 cal_win = self.bsc_calibr_window
-            elif not bsc_param.calibr_window is None:
+            elif bsc_param.calibr_window is not None:
                 cal_win = bsc_param.calibr_window
             else:
                 raise NoCalibrWindowFound(prod_id)

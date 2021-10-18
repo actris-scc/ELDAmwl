@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 """Classes for lidar ratio calculation"""
 
-import numpy as np
 from addict import Dict
-import xarray as xr
-
-from ELDAmwl.bases.factory import BaseOperationFactory, BaseOperation
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.component.registry import registry
 from ELDAmwl.factories.extinction_factories import ExtinctionParams
 from ELDAmwl.factories.raman_bsc_factories import RamanBscParams
-from ELDAmwl.products import ProductParams, Products
-from ELDAmwl.utils.constants import ERROR_METHODS, NC_FILL_STR
-from ELDAmwl.component.registry import registry
+from ELDAmwl.products import ProductParams
+from ELDAmwl.products import Products
+from ELDAmwl.utils.constants import ERROR_METHODS
+from ELDAmwl.utils.constants import NC_FILL_STR
+
+import numpy as np
+import xarray as xr
 
 
 class LidarRatioParams(ProductParams):
@@ -139,7 +142,7 @@ class LidarRatios(Products):
         lr_params = Dict({
             'error_method': result.params.error_method,
             'min_bsc_ratio': result.params.min_BscRatio_for_LR,
-            })
+        })
 
         lr_routine = CalcLidarRatio()(
             prod_id=p_params.prod_id_str,
@@ -225,9 +228,7 @@ class CalcLidarRatioDefault(BaseOperation):
         result = xr.Dataset()
         result['data'] = ext.data / bsc.data
         result['err'] = result['data'] * np.sqrt(
-            np.power(ext['err'] / ext['data'], 2) +
-            np.power(bsc['err'] / bsc['data'], 2)
-            )
+            np.power(ext['err'] / ext['data'], 2) + np.power(bsc['err'] / bsc['data'], 2))
         result['qf'] = ext.qf | bsc.qf
 
         return result

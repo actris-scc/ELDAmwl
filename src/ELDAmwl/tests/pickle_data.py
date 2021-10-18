@@ -73,7 +73,7 @@ def pickle_data(file_name, data):
         with open(BASE_DIR / PICKLE_DATA_DIR / file_name, 'wb') as out_file:
             dump(data, out_file, protocol=-1)
     except TypeError:
-        a = get_unpicklable(data)
+        a = get_unpicklable(data)  # noqa E222
 
 
 def un_pickle_data(file_name):
@@ -98,7 +98,7 @@ def write_test_data(**kwargs):
 
         )
     elif 'cls' in kwargs:
-        cls =  kwargs['cls']
+        cls = kwargs['cls']
         file_name = cls.__name__
     else:
         raise AttributeError

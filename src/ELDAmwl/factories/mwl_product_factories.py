@@ -6,8 +6,9 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import EBSC, LR
+from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import LR
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTIONS
 
@@ -41,7 +42,7 @@ class GetProductMatrixDefault(BaseOperation):
             return None
 
         wl_array = np.array(self.product_params.wavelengths(res=res))
-        wl_axis = xr.DataArray(wl_array, coords=dict(wavelength=(['wavelength'],wl_array)))
+        wl_axis = xr.DataArray(wl_array, coords=dict(wavelength=(['wavelength'], wl_array)))
         # wl_axis = xr.DataArray(wl_array, coords={'wavelength':[wl_array]})
 
         wl_axis.attrs = {'long_name': 'wavelength of the transmitted laser pulse',

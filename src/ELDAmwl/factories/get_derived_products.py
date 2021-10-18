@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Classes for getting derived products like lidar ratio, particle depolarization ratio etc.
 """
-from ELDAmwl.bases.factory import BaseOperation, BaseOperationFactory
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.factories.lidar_ratio_factories import LidarRatioFactory
 from ELDAmwl.utils.constants import RESOLUTIONS
@@ -31,8 +32,7 @@ class GetDerivedProductsDefault(BaseOperation):
                     lr = LidarRatioFactory()(
                         # data_storage=self.data_storage,
                         lr_param=lr_param,
-                        resolution=res
-                    ).get_product()
+                        resolution=res).get_product()
 
                     self.data_storage.set_derived_products(
                         prod_id, res, lr)
@@ -45,7 +45,6 @@ class GetDerivedProducts(BaseOperationFactory):
     """
 
     name = 'GetDerivedProducts'
-
 
     def __call__(self, **kwargs):
         assert 'product_params' in kwargs

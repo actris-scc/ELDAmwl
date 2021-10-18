@@ -35,7 +35,7 @@ import xarray as xr
 
 
 try:
-    import ELDAmwl.configs.config as cfg
+    import ELDAmwl.configs._config as cfg
 except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg
 

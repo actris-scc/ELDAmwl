@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from zope import component
-
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.errors.error_codes import NO_ERROR
@@ -11,15 +9,15 @@ from ELDAmwl.factories.elda_mwl_factories import RunELDAmwl
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
+from zope import component
 
 import argparse
-import logging
 import sys
 import traceback
 
 
 try:
-    import ELDAmwl.configs.config as cfg  # noqa E401
+    import ELDAmwl.configs._config as cfg  # noqa E401
 except ModuleNotFoundError:
     import ELDAmwl.configs.config_default as cfg  # noqa E401
 
@@ -43,7 +41,6 @@ except ModuleNotFoundError:
 
 
 class Main:
-
 
     @property
     def logger(self):
@@ -166,6 +163,10 @@ class Main:
             sys.exit(UNKNOWN_EXCEPTION)
 
 
-if __name__ == '__main__':
+def run():
     main = Main()
     main.run()
+
+
+if __name__ == '__main__':
+    run()

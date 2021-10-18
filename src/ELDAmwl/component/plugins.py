@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """import of all plugins"""
-from ELDAmwl.configs.config import PLUGINS_DIR
+from ELDAmwl.configs._config import PLUGINS_DIR
 
 import glob
 import importlib

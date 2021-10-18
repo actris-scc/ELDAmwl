@@ -1,15 +1,30 @@
 # -*- coding: utf-8 -*-
 """constants describing the structure of mwl output file"""
 
-import xarray as xr
-import numpy as np
+from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.database.tables.backscatter import BscCalibrMethod
+from ELDAmwl.database.tables.backscatter import BscMethod
+from ELDAmwl.database.tables.backscatter import ElastBscMethod
+from ELDAmwl.database.tables.backscatter import RamanBscMethod
+from ELDAmwl.database.tables.extinction import ExtMethod
+from ELDAmwl.utils.constants import AE
+from ELDAmwl.utils.constants import ASS
+from ELDAmwl.utils.constants import CR
+from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import HIGHRES
+from ELDAmwl.utils.constants import LOWRES
+from ELDAmwl.utils.constants import LR
+from ELDAmwl.utils.constants import MC
+from ELDAmwl.utils.constants import NC_FILL_BYTE
+from ELDAmwl.utils.constants import PLDR
+from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.utils.constants import RESOLUTION_STR
+from ELDAmwl.utils.constants import VLDR
 from zope import component
 
-from ELDAmwl.component.interface import IDBFunc
-from ELDAmwl.utils.constants import LOWRES, HIGHRES, RESOLUTION_STR, NC_FILL_BYTE, MC, ASS
-from ELDAmwl.utils.constants import RBSC, EBSC, EXT, LR, AE, CR, VLDR, PLDR
-from ELDAmwl.database.tables.backscatter import RamanBscMethod, ElastBscMethod, BscMethod, BscCalibrMethod
-from ELDAmwl.database.tables.extinction import ExtMethod
+import numpy as np
+import xarray as xr
 
 
 class MWLFileStructure:
@@ -30,7 +45,7 @@ class MWLFileStructure:
         GENERAL: '/',
         META_DATA: 'meta_data',
         LOWRES_PRODUCTS: '{}_products'.format(RESOLUTION_STR[LOWRES]),
-        HIGHRES_PRODUCTS: '{}_products'.format(RESOLUTION_STR[HIGHRES])
+        HIGHRES_PRODUCTS: '{}_products'.format(RESOLUTION_STR[HIGHRES]),
     }
 
     WRITE_MODE = {
@@ -109,7 +124,7 @@ class MWLFileStructure:
     }
 
     COO_ATTR = 'longitude latitude'
-    ANC_VAR_ATT = 'error_{} vertical_resolution'
+    ANC_VAR_ATT = 'error_{} vertical_resolution'  # noqa P103
 
     def data_attrs(self, p_type):
         return {
@@ -135,8 +150,7 @@ class MWLFileStructure:
                 'flag_values': [np.int8(MC), np.int8(ASS)],
                 'flag_meanings': 'monte_carlo error_propagation',
                 '_FillValue': NC_FILL_BYTE,
-                }
-        )
+            })
         return var
 
     def cal_search_range_var(self, value):
@@ -157,8 +171,7 @@ class MWLFileStructure:
                 'long_name': 'height range wherein calibration range is searched',
                 '_FillValue': np.nan,
                 'units': 'm',
-                }
-            )
+            })
         return var
 
     def bsc_calibr_value_var(self, value):
@@ -177,8 +190,7 @@ class MWLFileStructure:
                 'long_name': 'assumed backscatter-ratio value (unitless) in calibration range',
                 '_FillValue': np.nan,
                 'units': '1',
-                }
-            )
+            })
         return var
 
 
@@ -208,8 +220,7 @@ class MWLFileVarsFromDB:
                 'flag_values': values,
                 'flag_meanings': meanings_str,
                 '_FillValue': NC_FILL_BYTE,
-                }
-            )
+            })
         return var
 
     def ext_algorithm_var(self, value):
@@ -217,8 +228,7 @@ class MWLFileVarsFromDB:
             value,
             ExtMethod,
             'evaluation_algorithm',
-            'algorithm used for the extinction retrieval'
-        )
+            'algorithm used for the extinction retrieval')
 
         return result
 
@@ -227,8 +237,7 @@ class MWLFileVarsFromDB:
             value,
             RamanBscMethod,
             'evaluation_algorithm',
-            'algorithm used for the retrieval of the Raman backscatter profile'
-        )
+            'algorithm used for the retrieval of the Raman backscatter profile')
 
         return result
 
@@ -237,8 +246,7 @@ class MWLFileVarsFromDB:
             value,
             ElastBscMethod,
             'evaluation_algorithm',
-            'algorithm used for the retrieval of the elastic backscatter profile'
-        )
+            'algorithm used for the retrieval of the elastic backscatter profile')
 
         return result
 
@@ -247,8 +255,7 @@ class MWLFileVarsFromDB:
             value,
             BscMethod,
             'backscatter_retrieval_method',
-            'method used for the backscatter retrieval'
-        )
+            'method used for the backscatter retrieval')
 
         return result
 
@@ -258,7 +265,6 @@ class MWLFileVarsFromDB:
             value,
             BscCalibrMethod,
             'backscatter_calibration_range_search_algorithm',
-            'algorithm used for the search of the calibration_range'
-        )
+            'algorithm used for the search of the calibration_range')
 
         return result

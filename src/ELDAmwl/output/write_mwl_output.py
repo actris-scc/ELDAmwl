@@ -1,17 +1,27 @@
 # -*- coding: utf-8 -*-
 """Classes for writing multi-wavelength output to NetCDF
 """
-import os
-import xarray as xr
-
 from addict import Dict
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.output.mwl_file_structure import MWLFileStructure
 from ELDAmwl.component.registry import registry
-from ELDAmwl.configs.config import PRODUCT_PATH
-from ELDAmwl.utils.constants import ELDA_MWL_VERSION, MWL, EXT, LOWRES, HIGHRES, RBSC
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+from ELDAmwl.utils.constants import ELDA_MWL_VERSION
+from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import HIGHRES
+from ELDAmwl.utils.constants import LOWRES
+from ELDAmwl.utils.constants import MWL
+from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTIONS
+
+import os
+import xarray as xr
+
+
+try:
+    import ELDAmwl.configs._config as cfg
+except ImportError:
+    import ELDAmwl.configs.config_default as cfg
 
 
 class WriteMWLOutputDefault(BaseOperation):
@@ -66,36 +76,31 @@ class WriteMWLOutputDefault(BaseOperation):
             ds = xr.Dataset(
                 data_vars=self.data[group].data_vars,
                 coords={},
-                attrs=self.data[group].attrs
-            )
+                attrs=self.data[group].attrs)
             # write attributes and variables into netCDF file
             ds.to_netcdf(
                 path=self.out_filename,
                 mode=MWLFileStructure.WRITE_MODE[group],
                 group=MWLFileStructure.GROUP_NAME[group],
-                format='NETCDF4'
-            )
+                format='NETCDF4')
             ds.close()
 
         for mwl_id, md in self.meta_data.items():
             ds = xr.Dataset(
                 data_vars=md.data_vars,
                 coords={},
-                attrs=md.attrs
-            )
+                attrs=md.attrs)
             ds.to_netcdf(
                 path=self.out_filename,
                 mode='a',
                 group='{}/{}'.format(
-                    MWLFileStructure.GROUP_NAME[MWLFileStructure.META_DATA], mwl_id
-                ),
-                format='NETCDF4'
-            )
+                    MWLFileStructure.GROUP_NAME[MWLFileStructure.META_DATA], mwl_id),
+                format='NETCDF4')
             ds.close()
 
     def run(self):
         self.product_params = self.kwargs['product_params']
-        self.out_filename = os.path.join(PRODUCT_PATH, self.mwl_filename())
+        self.out_filename = os.path.join(cfg.PRODUCT_PATH, self.mwl_filename())
 
         self.collect_header_info()
         self.collect_meta_data()
