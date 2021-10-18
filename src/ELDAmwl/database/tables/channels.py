@@ -28,6 +28,12 @@ class ProductChannels(Base):
         nullable=False,
         index=True,
     )
+    signal_type_id = Column(
+        '_signal_type_id',
+        INTEGER,
+        nullable=False,
+    )
+
 
 
 class Channels(Base):
