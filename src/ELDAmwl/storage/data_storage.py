@@ -462,7 +462,7 @@ class DataStorage:
     def cloud_mask(self, new_mask):
         if self.cloud_mask is not None:
             if not self.cloud_mask.equals(new_mask):
-                raise DifferentCloudMaskExists
+                raise DifferentCloudMaskExists(None)  # ToDo Ina Where to find the prod_id the Exception needs
 
         self.__data.cloud_mask = new_mask
 

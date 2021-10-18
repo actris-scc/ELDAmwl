@@ -8,6 +8,7 @@ from ELDAmwl.component.interface import IDBConstructor
 from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.main import Main
+from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.tests.database.create_test_db import register_dbconstructor, TEST_CONNECT_STRING
 
 
@@ -28,7 +29,10 @@ class Test(unittest.TestCase):
         register_dbconstructor()
         db_constructor = component.queryUtility(IDBConstructor)
         db_constructor.run()
-        register_db_func(TEST_CONNECT_STRING)
+        # Bring up the global db_access
+        register_db_func()
+        # Bring up the global data storage
+        register_datastorage()
 
     def test_20181017oh00(self):
         Main().elda('20181017oh00')

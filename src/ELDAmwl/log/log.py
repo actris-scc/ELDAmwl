@@ -155,10 +155,16 @@ class Logger:
     def db_log(self, level, prod_id, msg):
         if self.db_log_func is None:
             return
+        self.db_log_func(level, prod_id, msg)
         # ToDo Volker implement DB logging routine
 
 
 def register_logger(meas_id):
-    logger = Logger(4711, meas_id)  # ToDo Where to get the module_version for logging ?
+    # prohibit more than one logger instance
+    logger = component.queryUtility(ILogger)
+    if logger is not None:
+        return logger
+
+    logger = Logger(4711, meas_id)  # ToDo Ina Where to get the module_version for logging ?
     component.provideUtility(logger, ILogger)
     return logger

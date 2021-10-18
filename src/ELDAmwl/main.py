@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from zope import component
+
+from ELDAmwl.component.interface import ILogger
 from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
@@ -41,7 +44,10 @@ except ModuleNotFoundError:
 
 class Main:
 
-    logger = logging.Logger
+
+    @property
+    def logger(self):
+        return component.queryUtility(ILogger)
 
     def handle_args(self):
         parser = argparse.ArgumentParser(description='EARLINET Lidar Data Analyzer for \
@@ -95,7 +101,7 @@ class Main:
         meas_id = args.meas_id
 
         # Setup the logging facility for this measurement ID
-        self.logger = register_logger(meas_id)
+        register_logger(meas_id)
         # register_plugins()
 
         # customize the logger according to command line parameters
@@ -112,6 +118,9 @@ class Main:
 
         # Bring up the global db_access
         register_db_func()
+
+        # Bring up DB logger
+        self.logger.setup_db_logger()
 
         # Bring up the global data storage
         register_datastorage()
