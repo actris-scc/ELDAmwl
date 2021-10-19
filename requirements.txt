@@ -18,6 +18,11 @@ pandas>=0.24
 sphinxcontrib-serializinghtml
 sphinxcontrib-qthelp
 sphinx
+sphinx = "^3.2.1"
+sphinxcontrib-qthelp==1.0.30
+sphinxcontrib-serializinghtml==1.1.4
+sphinx-rtd-theme
+
 zope.interface==5.4.0
 zope.component==5.0.1
 
