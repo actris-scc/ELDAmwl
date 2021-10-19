@@ -11,7 +11,7 @@ ELDAmwl
    :target: https://coveralls.io/github/actris-scc/ELDAmwl?branch=master
    :alt: Coverage Status
 
-.. image:: https://img.shields.io/readthedocs/ELDAmwl.svg
+.. image:: https://img.shields.io/readthedocs/eldamwl.svg
    :target: http://ELDAmwl.readthedocs.io
    :alt: Documentation
 
