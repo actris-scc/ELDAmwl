@@ -16,14 +16,11 @@ before_install:
   - pip install poetry
 install:
   - poetry install
-#before_script:
-#  - sudo blazegraph start
 script:
-  - poetry run pytest
-#after_success:
-#  - travis_wait 45 bin/createcoverage
-#  - pip install coveralls
-#  - coveralls
+  - poetry run pytest --cov-report term-missing --cov .
+after_success:
+  - pip install coveralls
+  - coveralls
 notifications:
   email:
     - volker.jaenisch@inqbus.de
