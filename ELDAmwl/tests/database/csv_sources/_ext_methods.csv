@@ -1,0 +1,3 @@
+ID,method,python_classname,python_classname_get_used_binres,python_classname_get_effective_binres
+0,weighted linear fit,WeightedLinearFit,LinFitUsedBinRes,LinFitEffBinRes
+1,non-weighted linear fit,NonWeightedLinearFit,LinFitUsedBinRes,LinFitEffBinRes

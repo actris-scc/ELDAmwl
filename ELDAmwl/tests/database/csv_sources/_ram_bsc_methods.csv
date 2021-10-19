@@ -1,0 +1,3 @@
+ID,method,python_classname
+0,Ansmann method,CalcRamanBscProfileAsAnsmann
+1,via backscatter ratio,CalcRamanBscProfileViaBR

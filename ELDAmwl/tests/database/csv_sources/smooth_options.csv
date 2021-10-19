@@ -1,0 +1,5 @@
+ID,_product_ID,_lowrange_error_threshold_ID,_highrange_error_threshold_ID,detection_limit,transition_zone_from,transition_zone_to,lowres_lowrange_integration_time,lowres_highrange_integration_time,highres_lowrange_integration_time,highres_highrange_integration_time,lowres_lowrange_vertical_resolution,lowres_highrange_vertical_resolution,highres_lowrange_vertical_resolution,highres_highrange_vertical_resolution,_smooth_type
+1230,377,5,7,0.00000500000,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0
+1231,378,5,7,0.00000010000,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0
+1232,379,5,7,0.00000500000,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0
+1396,598,0,0,0.0,2000.0000,3000.0000,3600,7200,1800,1800,300.0000,900.0000,150.0000,300.0000,1

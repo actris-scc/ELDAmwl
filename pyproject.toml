@@ -4,6 +4,10 @@ version = "0.1.0"
 description = "ELDA multi wavelengt SCC module"
 authors = ["Ina Mattis <ina.mattis@dwd.de>"]
 
+packages = [
+    {include = "ELDAmwl"}
+    ]
+
 [tool.poetry.dependencies]
 python = ">=3.7,<4"
 addict = "*"
@@ -48,6 +52,6 @@ sphinx-rtd-theme = "*"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-#[tool.poetry.scripts]
-#create_test_db = "ELDAmwl.tests.database.create_test_db"
-#run = "ELDAmwl.main:run"
+[tool.poetry.scripts]
+create_test_db = "ELDAmwl.tests.database.create_test_db"
+run = "ELDAmwl.main:run"

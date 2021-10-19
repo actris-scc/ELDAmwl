@@ -1,0 +1,1371 @@
+# coding: utf-8
+from sqlalchemy import CHAR, Column, DECIMAL, Date, DateTime, Float, Index, String, TIMESTAMP, Table, Text, text
+from sqlalchemy.dialects.mysql import BIGINT, INTEGER, LONGTEXT, SMALLINT, TINYINT, VARCHAR
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+metadata = Base.metadata
+
+
+class Measurement(Base):
+    __tablename__ = '__measurements'
+
+    id = Column(INTEGER(11), primary_key=True)
+    meas_id = Column(String(15), nullable=False, server_default=text("''"))
+    __hoi_stations__ID = Column(CHAR(3))
+    _hoi_system_ID = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    start = Column(DateTime)
+    stop = Column(DateTime, nullable=False, server_default=text("'1970-01-01 00:00:00'"))
+    comment = Column(String(100), nullable=False, server_default=text("''"))
+    calipso = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    cirrus = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    etna = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    rurban = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    stratos = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    dicycles = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    photosmog = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    forfires = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    sahadust = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    climatol = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    upload = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    hirelpp = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    cloudmask = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elquick = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elpp = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elda = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    eldec = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elic = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    hirelpp_return_code = Column(INTEGER(11))
+    cloudmask_return_code = Column(INTEGER(11))
+    elquick_return_code = Column(INTEGER(11))
+    elpp_return_code = Column(INTEGER(11))
+    elda_return_code = Column(INTEGER(11))
+    eldec_return_code = Column(INTEGER(11))
+    elic_return_code = Column(INTEGER(11))
+    interface_return_code = Column(INTEGER(11))
+    elpp_current_product_id = Column(INTEGER(11))
+    eldec_current_product_id = Column(INTEGER(11))
+    hirelpp_current_product_id = Column(INTEGER(11))
+    cloudmask_current_product_id = Column(INTEGER(11))
+    elda_current_product_id = Column(INTEGER(11))
+    elic_current_product_id = Column(INTEGER(11))
+    elquick_current_product_id = Column(INTEGER(11))
+    creation_date = Column(DateTime)
+    updated_date = Column(DateTime)
+    sounding_file_id = Column(INTEGER(11))
+    lidar_ratio_file_id = Column(INTEGER(11))
+    overlap_file_id = Column(INTEGER(11))
+    creation_auth_user_ID = Column(INTEGER(11))
+    update_auth_user_ID = Column(INTEGER(11))
+
+
+class BackgroundMode(Base):
+    __tablename__ = '_background_mode'
+
+    id = Column(INTEGER(11), primary_key=True, server_default=text("'0'"))
+    name = Column(String(100), nullable=False, server_default=text("''"))
+
+
+class CalRangeSearchMethod(Base):
+    __tablename__ = '_cal_range_search_methods'
+
+    Id = Column(INTEGER(11), primary_key=True)
+    method = Column(String(100), nullable=False, server_default=text("''"))
+
+
+class ColorPalette(Base):
+    __tablename__ = '_color_palette'
+
+    id = Column(INTEGER(11), primary_key=True)
+    description = Column(String(200))
+
+
+t__dead_time_corr_type = Table(
+    '_dead_time_corr_type', metadata,
+    Column('ID', INTEGER(11), nullable=False, server_default=text("'0'")),
+    Column('dead_time_corr_type', String(100), nullable=False, server_default=text("''"))
+)
+
+
+t__detection_mode = Table(
+    '_detection_mode', metadata,
+    Column('ID', String(5), nullable=False, server_default=text("''")),
+    Column('mode', String(100), nullable=False, server_default=text("''"))
+)
+
+
+class ElastBscMethod(Base):
+    __tablename__ = '_elast_bsc_methods'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    method = Column(String(100), nullable=False)
+
+
+class ErrorMethod(Base):
+    __tablename__ = '_error_method'
+
+    id = Column(INTEGER(11), primary_key=True, server_default=text("'0'"))
+    method = Column(String(100), nullable=False, server_default=text("''"))
+
+
+t__error_thresholds = Table(
+    '_error_thresholds', metadata,
+    Column('Id', INTEGER(11), nullable=False, server_default=text("'0'")),
+    Column('value', Float, nullable=False, server_default=text("'0'")),
+    Column('name', String(100), nullable=False, server_default=text("''"))
+)
+
+
+class ExtMethod(Base):
+    __tablename__ = '_ext_methods'
+
+    ID = Column(INTEGER(11), primary_key=True, server_default=text("'0'"))
+    method = Column(String(100), nullable=False, server_default=text("''"))
+
+
+class HirelppVariableQuantity(Base):
+    __tablename__ = '_hirelpp_variable_quantities'
+
+    id = Column(INTEGER(11), primary_key=True)
+    description = Column(String(200))
+    short_description = Column(String(20), nullable=False)
+    quicklookfilename_flag = Column(CHAR(2), nullable=False)
+
+
+class HirelppVariableType(Base):
+    __tablename__ = '_hirelpp_variable_types'
+    __table_args__ = (
+        Index('wave', 'nominal_wave', 'range_bitmask', 'scatterer_id', '_hirelpp_variable_quantity_id', unique=True),
+    )
+
+    ID = Column(INTEGER(11), primary_key=True)
+    nominal_wave = Column(Float, nullable=False)
+    range_bitmask = Column(INTEGER(11), nullable=False)
+    scatterer_id = Column(INTEGER(11), nullable=False)
+    _hirelpp_variable_quantity_id = Column(INTEGER(11), nullable=False)
+
+
+class InterpolationType(Base):
+    __tablename__ = '_interpolation_type'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    Type = Column(String(100))
+
+
+class LrInputMethod(Base):
+    __tablename__ = '_lr_input_method'
+
+    id = Column(INTEGER(11), primary_key=True, server_default=text("'-1'"))
+    method = Column(String(100), nullable=False, server_default=text("''"))
+
+
+class Measurement(Base):
+    __tablename__ = '_measurements'
+
+    id = Column(INTEGER(11), primary_key=True, server_default=text("'0'"))
+    meas_id = Column(String(15), nullable=False, server_default=text("''"))
+    __hoi_stations__ID = Column(CHAR(3))
+    _hoi_system_ID = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    start = Column(DateTime)
+    stop = Column(DateTime, nullable=False, server_default=text("'1970-01-01 00:00:00'"))
+    comment = Column(String(100), nullable=False, server_default=text("''"))
+    calipso = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    cirrus = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    etna = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    rurban = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    stratos = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    dicycles = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    photosmog = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    forfires = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    sahadust = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    climatol = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    upload = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    hirelpp = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    cloudmask = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elquick = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elpp = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elda = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    eldec = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elic = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    hirelpp_return_code = Column(INTEGER(11))
+    cloudmask_return_code = Column(INTEGER(11))
+    elquick_return_code = Column(INTEGER(11))
+    elpp_return_code = Column(INTEGER(11))
+    elda_return_code = Column(INTEGER(11))
+    eldec_return_code = Column(INTEGER(11))
+    elic_return_code = Column(INTEGER(11))
+    interface_return_code = Column(INTEGER(11))
+    elpp_current_product_id = Column(INTEGER(11))
+    eldec_current_product_id = Column(INTEGER(11))
+    hirelpp_current_product_id = Column(INTEGER(11))
+    cloudmask_current_product_id = Column(INTEGER(11))
+    elda_current_product_id = Column(INTEGER(11))
+    elic_current_product_id = Column(INTEGER(11))
+    elquick_current_product_id = Column(INTEGER(11))
+    creation_date = Column(DateTime)
+    updated_date = Column(DateTime)
+    sounding_file_id = Column(INTEGER(11))
+    lidar_ratio_file_id = Column(INTEGER(11))
+    overlap_file_id = Column(INTEGER(11))
+    creation_auth_user_ID = Column(INTEGER(11))
+    update_auth_user_ID = Column(INTEGER(11))
+
+
+class PolarizationCalculationMethod(Base):
+    __tablename__ = '_polarization_calculation_method'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    method = Column(String(100), nullable=False)
+
+
+class ProductType(Base):
+    __tablename__ = '_product_types'
+
+    ID = Column(INTEGER(11), primary_key=True, server_default=text("'0'"))
+    product_type = Column(String(100), nullable=False, server_default=text("''"))
+    nc_file_id = Column(CHAR(1), nullable=False, server_default=text("''"))
+    processor_ID = Column(INTEGER(11), nullable=False, server_default=text("'1'"))
+
+
+class RamBscMethod(Base):
+    __tablename__ = '_ram_bsc_methods'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    method = Column(String(100), nullable=False, server_default=text("''"))
+
+
+class RangeType(Base):
+    __tablename__ = '_range_type'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    range_description = Column(String(100), nullable=False)
+    range_bitmask = Column(INTEGER(11))
+
+
+t__scat_mechanisms = Table(
+    '_scat_mechanisms', metadata,
+    Column('ID', String(10), nullable=False, server_default=text("''")),
+    Column('ScatType', String(100), nullable=False, server_default=text("''"))
+)
+
+
+class SccProcessor(Base):
+    __tablename__ = '_scc_processor'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    processor_name = Column(String(100), nullable=False)
+
+
+class SignalType(Base):
+    __tablename__ = '_signal_types'
+
+    ID = Column(INTEGER(11), primary_key=True, server_default=text("'0'"))
+    signal_types = Column(String(100), nullable=False, server_default=text("''"))
+
+
+class Usecase(Base):
+    __tablename__ = '_usecases'
+
+    ID_count = Column(INTEGER(11), primary_key=True)
+    ID = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    usecase = Column(String(100), nullable=False, server_default=text("''"))
+    _prod_type_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+
+
+class ActrisStatu(Base):
+    __tablename__ = 'actris_status'
+
+    id = Column(INTEGER(11), primary_key=True)
+    description = Column(String(50), nullable=False)
+
+
+class AuthGroup(Base):
+    __tablename__ = 'auth_group'
+
+    id = Column(INTEGER(11), primary_key=True)
+    name = Column(String(80), nullable=False, unique=True)
+
+
+class AuthGroupPermission(Base):
+    __tablename__ = 'auth_group_permissions'
+    __table_args__ = (
+        Index('group_id', 'group_id', 'permission_id', unique=True),
+    )
+
+    id = Column(INTEGER(11), primary_key=True)
+    group_id = Column(INTEGER(11), nullable=False)
+    permission_id = Column(INTEGER(11), nullable=False)
+
+
+class AuthMessage(Base):
+    __tablename__ = 'auth_message'
+
+    id = Column(INTEGER(11), primary_key=True)
+    user_id = Column(INTEGER(11), nullable=False, index=True)
+    message = Column(LONGTEXT, nullable=False)
+
+
+class AuthPermission(Base):
+    __tablename__ = 'auth_permission'
+    __table_args__ = (
+        Index('content_type_id', 'content_type_id', 'codename', unique=True),
+    )
+
+    id = Column(INTEGER(11), primary_key=True)
+    name = Column(String(255), nullable=False)
+    content_type_id = Column(INTEGER(11), nullable=False)
+    codename = Column(String(100), nullable=False)
+
+
+class AuthUser(Base):
+    __tablename__ = 'auth_user'
+
+    id = Column(INTEGER(11), primary_key=True)
+    username = Column(String(150), nullable=False, unique=True)
+    first_name = Column(String(30), nullable=False)
+    last_name = Column(String(30), nullable=False)
+    email = Column(String(254), nullable=False)
+    password = Column(String(128), nullable=False)
+    is_staff = Column(TINYINT(1), nullable=False)
+    is_active = Column(TINYINT(1), nullable=False)
+    is_superuser = Column(TINYINT(1), nullable=False)
+    last_login = Column(DateTime)
+    date_joined = Column(DateTime, nullable=False)
+
+
+class AuthUserAdditionalInfo(Base):
+    __tablename__ = 'auth_user_additional_info'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    user_ID = Column(INTEGER(11), nullable=False)
+    user_affiliation = Column(String(200))
+    user_affiliation_acronym = Column(String(10))
+    user_address = Column(String(200))
+    user_phone = Column(String(200))
+
+
+class AuthUserGroup(Base):
+    __tablename__ = 'auth_user_groups'
+    __table_args__ = (
+        Index('user_id', 'user_id', 'group_id', unique=True),
+    )
+
+    id = Column(INTEGER(11), primary_key=True)
+    user_id = Column(INTEGER(11), nullable=False)
+    group_id = Column(INTEGER(11), nullable=False, index=True)
+
+
+class AuthUserUserPermission(Base):
+    __tablename__ = 'auth_user_user_permissions'
+    __table_args__ = (
+        Index('user_id', 'user_id', 'permission_id', unique=True),
+    )
+
+    id = Column(INTEGER(11), primary_key=True)
+    user_id = Column(INTEGER(11), nullable=False)
+    permission_id = Column(INTEGER(11), nullable=False, index=True)
+
+
+class BscCalibrOption(Base):
+    __tablename__ = 'bsc_calibr_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    LowestHeight = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    TopHeight = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    WindowWidth = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    calValue = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    _calRangeSearchMethod_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+
+
+class Cloudmask(Base):
+    __tablename__ = 'cloudmask'
+
+    hirelpp_product_id = Column(BIGINT(20), primary_key=True)
+    __measurements__ID = Column(String(15))
+    _scc_version_ID = Column(INTEGER(11))
+    filename = Column(String(100))
+    assume_cloud_free = Column(TINYINT(1), nullable=False)
+    automatic_mask_wrong = Column(TINYINT(1), nullable=False)
+    user_comment = Column(LONGTEXT)
+    manual_mask_exists = Column(TINYINT(1), nullable=False)
+    automatic_mask_exists = Column(TINYINT(1), nullable=False)
+    creation_date = Column(DateTime, nullable=False)
+    update_date = Column(DateTime, nullable=False)
+
+
+class CloudmaskElquickProduct(Base):
+    __tablename__ = 'cloudmask_elquick_products'
+
+    id = Column(INTEGER(11), primary_key=True)
+    _cloudmask_product_id = Column(INTEGER(11))
+    _elquick_product_id = Column(INTEGER(11))
+    quicklook_ok = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+
+
+class Cloudmaskexitcode(Base):
+    __tablename__ = 'cloudmaskexitcodes'
+
+    exit_code = Column(INTEGER(11), primary_key=True)
+    description = Column(LONGTEXT, nullable=False)
+
+
+class CloudnetModelDatum(Base):
+    __tablename__ = 'cloudnet_model_data'
+
+    id = Column(BIGINT(20), primary_key=True)
+    __measurements__ID = Column(String(15))
+    _product_ID = Column(INTEGER(11))
+    __hoi_stations__ID = Column(CHAR(3))
+    query = Column(String(2000))
+    cloudnet_site_id = Column(String(50))
+    filename = Column(String(200))
+    model_code = Column(INTEGER(11))
+    filesize = Column(BIGINT(20))
+    cloudnet_api = Column(String(50))
+    date = Column(Date)
+    creation_date = Column(TIMESTAMP)
+    update_date = Column(TIMESTAMP)
+    model = Column(String(20))
+    cloudnet_file_id = Column(String(20))
+    cloudnet_db_timestamp = Column(TIMESTAMP)
+    md5hash = Column(CHAR(32))
+
+
+class ComparisonTime(Base):
+    __tablename__ = 'comparison_times'
+
+    id = Column(INTEGER(11), primary_key=True)
+    start = Column(DateTime)
+    stop = Column(DateTime)
+
+
+class Country(Base):
+    __tablename__ = 'countries'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    name = Column(String(200), nullable=False)
+    alpha2_code = Column(CHAR(2), nullable=False)
+    alpha3_code = Column(CHAR(3), nullable=False)
+    numeric_code = Column(INTEGER(11), nullable=False)
+
+
+class CsvImport(Base):
+    __tablename__ = 'csv_imports'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    Data = Column(String(200), nullable=False)
+    Checksum = Column(String(200), nullable=False, unique=True)
+    ImportUser = Column(String(45), nullable=False)
+    ImportStation = Column(String(10), nullable=False)
+    ImportDate = Column(DateTime, nullable=False)
+    WarningMessages = Column(Text)
+    ImportResult = Column(TINYINT(4), nullable=False, server_default=text("'1'"))
+
+
+class DatabaseSystemphoto(Base):
+    __tablename__ = 'database_systemphoto'
+
+    photo_id = Column(INTEGER(11), primary_key=True)
+    system_id_id = Column(INTEGER(11), nullable=False, index=True)
+    original_image = Column(String(100), nullable=False)
+    title = Column(String(100), nullable=False)
+    description = Column(Text)
+
+
+class DepolBscOption(Base):
+    __tablename__ = 'depol_bsc_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    _backscatter_options_product_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    _error_method_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    min_BscRatio_for_PLDR = Column(DECIMAL(10, 4), nullable=False)
+
+
+class DjangoAdminLog(Base):
+    __tablename__ = 'django_admin_log'
+
+    id = Column(INTEGER(11), primary_key=True)
+    action_time = Column(DateTime, nullable=False)
+    user_id = Column(INTEGER(11), nullable=False, index=True)
+    content_type_id = Column(INTEGER(11), index=True)
+    object_id = Column(LONGTEXT)
+    object_repr = Column(String(200), nullable=False)
+    action_flag = Column(SMALLINT(5), nullable=False)
+    change_message = Column(LONGTEXT, nullable=False)
+
+
+class DjangoContentType(Base):
+    __tablename__ = 'django_content_type'
+    __table_args__ = (
+        Index('app_label', 'app_label', 'model', unique=True),
+    )
+
+    id = Column(INTEGER(11), primary_key=True)
+    app_label = Column(String(100), nullable=False)
+    model = Column(String(100), nullable=False)
+
+
+class DjangoMigration(Base):
+    __tablename__ = 'django_migrations'
+
+    id = Column(INTEGER(11), primary_key=True)
+    app = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False)
+    applied = Column(DateTime, nullable=False)
+
+
+class DjangoSession(Base):
+    __tablename__ = 'django_session'
+
+    session_key = Column(String(40), primary_key=True)
+    session_data = Column(LONGTEXT, nullable=False)
+    expire_date = Column(DateTime, nullable=False)
+
+
+class DjangoSite(Base):
+    __tablename__ = 'django_site'
+
+    id = Column(INTEGER(11), primary_key=True)
+    domain = Column(String(100), nullable=False)
+    name = Column(String(50), nullable=False)
+
+
+class ElastBackscatterOption(Base):
+    __tablename__ = 'elast_backscatter_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    _elast_bsc_method_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    _bsc_calibr_options_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    _error_method_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    _lr_input_method_id = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    fixed_lr = Column(DECIMAL(10, 4), nullable=False, server_default=text("'50.0000'"))
+    fixed_lr_error = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    _iter_bsc_options_id = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+
+
+class EldaProduct(Base):
+    __tablename__ = 'elda_products'
+
+    ID = Column(BIGINT(20), primary_key=True)
+    __measurements__ID = Column(String(15), index=True)
+    _product_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    InscribedAt = Column(DateTime, nullable=False, server_default=text("'1970-01-01 00:00:00'"))
+    _scc_version_ID = Column(INTEGER(11))
+    filename = Column(String(100), nullable=False, server_default=text("''"))
+
+
+class Eldaexitcode(Base):
+    __tablename__ = 'eldaexitcodes'
+
+    exit_code = Column(INTEGER(11), primary_key=True)
+    description = Column(LONGTEXT, nullable=False)
+
+
+class Eldecexitcode(Base):
+    __tablename__ = 'eldecexitcodes'
+
+    exit_code = Column(INTEGER(11), primary_key=True)
+    description = Column(LONGTEXT, nullable=False)
+
+
+class ElicProductLidarConstant(Base):
+    __tablename__ = 'elic_product_lidar_constants'
+
+    ID = Column(BIGINT(20), primary_key=True)
+    _elic_product_ID = Column(INTEGER(11))
+    _lidar_constant_ID = Column(INTEGER(11))
+
+
+class ElicProduct(Base):
+    __tablename__ = 'elic_products'
+    __table_args__ = (
+        Index('ID', 'ID', '__measurements__ID', '_hirelpp_product_ID'),
+    )
+
+    ID = Column(BIGINT(20), primary_key=True)
+    __measurements__ID = Column(String(15))
+    _hirelpp_product_ID = Column(INTEGER(11))
+    _elpp_product_ID = Column(INTEGER(11))
+    creation_date = Column(DateTime)
+    _scc_version_ID = Column(INTEGER(11))
+    filename = Column(String(100))
+
+
+class Elicexitcode(Base):
+    __tablename__ = 'elicexitcodes'
+
+    exit_code = Column(INTEGER(11), primary_key=True)
+    description = Column(LONGTEXT, nullable=False)
+
+
+class Elppexitcode(Base):
+    __tablename__ = 'elppexitcodes'
+
+    exit_code = Column(INTEGER(11), primary_key=True)
+    description = Column(LONGTEXT, nullable=False)
+
+
+class ElquickExcludedType(Base):
+    __tablename__ = 'elquick_excluded_types'
+    __table_args__ = (
+        Index('_hoi_system_id', '_hoi_system_id', '_hirelpp_variable_type_id', unique=True),
+    )
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _hoi_system_id = Column(INTEGER(11), nullable=False)
+    _hirelpp_variable_type_id = Column(INTEGER(11), nullable=False)
+
+
+class ElquickProductOption(Base):
+    __tablename__ = 'elquick_product_options'
+
+    id = Column(INTEGER(11), primary_key=True, index=True)
+    _hirelpp_variable_type_id = Column(INTEGER(11), nullable=False, index=True)
+    altitude_min = Column(Float)
+    altitude_max = Column(Float)
+    color_min = Column(Float)
+    color_max = Column(Float)
+    _color_palette_id = Column(INTEGER(11))
+    timelength_threshold = Column(Float)
+    _time_length_id = Column(INTEGER(11))
+
+
+class ElquickProduct(Base):
+    __tablename__ = 'elquick_products'
+    __table_args__ = (
+        Index('is_cloudmask_elquick', 'is_cloudmask_elquick', 'start_time', 'stop_time'),
+    )
+
+    id = Column(INTEGER(11), primary_key=True)
+    _hoi_lidar_version_id = Column(INTEGER(11))
+    is_cloudmask_elquick = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    _elquick_product_option_id = Column(INTEGER(11))
+    start_time = Column(DateTime)
+    stop_time = Column(DateTime)
+    generation_time = Column(DateTime)
+    _scc_version_ID = Column(INTEGER(11))
+    filename = Column(String(200))
+
+
+class Elquickexitcode(Base):
+    __tablename__ = 'elquickexitcodes'
+
+    exit_code = Column(INTEGER(11), primary_key=True)
+    description = Column(LONGTEXT, nullable=False)
+
+
+class ExtBscOption(Base):
+    __tablename__ = 'ext_bsc_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    _extinction_options_product_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    _raman_backscatter_options_product_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    _error_method_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+
+
+class ExternalService(Base):
+    __tablename__ = 'external_services'
+
+    id = Column(INTEGER(11), primary_key=True)
+    name = Column(String(200), nullable=False)
+    description = Column(String(500), nullable=False)
+
+
+class ExtinctionOption(Base):
+    __tablename__ = 'extinction_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    _ext_method_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    _error_method_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    _overlap_file_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    angstroem = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+
+
+class GluingChannelOption(Base):
+    __tablename__ = 'gluing_channel_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    Signal_Threshold = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    Correlation_Threshold = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    Error_Threshold = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    Slope = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    Reducing_Window_Width = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    Gluing_Point_Max_Diff = Column(DECIMAL(10, 4), nullable=False, server_default=text("'5.0000'"))
+
+
+class GuardianGroupobjectpermission(Base):
+    __tablename__ = 'guardian_groupobjectpermission'
+    __table_args__ = (
+        Index('group_id', 'group_id', 'permission_id', 'content_type_id', 'object_pk', unique=True),
+    )
+
+    id = Column(INTEGER(11), primary_key=True)
+    permission_id = Column(INTEGER(11), nullable=False, index=True)
+    content_type_id = Column(INTEGER(11), nullable=False, index=True)
+    object_pk = Column(String(255), nullable=False)
+    group_id = Column(INTEGER(11), nullable=False)
+
+
+class GuardianUserobjectpermission(Base):
+    __tablename__ = 'guardian_userobjectpermission'
+    __table_args__ = (
+        Index('user_id', 'user_id', 'permission_id', 'content_type_id', 'object_pk', unique=True),
+    )
+
+    id = Column(INTEGER(11), primary_key=True)
+    permission_id = Column(INTEGER(11), nullable=False, index=True)
+    content_type_id = Column(INTEGER(11), nullable=False, index=True)
+    object_pk = Column(String(255), nullable=False)
+    user_id = Column(INTEGER(11), nullable=False)
+
+
+class HirelppElquickProduct(Base):
+    __tablename__ = 'hirelpp_elquick_products'
+    __table_args__ = (
+        Index('id', 'id', '_hirelpp_product_id', '_elquick_product_id'),
+    )
+
+    id = Column(INTEGER(11), primary_key=True)
+    _hirelpp_product_id = Column(INTEGER(11))
+    _elquick_product_id = Column(INTEGER(11))
+    quicklook_ok = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+
+
+class HirelppProductOption(Base):
+    __tablename__ = 'hirelpp_product_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    min_height = Column(Float(asdecimal=True), nullable=False, server_default=text("'0'"))
+    max_height = Column(Float(asdecimal=True), nullable=False, server_default=text("'0'"))
+    wavelength_to_glue = Column(String(50))
+
+
+class HirelppProduct(Base):
+    __tablename__ = 'hirelpp_products'
+
+    ID = Column(BIGINT(20), primary_key=True)
+    __measurements__ID = Column(String(15), index=True)
+    _product_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    creation_date = Column(DateTime, nullable=False, server_default=text("'1970-01-01 00:00:00'"))
+    _scc_version_ID = Column(INTEGER(11))
+    filename = Column(String(100), nullable=False, server_default=text("''"))
+
+
+class HirelppVariableChannel(Base):
+    __tablename__ = 'hirelpp_variable_channels'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _hirelpp_variable_id = Column(INTEGER(11), nullable=False)
+    _hoi_channel_id = Column(INTEGER(11), nullable=False)
+
+
+class HirelppVariable(Base):
+    __tablename__ = 'hirelpp_variables'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_id = Column(INTEGER(11), nullable=False)
+    _hirelpp_variable_type_id = Column(INTEGER(11), nullable=False)
+
+
+class Hirelppexitcode(Base):
+    __tablename__ = 'hirelppexitcodes'
+
+    exit_code = Column(INTEGER(11), primary_key=True)
+    description = Column(LONGTEXT, nullable=False)
+
+
+class HoiChannel(Base):
+    __tablename__ = 'hoi_channels'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    string_ID = Column(String(20), unique=True)
+    name = Column(String(100), nullable=False, server_default=text("''"))
+    _telescope_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    _laser_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    _scat_mechanism_ID = Column(String(10), nullable=False, index=True, server_default=text("'0'"))
+    IF_center = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    IF_FWHM = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    emission_wavelength = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    FOV = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    raw_range_resolution = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    _dead_time_corr_type_id = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    dead_time = Column(DECIMAL(10, 4), server_default=text("'0.0000'"))
+    trigger_delay = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    trigger_delay_interp_id = Column(INTEGER(11))
+    _background_mode_id = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    _signal_type_id = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    _detection_mode_ID = Column(String(5), nullable=False, index=True, server_default=text("'0'"))
+    gluing_option_ID = Column(INTEGER(11), index=True)
+    beam_telescope_distance = Column(Float)
+    separation_passband_bandwidth = Column(Float)
+    separation_transmission = Column(Float)
+    separation_transm_pol_parallel = Column(Float)
+    separation_transm_pol_cross = Column(Float)
+    out_of_band_suppression = Column(String(45))
+    passband_bandwidth = Column(Float)
+    passband_transmission = Column(Float)
+    out_of_band_blocking = Column(String(45))
+    polarization_separation = Column(String(45))
+    polarization_transmission_parallel = Column(Float)
+    polarization_transmission_cross = Column(Float)
+    neutral_density_filter_OD = Column(String(45))
+    detector_type = Column(String(100))
+    detector_manufacturer = Column(String(100))
+    detector_model = Column(String(100))
+    additional_features = Column(String(100))
+    daytime_capability = Column(TINYINT(1))
+    transimpedance_amplifier = Column(TINYINT(1))
+    transimpedance_gain = Column(Float)
+    transimpedance_bandwidth = Column(Float)
+    output_impedance = Column(Float)
+    analog_sampling_rate = Column(Float)
+    bandwidth = Column(Float)
+    AD_bits = Column(INTEGER(11))
+    input_termination = Column(Float)
+    max_input_voltage = Column(Float)
+    photon_counting_count_rate = Column(Float)
+    data_acquisition_manufacturer = Column(String(100))
+    data_acquisition_model = Column(String(100))
+    raw_data_time_resolution = Column(Float)
+    raw_data_altitude_range = Column(Float)
+    entry_update_date = Column(DateTime)
+    exclude_from_hoi = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    description = Column(Text)
+    pre_trigger_data = Column(TINYINT(1))
+    wavelength_separation = Column(String(45))
+    __hoi_stations__ID = Column(CHAR(3))
+
+
+class HoiLaser(Base):
+    __tablename__ = 'hoi_laser'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    manufacturer = Column(String(100), nullable=False, server_default=text("''"))
+    model = Column(String(100), nullable=False, server_default=text("''"))
+    Repetition_Rate = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    type = Column(String(100), nullable=False, server_default=text("''"))
+    seeder_in_use = Column(TINYINT(1))
+    seeder_bandwidth = Column(Float)
+    seeder_manufacturer = Column(String(100))
+    seeder_model = Column(String(100))
+    pulse_energy_total = Column(Float)
+    entry_update_date = Column(DateTime)
+    __hoi_stations__ID = Column(CHAR(3), index=True)
+
+
+class HoiLidarVersion(Base):
+    __tablename__ = 'hoi_lidar_versions'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    name = Column(String(20), nullable=False)
+    _hoi_lidar_ID = Column(INTEGER(11), nullable=False)
+    description = Column(Text)
+    exclude_from_hoi = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
+    enable_quicklook = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    start_date = Column(DateTime, nullable=False)
+    stop_date = Column(DateTime)
+    creation_date = Column(DateTime, nullable=False)
+    update_date = Column(DateTime, nullable=False)
+
+
+class HoiLidar(Base):
+    __tablename__ = 'hoi_lidars'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    __hoi_stations__ID = Column(CHAR(3))
+    name = Column(String(100), nullable=False)
+    PI = Column(String(100), nullable=False)
+    quicklook_name = Column(String(10), nullable=False)
+    enable_quicklook = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+
+
+class HoiStation(Base):
+    __tablename__ = 'hoi_stations'
+
+    ID = Column(CHAR(3), primary_key=True, server_default=text("''"))
+    name = Column(String(100), nullable=False, server_default=text("''"))
+    Latitude = Column(Float, nullable=False, server_default=text("'0'"))
+    Longitude = Column(Float, nullable=False, server_default=text("'0'"))
+    _height_asl = Column(Float, nullable=False, server_default=text("'0'"))
+    PI_first_name = Column(String(100))
+    PI_last_name = Column(String(100))
+    PI_phone = Column(String(100))
+    PI_mail = Column(String(200))
+    _country_id = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    enable_quicklook = Column(TINYINT(1), nullable=False, server_default=text("'1'"))
+    institute_name = Column(VARCHAR(200), nullable=False)
+    institute_name_acronym = Column(String(10))
+    description = Column(Text)
+    _actris_status_id = Column(INTEGER(11))
+    _lidar_network_id = Column(INTEGER(11), nullable=False, server_default=text("'1'"))
+    cloudnet_station_id = Column(String(100))
+    entry_update_date = Column(DateTime)
+    exclude_from_hoi = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    PI_affiliation = Column(String(200))
+    PI_affiliation_acronym = Column(String(10))
+    PI_address = Column(String(200))
+
+
+class HoiStationsEnvironment(Base):
+    __tablename__ = 'hoi_stations_environments'
+
+    id = Column(INTEGER(11), primary_key=True)
+    __hoi_stations__ID = Column(CHAR(3))
+    locationenvironment_id = Column(INTEGER(11))
+
+
+class HoiSystem(Base):
+    __tablename__ = 'hoi_systems'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    __hoi_stations__ID = Column(CHAR(3), index=True)
+    _hoi_lidar_version_ID = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    name = Column(String(100), nullable=False, server_default=text("''"))
+    Configuration = Column(String(100), nullable=False, server_default=text("''"))
+    height_asl = Column(Float, nullable=False, server_default=text("'0'"))
+    Configuration_from = Column(DateTime)
+    Configuration_to = Column(DateTime)
+    telecover_test_passed = Column(DateTime)
+    testxy_passed_at = Column(DateTime)
+    PI = Column(String(100), nullable=False, server_default=text("''"))
+    system_is_transportable = Column(TINYINT(1))
+    transportation_type = Column(String(100))
+    description = Column(Text)
+    sun_photometer_type = Column(String(45))
+    sun_photometer_distance = Column(Float)
+    radiosounding_location = Column(String(100))
+    radiosounding_distance = Column(Float)
+    radiosounding_frequency = Column(String(100))
+    lidar_pointing_angle = Column(Float)
+    scanning_elevation_from = Column(Float)
+    scanning_elevation_to = Column(Float)
+    scanning_azimuth_from = Column(Float)
+    scanning_azimuth_to = Column(Float)
+    unattended_operation = Column(TINYINT(1))
+    automated_functions = Column(String(100))
+    exclude_from_hoi = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    entry_update_date = Column(DateTime)
+    Latitude = Column(Float)
+    Longitude = Column(Float)
+    Location = Column(String(200))
+    enable_quicklook = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+
+
+class HoiSystemsEnvironment(Base):
+    __tablename__ = 'hoi_systems_environments'
+
+    id = Column(INTEGER(11), primary_key=True)
+    hoisystems_id = Column(INTEGER(11))
+    locationenvironment_id = Column(INTEGER(11))
+
+
+class HoiTelescope(Base):
+    __tablename__ = 'hoi_telescopes'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    type = Column(String(100), nullable=False, server_default=text("''"))
+    diameter = Column(Float, nullable=False, server_default=text("'0'"))
+    focal_length = Column(Float, nullable=False, server_default=text("'0'"))
+    full_overlap_height_m = Column(Float, nullable=False, server_default=text("'0'"))
+    manufacturer = Column(String(100))
+    model = Column(String(100))
+    obscuration_diameter = Column(Float)
+    field_of_view = Column(Float)
+    field_stop_type = Column(String(45))
+    field_stop_size = Column(Float)
+    optical_fiber_num_aperture = Column(Float)
+    optical_fiber_manufacturer = Column(String(100))
+    optical_fiber_type = Column(String(100))
+    collimation_focal_length = Column(Float)
+    entry_update_date = Column(DateTime)
+    collimation_type = Column(String(100))
+    collimation_model = Column(String(100))
+    __hoi_stations__ID = Column(CHAR(3), index=True)
+
+
+class Interfaceexitcode(Base):
+    __tablename__ = 'interfaceexitcodes'
+
+    exit_code = Column(INTEGER(11), primary_key=True)
+    description = Column(LONGTEXT, nullable=False)
+
+
+class IterBackscatterOption(Base):
+    __tablename__ = 'iter_backscatter_options'
+
+    id = Column(INTEGER(11), primary_key=True)
+    iter_conv_crit = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0100'"))
+    _ram_bsc_method_id = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    max_iteration_count = Column(INTEGER(11), nullable=False, server_default=text("'10'"))
+
+
+class LaserEmissionLine(Base):
+    __tablename__ = 'laser_emission_lines'
+
+    id = Column(INTEGER(11), primary_key=True)
+    laser_id = Column(INTEGER(11), nullable=False, index=True)
+    wavelength = Column(Float, nullable=False)
+    pulse_energy = Column(Float)
+    pulse_length = Column(Float)
+    polarization_type = Column(String(45))
+    polarization_purity_nominal = Column(Float)
+    polarization_purity_measured = Column(Float)
+    polarization_orientation = Column(String(45))
+    laser_beam_diameter = Column(Float)
+    laser_beam_divergence = Column(Float)
+    beam_expansion_type = Column(String(45))
+    beam_expansion_factor = Column(Float)
+    beam_divergence_post_exp = Column(Float)
+    exclude_from_hoi = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    entry_update_date = Column(DateTime)
+    alignment = Column(String(45))
+    alignment_control = Column(String(45))
+    alignment_accuracy = Column(Float)
+
+
+class LidarConstant(Base):
+    __tablename__ = 'lidar_constants'
+
+    ID = Column(BIGINT(20), primary_key=True)
+    __measurements__ID = Column(String(15), index=True)
+    _product_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    _channel_ID = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    _hoi_system_ID = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    filename = Column(String(100), nullable=False, server_default=text("''"))
+    calibr_factor = Column(Float(asdecimal=True))
+    calibr_factor_sys_err = Column(Float(asdecimal=True))
+    calibr_factor_stat_err = Column(Float(asdecimal=True))
+    lidar_const = Column(Float(asdecimal=True))
+    lidar_const_sys_err = Column(Float(asdecimal=True))
+    lidar_const_stat_err = Column(Float(asdecimal=True))
+    detection_wavelength = Column(Float(asdecimal=True))
+    profile_start_time = Column(DateTime, nullable=False, server_default=text("'1970-01-01 00:00:00'"))
+    profile_end_time = Column(DateTime, nullable=False, server_default=text("'1970-01-01 00:00:00'"))
+    calibr_window_bottom = Column(Float(asdecimal=True))
+    calibr_window_top = Column(Float(asdecimal=True))
+    InscribedAt = Column(DateTime, nullable=False, server_default=text("'1970-01-01 00:00:00'"))
+    ELDA_version = Column(CHAR(50))
+    is_latest_value = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+
+
+class LidarNetwork(Base):
+    __tablename__ = 'lidar_network'
+
+    id = Column(INTEGER(11), primary_key=True)
+    description = Column(String(50), nullable=False)
+
+
+class LidarratioFile(Base):
+    __tablename__ = 'lidarratio_files'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    __hoi_stations__ID = Column(CHAR(3))
+    start = Column(DateTime)
+    stop = Column(DateTime)
+    filename = Column(String(100))
+    _interpolation_id = Column(INTEGER(11))
+    submission_date = Column(DateTime)
+    status = Column(String(20), nullable=False)
+
+
+class LocationEnvironmentType(Base):
+    __tablename__ = 'location_environment_types'
+
+    location_type_id = Column(INTEGER(11), primary_key=True)
+    name = Column(String(45))
+    description = Column(Text)
+
+
+class McOption(Base):
+    __tablename__ = 'mc_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    iteration_count = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+
+
+class MeasurementLog(Base):
+    __tablename__ = 'measurement_logs'
+
+    ID = Column(BIGINT(12), primary_key=True)
+    __measurements__ID = Column(String(15))
+    product_ID = Column(INTEGER(11))
+    level = Column(TINYINT(1), nullable=False)
+    module = Column(TINYINT(1), nullable=False)
+    module_version = Column(String(45))
+    datetime = Column(DateTime, nullable=False)
+    message = Column(String(400), nullable=False)
+
+
+class Measurement(Base):
+    __tablename__ = 'measurements'
+
+    ID = Column(String(15), primary_key=True)
+    __hoi_stations__ID = Column(CHAR(3))
+    _hoi_system_ID = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    start = Column(DateTime)
+    stop = Column(DateTime, nullable=False, server_default=text("'1970-01-01 00:00:00'"))
+    comment = Column(String(100), nullable=False, server_default=text("''"))
+    calipso = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    cirrus = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    etna = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    rurban = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    stratos = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    dicycles = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    photosmog = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    forfires = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    sahadust = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    climatol = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+    upload = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    hirelpp = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    cloudmask = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elquick = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elpp = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elda = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    eldec = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    elic = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    hirelpp_return_code = Column(INTEGER(11))
+    cloudmask_return_code = Column(INTEGER(11))
+    elquick_return_code = Column(INTEGER(11))
+    elpp_return_code = Column(INTEGER(11))
+    elda_return_code = Column(INTEGER(11))
+    eldec_return_code = Column(INTEGER(11))
+    elic_return_code = Column(INTEGER(11))
+    interface_return_code = Column(INTEGER(11))
+    elpp_current_product_id = Column(INTEGER(11))
+    eldec_current_product_id = Column(INTEGER(11))
+    hirelpp_current_product_id = Column(INTEGER(11))
+    cloudmask_current_product_id = Column(INTEGER(11))
+    elda_current_product_id = Column(INTEGER(11))
+    elic_current_product_id = Column(INTEGER(11))
+    elquick_current_product_id = Column(INTEGER(11))
+    creation_date = Column(DateTime)
+    updated_date = Column(DateTime)
+    sounding_file_id = Column(INTEGER(11))
+    lidar_ratio_file_id = Column(INTEGER(11))
+    overlap_file_id = Column(INTEGER(11))
+    creation_auth_user_ID = Column(INTEGER(11))
+    update_auth_user_ID = Column(INTEGER(11))
+
+
+class OverlapFile(Base):
+    __tablename__ = 'overlap_files'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    __hoi_stations__ID = Column(CHAR(3))
+    start = Column(DateTime)
+    stop = Column(DateTime)
+    filename = Column(String(100), nullable=False, server_default=text("''"))
+    _interpolation_id = Column(INTEGER(11))
+    submission_date = Column(DateTime)
+    status = Column(String(20), nullable=False)
+
+
+class PolarizationCalibrationCorrectionFactor(Base):
+    __tablename__ = 'polarization_calibration_correction_factors'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_ID = Column(INTEGER(11), nullable=False)
+    correction = Column(Float(asdecimal=True), nullable=False)
+    correction_statistical_error = Column(Float(asdecimal=True), nullable=False)
+    correction_systematic_error = Column(Float(asdecimal=True), nullable=False)
+    wavelength = Column(Float(asdecimal=True), nullable=False)
+    _range_ID = Column(INTEGER(11), nullable=False)
+    correction_date = Column(DateTime, nullable=False)
+    correction_submission_date = Column(DateTime, nullable=False)
+
+
+class PolarizationCalibration(Base):
+    __tablename__ = 'polarization_calibrations'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    __measurements__ID = Column(String(15))
+    _product_ID = Column(INTEGER(11), nullable=False)
+    calibration = Column(Float(asdecimal=True), nullable=False)
+    calibration_statistical_error = Column(Float(asdecimal=True), nullable=False)
+    calibration_systematic_error = Column(Float(asdecimal=True), nullable=False)
+    _calibration_type_ID = Column(INTEGER(11), nullable=False, server_default=text("'1'"))
+    wavelength = Column(Float(asdecimal=True))
+    _range_ID = Column(INTEGER(11), nullable=False)
+    calibration_date = Column(DateTime, nullable=False)
+    calibration_submission_date = Column(DateTime, nullable=False)
+    _scc_version_ID = Column(INTEGER(11))
+    filename = Column(String(200), nullable=False)
+
+
+class PolarizationCalibrationsProduct(Base):
+    __tablename__ = 'polarization_calibrations_products'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _calibration_product_ID = Column(INTEGER(11), nullable=False)
+    _product_to_calibrate_ID = Column(INTEGER(11), nullable=False)
+
+
+class PolarizationCrosstalkParameter(Base):
+    __tablename__ = 'polarization_crosstalk_parameters'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    G = Column(DECIMAL(10, 8), nullable=False)
+    G_statistical_error = Column(DECIMAL(10, 8), nullable=False)
+    G_systematic_error = Column(DECIMAL(10, 8), nullable=False)
+    H = Column(DECIMAL(10, 8), nullable=False)
+    H_statistical_error = Column(DECIMAL(10, 8), nullable=False)
+    H_systematic_error = Column(DECIMAL(10, 8), nullable=False)
+    measurement_date = Column(DateTime, nullable=False)
+    submission_date = Column(DateTime, nullable=False)
+    _channel_ID = Column(INTEGER(11), nullable=False)
+
+
+class PolarizationOption(Base):
+    __tablename__ = 'polarization_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_ID = Column(INTEGER(11), nullable=False)
+    _pol_calibration_method_ID = Column(INTEGER(11), nullable=False, server_default=text("'1'"))
+    _crosstalk_parameter_method_ID = Column(INTEGER(11), nullable=False, server_default=text("'1'"))
+    _correction_factor_method_ID = Column(INTEGER(11), nullable=False, server_default=text("'1'"))
+
+
+class PreparedSignalFile(Base):
+    __tablename__ = 'prepared_signal_files'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    __measurements__ID = Column(String(15), index=True)
+    _Product_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    _scc_version_ID = Column(INTEGER(11))
+    filename = Column(String(100), nullable=False, server_default=text("''"))
+
+
+class ProductChannel(Base):
+    __tablename__ = 'product_channels'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _prod_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    _channel_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+
+
+class ProductOption(Base):
+    __tablename__ = 'product_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    _lowrange_error_threshold_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'1'"))
+    _highrange_error_threshold_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'1'"))
+    detection_limit = Column(DECIMAL(11, 11), nullable=False, server_default=text("'0.00000000000'"))
+    min_height = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    max_height = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    preprocessing_integration_time = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+    preprocessing_vertical_resolution = Column(DECIMAL(10, 4), nullable=False, server_default=text("'0.0000'"))
+    interpolation_id = Column(INTEGER(11))
+
+
+class Product(Base):
+    __tablename__ = 'products'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _usecase_ID = Column(INTEGER(11), server_default=text("'-1'"))
+    _prod_type_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    __hoi_stations__ID = Column(CHAR(3))
+    _hirelpp_product_option_ID = Column(INTEGER(11))
+
+
+class QuicklookTimelength(Base):
+    __tablename__ = 'quicklook_timelength'
+
+    id = Column(INTEGER(11), primary_key=True)
+    value = Column(INTEGER(11), nullable=False)
+
+
+class RamanBackscatterOption(Base):
+    __tablename__ = 'raman_backscatter_options'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _product_ID = Column(INTEGER(11), nullable=False, server_default=text("'-1'"))
+    _ram_bsc_method_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    _bsc_calibr_options_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+    _error_method_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'-1'"))
+
+
+class RawSignal(Base):
+    __tablename__ = 'raw_signals'
+
+    ID = Column(BIGINT(20), primary_key=True)
+    __measurements__ID = Column(String(15))
+    filename = Column(String(100), nullable=False, server_default=text("''"))
+
+
+class SccCalculusModule(Base):
+    __tablename__ = 'scc_calculus_modules'
+
+    id = Column(INTEGER(11), primary_key=True)
+    name = Column(String(20))
+
+
+class SccVersion(Base):
+    __tablename__ = 'scc_version'
+
+    ID = Column(INTEGER(10), primary_key=True)
+    scc_version = Column(String(10))
+    pre_process_version = Column(String(10))
+    elda_version = Column(String(10))
+    daemon_version = Column(String(10))
+    scc_db_version = Column(String(10))
+    web_interface_version = Column(String(10))
+    release_date = Column(DateTime, nullable=False, server_default=text("'1970-01-01 00:00:00'"))
+    scc_calibrator_version = Column(String(10))
+    hirelpp_version = Column(String(10))
+    cloudmask_version = Column(String(10))
+    elquick_version = Column(String(10))
+    elic_version = Column(String(10))
+    is_latest = Column(TINYINT(1), nullable=False, server_default=text("'0'"))
+
+
+class SoundingFile(Base):
+    __tablename__ = 'sounding_files'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    __hoi_stations__ID = Column(CHAR(3))
+    start = Column(DateTime)
+    stop = Column(DateTime)
+    filename = Column(String(100))
+    _interpolation_id = Column(INTEGER(11))
+    submission_date = Column(DateTime)
+    status = Column(String(20), nullable=False)
+
+
+class StationsConsensum(Base):
+    __tablename__ = 'stations_consensum'
+
+    id = Column(INTEGER(11), primary_key=True)
+    __hoi_stations__ID = Column(CHAR(3), index=True)
+    _service_id = Column(INTEGER(11), nullable=False, index=True)
+    consensum = Column(INTEGER(11), nullable=False, server_default=text("'0'"))
+
+
+class SystemChannel(Base):
+    __tablename__ = 'system_channel'
+
+    Id = Column(INTEGER(11), primary_key=True)
+    _system_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    _channel_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+
+
+class SystemHirelppProductOption(Base):
+    __tablename__ = 'system_hirelpp_product_option'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _system_ID = Column(INTEGER(11), nullable=False, index=True)
+    _hirelpp_product_option_ID = Column(INTEGER(11), nullable=False, index=True)
+
+
+class SystemProduct(Base):
+    __tablename__ = 'system_product'
+
+    ID = Column(INTEGER(11), primary_key=True)
+    _system_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+    _Product_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
