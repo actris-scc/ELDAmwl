@@ -16,7 +16,7 @@ FILE_FORMAT_VERSION = 1.0
 # ===================
 
 LOG_PATH = ''
-SIGNAL_PATH = '../data/ELPP_files'
+SIGNAL_PATH = 'data/ELPP_files'
 PRODUCT_PATH = ''
 TEMP_PATH = ''
 PLUGINS_DIR = ''
