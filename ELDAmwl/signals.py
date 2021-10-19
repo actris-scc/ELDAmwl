@@ -70,7 +70,7 @@ class ElppData(object):
 
         try:
             nc_ds = xr.open_dataset(elpp_file)
-        except Exception as e:   # ToDo Ina debug
+        except Exception as e:   # ToDo Ina : which exception exactly?
             print(e)
             raise(CannotOpenELLPFile(elpp_file))
 
