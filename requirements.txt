@@ -15,6 +15,7 @@ colorlog
 SQLAlchemy-Utils
 netcdf4
 pandas>=0.24
+autodocsumm
 sphinx==3.2.1
 sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
