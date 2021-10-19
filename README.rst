@@ -3,8 +3,8 @@ ELDAmwl
 ==================
 
 
-.. image:: https://travis-ci.org/actris-scc/ELDAmwl.svg?branch=master
-   :target: https://travis-ci.org/github/actris-scc/ELDAmwl
+.. image:: https://travis-ci.com/actris-scc/ELDAmwl.svg?branch=master
+   :target: https://travis-ci.com/github/actris-scc/ELDAmwl
    :alt: Travis CI status
 
 .. image:: https://img.shields.io/coveralls/github/actris-scc/ELDAmwl/master.svg
