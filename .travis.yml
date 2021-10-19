@@ -17,7 +17,7 @@ before_install:
 install:
   - poetry install
 script:
-  - poetry run coverage run -m pytest
+  - poetry run coverage run --source=ELDAmwl -m pytest
 after_success:
   - poetry run coveralls
 notifications:
