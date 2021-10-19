@@ -17,10 +17,9 @@ before_install:
 install:
   - poetry install
 script:
-  - poetry run pytest --cov-report term-missing --cov .
+  - poetry run coverage run -m pytest
 after_success:
-  - pip install coveralls
-  - coveralls
+  - poetry run coveralls
 notifications:
   email:
     - volker.jaenisch@inqbus.de
