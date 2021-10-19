@@ -16,8 +16,8 @@ SQLAlchemy-Utils
 netcdf4
 pandas>=0.24
 sphinx==3.2.1
-sphinxcontrib-qthelp==1.0.30
-sphinxcontrib-serializinghtml==1.1.4
+sphinxcontrib-qthelp
+sphinxcontrib-serializinghtml
 sphinx-rtd-theme
 
 zope.interface==5.4.0
