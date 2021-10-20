@@ -130,7 +130,6 @@ class Extinctions(Products):
         self.params.to_meta_ds_dict(dct)
 
 
-@zope.interface.implementer(IExtOp)
 class ExtinctionFromSignal(BaseOperationFactory):
     """
     Returns an instance of BaseOperation which calculates the particle
@@ -158,6 +157,7 @@ class ExtinctionFromSignal(BaseOperationFactory):
         return 'ExtinctionFromSignalDefault'
 
 
+@zope.interface.implementer(IExtOp)
 class ExtinctionFromSignalDefault(BaseOperation):
     """
     Calculates particle extinction coefficient from Raman signal.
@@ -427,7 +427,7 @@ class ExtinctionFactoryDefault(BaseOperation):
             calc_routine.run()
 
             if self.param.error_method == MC:
-                ext = IMonteCarlo(calc_routine)
+                ext = zope.component.getAdapter(calc_routine, IMonteCarlo)
             else:
                 pass
 

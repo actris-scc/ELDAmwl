@@ -12,9 +12,7 @@ class MonteCarlo:
         self.op = op
 
     def __call__(self):
-        mc_adapter = IMonteCarlo(self.op)
-
-        data = mc_adapter.get_data()
+        data = self.get_data()
 
         results = []
         for i in range(30):
@@ -42,5 +40,5 @@ class MonteCarloExtAdapter(MonteCarlo):
         """
         return self.op.run(data)
 
-
-zope.component.provideAdapter(MonteCarloExtAdapter)
+gsm = zope.component.getGlobalSiteManager()
+gsm.registerAdapter(MonteCarloExtAdapter, (IExtOp,), IMonteCarlo)
