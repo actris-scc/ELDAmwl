@@ -41,3 +41,6 @@ class MonteCarloExtAdapter(MonteCarlo):
         Returns the operation result on the shuffeled data
         """
         return self.op.run(data)
+
+
+zope.component.provideAdapter(MonteCarloExtAdapter)
