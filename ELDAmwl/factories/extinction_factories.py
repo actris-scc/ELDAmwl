@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """Classes for extinction calculation"""
+import zope
 from addict import Dict
 from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.interface import IDBFunc, IMonteCarlo, IExtOp
 from ELDAmwl.component.registry import registry
 from ELDAmwl.configs.config_default import RANGE_BOUNDARY
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
@@ -104,51 +105,20 @@ class Extinctions(Products):
         """
         result = super(Extinctions, cls).from_signal(signal, p_params, **kwargs)
 
-        ext_params = Dict({'detection_wavelength': signal.detection_wavelength,
-                           'emission_wavelength': signal.emission_wavelength,
-                           'angstroem_exponent': p_params.ang_exp_asDataArray,
-                           })
+        # ext_params = Dict({'detection_wavelength': signal.detection_wavelength,
+        #                    'emission_wavelength': signal.emission_wavelength,
+        #                    'angstroem_exponent': p_params.ang_exp_asDataArray,
+        #                    })
 
-        slope_routine = SignalSlope()(prod_id=p_params.prod_id_str)
+        # slope_routine = SignalSlope()(prod_id=p_params.prod_id_str)
         cls.calc_eff_bin_res_routine = ExtEffBinRes()(prod_id=p_params.prod_id_str)
 
-        x_data = np.array(signal.range)
-        y_data = np.array(signal.ds.data)
-        yerr_data = np.array(signal.ds.err)
-        qf_data = np.array(signal.ds.qf)
-
-        for t in range(signal.num_times):
-            fvb = signal.first_valid_bin(t)
-            lvb = signal.last_valid_bin(t)
-            for lev in range(fvb, lvb):
-                window = int(signal.ds.binres[t, lev])
-                half_win = window // 2
-
-                if lev < (fvb + half_win):
-                    result.set_invalid_point(t, lev, BELOW_OVL)
-
-                elif lev >= (lvb - half_win):
-                    result.set_invalid_point(t, lev, ABOVE_MAX_ALT)
-
-                else:
-                    fb = lev - half_win
-                    lb = lev + half_win
-                    window_data = Dict({'x_data': x_data[t, fb:lb + 1],
-                                        'y_data': y_data[t, fb:lb + 1],
-                                        'yerr_data': yerr_data[t, fb:lb + 1],
-                                        })
-
-                    sig_slope = slope_routine.run(signal=window_data)
-                    qf = np.bitwise_or.reduce(qf_data[t, fb:lb + 1])
-
-                    result.ds['data'][t, lev] = sig_slope.slope
-                    result.ds['err'][t, lev] = sig_slope.slope_err
-                    result.ds['qf'][t, lev] = qf
-                    result.ds['binres'][t, lev] = window
-
-        # SlopeToExtinction converts the slope into extinction coefficients
-        SlopeToExtinction()(slope=result.ds,
-                            ext_params=ext_params).run()
+        # ExtinctionFromSignal()(ext_params=ext_params,
+        #                        slope_routine=SignalSlope()(prod_id=p_params.prod_id_str),
+        #                        slope_to_ext_routine=SlopeToExtinction(),
+        #                        raman_signal=signal,
+        #                        result_ext=result,
+        #                        ).run()
 
         return result
 
@@ -158,6 +128,100 @@ class Extinctions(Products):
         super(Extinctions, self).to_meta_ds_dict(meta_data)
         dct = meta_data[self.mwl_meta_id]
         self.params.to_meta_ds_dict(dct)
+
+
+@zope.interface.implementer(IExtOp)
+class ExtinctionFromSignal(BaseOperationFactory):
+    """
+    Returns an instance of BaseOperation which calculates the particle
+    extinction coefficient from a  Raman signal. In this case, it
+    will be always an instance of ExtinctionFromSignalDefault().
+    """
+
+    name = 'ExtinctionFromSignal'
+
+    def __call__(self, **kwargs):
+        assert 'ext_params' in kwargs
+        assert 'slope_routine' in kwargs
+        assert 'slope_to_ext_routine' in kwargs
+        assert 'raman_signal' in kwargs
+        assert 'result_ext' in kwargs
+
+        res = super(ExtinctionFromSignal, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """
+
+        return: always 'ExtinctionFromSignalDefault' .
+        """
+        return 'ExtinctionFromSignalDefault'
+
+
+class ExtinctionFromSignalDefault(BaseOperation):
+    """
+    Calculates particle extinction coefficient from Raman signal.
+    """
+
+    name = 'ExtinctionFromSignalDefault'
+
+    ext_params = None
+    signal = None
+    slope_routine = None
+    slope_to_ext_routine = None
+    result = None
+
+    def __init__(self, **kwargs):
+        super(ExtinctionFromSignalDefault, self).__init__(**kwargs)
+        self.signal = self.kwargs['raman_signal']
+        self.ext_params = self.kwargs['ext_params']
+        self.slope_routine = self.kwargs['slope_routine']
+        self.slope_to_ext_routine = self.kwargs['slope_to_ext_routine']
+        self.result = self.kwargs['result_ext']
+
+    def run(self, data=None):
+        if data is None:
+            data = self.signal
+
+        x_data = np.array(data.range)
+        y_data = np.array(data.ds.data)
+        yerr_data = np.array(data.ds.err)
+        qf_data = np.array(data.ds.qf)
+
+        for t in range(data.num_times):
+            fvb = data.first_valid_bin(t)
+            lvb = data.last_valid_bin(t)
+            for lev in range(fvb, lvb):
+                window = int(data.ds.binres[t, lev])
+                half_win = window // 2
+
+                if lev < (fvb + half_win):
+                    self.result.set_invalid_point(t, lev, BELOW_OVL)
+
+                elif lev >= (lvb - half_win):
+                    self.result.set_invalid_point(t, lev, ABOVE_MAX_ALT)
+
+                else:
+                    fb = lev - half_win
+                    lb = lev + half_win
+                    window_data = Dict({'x_data': x_data[t, fb:lb + 1],
+                                        'y_data': y_data[t, fb:lb + 1],
+                                        'yerr_data': yerr_data[t, fb:lb + 1],
+                                        })
+
+                    sig_slope = self.slope_routine.run(signal=window_data)
+                    qf = np.bitwise_or.reduce(qf_data[t, fb:lb + 1])
+
+                    self.result.ds['data'][t, lev] = sig_slope.slope
+                    self.result.ds['err'][t, lev] = sig_slope.slope_err
+                    self.result.ds['qf'][t, lev] = qf
+                    self.result.ds['binres'][t, lev] = window
+
+        # SlopeToExtinction converts the slope into extinction coefficients
+        self.slope_to_ext_routine(slope=self.result.ds,
+                            ext_params=self.ext_params).run()
+
+        return None
 
 
 class SlopeToExtinction(BaseOperationFactory):
@@ -325,6 +389,7 @@ class ExtinctionFactoryDefault(BaseOperation):
 
     def get_product(self):
         self.param = self.kwargs['ext_param']
+        prod_id = self.param.prod_id_str
         resolution = self.kwargs['resolution']
 
         if not self.param.includes_product_merging():
@@ -340,10 +405,31 @@ class ExtinctionFactoryDefault(BaseOperation):
                 ).run()
 
             else:
-                smooth_res = self.data_storage.binres_common_smooth(self.param.prod_id_str, resolution)
+                smooth_res = self.data_storage.binres_common_smooth(prod_id, resolution)
 
             raman_sig.ds['binres'] = smooth_res
-            result = Extinctions.from_signal(raman_sig, self.param)
+
+            ext_params = Dict({'detection_wavelength': raman_sig.detection_wavelength,
+                               'emission_wavelength': raman_sig.emission_wavelength,
+                               'angstroem_exponent': self.param.ang_exp_asDataArray,
+                               })
+
+            empty_ext = Extinctions.from_signal(raman_sig, self.param)
+
+            # slope_routine = SignalSlope()(prod_id=p_params.prod_id_str)
+
+            calc_routine = ExtinctionFromSignal()(ext_params=ext_params,
+                                   slope_routine=SignalSlope()(prod_id=prod_id),
+                                   slope_to_ext_routine=SlopeToExtinction(),
+                                   raman_signal=raman_sig,
+                                   result_ext=empty_ext,
+                                   )
+            calc_routine.run()
+
+            if self.param.error_method == MC:
+                ext = IMonteCarlo(calc_routine)
+            else:
+                pass
 
             del raman_sig
         else:
@@ -624,3 +710,7 @@ registry.register_class(ExtinctionAutosmooth,
 registry.register_class(SlopeToExtinction,
                         SlopeToExtinctionDefault.__name__,
                         SlopeToExtinctionDefault)
+
+registry.register_class(ExtinctionFromSignal,
+                        ExtinctionFromSignalDefault.__name__,
+                        ExtinctionFromSignalDefault)
