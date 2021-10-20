@@ -18,10 +18,14 @@ default:
 # :::::::::::::::::::
 # database connection
 # :::::::::::::::::::
-  DB_SERVER : ''
-  DB_USER : ''
-  DB_PASS : ''
-  DB_DB : ''
+#  DB_SERVER : ''
+#  DB_USER : ''
+#  DB_PASS : ''
+#  DB_DB : ''
+  DB_SERVER : 'localhost'
+  DB_USER : 'earlinet'
+  DB_PASS : 'dwdlidar'
+  DB_DB : 'scc_dev_eldamwl'
 
 # :::::::::::::::::::
 # Logging

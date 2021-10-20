@@ -44,8 +44,8 @@ class IMonteCarlo(interface.Interface):
         """
     def run(self, data):
         """
-        sets the shuffled data on the operation and runs the operation
-        Returns the operation result on the shuffeled data
+        puts the mc copy of data into the operation and runs the operation
+        Returns the operation result
         """
 
 class IBscOp(interface.Interface):

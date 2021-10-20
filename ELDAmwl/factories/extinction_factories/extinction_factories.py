@@ -431,17 +431,17 @@ class ExtinctionFactoryDefault(BaseOperation):
 
             if self.param.error_method == MC:
                 adapter = zope.component.getAdapter(calc_routine, IMonteCarlo)
-                ext = adapter(self.param.mc_params).run()
+                ext.err[:] = adapter(self.param.mc_params)
             else:
-                result = ext
+                ext = ext
 
             del raman_sig
         else:
             # todo: result = Extinctions.from_merged_signals()
-            result = None
+            ext = None
             pass
 
-        return result
+        return ext
 
 
 registry.register_class(ExtinctionFactory,
