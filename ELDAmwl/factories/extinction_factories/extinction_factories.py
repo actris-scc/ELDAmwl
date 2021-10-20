@@ -7,7 +7,6 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IExtOp
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
-from ELDAmwl.configs.config_default import RANGE_BOUNDARY
 from ELDAmwl.factories.extinction_factories.ext_slope_calculations import SignalSlope
 from ELDAmwl.factories.extinction_factories.ext_vertical_resolution import ExtEffBinRes
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
