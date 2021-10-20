@@ -5,7 +5,7 @@ from addict import Dict
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.factories.extinction_factories import ExtinctionParams
+from ELDAmwl.factories.extinction_factories.extinction_factories import ExtinctionParams
 from ELDAmwl.factories.raman_bsc_factories import RamanBscParams
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products

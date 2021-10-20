@@ -10,9 +10,9 @@ from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.factories.backscatter_factories import FindCommonBscCalibrWindow
 from ELDAmwl.factories.elast_bsc_factories import ElastBscEffBinRes
 from ELDAmwl.factories.elast_bsc_factories import ElastBscUsedBinRes
-from ELDAmwl.factories.extinction_factories import ExtEffBinRes
-from ELDAmwl.factories.extinction_factories import ExtinctionFactory
-from ELDAmwl.factories.extinction_factories import ExtUsedBinRes
+from ELDAmwl.factories.extinction_factories.ext_vertical_resolution import ExtEffBinRes
+from ELDAmwl.factories.extinction_factories.extinction_factories import ExtinctionFactory
+from ELDAmwl.factories.extinction_factories.ext_vertical_resolution import ExtUsedBinRes
 from ELDAmwl.factories.raman_bsc_factories import RamanBackscatterFactory
 from ELDAmwl.factories.raman_bsc_factories import RamBscEffBinRes
 from ELDAmwl.factories.raman_bsc_factories import RamBscUsedBinRes

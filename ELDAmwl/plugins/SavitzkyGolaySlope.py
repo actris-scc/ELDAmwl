@@ -3,7 +3,7 @@
 
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.component.registry import registry
-from ELDAmwl.factories.extinction_factories import SignalSlope
+from ELDAmwl.factories.extinction_factories.ext_slope_calculations import SignalSlope
 
 
 class SavGolaySlope(BaseOperation):
