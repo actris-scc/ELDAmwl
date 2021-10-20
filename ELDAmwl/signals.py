@@ -6,6 +6,7 @@ from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.bases.columns import Columns
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.component.interface import ICfg
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import CannotOpenELLPFile
@@ -27,6 +28,11 @@ from ELDAmwl.utils.constants import RESOLUTION_STR
 from ELDAmwl.utils.constants import TOTAL
 from ELDAmwl.utils.constants import TRANSMITTED
 from ELDAmwl.utils.constants import WATER_VAPOR
+# try:
+#     import ELDAmwl.configs._config as cfg
+# except ModuleNotFoundError:
+#     import ELDAmwl.configs.config_default as cfg
+from ELDAmwl.utils.path_utils import abs_file_path
 from zope import component
 
 import numpy as np
@@ -34,16 +40,14 @@ import os
 import xarray as xr
 
 
-try:
-    import ELDAmwl.configs._config as cfg
-except ModuleNotFoundError:
-    import ELDAmwl.configs.config_default as cfg
-
-
 class ElppData(object):
     """Representation of one ELPP file.
 
     """
+
+    @property
+    def cfg(self):
+        return component.queryUtility(ICfg)
 
     def __init__(self):
         self.signals = None
@@ -63,8 +67,7 @@ class ElppData(object):
         """
         # todo: check if scc version in query = current version
 
-        elpp_file = os.path.join(cfg.SIGNAL_PATH,
-                                 p_param.general_params.elpp_file)
+        elpp_file = abs_file_path(self.cfg.SIGNAL_PATH, p_param.general_params.elpp_file)
         if not os.path.exists(elpp_file):
             raise(ELPPFileNotFound(elpp_file))
 

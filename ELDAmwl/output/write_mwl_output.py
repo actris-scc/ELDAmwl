@@ -18,10 +18,10 @@ from ELDAmwl.utils.path_utils import abs_file_path
 import xarray as xr
 
 
-try:
-    import ELDAmwl.configs._config as cfg
-except ImportError:
-    import ELDAmwl.configs.config_default as cfg
+# try:
+#     import ELDAmwl.configs._config as cfg
+# except ImportError:
+#     import ELDAmwl.configs.config_default as cfg
 
 
 class WriteMWLOutputDefault(BaseOperation):

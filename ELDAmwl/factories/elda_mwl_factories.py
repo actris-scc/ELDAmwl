@@ -32,10 +32,10 @@ import numpy as np
 import pandas as pd
 
 
-try:
-    import ELDAmwl.configs._config as cfg  # noqa E401
-except ModuleNotFoundError:
-    import ELDAmwl.configs.config_default as cfg  # noqa E401
+# try:
+#     import ELDAmwl.configs._config as cfg  # noqa E401
+# except ModuleNotFoundError:
+#     import ELDAmwl.configs.config_default as cfg  # noqa E401
 
 PARAM_CLASSES = {RBSC: RamanBscParams,
                  EBSC: ElastBscParams,

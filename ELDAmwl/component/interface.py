@@ -3,6 +3,12 @@
 from zope import interface
 
 
+class ICfg(interface.Interface):
+    """
+    Marker Interface for Config utility
+    """
+
+
 class IDBFunc(interface.Interface):
     """
     Marker Interface for DBFunc utility

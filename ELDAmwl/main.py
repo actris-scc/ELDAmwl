@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.component.interface import ILogger
+from ELDAmwl.component.interface import ILogger, ICfg
+from ELDAmwl.config import register_config
 from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
 from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import WrongCommandLineParameter
 from ELDAmwl.factories.elda_mwl_factories import RunELDAmwl
-from ELDAmwl.log.log import register_logger
+from ELDAmwl.log.log import register_logger, register_db_logger
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
 from zope import component
@@ -16,10 +17,10 @@ import sys
 import traceback
 
 
-try:
-    import ELDAmwl.configs._config as cfg  # noqa E401
-except ModuleNotFoundError:
-    import ELDAmwl.configs.config_default as cfg  # noqa E401
+# try:
+#     import ELDAmwl.configs._config as cfg  # noqa E401
+# except ModuleNotFoundError:
+#     import ELDAmwl.configs.config_default as cfg  # noqa E401
 
 
 # meas_id = '20181017oh00'
@@ -40,11 +41,34 @@ except ModuleNotFoundError:
 #   598: mwl (378 + 379 + 328)
 
 
+def elda_setup_components(env='Production'):
+    # Get the configuration
+    register_config(env=env)
+
+    # Setup the logging facility for this measurement ID
+    register_logger()
+    # register_plugins()
+
+    # Bring up the global db_access
+    register_db_func()
+
+    # Bring up DB logger
+    register_db_logger()
+
+    # Bring up the global data storage
+    register_datastorage()
+
+
 class Main:
 
     @property
     def logger(self):
         return component.queryUtility(ILogger)
+
+    @property
+    def cfg(self):
+        return component.queryUtility(ICfg)
+
 
     def handle_args(self):
         parser = argparse.ArgumentParser(description='EARLINET Lidar Data Analyzer for \
@@ -73,7 +97,7 @@ class Main:
 
         return args
 
-    def elda_init(self):
+    def elda_cmdline(self):
         """
         Initialization of the ELDA environment
         """
@@ -97,10 +121,6 @@ class Main:
         # Get the measurement ID from the command line
         meas_id = args.meas_id
 
-        # Setup the logging facility for this measurement ID
-        register_logger(meas_id)
-        # register_plugins()
-
         # customize the logger according to command line parameters
         if args.ll_file:
             if args.ll_file == 'QUIET':
@@ -112,15 +132,6 @@ class Main:
                            multi-wavelengths measurements (ELDAmwl)')
         self.logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
         self.logger.info('analyze measurement number: ' + meas_id)
-
-        # Bring up the global db_access
-        register_db_func()
-
-        # Bring up DB logger
-        self.logger.setup_db_logger()
-
-        # Bring up the global data storage
-        register_datastorage()
 
         return meas_id
 
@@ -146,7 +157,7 @@ class Main:
     def run(self):
 
         try:
-            meas_id = self.elda_init()
+            meas_id = self.elda_cmdline()
             self.elda(meas_id)
 
             sys.exit(NO_ERROR)
@@ -164,6 +175,7 @@ class Main:
 
 
 def run():
+    elda_setup_components()
     main = Main()
     main.run()
 
