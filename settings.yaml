@@ -1,0 +1,51 @@
+TEST123: 42
+# :::::::::::::::::::
+# ELDAmwl
+# :::::::::::::::::::
+# mwl output file
+default:
+  FILE_FORMAT_VERSION : 1.0
+
+# :::::::::::::::::::
+# Directories
+# :::::::::::::::::::
+  LOG_PATH : ''
+  SIGNAL_PATH : 'data/ELPP_files'
+  PRODUCT_PATH : ''
+  TEMP_PATH : ''
+  PLUGINS_DIR : ''
+
+# :::::::::::::::::::
+# database connection
+# :::::::::::::::::::
+  DB_SERVER : ''
+  DB_USER : ''
+  DB_PASS : ''
+  DB_DB : ''
+
+# :::::::::::::::::::
+# Logging
+# :::::::::::::::::::
+
+  # The logfiles
+  # general log level
+  log_level : DEBUG
+  # The desired log_level for console output
+  log_level_console : INFO
+  # The desired log_level for the logfile
+  log_level_file : INFO
+  # Colors for the log console output (Options see color_log-package)
+  log_colors : {
+      'DEBUG': 'cyan',
+      'INFO': 'green',
+      'WARNING': 'yellow',
+      'ERROR': 'red',
+      'CRITICAL': 'red,bg_white',
+  }
+
+  WRITE_EXTENDED_OUTPUT : True
+  APPEND_LOG_FILE : False
+
+
+testing:
+  SIGNAL_PATH : 'data/ELPP_files'
