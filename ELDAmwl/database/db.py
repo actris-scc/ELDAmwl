@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.component.interface import ILogger
+from ELDAmwl.component.interface import ILogger, ICfg
 from ELDAmwl.database.tables.system_product import SystemProduct
 from ELDAmwl.errors.exceptions import DBErrorTerminating
 from sqlalchemy import create_engine
@@ -8,10 +8,10 @@ from sqlalchemy.orm import sessionmaker
 from zope import component
 
 
-try:
-    import ELDAmwl.configs._config as cfg
-except ImportError:
-    import ELDAmwl.configs.config_default as cfg
+# try:
+#     import ELDAmwl.configs._config as cfg
+# except ImportError:
+#     import ELDAmwl.configs.config_default as cfg
 
 
 class DBUtils(object):
@@ -27,14 +27,18 @@ class DBUtils(object):
     def logger(self):
         return component.queryUtility(ILogger)
 
+    @property
+    def cfg(self):
+        return component.queryUtility(ICfg)
+
     def get_connect_string(self):
         if self.connect_string:
             return self.connect_string
         result = 'mysql+pymysql://{user}:{passw}@{host}/{db}'.format(
-            user=cfg.DB_USER,
-            passw=cfg.DB_PASS,
-            host=cfg.DB_SERVER,
-            db=cfg.DB_DB)
+            user=self.cfg.DB_USER,
+            passw=self.cfg.DB_PASS,
+            host=self.cfg.DB_SERVER,
+            db=self.cfg.DB_DB)
         return result
 
     def init_engine(self):

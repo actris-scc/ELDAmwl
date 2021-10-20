@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.interface import IDBFunc, ICfg
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.errors.exceptions import LogPathNotExists
 from ELDAmwl.utils.path_utils import dir_not_found_hint
@@ -15,10 +15,10 @@ import os
 import zope
 
 
-try:
-    import ELDAmwl.configs._config as cfg
-except ImportError:
-    import ELDAmwl.configs.config_default as cfg
+# try:
+#     import ELDAmwl.configs._config as cfg
+# except ImportError:
+#     import ELDAmwl.configs.config_default as cfg
 
 # Log level codes according to DB-Definition and syslog
 SYSLOG_ERROR = 3
@@ -36,10 +36,14 @@ class Logger:
     db_log_func = None
     db_log_level = None
 
-    def __init__(self, module_version, meas_id):
-        self.module_version = module_version
-        self.meas_id = meas_id
+    def __init__(self):
+        self.module_version = '4711'
+        self.meas_id = '1174'
         self.setup_logger()
+
+    @property
+    def cfg(self):
+        return component.queryUtility(ICfg)
 
     @staticmethod
     def log_message(prod_id, msg):
@@ -89,7 +93,7 @@ class Logger:
                 '%(levelname)-8s %(message)s',
                 datefmt=None,
                 reset=True,
-                log_colors=cfg.log_colors,
+                log_colors=self.cfg.log_colors,
                 secondary_log_colors={},
                 style='%',
             )
@@ -111,7 +115,7 @@ class Logger:
         console_handler = StreamHandler(stdout)
         console_formatter = formatter
         console_handler.setFormatter(console_formatter)
-        console_handler.setLevel(cfg.log_level_console)
+        console_handler.setLevel(self.cfg.log_level_console)
         self.logger.addHandler(console_handler)
 
     def setup_file_logger(self, formatter):
@@ -119,9 +123,9 @@ class Logger:
         File logger
         Has to be setup when the output filename is known
         """
-        if not os.path.exists(cfg.LOG_PATH):
-            self.error(ERROR, """Log file directory "{path}" does not exists""".format(path=cfg.LOG_PATH))
-            dir_not_found_hint(cfg.LOG_PATH)
+        if not os.path.exists(self.cfg.LOG_PATH):
+            self.error(ERROR, """Log file directory "{path}" does not exists""".format(path=self.cfg.LOG_PATH))
+            dir_not_found_hint(self.cfg.LOG_PATH)
             raise LogPathNotExists
 
         log_file_path = os.path.join(
@@ -131,7 +135,7 @@ class Logger:
         file_handler = FileHandler(log_file_path)
         file_handler_formatter = formatter
         file_handler.setFormatter(file_handler_formatter)
-        file_handler.setLevel(cfg.log_level_file)
+        file_handler.setLevel(self.cfg.log_level_file)
         self.logger.addHandler(file_handler)
 
     def setup_db_logger(self):
@@ -148,7 +152,7 @@ class Logger:
         """
         get_logger, formatter = self.get_logger_formatter()
         self.logger = get_logger('ELDAmwl')
-        self.logger.setLevel(cfg.log_level)
+        self.logger.setLevel(self.cfg.log_level)
 
         self.setup_console_logger(formatter)
 
@@ -159,12 +163,18 @@ class Logger:
         self.db_log_func(level, prod_id, msg)
 
 
-def register_logger(meas_id):
+def register_logger():
     # prohibit more than one logger instance
     logger = component.queryUtility(ILogger)
     if logger is not None:
         return logger
 
-    logger = Logger(4711, meas_id)  # ToDo Ina Where to get the module_version for logging ?
+    logger = Logger()  # ToDo Ina Where to get the module_version for logging ?
     component.provideUtility(logger, ILogger)
     return logger
+
+
+def register_db_logger():
+    # prohibit more than one logger instance
+    logger = component.queryUtility(ILogger)
+    logger.setup_db_logger()

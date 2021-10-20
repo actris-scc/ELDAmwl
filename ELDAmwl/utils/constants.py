@@ -134,3 +134,24 @@ ABOVE_KLETT_REF = 16
 INVALID_DEPOL = 32
 BELOW_MIN_BSCR = 64
 CALC_WINDOW_OUTSIDE_PROFILE = 124
+
+# ===================
+# Time strings
+# ===================
+
+STRP_DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+# ===================
+# processing settings
+# ===================
+
+# [m] different maximum allowable smoothing
+# lengths below and above RANGE_BOUNDARY
+MAX_ALLOWABLE_SMOOTH = (500, 2000)  # [m]
+MIN_REQUIRED_SMOOTH = (100, 500)  # [m]
+MAX_SMOOTH_CHANGE = 3  # [bins] todo: change into m
+MAX_AVERAGE_TIME = 2 * 60 * 60  # 2h
+MIN_AVERAGE_TIME = 30 * 60  # 30min
+RANGE_BOUNDARY = 2000
+RANGE_BOUNDARY_KM = RANGE_BOUNDARY / 1000.
+

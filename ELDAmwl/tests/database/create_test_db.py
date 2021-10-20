@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from ELDAmwl.component.interface import IDBConstructor
 from ELDAmwl.component.interface import ILogger
-from ELDAmwl.configs.config_default import STRP_DATE_TIME_FORMAT
+from ELDAmwl.utils.constants import STRP_DATE_TIME_FORMAT
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.backscatter import BscCalibrMethod
 from ELDAmwl.database.tables.backscatter import BscCalibrOption

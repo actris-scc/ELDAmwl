@@ -2,6 +2,8 @@
 """base classes for products"""
 from addict import Dict
 from copy import deepcopy
+
+import ELDAmwl.utils.constants
 from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
@@ -35,10 +37,10 @@ import numpy as np
 import xarray as xr
 
 
-try:
-    import ELDAmwl.configs._config as cfg
-except ImportError:
-    import ELDAmwl.configs.config_default as cfg
+# try:
+#     import ELDAmwl.configs._config as cfg
+# except ImportError:
+#     import ELDAmwl.configs.config_default as cfg
 
 
 class Products(Signals):
@@ -216,7 +218,7 @@ class ProductParams(Params):
                             attrs={'long_name': 'threshold for the '
                                                 'relative statistical error '
                                                 'below {0} km height'.
-                                                format(cfg.RANGE_BOUNDARY_KM),
+                                                format(ELDAmwl.utils.constants.RANGE_BOUNDARY_KM),
                                    'units': '1'})
 
     @property
@@ -226,7 +228,7 @@ class ProductParams(Params):
                             attrs={'long_name': 'threshold for the '
                                                 'relative statistical error '
                                                 'above {0} km height'.
-                                                format(cfg.RANGE_BOUNDARY_KM),
+                                                format(ELDAmwl.utils.constants.RANGE_BOUNDARY_KM),
                                    'units': '1'})
 
     @property

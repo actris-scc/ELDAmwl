@@ -3,7 +3,7 @@
 from ELDAmwl.component.interface import IDBConstructor
 from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.log.log import register_logger
-from ELDAmwl.main import Main
+from ELDAmwl.main import Main, elda_setup_components
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.tests.database.create_test_db import register_dbconstructor
 from ELDAmwl.tests.database.create_test_db import TEST_CONNECT_STRING
@@ -14,7 +14,7 @@ import unittest
 
 class TestTestDB(unittest.TestCase):
     def setUp(self):
-        register_logger('None')
+        elda_setup_components()
         register_dbconstructor()
 
     def test_test_db(self):
@@ -25,7 +25,7 @@ class TestTestDB(unittest.TestCase):
 class Test(unittest.TestCase):
 
     def setUp(self):
-        register_logger('None')
+        elda_setup_components(env='testing')
         register_dbconstructor()
         db_constructor = component.queryUtility(IDBConstructor)
         db_constructor.run()

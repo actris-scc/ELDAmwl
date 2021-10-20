@@ -7,12 +7,6 @@ from ELDAmwl.component.registry import registry
 from zope import component
 
 
-try:
-    import ELDAmwl.configs._config as cfg  # noqa E401
-except ModuleNotFoundError:
-    import ELDAmwl.configs.config_default as cfg  # noqa E401
-
-
 class BaseOperationFactory(object):
     """
     Base class of factories.

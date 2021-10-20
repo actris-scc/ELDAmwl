@@ -7,11 +7,10 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc, IMonteCarlo, IExtOp
 from ELDAmwl.component.registry import registry
-from ELDAmwl.configs.config_default import RANGE_BOUNDARY
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
-from ELDAmwl.utils.constants import ABOVE_MAX_ALT
+from ELDAmwl.utils.constants import ABOVE_MAX_ALT, RANGE_BOUNDARY
 from ELDAmwl.utils.constants import BELOW_OVL
 from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import NC_FILL_STR
