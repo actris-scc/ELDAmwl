@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """base Classes for factories and operators"""
-from ELDAmwl.component.interface import IDataStorage
+from ELDAmwl.component.interface import IDataStorage, ICfg
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.registry import registry
@@ -69,6 +69,10 @@ class BaseOperation(object):
     @property
     def logger(self):
         return component.queryUtility(ILogger)
+
+    @property
+    def cfg(self):
+        return component.queryUtility(ICfg)
 
     @property
     def params(self):

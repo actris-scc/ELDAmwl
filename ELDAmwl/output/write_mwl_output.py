@@ -13,8 +13,8 @@ from ELDAmwl.utils.constants import LOWRES
 from ELDAmwl.utils.constants import MWL
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTIONS
+from ELDAmwl.utils.path_utils import abs_file_path
 
-import os
 import xarray as xr
 
 
@@ -100,7 +100,7 @@ class WriteMWLOutputDefault(BaseOperation):
 
     def run(self):
         self.product_params = self.kwargs['product_params']
-        self.out_filename = os.path.join(cfg.PRODUCT_PATH, self.mwl_filename())
+        self.out_filename = abs_file_path(self.cfg.PRODUCT_PATH, self.mwl_filename())
 
         self.collect_header_info()
         self.collect_meta_data()
