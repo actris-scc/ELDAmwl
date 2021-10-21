@@ -85,6 +85,7 @@ class GetBasicProductsDefault(BaseOperation):
         fixed vertical resolution of the mwl product
 
         """
+        self.logger.info('get bin resolution of products for common smoothing')
         sp = self.product_params.smooth_params
 
         for prod_param in self.product_params.basic_products():
@@ -106,6 +107,7 @@ class GetBasicProductsDefault(BaseOperation):
         """get all basic products with automatic smoothing
 
         """
+        self.logger.info('get automatically smoothed products')
         self.get_raman_bsc_auto_smooth()
         self.get_extinctions_auto_smooth()
         # todo: get elast_bsc
@@ -115,6 +117,7 @@ class GetBasicProductsDefault(BaseOperation):
         """get all basic products with pre-defined smoothing
 
         """
+        self.logger.info('get products on common smooth grid')
         self.get_extinctions_fixed_smooth()
         self.get_raman_bsc_fixed_smooth()
         # todo: elsat_bsc
