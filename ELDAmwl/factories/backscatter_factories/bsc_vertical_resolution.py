@@ -1,4 +1,4 @@
-from ELDAmwl.bases.factory import BaseOperation, BaseOperationFactory
+from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.utils.constants import NC_FILL_STR
@@ -159,4 +159,3 @@ registry.register_class(RamBscUsedBinRes,
 registry.register_class(RamBscEffBinRes,
                         SavGolayEffBinRes.__name__,
                         SavGolayEffBinRes)
-

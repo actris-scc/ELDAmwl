@@ -8,12 +8,14 @@ from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoCalibrWindowFound
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.factories.backscatter_factories.backscatter_calibration import FindCommonBscCalibrWindow
-from ELDAmwl.factories.extinction_factories.ext_vertical_resolution import ExtEffBinRes
-from ELDAmwl.factories.extinction_factories.extinction_factories import ExtinctionFactory
-from ELDAmwl.factories.extinction_factories.ext_vertical_resolution import ExtUsedBinRes
+from ELDAmwl.factories.backscatter_factories.bsc_vertical_resolution import ElastBscEffBinRes
+from ELDAmwl.factories.backscatter_factories.bsc_vertical_resolution import ElastBscUsedBinRes
+from ELDAmwl.factories.backscatter_factories.bsc_vertical_resolution import RamBscEffBinRes
+from ELDAmwl.factories.backscatter_factories.bsc_vertical_resolution import RamBscUsedBinRes
 from ELDAmwl.factories.backscatter_factories.raman_bsc_factories import RamanBackscatterFactory
-from ELDAmwl.factories.backscatter_factories.bsc_vertical_resolution import RamBscEffBinRes, RamBscUsedBinRes, \
-    ElastBscEffBinRes, ElastBscUsedBinRes
+from ELDAmwl.factories.extinction_factories.ext_vertical_resolution import ExtEffBinRes
+from ELDAmwl.factories.extinction_factories.ext_vertical_resolution import ExtUsedBinRes
+from ELDAmwl.factories.extinction_factories.extinction_factories import ExtinctionFactory
 from ELDAmwl.utils.constants import AUTO
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT

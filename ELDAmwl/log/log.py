@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.component.interface import IDBFunc, ICfg
+from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.errors.exceptions import LogPathNotExists
 from ELDAmwl.utils.path_utils import dir_not_found_hint
@@ -129,7 +130,7 @@ class Logger:
             raise LogPathNotExists
 
         log_file_path = os.path.join(
-            cfg.LOG_PATH,
+            self.cfg.LOG_PATH,
             '{id}.log'.format(id=self.meas_id),
         )
         file_handler = FileHandler(log_file_path)

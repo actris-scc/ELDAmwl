@@ -222,7 +222,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
 
         return None
 
+
 registry.register_class(FindCommonBscCalibrWindow,
                         FindBscCalibrWindowAsInELDA.__name__,
                         FindBscCalibrWindowAsInELDA)
-

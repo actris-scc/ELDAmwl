@@ -126,4 +126,3 @@ registry.register_class(ExtUsedBinRes,
 registry.register_class(ExtEffBinRes,
                         LinFitEffBinRes.__name__,
                         LinFitEffBinRes)
-

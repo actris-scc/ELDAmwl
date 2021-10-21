@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.component.interface import ILogger, ICfg
+from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import ILogger
 from ELDAmwl.database.tables.system_product import SystemProduct
 from ELDAmwl.errors.exceptions import DBErrorTerminating
 from sqlalchemy import create_engine

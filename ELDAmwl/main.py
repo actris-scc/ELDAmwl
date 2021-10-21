@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.component.interface import ILogger, ICfg
+from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import ILogger
 from ELDAmwl.config import register_config
 from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.errors.error_codes import NO_ERROR
@@ -7,7 +8,8 @@ from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
 from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import WrongCommandLineParameter
 from ELDAmwl.factories.elda_mwl_factories import RunELDAmwl
-from ELDAmwl.log.log import register_logger, register_db_logger
+from ELDAmwl.log.log import register_db_logger
+from ELDAmwl.log.log import register_logger
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
 from zope import component
@@ -68,7 +70,6 @@ class Main:
     @property
     def cfg(self):
         return component.queryUtility(ICfg)
-
 
     def handle_args(self):
         parser = argparse.ArgumentParser(description='EARLINET Lidar Data Analyzer for \

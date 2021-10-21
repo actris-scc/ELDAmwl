@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """Classes for backscatter calculation"""
-from ELDAmwl.bases.factory import BaseOperation, BaseOperationFactory
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.errors.exceptions import CalRangeHigherThanValid
 from ELDAmwl.factories.backscatter_factories.backscatter_calibration import BscCalibrationParams
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
-from ELDAmwl.signals import Signals
 from ELDAmwl.utils.constants import NC_FILL_STR
 
 

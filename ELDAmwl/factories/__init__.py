@@ -1,2 +1,1 @@
-import ELDAmwl.factories.monte_carlo
-
+import ELDAmwl.factories.monte_carlo  # noqa F401

@@ -1,12 +1,12 @@
-import zope
 from dynaconf import Dynaconf
-
 from ELDAmwl.component.interface import ICfg
+
+import zope
 
 
 def register_config(env=None):
     cfg = Dynaconf(
-        envvar_prefix="DYNACONF",
+        envvar_prefix='DYNACONF',  # replaced "DYNACONF" by 'DYNACONF'
         settings_files=['settings.yaml', '../.secrets.yaml'],
         environments=True,
         env=env,

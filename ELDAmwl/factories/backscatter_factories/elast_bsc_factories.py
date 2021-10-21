@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Classes for Raman backscatter calculation"""
 from ELDAmwl.bases.base import Params
-from ELDAmwl.bases.factory import BaseOperation, BaseOperationFactory
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterParams
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB

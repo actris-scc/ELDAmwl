@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """base Classes for factories and operators"""
-from ELDAmwl.component.interface import IDataStorage, ICfg
+from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.registry import registry

@@ -48,6 +48,7 @@ class IMonteCarlo(interface.Interface):
         Returns the operation result
         """
 
+
 class IBscOp(interface.Interface):
     """
     Marker Interface for Backscatter operation

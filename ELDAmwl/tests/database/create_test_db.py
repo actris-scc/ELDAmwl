@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from ELDAmwl.component.interface import IDBConstructor
 from ELDAmwl.component.interface import ILogger
-from ELDAmwl.utils.constants import STRP_DATE_TIME_FORMAT
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.backscatter import BscCalibrMethod
 from ELDAmwl.database.tables.backscatter import BscCalibrOption
@@ -33,6 +32,7 @@ from ELDAmwl.database.tables.system_product import SmoothTypes
 from ELDAmwl.database.tables.system_product import SystemProduct
 from ELDAmwl.errors.exceptions import CsvFileNotFound
 from ELDAmwl.errors.exceptions import FillTableFailed
+from ELDAmwl.utils.constants import STRP_DATE_TIME_FORMAT
 from sqlalchemy import DateTime
 from sqlalchemy import inspect
 from sqlalchemy.orm import sessionmaker

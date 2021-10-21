@@ -3,17 +3,20 @@
 from addict import Dict
 from copy import deepcopy
 from ELDAmwl.bases.base import DataPoint
-from ELDAmwl.bases.factory import BaseOperation, BaseOperationFactory
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.interface import IRamBscOp
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
-from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterFactoryDefault, BackscatterFactory
+from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterFactory
+from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterFactoryDefault
 from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterParams
 from ELDAmwl.factories.backscatter_factories.backscatter_factories import Backscatters
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.signals import Signals
-from ELDAmwl.utils.constants import MC, NC_FILL_STR
+from ELDAmwl.utils.constants import MC
+from ELDAmwl.utils.constants import NC_FILL_STR
 from ELDAmwl.utils.constants import RAMAN
 from ELDAmwl.utils.constants import RAYL_LR
 
@@ -136,7 +139,7 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
             calc_routine=CalcRamanBscProfile()(prod_id=self.prod_id),
             calibr_window=self.calibr_window,
             signal_ratio=self.sig_ratio,
-            empty_bsc=self.empty_bsc
+            empty_bsc=self.empty_bsc,
         )
         bsc = bsc_retrieval_routine.run()
 

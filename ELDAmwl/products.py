@@ -2,8 +2,6 @@
 """base classes for products"""
 from addict import Dict
 from copy import deepcopy
-
-import ELDAmwl.utils.constants
 from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
@@ -33,6 +31,7 @@ from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR
 from zope import component
 
+import ELDAmwl.utils.constants
 import numpy as np
 import xarray as xr
 

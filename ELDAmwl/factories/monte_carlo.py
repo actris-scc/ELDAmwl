@@ -1,11 +1,12 @@
 from copy import deepcopy
-
-import zope
-
-from ELDAmwl.bases.factory import BaseOperationFactory, BaseOperation
-from ELDAmwl.component.interface import IMonteCarlo, IExtOp
+from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.component.interface import IExtOp
+from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
+
 import numpy as np
+import zope
 
 
 class MonteCarlo:
@@ -27,7 +28,7 @@ class MonteCarlo:
 
         for sig in orig.keys():
             mc_generator = CreateMCCopies()(original=orig[sig],
-                                            n=self.mc_params.nb_of_iterations
+                                            n=self.mc_params.nb_of_iterations,
                                             )
             samples = mc_generator.run()
 
@@ -142,7 +143,7 @@ class CreateMCCopiesDefault(BaseOperation):
                 sample_data[t, idx, :] = np.random.normal(
                     loc=data[t, idx],
                     scale=err[t, idx],
-                    size=num_samples
+                    size=num_samples,
                 )
 
         result = []

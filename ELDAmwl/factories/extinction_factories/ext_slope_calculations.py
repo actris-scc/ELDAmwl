@@ -143,4 +143,3 @@ registry.register_class(SignalSlope,
 registry.register_class(SignalSlope,
                         WeightedLinearFit.__name__,
                         WeightedLinearFit)
-
