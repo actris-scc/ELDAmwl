@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """Classes for Raman backscatter calculation"""
 from ELDAmwl.bases.base import Params
-from ELDAmwl.bases.factory import BaseOperation
-from ELDAmwl.bases.factory import BaseOperationFactory
+from ELDAmwl.bases.factory import BaseOperation, BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
-from ELDAmwl.factories.backscatter_factories import BackscatterParams
+from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterParams
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.utils.constants import ELAST
 from ELDAmwl.utils.constants import IT
@@ -85,33 +84,6 @@ class IterBscParams(Params):
         pass
 
 
-class ElastBscEffBinRes(BaseOperationFactory):
-    """
-    Creates a Class for the calculation of the effective bin resolution for a given number of bins
-    used in the retrieval of ...
-
-    Keyword Args:
-    """
-
-    pass
-
-
-class ElastBscUsedBinRes(BaseOperationFactory):
-    """
-    Creates a Class for the calculation of how many bins have to be used for the
-    ... in order to achieve the required effective bin resolution of ...
-
-    Keyword Args:
-    """
-
-    pass
-
-
-class CalcElastBscProfile(BaseOperationFactory):
-    """calculates bsc profiles from signal and calibration window"""
-    pass
-
-
 class CalcBscProfileKF(BaseOperation):
     """calculates bsc profiles with Klett-Fernal method"""
     pass
@@ -119,4 +91,9 @@ class CalcBscProfileKF(BaseOperation):
 
 class CalcBscProfileIter(BaseOperation):
     """calculates bsc profiles with iterative method"""
+    pass
+
+
+class CalcElastBscProfile(BaseOperationFactory):
+    """calculates bsc profiles from signal and calibration window"""
     pass

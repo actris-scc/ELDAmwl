@@ -1,4 +1,4 @@
-from ELDAmwl.factories.backscatter_factories import FindBscCalibrWindowAsInELDA
+from ELDAmwl.factories.backscatter_factories.backscatter_calibration import FindBscCalibrWindowAsInELDA
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.tests.pickle_data import un_pickle_data
 from numpy import array_equal

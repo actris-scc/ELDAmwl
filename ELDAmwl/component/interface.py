@@ -58,3 +58,9 @@ class IExtOp(interface.Interface):
     """
     Marker Interface for Extinction operation
     """
+
+
+class IRamBscOp(interface.Interface):
+    """
+    Marker Interface for Extinction operation
+    """
