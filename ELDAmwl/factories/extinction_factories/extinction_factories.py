@@ -7,7 +7,8 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IExtOp
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
-from ELDAmwl.factories.extinction_factories.ext_slope_calculations import SignalSlope
+from ELDAmwl.factories.extinction_factories.ext_calc_tools import SignalSlope
+from ELDAmwl.factories.extinction_factories.ext_calc_tools import SlopeToExtinction
 from ELDAmwl.factories.extinction_factories.ext_vertical_resolution import ExtEffBinRes
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
@@ -234,54 +235,6 @@ class CalcExtinctionDefault(BaseOperation):
         return self.result
 
 
-class SlopeToExtinction(BaseOperationFactory):
-    """
-    Returns an instance of BaseOperation which calculates the particle
-    extinction coefficient from signal slope. In this case, it
-    will be always an instance of SlopeToExtinctionDefault().
-    """
-
-    name = 'SlopeToExtinction'
-
-    def __call__(self, **kwargs):
-        assert 'slope' in kwargs
-        assert 'ext_params' in kwargs
-        res = super(SlopeToExtinction, self).__call__(**kwargs)
-        return res
-
-    def get_classname_from_db(self):
-        """
-
-        return: always 'SlopeToExtinctionDefault' .
-        """
-        return 'SlopeToExtinctionDefault'
-
-
-class SlopeToExtinctionDefault(BaseOperation):
-    """
-    Calculates particle extinction coefficient from signal slope.
-    """
-
-    name = 'SlopeToExtinctionDefault'
-
-    def run(self):
-        """
-        """
-        slope = self.kwargs['slope']
-        ext_params = self.kwargs['ext_params']
-
-        det_wl = ext_params.detection_wavelength
-        em_wl = ext_params.emission_wavelength
-        ang_exp = ext_params.angstroem_exponent
-
-        wl_factor = 1. / (1. + pow((em_wl / det_wl), ang_exp))
-
-        slope['data'] = -1. * slope.data * wl_factor
-        slope['err'] = slope.err * wl_factor
-
-        return None
-
-
 class ExtinctionAutosmooth(BaseOperationFactory):
     """
     Args:
@@ -468,10 +421,6 @@ registry.register_class(ExtinctionFactory,
 registry.register_class(ExtinctionAutosmooth,
                         ExtinctionAutosmoothDefault.__name__,
                         ExtinctionAutosmoothDefault)
-
-registry.register_class(SlopeToExtinction,
-                        SlopeToExtinctionDefault.__name__,
-                        SlopeToExtinctionDefault)
 
 registry.register_class(CalcExtinction,
                         CalcExtinctionDefault.__name__,

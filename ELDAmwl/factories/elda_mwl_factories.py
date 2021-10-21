@@ -6,8 +6,8 @@ from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.errors.exceptions import ProductNotUnique
-from ELDAmwl.factories.backscatter_factories.elast_bsc_factories import ElastBscParams
-from ELDAmwl.factories.backscatter_factories.raman_bsc_factories import RamanBscParams
+from ELDAmwl.factories.backscatter_factories.bsc_data_classes import ElastBscParams
+from ELDAmwl.factories.backscatter_factories.bsc_data_classes import RamanBscParams
 from ELDAmwl.factories.extinction_factories.extinction_factories import ExtinctionParams
 from ELDAmwl.factories.get_basic_products import GetBasicProducts
 from ELDAmwl.factories.get_derived_products import GetDerivedProducts

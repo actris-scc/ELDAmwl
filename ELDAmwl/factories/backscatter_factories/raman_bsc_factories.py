@@ -11,103 +11,15 @@ from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
 from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterFactory
 from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterFactoryDefault
-from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterParams
-from ELDAmwl.factories.backscatter_factories.backscatter_factories import Backscatters
-from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
+from ELDAmwl.factories.backscatter_factories.bsc_data_classes import RamanBackscatters
 from ELDAmwl.signals import Signals
 from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import NC_FILL_STR
-from ELDAmwl.utils.constants import RAMAN
 from ELDAmwl.utils.constants import RAYL_LR
 
 import numpy as np
 import xarray as xr
 import zope
-
-
-class RamanBscParams(BackscatterParams):
-
-    def __init__(self):
-        super(RamanBscParams, self).__init__()
-        self.raman_sig_id = None
-
-        self.raman_bsc_algorithm = None
-        self.bsc_method = RAMAN
-
-    def from_db(self, general_params):
-        super(RamanBscParams, self).from_db(general_params)
-
-        rbp = self.db_func.read_raman_bsc_params(general_params.prod_id)
-        self.raman_bsc_algorithm = rbp['ram_bsc_method']
-        self.get_error_params(rbp)
-        self.smooth_params.smooth_method = rbp['smooth_method']
-
-    def add_signal_role(self, signal):
-        super(RamanBscParams, self).add_signal_role(signal)
-        if signal.is_Raman_sig:
-            self.raman_sig_id = signal.channel_id_str
-
-    def to_meta_ds_dict(self, dct):
-        """
-        writes parameter content into Dict for further export in mwl file
-        Args:
-            dct (addict.Dict): is a dict which will be converted into dataset.
-                            has the keys 'attrs' and 'data_vars'
-
-        Returns:
-
-        """
-        super(RamanBscParams, self).to_meta_ds_dict(dct)
-        dct.data_vars.evaluation_algorithm = MWLFileVarsFromDB().ram_bsc_algorithm_var(self.raman_bsc_algorithm)
-
-
-class RamanBackscatters(Backscatters):
-
-    @classmethod
-    def init(cls, sigratio, p_params, calibr_window=None):
-        """calculates RamanBackscatters from a signal ratio.
-
-        The signals were previously prepared by PrepareBscSignals .
-
-        Args:
-            sigratio (:class:`Signals`): time series
-                                        of signal ratio profiles
-            p_params (:class:`RamanBackscatterParams`):
-                                    calculation params
-                                    of the backscatter product
-            calibr_window (xarray.DataArray): variable
-                                    'backscatter_calibration_range'
-                                    (time, nv: 2)
-        """
-
-        result = super(RamanBackscatters, cls).init(sigratio,
-                                                    p_params,
-                                                    calibr_window)
-        # todo ina: check documentation calibr_window is tupe or dataarray?
-
-        result.calibr_window = calibr_window
-
-        # cal_first_lev = sigratio.heights_to_levels(
-        #     calibr_window[:, 0])
-        # cal_last_lev = sigratio.heights_to_levels(
-        #     calibr_window[:, 1])
-        #
-        # error_params = Dict({'err_threshold':
-        #                     p_params.quality_params.error_threshold,
-        #                      })
-        #
-        # calibr_value = DataPoint.from_data(
-        #     p_params.calibration_params.cal_value, 0, 0)
-        # cal_params = Dict({'cal_first_lev': cal_first_lev.values,
-        #                    'cal_last_lev': cal_last_lev.values,
-        #                    'calibr_value': calibr_value})
-        #
-        # calc_routine = CalcRamanBscProfile()(prod_id=p_params.prod_id_str)
-        #
-        # result.ds = calc_routine.run(sigratio=sigratio.ds,
-        #                              error_params=error_params,
-        #                              calibration=cal_params)
-        return result
 
 
 class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
