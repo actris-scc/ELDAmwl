@@ -15,6 +15,11 @@ ELDAmwl
    :target: http://ELDAmwl.readthedocs.io
    :alt: Documentation
 
+.. image:: https://api.codeclimate.com/v1/badges/c8b0acac8032573b8a7a/maintainability
+   :target: https://codeclimate.com/github/actris-scc/ELDAmwl/maintainability
+   :alt: Maintainability
+
+
 ELDAmwl is a Python software for retrieving vertical profiles of optical aerosol properties at multiple wavelengths
 from lidar measurements. It is one module of the Single Calculus Chain (SCC)
 [`D'Amico et. al. (2015) <https://amt.copernicus.org/articles/8/4891/2015/>`_] .
