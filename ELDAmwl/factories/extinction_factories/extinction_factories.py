@@ -394,49 +394,65 @@ class ExtinctionFactoryDefault(BaseOperation):
 
     name = 'ExtinctionFactoryDefault'
     param = None
+    raman_sig = None
+    smooth_res = None
+    empty_ext = None
+    prod_id = NC_FILL_STR
+    resolution = NC_FILL_STR
 
-    # data_storage = None
+    def get_smooth_res(self):
+        if self.kwargs['autosmooth']:
+            result = ExtinctionAutosmooth()(
+                signal=self.raman_sig.ds,
+                smooth_params=self.param.smooth_params,
+            ).run()
+
+        else:
+            result = self.data_storage.binres_common_smooth(self.prod_id, self.resolution)
+
+        self.smooth_res = result
+
+    def prepare(self):
+        self.param = self.kwargs['ext_param']
+        self.prod_id = self.param.prod_id_str
+        self.resolution = self.kwargs['resolution']
+
+        # raman_sig is a deepcopy from data_storage
+        self.raman_sig = self.data_storage.prepared_signal(
+            self.param.prod_id_str,
+            self.param.raman_sig_id)
+
+        self.get_smooth_res()
+
+        self.raman_sig.ds['binres'] = self.smooth_res
+
+        self.empty_ext = Extinctions.init(self.raman_sig, self.param)
+
+    def get_non_merge_product(self):
+
+        calc_routine = CalcExtinction()(
+            ext_params=self.param,
+            slope_routine=SignalSlope()(prod_id=self.prod_id),
+            slope_to_ext_routine=SlopeToExtinction(),
+            raman_signal=self.raman_sig,
+            empty_ext=self.empty_ext,
+        )
+        ext = calc_routine.run()
+
+        if self.param.error_method == MC:
+            adapter = zope.component.getAdapter(calc_routine, IMonteCarlo)
+            ext.err[:] = adapter(self.param.mc_params)
+        else:
+            ext = ext
+
+        del self.raman_sig
+        return ext
 
     def get_product(self):
-        self.param = self.kwargs['ext_param']
-        prod_id = self.param.prod_id_str
-        resolution = self.kwargs['resolution']
+        self.prepare()
 
         if not self.param.includes_product_merging():
-            # raman_sig is a deepcopy from data_storage
-            raman_sig = self.data_storage.prepared_signal(
-                self.param.prod_id_str,
-                self.param.raman_sig_id)
-
-            if self.kwargs['autosmooth']:
-                smooth_res = ExtinctionAutosmooth()(
-                    signal=raman_sig.ds,
-                    smooth_params=self.param.smooth_params,
-                ).run()
-
-            else:
-                smooth_res = self.data_storage.binres_common_smooth(prod_id, resolution)
-
-            raman_sig.ds['binres'] = smooth_res
-
-            empty_ext = Extinctions.init(raman_sig, self.param)
-
-            calc_routine = CalcExtinction()(
-                ext_params=self.param,
-                slope_routine=SignalSlope()(prod_id=prod_id),
-                slope_to_ext_routine=SlopeToExtinction(),
-                raman_signal=raman_sig,
-                empty_ext=empty_ext,
-            )
-            ext = calc_routine.run()
-
-            if self.param.error_method == MC:
-                adapter = zope.component.getAdapter(calc_routine, IMonteCarlo)
-                ext.err[:] = adapter(self.param.mc_params)
-            else:
-                ext = ext
-
-            del raman_sig
+            ext = self.get_non_merge_product()
         else:
             # todo: result = Extinctions.from_merged_signals()
             ext = None
