@@ -8,6 +8,7 @@ from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.signals import Signals
+from ELDAmwl.tests.pickle_data import write_test_data
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.numerical import calc_rolling_means_sems
 from ELDAmwl.utils.numerical import find_minimum_window
