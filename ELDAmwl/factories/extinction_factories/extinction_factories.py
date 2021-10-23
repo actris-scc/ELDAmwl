@@ -13,7 +13,7 @@ from ELDAmwl.factories.extinction_factories.ext_vertical_resolution import ExtEf
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
-from ELDAmwl.utils.constants import ABOVE_MAX_ALT
+from ELDAmwl.utils.constants import ABOVE_MAX_ALT, NC_FILL_INT
 from ELDAmwl.utils.constants import BELOW_OVL
 from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import NC_FILL_STR
@@ -351,7 +351,7 @@ class ExtinctionFactoryDefault(BaseOperation):
     smooth_res = None
     empty_ext = None
     prod_id = NC_FILL_STR
-    resolution = NC_FILL_STR
+    resolution = NC_FILL_INT
 
     def get_smooth_res(self):
         if self.kwargs['autosmooth']:

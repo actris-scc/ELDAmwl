@@ -52,7 +52,7 @@ class GetProductMatrixDefault(BaseOperation):
 
         for param in params:
             # todo: remove limit to EXT when other prod types are included
-            if (alt_axis is None) and (param.product_type in [EXT, RBSC]):
+            if (alt_axis is None) and (param.product_type in [EXT, RBSC, LR]):
                 product = self.data_storage.product_common_smooth(param.prod_id_str, res)
                 alt_axis = product.altitude
             else:
@@ -83,7 +83,6 @@ class GetProductMatrixDefault(BaseOperation):
                 # create a common Dataset for each product type
                 # with common shape and empty data variables
                 array = np.ones(self.shape.shape) * np.nan
-                # todo ina: test whether these copies makes sense and is necessary
 
                 ds = xr.Dataset(data_vars={
                     'altitude': self.shape.alt,
