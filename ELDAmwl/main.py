@@ -7,7 +7,7 @@ from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
 from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import WrongCommandLineParameter
-from ELDAmwl.operations.elda_mwl import RunELDAmwl
+from ELDAmwl.operations.main.elda_mwl import RunELDAmwl
 from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.storage.data_storage import register_datastorage
