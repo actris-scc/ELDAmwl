@@ -17,14 +17,13 @@ class Test(unittest.TestCase):
         self.op = FindBscCalibrWindowAsInELDA(bsc_params=self.data['bsc_params'])
         self.op.init()
 
-    def test_run(self):
-        self.op.run()
+#    def test_run(self):
+#        self.op.run()
 
     def test_get_bp_calibration_window(self):
         bp = self.data['bsc_params'][-1]
         calibration_window = self.op.find_calibration_window(bp)
-        res = calibration_window
 
         data = un_pickle_data('FindBscCalibrWindowAsInELDA.find_calibration_window')
 
-        assert array_equal(res, data['result'])
+        assert array_equal(calibration_window, data['result'])

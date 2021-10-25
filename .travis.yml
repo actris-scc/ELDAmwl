@@ -21,3 +21,4 @@ after_success:
 notifications:
   email:
     - volker.jaenisch@inqbus.de
+    - ina.mattis@dwd.de

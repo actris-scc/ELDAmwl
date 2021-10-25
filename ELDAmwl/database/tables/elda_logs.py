@@ -28,7 +28,7 @@ class ELDALogs(Base):
     product_id = Column(
         'product_ID',
         INTEGER,
-        nullable=False,
+        nullable=True,
         server_default=text("'-1'"),
     )
     level = Column(
