@@ -57,7 +57,7 @@ class FactoryRegistry(object):
 
 class Registry(object):
     """
-    Registers classes for the class factories
+    Registers classes for the class operations
     """
 
     def __init__(self):

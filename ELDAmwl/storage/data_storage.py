@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""ELDAmwl factories"""
+"""ELDAmwl operations"""
 from addict import Dict
 from copy import deepcopy
 from ELDAmwl.component.interface import IDataStorage

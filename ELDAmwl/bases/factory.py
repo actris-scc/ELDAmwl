@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""base Classes for factories and operators"""
+"""base Classes for operations and operators"""
 from ELDAmwl.component.interface import ICfg
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IDBFunc
@@ -10,9 +10,9 @@ from zope import component
 
 class BaseOperationFactory(object):
     """
-    Base class of factories.
+    Base class of operations.
 
-    Base class of factories, returns an instance of a
+    Base class of operations, returns an instance of a
     BaseOperation. If several alternative BaseOperation
     classes are available, the factory decides,
     which one to provide. This decision is based on options

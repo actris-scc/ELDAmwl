@@ -27,6 +27,12 @@ class IDataStorage(interface.Interface):
     """
 
 
+class IParams(interface.Interface):
+    """
+    Marker Interface for global params
+    """
+
+
 class IDBConstructor(interface.Interface):
     """
     Marker Interface for global test DB creator

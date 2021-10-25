@@ -6,8 +6,8 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
-from ELDAmwl.factories.backscatter_factories.bsc_data_classes import RamanBscParams
-from ELDAmwl.factories.extinction_factories.extinction_factories import ExtinctionParams
+from ELDAmwl.operations.backscatter.common.bsc_data_classes import RamanBscParams
+from ELDAmwl.operations.extinction.extinction import ExtinctionParams
 from ELDAmwl.products import ProductParams
 from ELDAmwl.products import Products
 from ELDAmwl.utils.constants import ERROR_METHODS
@@ -16,7 +16,6 @@ from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.utils.constants import NC_FILL_STR
 
 import numpy as np
-import xarray as xr
 import zope
 
 

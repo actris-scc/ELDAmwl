@@ -7,7 +7,7 @@ from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
 from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import WrongCommandLineParameter
-from ELDAmwl.factories.elda_mwl_factories import RunELDAmwl
+from ELDAmwl.operations.elda_mwl import RunELDAmwl
 from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.storage.data_storage import register_datastorage
@@ -59,6 +59,10 @@ def elda_setup_components(env='Production'):
 
     # Bring up the global data storage
     register_datastorage()
+
+    # Bring up the global parameter instance
+    register_params()
+
 
 
 class Main:
@@ -133,6 +137,8 @@ class Main:
                            multi-wavelengths measurements (ELDAmwl)')
         self.logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
         self.logger.info('analyze measurement number: ' + meas_id)
+
+        self.cfg.meas_id = meas_id
 
         return meas_id
 

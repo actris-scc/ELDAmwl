@@ -12,14 +12,11 @@ from logging import StreamHandler
 from sys import stdout
 from zope import component
 
+import datetime
+import ELDAmwl
 import os
 import zope
 
-
-# try:
-#     import ELDAmwl.configs._config as cfg
-# except ImportError:
-#     import ELDAmwl.configs.config_default as cfg
 
 # Log level codes according to DB-Definition and syslog
 SYSLOG_ERROR = 3
@@ -46,9 +43,8 @@ class Logger:
     def cfg(self):
         return component.queryUtility(ICfg)
 
-    @staticmethod
-    def log_message(prod_id, msg):
-        out_msg = '{}: {}'.format(prod_id, msg)
+    def log_message(self, prod_id, msg):
+        out_msg = '{}:{}: {}'.format(self.cfg.meas_id, prod_id, msg)
         return out_msg
 
     def critical(self, msg, prod_id=None):
@@ -160,8 +156,14 @@ class Logger:
     def db_log(self, level, prod_id, msg):
         if self.db_log_func is None:
             return
-        return  # ToDo Volker implement DB logging routine
-        self.db_log_func(level, prod_id, msg)
+        now = datetime.datetime.now()
+        self.db_log_func(
+            level,
+            now,
+            self.cfg.meas_id,
+            prod_id,
+            ELDAmwl.__version__,
+            msg)
 
 
 def register_logger():

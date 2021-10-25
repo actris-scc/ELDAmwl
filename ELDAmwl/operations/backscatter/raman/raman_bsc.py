@@ -9,9 +9,9 @@ from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.interface import IRamBscOp
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
-from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterFactory
-from ELDAmwl.factories.backscatter_factories.backscatter_factories import BackscatterFactoryDefault
-from ELDAmwl.factories.backscatter_factories.bsc_data_classes import RamanBackscatters
+from ELDAmwl.operations.backscatter.common.backscatter import BackscatterFactory
+from ELDAmwl.operations.backscatter.common.backscatter import BackscatterFactoryDefault
+from ELDAmwl.operations.backscatter.common.bsc_data_classes import RamanBackscatters
 from ELDAmwl.signals import Signals
 from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import NC_FILL_STR
