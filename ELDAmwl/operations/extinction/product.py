@@ -1,4 +1,4 @@
-from ELDAmwl.operations.extinction.ext_vertical_resolution import ExtEffBinRes
+from ELDAmwl.operations.extinction.vertical_resolution.operation import ExtEffBinRes
 from ELDAmwl.products import Products
 
 

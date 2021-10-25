@@ -7,8 +7,8 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IExtOp
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
-from ELDAmwl.operations.extinction.ext_calc_tools import SignalSlope
-from ELDAmwl.operations.extinction.ext_calc_tools import SlopeToExtinction
+from ELDAmwl.operations.extinction.tools.operation import SignalSlope
+from ELDAmwl.operations.extinction.tools.operation import SlopeToExtinction
 from ELDAmwl.operations.extinction.product import Extinctions
 from ELDAmwl.utils.constants import ABOVE_MAX_ALT, NC_FILL_INT
 from ELDAmwl.utils.constants import BELOW_OVL
