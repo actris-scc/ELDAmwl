@@ -4,7 +4,7 @@
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.operations.lidar_ratio.lidar_ratio import LidarRatioFactory
+from ELDAmwl.operations.lidar_ratio.operation import LidarRatioFactory
 from ELDAmwl.utils.constants import RESOLUTIONS
 
 

@@ -6,12 +6,12 @@ from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.component.interface import IDataStorage, IParams
 from ELDAmwl.errors.exceptions import ProductNotUnique
-from ELDAmwl.operations.backscatter.common.bsc_data_classes import ElastBscParams
-from ELDAmwl.operations.backscatter.common.bsc_data_classes import RamanBscParams
-from ELDAmwl.operations.extinction.extinction import ExtinctionParams
+from ELDAmwl.operations.backscatter.elastic.params import ElastBscParams
+from ELDAmwl.operations.backscatter.raman.params import RamanBscParams
+from ELDAmwl.operations.extinction.params import ExtinctionParams
 from ELDAmwl.operations.main.get_basic_products import GetBasicProducts
 from ELDAmwl.operations.main.get_derived_products import GetDerivedProducts
-from ELDAmwl.operations.lidar_ratio.lidar_ratio import LidarRatioParams
+from ELDAmwl.operations.lidar_ratio.params import LidarRatioParams
 from ELDAmwl.operations.main.mwl_products import GetProductMatrix
 from ELDAmwl.operations.main.mwl_products import QualityControl
 from ELDAmwl.output.write_mwl_output import WriteMWLOutput
