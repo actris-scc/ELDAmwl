@@ -192,8 +192,8 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         bsc_param.calibr_window = calibration_window
 
         # write_test_data(
-        #     func=self.find_calibration_window,
-        #     result=calibration_window,
+        #      func=self.find_calibration_window,
+        #      result=calibration_window,
         # )
         return calibration_window
 
@@ -201,9 +201,9 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         self.bsc_params = self.kwargs['bsc_params']
 
         # write_test_data(
-        #     cls=FindBscCalibrWindowAsInELDA,
-        #     data_storage=self.data_storage,
-        #     bsc_params=self.bsc_params
+        #      cls=FindBscCalibrWindowAsInELDA,
+        #      data_storage=self.data_storage,
+        #      bsc_params=self.bsc_params
         # )
 
     def run(self):

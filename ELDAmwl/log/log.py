@@ -44,7 +44,7 @@ class Logger:
         return component.queryUtility(ICfg)
 
     def log_message(self, prod_id, msg):
-        out_msg = '{}:{}: {}'.format(self.cfg.meas_id, prod_id, msg)
+        out_msg = '{}:{}: {}'.format(self.meas_id, prod_id, msg)
         return out_msg
 
     def critical(self, msg, prod_id=None):
@@ -160,7 +160,7 @@ class Logger:
         self.db_log_func(
             level,
             now,
-            self.cfg.meas_id,
+            self.meas_id,
             prod_id,
             ELDAmwl.__version__,
             msg)

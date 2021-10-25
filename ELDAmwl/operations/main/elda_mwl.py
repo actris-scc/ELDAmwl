@@ -43,16 +43,17 @@ PARAM_CLASSES = {RBSC: RamanBscParams,
 class MeasurementParams(Params):
     """General parameters and settings of the measurement
     """
-    def __init__(self, measurement_id):
+    def __init__(self):
         super(MeasurementParams, self).__init__()
         self.sub_params = ['measurement_params', 'smooth_params']
-        self.measurement_params = Params()
+        self.smooth_params = None
+        self.measurement_params = None
 
-        self.measurement_params.meas_id = measurement_id
+    def load_from_db(self, meas_id):
+        self.measurement_params = Params()
+        self.measurement_params.meas_id = meas_id
         self.measurement_params.system_id = self.db_func.read_system_id(self.meas_id)
         self.measurement_params.mwl_product_id = self.db_func.read_mwl_product_id(self.system_id)  # noqa E501
-
-        self.smooth_params = SmoothParams.from_db(self.measurement_params.mwl_product_id)
 
         # product_list provides a link between product id and
         # the parameter object of the product
@@ -83,6 +84,8 @@ class MeasurementParams(Params):
                      RESOLUTION_STR[HIGHRES]: 'bool',
                      RESOLUTION_STR[LOWRES]: 'bool',
                      'elpp_file': 'str'})
+
+        self.smooth_params = SmoothParams.from_db(self.measurement_params.mwl_product_id)
 
     def wavelengths(self, res=None):
         """unique sorted list of wavelengths of all products with resolution = res
@@ -298,11 +301,10 @@ class RunELDAmwl(BaseOperation):
     This is the global ELDAmwl operation class
     """
 
-    def __init__(self, measurement_id):
+    def __init__(self, meas_id):
         super(RunELDAmwl, self).__init__()
         # todo: read current scc version
-#        self._params = MeasurementParams(measurement_id)
-#        self._data = DataStorage()
+        self.params.load_from_db(meas_id)
 
     def read_tasks(self):
         self.logger.info('read tasks from db')

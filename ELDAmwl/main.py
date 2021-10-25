@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import ICfg, IParams
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.config import register_config
 from ELDAmwl.database.db_functions import register_db_func
@@ -7,7 +7,7 @@ from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
 from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import WrongCommandLineParameter
-from ELDAmwl.operations.main.elda_mwl import RunELDAmwl
+from ELDAmwl.operations.main.elda_mwl import RunELDAmwl, register_params
 from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.storage.data_storage import register_datastorage
@@ -69,6 +69,11 @@ class Main:
     @property
     def cfg(self):
         return component.queryUtility(ICfg)
+
+    @property
+    def params(self):
+        return component.queryUtility(IParams)
+
 
     def handle_args(self):
         parser = argparse.ArgumentParser(description='EARLINET Lidar Data Analyzer for \
@@ -133,8 +138,6 @@ class Main:
         self.logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
         self.logger.info('analyze measurement number: ' + meas_id)
 
-        self.cfg.meas_id = meas_id
-
         return meas_id
 
     def elda(self, meas_id):
@@ -142,6 +145,7 @@ class Main:
         Todo Ina Missing doc
         """
 
+        self.logger.meas_id = meas_id
         elda_mwl = RunELDAmwl(meas_id)
         elda_mwl.read_tasks()
         elda_mwl.read_elpp_data()
