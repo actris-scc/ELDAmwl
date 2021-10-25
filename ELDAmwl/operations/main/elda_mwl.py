@@ -32,10 +32,6 @@ import numpy as np
 import pandas as pd
 
 
-# try:
-#     import ELDAmwl.configs._config as cfg  # noqa E401
-# except ModuleNotFoundError:
-#     import ELDAmwl.configs.config_default as cfg  # noqa E401
 
 PARAM_CLASSES = {RBSC: RamanBscParams,
                  EBSC: ElastBscParams,
@@ -291,6 +287,12 @@ class MeasurementParams(Params):
             return None
 
 
+def register_params(params=None):
+    if params is None:
+        params = MeasurementParams()
+    component.provideUtility(params, IParams)
+
+
 class RunELDAmwl(BaseOperation):
     """
     This is the global ELDAmwl operation class
@@ -299,7 +301,7 @@ class RunELDAmwl(BaseOperation):
     def __init__(self, measurement_id):
         super(RunELDAmwl, self).__init__()
         # todo: read current scc version
-        self._params = MeasurementParams(measurement_id)
+#        self._params = MeasurementParams(measurement_id)
 #        self._data = DataStorage()
 
     def read_tasks(self):

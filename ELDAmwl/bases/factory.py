@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """base Classes for operations and operators"""
-from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import ICfg, IParams
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.interface import ILogger
@@ -75,13 +75,13 @@ class BaseOperation(object):
         Return the params
         :returns: The params
         """
-        return self._params
+        return component.queryUtility(IParams)
 
-    @params.setter
-    def params(self, value):
-        """
-        Set the params
-        :param value: The params. Usually an instance of a
-                      class derived from Params
-        """
-        self._params = value
+    # @params.setter
+    # def params(self, value):
+    #     """
+    #     Set the params
+    #     :param value: The params. Usually an instance of a
+    #                   class derived from Params
+    #     """
+    #     self._params = value

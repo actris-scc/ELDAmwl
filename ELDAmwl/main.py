@@ -19,11 +19,6 @@ import sys
 import traceback
 
 
-# try:
-#     import ELDAmwl.configs._config as cfg  # noqa E401
-# except ModuleNotFoundError:
-#     import ELDAmwl.configs.config_default as cfg  # noqa E401
-
 
 # meas_id = '20181017oh00'
 # hoi_system_id =182 (RALPH Bauhof night)

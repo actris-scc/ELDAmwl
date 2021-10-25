@@ -9,11 +9,6 @@ from sqlalchemy.orm import sessionmaker
 from zope import component
 
 
-# try:
-#     import ELDAmwl.configs._config as cfg
-# except ImportError:
-#     import ELDAmwl.configs.config_default as cfg
-
 
 class DBUtils(object):
 

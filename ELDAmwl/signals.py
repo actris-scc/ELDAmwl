@@ -28,10 +28,6 @@ from ELDAmwl.utils.constants import RESOLUTION_STR
 from ELDAmwl.utils.constants import TOTAL
 from ELDAmwl.utils.constants import TRANSMITTED
 from ELDAmwl.utils.constants import WATER_VAPOR
-# try:
-#     import ELDAmwl.configs._config as cfg
-# except ModuleNotFoundError:
-#     import ELDAmwl.configs.config_default as cfg
 from ELDAmwl.utils.path_utils import abs_file_path
 from zope import component
 

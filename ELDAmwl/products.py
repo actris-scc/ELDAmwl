@@ -36,11 +36,6 @@ import numpy as np
 import xarray as xr
 
 
-# try:
-#     import ELDAmwl.configs._config as cfg
-# except ImportError:
-#     import ELDAmwl.configs.config_default as cfg
-
 
 class Products(Signals):
     p_params = None
