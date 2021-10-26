@@ -1,10 +1,13 @@
-TEST123: 42
 # :::::::::::::::::::
 # ELDAmwl
 # :::::::::::::::::::
 # mwl output file
 default:
   FILE_FORMAT_VERSION : 1.0
+
+#  FIXTURES :
+#    - FindBscCalibrWindowAsInELDA
+#    - FindBscCalibrWindowAsInELDA.find_calibration_window
 
 # :::::::::::::::::::
 # Directories

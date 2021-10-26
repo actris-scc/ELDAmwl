@@ -1,6 +1,8 @@
+from ELDAmwl.component.interface import ICfg
 from ELDAmwl.tests.config import PICKLE_DATA_DIR
 from pickle import dump
 from pickle import load
+from zope import component
 
 import pathlib
 import pickle
@@ -82,10 +84,17 @@ def un_pickle_data(file_name):
         return data
 
 
-def write_test_data(**kwargs):
+def write_test_data(fixture, **kwargs):
     """
     Writes a pickle of the current state
     """
+
+    cfg = component.queryUtility(ICfg)
+    if not hasattr(cfg, 'FIXTURES'):
+        return
+    if fixture not in cfg.FIXTURES:
+        return
+
     data = kwargs
 
     if 'file_name' in kwargs:

@@ -56,3 +56,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 elda = "ELDAmwl.main:run"
+elda_gen_test = "ELDAmwl.tests.fixtures:run"

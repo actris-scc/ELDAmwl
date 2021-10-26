@@ -173,8 +173,7 @@ class CalcLidarRatioDefault(BaseOperation):
 
         self.result.ds['data'] = ext.data / bsc.data
         self.result.ds['err'] = self.result.data * np.sqrt(
-            np.power(ext.err / ext.err, 2) +
-            np.power(bsc.err / bsc.err, 2))
+            np.power(ext.err / ext.err, 2) + np.power(bsc.err / bsc.err, 2))
         self.result.ds['qf'] = ext.qf | bsc.qf
 
         return self.result

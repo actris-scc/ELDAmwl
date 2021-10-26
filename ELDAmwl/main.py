@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.component.interface import ICfg, IParams
+from ELDAmwl.component.interface import ICfg
 from ELDAmwl.component.interface import ILogger
+from ELDAmwl.component.interface import IParams
 from ELDAmwl.config import register_config
 from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
 from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import WrongCommandLineParameter
-from ELDAmwl.operations.main.elda_mwl import RunELDAmwl, register_params
 from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
+from ELDAmwl.operations.main.elda_mwl import register_params
+from ELDAmwl.operations.main.elda_mwl import RunELDAmwl
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
 from zope import component
@@ -17,7 +19,6 @@ from zope import component
 import argparse
 import sys
 import traceback
-
 
 
 # meas_id = '20181017oh00'
@@ -59,7 +60,6 @@ def elda_setup_components(env='Production'):
     register_params()
 
 
-
 class Main:
 
     @property
@@ -73,7 +73,6 @@ class Main:
     @property
     def params(self):
         return component.queryUtility(IParams)
-
 
     def handle_args(self):
         parser = argparse.ArgumentParser(description='EARLINET Lidar Data Analyzer for \
@@ -92,6 +91,9 @@ class Main:
                             help='how many output is written to the '
                                  'log file. default = debug')
 
+        parser.add_argument('-g', dest='test_data', default=None, type=str,
+                            help='Class for which testdata should be generated. default = None')
+
         #    parser.add_argument('-L', dest='ll_db', default='QUIET', type=str,
         #                        choices=['QUIET', 'CRITICAL', 'ERROR',
         #                        'WARNING', 'INFO', 'DEBUG'],
@@ -104,7 +106,7 @@ class Main:
 
     def elda_cmdline(self):
         """
-        Initialization of the ELDA environment
+        Parse the CMD line arguments
         """
 
         # Read command line paramters
@@ -138,15 +140,15 @@ class Main:
         self.logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
         self.logger.info('analyze measurement number: ' + meas_id)
 
-        return meas_id
+        return args
 
-    def elda(self, meas_id):
+    def elda(self, arg_dict):
         """
         Todo Ina Missing doc
         """
 
-        self.logger.meas_id = meas_id
-        elda_mwl = RunELDAmwl(meas_id)
+        self.logger.meas_id = arg_dict.meas_id
+        elda_mwl = RunELDAmwl(arg_dict.meas_id)
         elda_mwl.read_tasks()
         elda_mwl.read_elpp_data()
         elda_mwl.prepare_signals()

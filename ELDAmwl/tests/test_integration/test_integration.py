@@ -1,5 +1,4 @@
-
-
+from addict import Dict
 from ELDAmwl.component.interface import IDBConstructor
 from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.main import elda_setup_components
@@ -35,4 +34,5 @@ class Test(unittest.TestCase):
         register_datastorage()
 
     def test_20181017oh00(self):
-        Main().elda('20181017oh00')
+        Main().elda(
+            Dict({'meas_id': '20181017oh00'}))

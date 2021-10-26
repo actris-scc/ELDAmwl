@@ -82,5 +82,3 @@ class RamanBackscatters(Backscatters):
         #                              error_params=error_params,
         #                              calibration=cal_params)
         return result
-
-

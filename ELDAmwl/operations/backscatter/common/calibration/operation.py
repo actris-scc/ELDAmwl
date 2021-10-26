@@ -3,6 +3,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
 from ELDAmwl.signals import Signals
+from ELDAmwl.tests.pickle_data import write_test_data
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.numerical import calc_rolling_means_sems
 from ELDAmwl.utils.numerical import find_minimum_window
@@ -126,20 +127,23 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         # Store the calibration window
         bsc_param.calibr_window = calibration_window
 
-        # write_test_data(
-        #      func=self.find_calibration_window,
-        #      result=calibration_window,
-        # )
+        write_test_data(
+            'FindBscCalibrWindowAsInELDA.find_calibration_window',
+            func=self.find_calibration_window,
+            result=calibration_window,
+        )
+
         return calibration_window
 
     def init(self):
         self.bsc_params = self.kwargs['bsc_params']
 
-        # write_test_data(
-        #      cls=FindBscCalibrWindowAsInELDA,
-        #      data_storage=self.data_storage,
-        #      bsc_params=self.bsc_params
-        # )
+        write_test_data(
+            'FindBscCalibrWindowAsInELDA',
+            cls=FindBscCalibrWindowAsInELDA,
+            data_storage=self.data_storage,
+            bsc_params=self.bsc_params,
+        )
 
     def run(self):
         """

@@ -36,7 +36,6 @@ import numpy as np
 import xarray as xr
 
 
-
 class Products(Signals):
     p_params = None
     smooth_routine = None  # class to perform smoothing
