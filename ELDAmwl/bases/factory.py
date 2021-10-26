@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """base Classes for operations and operators"""
-from ELDAmwl.component.interface import ICfg, IParams
+from ELDAmwl.component.interface import ICfg
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.interface import ILogger
+from ELDAmwl.component.interface import IParams
 from ELDAmwl.component.registry import registry
 from zope import component
 

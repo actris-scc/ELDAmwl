@@ -1,6 +1,3 @@
-import numpy as np
-from zope import component
-
 from ELDAmwl.bases.base import Params
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.errors.exceptions import CalRangeHigherThanValid
@@ -8,6 +5,9 @@ from ELDAmwl.operations.backscatter.common.calibration.params import BscCalibrat
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
 from ELDAmwl.utils.constants import NC_FILL_INT
+from zope import component
+
+import numpy as np
 
 
 class BackscatterParams(ProductParams):

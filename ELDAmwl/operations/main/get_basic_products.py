@@ -13,9 +13,9 @@ from ELDAmwl.operations.backscatter.common.vertical_resolution.operation import 
 from ELDAmwl.operations.backscatter.common.vertical_resolution.operation import RamBscEffBinRes
 from ELDAmwl.operations.backscatter.common.vertical_resolution.operation import RamBscUsedBinRes
 from ELDAmwl.operations.backscatter.raman.operation import RamanBackscatterFactory
+from ELDAmwl.operations.extinction.operation import ExtinctionFactory
 from ELDAmwl.operations.extinction.vertical_resolution.operation import ExtEffBinRes
 from ELDAmwl.operations.extinction.vertical_resolution.operation import ExtUsedBinRes
-from ELDAmwl.operations.extinction.operation import ExtinctionFactory
 from ELDAmwl.utils.constants import AUTO
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT

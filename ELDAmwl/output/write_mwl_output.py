@@ -18,7 +18,6 @@ from ELDAmwl.utils.path_utils import abs_file_path
 import xarray as xr
 
 
-
 class WriteMWLOutputDefault(BaseOperation):
     """
     """

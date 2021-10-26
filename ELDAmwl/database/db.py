@@ -9,7 +9,6 @@ from sqlalchemy.orm import sessionmaker
 from zope import component
 
 
-
 class DBUtils(object):
 
     engine = None

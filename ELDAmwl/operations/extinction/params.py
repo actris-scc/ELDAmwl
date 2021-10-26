@@ -1,9 +1,9 @@
-import numpy as np
-import xarray as xr
-
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
 from ELDAmwl.utils.constants import NC_FILL_STR
+
+import numpy as np
+import xarray as xr
 
 
 class ExtinctionParams(ProductParams):

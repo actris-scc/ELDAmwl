@@ -7,8 +7,7 @@ from zope import component
 import pathlib
 import pickle
 
-
-BASE_DIR = pathlib.Path(__file__).resolve().parent
+from ELDAmwl.utils.path_utils import abs_file_path
 
 
 def get_unpicklable(instance, exception=None, string='', first_only=False):
@@ -70,16 +69,15 @@ def get_unpicklable(instance, exception=None, string='', first_only=False):
 
 
 def pickle_data(file_name, data):
-
     try:
-        with open(BASE_DIR / PICKLE_DATA_DIR / file_name, 'wb') as out_file:
+        with open(abs_file_path(PICKLE_DATA_DIR, file_name), 'wb') as out_file:
             dump(data, out_file, protocol=-1)
     except TypeError:
         a = get_unpicklable(data)  # noqa E222
 
 
 def un_pickle_data(file_name):
-    with open(BASE_DIR / PICKLE_DATA_DIR / file_name, 'rb') as in_file:
+    with open(abs_file_path(PICKLE_DATA_DIR, file_name), 'rb') as in_file:
         data = load(in_file)
         return data
 

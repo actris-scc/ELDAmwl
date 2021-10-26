@@ -1,9 +1,9 @@
 from addict import Dict
-from zope.component import queryUtility
-
 from ELDAmwl.bases.base import Params
 from ELDAmwl.component.interface import IDBFunc
-from ELDAmwl.output.mwl_file_structure import MWLFileStructure, MWLFileVarsFromDB
+from ELDAmwl.output.mwl_file_structure import MWLFileStructure
+from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
+from zope.component import queryUtility
 
 
 class BscCalibrationParams(Params):
