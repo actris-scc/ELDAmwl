@@ -1,8 +1,11 @@
 from addict import Dict
 from ELDAmwl.component.interface import IDBConstructor
+from ELDAmwl.config import register_config
 from ELDAmwl.database.db_functions import register_db_func
+from ELDAmwl.log.log import register_logger
 from ELDAmwl.main import elda_setup_components
 from ELDAmwl.main import Main
+from ELDAmwl.operations.main.elda_mwl import register_params
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.tests.database.create_test_db import register_dbconstructor
 from ELDAmwl.tests.database.create_test_db import TEST_CONNECT_STRING
@@ -13,7 +16,9 @@ import unittest
 
 class TestTestDB(unittest.TestCase):
     def setUp(self):
-        elda_setup_components()
+        register_config(env='testing')
+        # Setup the logging facility for this measurement ID
+        register_logger()
         register_dbconstructor()
 
     def test_test_db(self):
@@ -24,7 +29,8 @@ class TestTestDB(unittest.TestCase):
 class Test(unittest.TestCase):
 
     def setUp(self):
-        elda_setup_components(env='testing')
+        register_config(env='testing')
+        register_logger()
         register_dbconstructor()
         db_constructor = component.queryUtility(IDBConstructor)
         db_constructor.run()
@@ -32,6 +38,8 @@ class Test(unittest.TestCase):
         register_db_func(TEST_CONNECT_STRING)
         # Bring up the global data storage
         register_datastorage()
+        # Bring up the global params
+        register_params()
 
     def test_20181017oh00(self):
         Main().elda(
