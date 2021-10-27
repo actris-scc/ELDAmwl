@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELDAmwl.utils package &mdash; ELDAmwl 0.1 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ELDAmwl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modindex.html">Module Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">ELDAmwl</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ELDAmwl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>ELDAmwl.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ELDAmwl.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="eldamwl-utils-package">
+<h1>ELDAmwl.utils package<a class="headerlink" href="#eldamwl-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.utils.constants">
+<span id="eldamwl-utils-constants-module"></span><h2>ELDAmwl.utils.constants module<a class="headerlink" href="#module-ELDAmwl.utils.constants" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.utils.numerical">
+<span id="eldamwl-utils-numerical-module"></span><h2>ELDAmwl.utils.numerical module<a class="headerlink" href="#module-ELDAmwl.utils.numerical" title="Permalink to this headline">¶</a></h2>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.utils.numerical.calc_rolling_means_sems" title="ELDAmwl.utils.numerical.calc_rolling_means_sems"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_rolling_means_sems</span></code></a>(ds, w_width)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.utils.numerical.find_minimum_window" title="ELDAmwl.utils.numerical.find_minimum_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_minimum_window</span></code></a>(means, sems, w_width, …)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.utils.numerical.rolling_mean_sem" title="ELDAmwl.utils.numerical.rolling_mean_sem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_mean_sem</span></code></a>(data, level)</p></td>
+<td><p>calculate rolling mean and stderror of mean</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="ELDAmwl.utils.numerical.calc_rolling_means_sems">
+<code class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.numerical.</span></code><code class="sig-name descname"><span class="pre">calc_rolling_means_sems</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_width</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.numerical.calc_rolling_means_sems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.utils.numerical.find_minimum_window">
+<code class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.numerical.</span></code><code class="sig-name descname"><span class="pre">find_minimum_window</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">means</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sems</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_threshold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.numerical.find_minimum_window" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.utils.numerical.rolling_mean_sem">
+<code class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.numerical.</span></code><code class="sig-name descname"><span class="pre">rolling_mean_sem</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.numerical.rolling_mean_sem" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate rolling mean and stderror of mean</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.utils.path_utils">
+<span id="eldamwl-utils-path-utils-module"></span><h2>ELDAmwl.utils.path_utils module<a class="headerlink" href="#module-ELDAmwl.utils.path_utils" title="Permalink to this headline">¶</a></h2>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">abs_file_path</span></code>(*file_path)</p></td>
+<td><p>Make a relative file_path absolute in respect to the ELDAmwl projekt directory.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_not_found_hint</span></code>(path_str)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="ELDAmwl.utils.path_utils.abs_file_path">
+<code class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.path_utils.</span></code><code class="sig-name descname"><span class="pre">abs_file_path</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.path_utils.abs_file_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a relative file_path absolute in respect to the ELDAmwl projekt directory.
+Absolute path wil not be changed</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.utils.path_utils.dir_not_found_hint">
+<code class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.path_utils.</span></code><code class="sig-name descname"><span class="pre">dir_not_found_hint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.path_utils.dir_not_found_hint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.utils.wrapper">
+<span id="eldamwl-utils-wrapper-module"></span><h2>ELDAmwl.utils.wrapper module<a class="headerlink" href="#module-ELDAmwl.utils.wrapper" title="Permalink to this headline">¶</a></h2>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.utils.wrapper.scipy_reduce_wrapper" title="ELDAmwl.utils.wrapper.scipy_reduce_wrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy_reduce_wrapper</span></code></a>(scipy_func)</p></td>
+<td><p>There is an scipy bug that makes scipy capable of dealing with one dimensional statistical functions, only.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="ELDAmwl.utils.wrapper.scipy_reduce_wrapper">
+<code class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.wrapper.</span></code><code class="sig-name descname"><span class="pre">scipy_reduce_wrapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scipy_func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.wrapper.scipy_reduce_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>There is an scipy bug that makes scipy capable of dealing with one dimensional statistical functions, only.
+scipy.stats.stats.py:2425  n = a.shape[axis]</p>
+<p>This a wrapper wraps a scipy funtion and fixes the axis argument if given as tuple to a single axis number</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Ina Mattis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

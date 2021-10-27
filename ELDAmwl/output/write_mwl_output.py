@@ -6,7 +6,7 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import ELDA_MWL_VERSION
+from ELDAmwl.utils.constants import ELDA_MWL_VERSION, LR
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import HIGHRES
 from ELDAmwl.utils.constants import LOWRES
@@ -108,7 +108,7 @@ class WriteMWLOutputDefault(BaseOperation):
 
             # todo: remove limit to EXT when other prod types are included
             for pt in p_types:
-                if pt not in [EXT, RBSC]:
+                if pt not in [EXT, RBSC, LR]:
                     p_types.remove(pt)
 
             # todo cloudmask shall have common altitude, time and timebounds variables

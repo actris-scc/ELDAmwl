@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELDAmwl.storage package &mdash; ELDAmwl 0.1 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ELDAmwl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modindex.html">Module Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">ELDAmwl</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ELDAmwl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>ELDAmwl.storage package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ELDAmwl.storage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="eldamwl-storage-package">
+<h1>ELDAmwl.storage package<a class="headerlink" href="#eldamwl-storage-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.storage.cached_functions">
+<span id="eldamwl-storage-cached-functions-module"></span><h2>ELDAmwl.storage.cached_functions module<a class="headerlink" href="#module-ELDAmwl.storage.cached_functions" title="Permalink to this headline">¶</a></h2>
+<p>functions which are often calles with same parameters. Their results can be cached</p>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.cached_functions.sg_coeffs" title="ELDAmwl.storage.cached_functions.sg_coeffs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sg_coeffs</span></code></a>(window_length, order)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.cached_functions.sg_used_binres" title="ELDAmwl.storage.cached_functions.sg_used_binres"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sg_used_binres</span></code></a>(eff_binres)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.cached_functions.smooth_routine_from_db" title="ELDAmwl.storage.cached_functions.smooth_routine_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_routine_from_db</span></code></a>(method_id)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="ELDAmwl.storage.cached_functions.sg_coeffs">
+<code class="sig-prename descclassname"><span class="pre">ELDAmwl.storage.cached_functions.</span></code><code class="sig-name descname"><span class="pre">sg_coeffs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.cached_functions.sg_coeffs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.storage.cached_functions.sg_used_binres">
+<code class="sig-prename descclassname"><span class="pre">ELDAmwl.storage.cached_functions.</span></code><code class="sig-name descname"><span class="pre">sg_used_binres</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eff_binres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.cached_functions.sg_used_binres" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.storage.cached_functions.smooth_routine_from_db">
+<code class="sig-prename descclassname"><span class="pre">ELDAmwl.storage.cached_functions.</span></code><code class="sig-name descname"><span class="pre">smooth_routine_from_db</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.cached_functions.smooth_routine_from_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.storage.data_storage">
+<span id="eldamwl-storage-data-storage-module"></span><h2>ELDAmwl.storage.data_storage module<a class="headerlink" href="#module-ELDAmwl.storage.data_storage" title="Permalink to this headline">¶</a></h2>
+<p>ELDAmwl operations</p>
+<p><strong>Classes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage" title="ELDAmwl.storage.data_storage.DataStorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataStorage</span></code></a>()</p></td>
+<td><p>global __data storage</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.register_datastorage" title="ELDAmwl.storage.data_storage.register_datastorage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_datastorage</span></code></a>([data_storage])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ELDAmwl.storage.data_storage.DataStorage">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.storage.data_storage.</span></code><code class="sig-name descname"><span class="pre">DataStorage</span></code><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>global __data storage</p>
+<p>All signals, intermediate products, products etc. are stored
+in the central <code class="xref py py-obj docutils literal notranslate"><span class="pre">Dict</span></code> of this class.
+The access to the stored __data (reading and writing) must
+occur exclusively via the implemented properties and methods.
+This restriction allows to implement e.g.
+intelligent memory caching in future (if needed).</p>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage._get_prod_res_entry" title="ELDAmwl.storage.data_storage.DataStorage._get_prod_res_entry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_prod_res_entry</span></code></a>(prod_id_str, resolution, …)</p></td>
+<td><p>copy of a result with a certain resolution</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.basic_product_auto_smooth" title="ELDAmwl.storage.data_storage.DataStorage.basic_product_auto_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic_product_auto_smooth</span></code></a>(prod_id_str)</p></td>
+<td><p>copy of a basic product, derived with automatic smooth</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.basic_product_common_smooth" title="ELDAmwl.storage.data_storage.DataStorage.basic_product_common_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic_product_common_smooth</span></code></a>(prod_id, resolution)</p></td>
+<td><p>copy of a basic product, derived with common smooth</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.basic_product_raw" title="ELDAmwl.storage.data_storage.DataStorage.basic_product_raw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basic_product_raw</span></code></a>(prod_id_str)</p></td>
+<td><p>copy of a basic product, derived without smoothing</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.binres_auto_smooth" title="ELDAmwl.storage.data_storage.DataStorage.binres_auto_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binres_auto_smooth</span></code></a>(prod_id_str)</p></td>
+<td><p>copy of the bin resolution profile of a product</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.binres_common_smooth" title="ELDAmwl.storage.data_storage.DataStorage.binres_common_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binres_common_smooth</span></code></a>(prod_id_str, resolution)</p></td>
+<td><p>copy of a bin resolution profile of a product</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.derived_product_common_smooth" title="ELDAmwl.storage.data_storage.DataStorage.derived_product_common_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derived_product_common_smooth</span></code></a>(prod_id_str, …)</p></td>
+<td><p>copy of a basic product, derived with common smooth</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.elpp_signal" title="ELDAmwl.storage.data_storage.DataStorage.elpp_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elpp_signal</span></code></a>(prod_id_str, ch_id_str)</p></td>
+<td><p>copy of an ELPP signal</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.elpp_signals" title="ELDAmwl.storage.data_storage.DataStorage.elpp_signals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elpp_signals</span></code></a>(prod_id_str)</p></td>
+<td><p>copies of all ELPP signals of one product</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.final_product_matrix" title="ELDAmwl.storage.data_storage.DataStorage.final_product_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">final_product_matrix</span></code></a>(prod_type, res)</p></td>
+<td><p>3-dimensional (wavelength, time, altitude) data matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.get_common_cloud_mask" title="ELDAmwl.storage.data_storage.DataStorage.get_common_cloud_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_common_cloud_mask</span></code></a>(res)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.get_max_binres" title="ELDAmwl.storage.data_storage.DataStorage.get_max_binres"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_max_binres</span></code></a>(res)</p></td>
+<td><p>gets maximum of binres of all products with resolution=res :param res:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.prepared_signal" title="ELDAmwl.storage.data_storage.DataStorage.prepared_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepared_signal</span></code></a>(prod_id_str, ch_id_str)</p></td>
+<td><p>copy of an prepared signal</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.prepared_signals" title="ELDAmwl.storage.data_storage.DataStorage.prepared_signals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepared_signals</span></code></a>(prod_id_str)</p></td>
+<td><p>copies of all prepared signals of one product</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.product_common_smooth" title="ELDAmwl.storage.data_storage.DataStorage.product_common_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">product_common_smooth</span></code></a>(prod_id_str, resolution)</p></td>
+<td><p>copy of a product, derived with common smooth</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.set_basic_product_auto_smooth" title="ELDAmwl.storage.data_storage.DataStorage.set_basic_product_auto_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_basic_product_auto_smooth</span></code></a>(prod_id_str, …)</p></td>
+<td><p>write new auto smoothed basic product to storage</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.set_basic_product_common_smooth" title="ELDAmwl.storage.data_storage.DataStorage.set_basic_product_common_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_basic_product_common_smooth</span></code></a>(prod_id_str, …)</p></td>
+<td><p>write a basic product that was smoothed with onto a common grid to storage</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.set_basic_product_raw" title="ELDAmwl.storage.data_storage.DataStorage.set_basic_product_raw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_basic_product_raw</span></code></a>(prod_id_str, new_product)</p></td>
+<td><p>write new un-smoothed basic product to storage</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.set_binres_auto_smooth" title="ELDAmwl.storage.data_storage.DataStorage.set_binres_auto_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_binres_auto_smooth</span></code></a>(prod_id_str, …)</p></td>
+<td><p>write new auto smoothed basic product to storage</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.set_binres_common_smooth" title="ELDAmwl.storage.data_storage.DataStorage.set_binres_common_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_binres_common_smooth</span></code></a>(prod_id_str, …)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param prod_id_str</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.set_derived_products" title="ELDAmwl.storage.data_storage.DataStorage.set_derived_products"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_derived_products</span></code></a>(prod_id_str, res, …)</p></td>
+<td><p>write a derived product to storage</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.set_elpp_signal" title="ELDAmwl.storage.data_storage.DataStorage.set_elpp_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_elpp_signal</span></code></a>(prod_id_str, new_signal)</p></td>
+<td><p>write new ELPP signal to storage</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.set_final_product_matrix" title="ELDAmwl.storage.data_storage.DataStorage.set_final_product_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_final_product_matrix</span></code></a>(prod_type, res, …)</p></td>
+<td><p>write a dataset with common grid (wavelength, time, altitude) to storage</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.set_prepared_signal" title="ELDAmwl.storage.data_storage.DataStorage.set_prepared_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_prepared_signal</span></code></a>(prod_id_str, new_signal)</p></td>
+<td><p>write new prepared signal to storage</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.cloud_mask" title="ELDAmwl.storage.data_storage.DataStorage.cloud_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cloud_mask</span></code></a></p></td>
+<td><p>two-dimensional (time, level) cloud mask</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.header" title="ELDAmwl.storage.data_storage.DataStorage.header"><code class="xref py py-obj docutils literal notranslate"><span class="pre">header</span></code></a></p></td>
+<td><p>header of the measurement, read from ELPP files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.storage.data_storage.DataStorage.name" title="ELDAmwl.storage.data_storage.DataStorage.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage._get_prod_res_entry">
+<code class="sig-name descname"><span class="pre">_get_prod_res_entry</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage._get_prod_res_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of a result with a certain resolution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p></li>
+<li><p><strong>resolution</strong> (<em>int</em>) – can be None or LOWRES (=0) or HIGHRES (=1)</p></li>
+<li><p><strong>source</strong> (<em>str</em>) – part of the DataStorage where to look</p></li>
+<li><p><strong>what_str</strong> (<em>str</em>) – description of searched object (used for log output)</p></li>
+<li><p><strong>where_str</strong> (<em>str</em>) – description of the source (used for log output)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>obj:’Products’: deepcopy of the requested result</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code> or</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no entry for the given parameter was found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.basic_product_auto_smooth">
+<code class="sig-name descname"><span class="pre">basic_product_auto_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.basic_product_auto_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of a basic product, derived with automatic smooth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Products</span></code> deepcopy of the requested product</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no product for the given product id
+    is found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.basic_product_common_smooth">
+<code class="sig-name descname"><span class="pre">basic_product_common_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.basic_product_common_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of a basic product, derived with common smooth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_id_str</strong> (<em>str</em><em>) or </em><em>(</em><em>int</em>) – product id</p></li>
+<li><p><strong>resolution</strong> (<em>int</em>) – can be LOWRES (=0) or HIGHRES (=1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Products</span></code> deepcopy of the requested product</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no product for the given product id
+    is found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.basic_product_raw">
+<code class="sig-name descname"><span class="pre">basic_product_raw</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.basic_product_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of a basic product, derived without smoothing</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Products</span></code> deepcopy of the requested product</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no product for the given product id
+    is found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.binres_auto_smooth">
+<code class="sig-name descname"><span class="pre">binres_auto_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.binres_auto_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of the bin resolution profile of a product</p>
+<p>The bin resolution corresponds to the automatically derived vertical resolution
+of a basic product.
+The transformation between bin resolution and effective
+vertical resolution is done with <code class="xref py py-obj docutils literal notranslate"><span class="pre">GetEffVertRes</span></code> and
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">GetUsedBinRes</span></code> corresponding to the retrieval method of the product</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>copy of the bin resolution profile</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no entry for the given product id
+    and resolution was found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.binres_common_smooth">
+<code class="sig-name descname"><span class="pre">binres_common_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.binres_common_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of a bin resolution profile of a product</p>
+<p>The bin resolution corresponds to the common vertical resolution
+of all basic and derived products. Some products are smoothed with
+high resolution and low resolution.
+The transformation between bin resolution and effective
+vertical resolution is done with <code class="xref py py-obj docutils literal notranslate"><span class="pre">GetEffVertRes</span></code> and
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">GetUsedBinRes</span></code> corresponding to the retrieval method of the product</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p></li>
+<li><p><strong>resolution</strong> (<em>int</em>) – can be LOWRES (=0) or HIGHRES (=1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>deepcopy of the requested resolution profile</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no entry for the given product id
+    and resolution was found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.cloud_mask">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">cloud_mask</span></code><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.cloud_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>two-dimensional (time, level) cloud mask</p>
+<p>The cloud mask of the measurement, read from the ELPP files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>cloud mask of the measurement</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>cloud_mask (xarray.Dataset)</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.DifferentCloudMaskExists" title="ELDAmwl.errors.exceptions.DifferentCloudMaskExists"><strong>DifferentCloudMaskExists</strong></a> – if a cloud_mask</p></li>
+<li><p><strong>shall be written to the __data storage but</strong> – </p></li>
+<li><p><strong>there is already one from a previously read ELPP file</strong> – </p></li>
+<li><p><strong>which is different from the new one</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.derived_product_common_smooth">
+<code class="sig-name descname"><span class="pre">derived_product_common_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.derived_product_common_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of a basic product, derived with common smooth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p></li>
+<li><p><strong>resolution</strong> (<em>int</em>) – can be LOWRES (=0) or HIGHRES (=1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>deepcopy of the requested product</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Products</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no product for the given product id
+    is found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.elpp_signal">
+<code class="sig-name descname"><span class="pre">elpp_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_id_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.elpp_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of an ELPP signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p></li>
+<li><p><strong>ch_id_str</strong> (<em>str</em>) – channel id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>deepcopy of the requested ELPP signal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Signals</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no entry for the given product id
+    and signal id was found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.elpp_signals">
+<code class="sig-name descname"><span class="pre">elpp_signals</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.elpp_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>copies of all ELPP signals of one product</p>
+<p>Those are the original signals of one basic product from
+the corresponding ELPP file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>list with deepcopies of all signals related</dt><dd><p>to the product id</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Signals</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no signals for the given product id
+    are found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.final_product_matrix">
+<code class="sig-name descname"><span class="pre">final_product_matrix</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.final_product_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>3-dimensional (wavelength, time, altitude) data matrix</p>
+<p>Product matrix contains all product profiles and cloud mask.
+All data are on the same grid of time, altitude and wavelength.
+Except cloud mask, which has no wavelength dimension.
+Missing data are filled with nan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_type</strong> – </p></li>
+<li><p><strong>res</strong> (<em>int</em>) – can be LOWRES (=0) or HIGHRES (=1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>obj:’xarray.Dataset’: deepcopy of the final product matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.get_common_cloud_mask">
+<code class="sig-name descname"><span class="pre">get_common_cloud_mask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.get_common_cloud_mask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.get_max_binres">
+<code class="sig-name descname"><span class="pre">get_max_binres</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.get_max_binres" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets maximum of binres of all products with resolution=res
+:param res:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>xr.DataArray with same shape as single binres arrays</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.header">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">header</span></code><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.header" title="Permalink to this definition">¶</a></dt>
+<dd><p>header of the measurement, read from ELPP files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>header of the measurement</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>header (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Header</span></code>)</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Raises: DifferentHeaderExists: if a header</dt><dd><p>shall be written to the __data storage but
+there is already one from a previously read ELPP file
+which is different from the new one</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'Datastorage'</span></em><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.prepared_signal">
+<code class="sig-name descname"><span class="pre">prepared_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_id_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.prepared_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of an prepared signal</p>
+<p>The preparation includes normalization by number of laser shots,
+combination of depolarization component(where necessary),
+and correction for molecular transmission (except for KF retrieval).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p></li>
+<li><p><strong>ch_id_str</strong> (<em>str</em>) – channel id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>deepcopy of the requested prepared signal</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Signals</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no entry for the given product id
+    and signal id was found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.prepared_signals">
+<code class="sig-name descname"><span class="pre">prepared_signals</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.prepared_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>copies of all prepared signals of one product</p>
+<p>Those are the prepared signals of one basic product .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>list with deepcopies of all signals related</dt><dd><p>to the product id</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">Signals</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no signals for the given product id
+    are found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.product_common_smooth">
+<code class="sig-name descname"><span class="pre">product_common_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.product_common_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of a product, derived with common smooth</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_id_str</strong> (<em>str</em>) – product id</p></li>
+<li><p><strong>resolution</strong> (<em>int</em>) – can be LOWRES (=0) or HIGHRES (=1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>deepcopy of the requested product</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Products</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="ELDAmwl.errors.html#ELDAmwl.errors.exceptions.NotFoundInStorage" title="ELDAmwl.errors.exceptions.NotFoundInStorage"><strong>NotFoundInStorage</strong></a> – if no product for the given product id
+    is found in storage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.set_basic_product_auto_smooth">
+<code class="sig-name descname"><span class="pre">set_basic_product_auto_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_product</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.set_basic_product_auto_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>write new auto smoothed basic product to storage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.set_basic_product_common_smooth">
+<code class="sig-name descname"><span class="pre">set_basic_product_common_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_product</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.set_basic_product_common_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a basic product that was smoothed with onto a common grid to storage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.set_basic_product_raw">
+<code class="sig-name descname"><span class="pre">set_basic_product_raw</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_product</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.set_basic_product_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>write new un-smoothed basic product to storage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.set_binres_auto_smooth">
+<code class="sig-name descname"><span class="pre">set_binres_auto_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_res_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.set_binres_auto_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>write new auto smoothed basic product to storage</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_id_str</strong> – </p></li>
+<li><p><strong>new_res_array</strong> – xarray.DataArray</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.set_binres_common_smooth">
+<code class="sig-name descname"><span class="pre">set_binres_common_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_res_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.set_binres_common_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_id_str</strong> – </p></li>
+<li><p><strong>resolution</strong> – </p></li>
+<li><p><strong>new_res_array</strong> – xarray.DataArray</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.set_derived_products">
+<code class="sig-name descname"><span class="pre">set_derived_products</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_product</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.set_derived_products" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a derived product to storage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.set_elpp_signal">
+<code class="sig-name descname"><span class="pre">set_elpp_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_signal</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.set_elpp_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>write new ELPP signal to storage</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.set_final_product_matrix">
+<code class="sig-name descname"><span class="pre">set_final_product_matrix</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_dataset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.set_final_product_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>write a dataset with common grid (wavelength, time, altitude) to storage</p>
+<p>one dataset per product type and resolution</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.storage.data_storage.DataStorage.set_prepared_signal">
+<code class="sig-name descname"><span class="pre">set_prepared_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_signal</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.DataStorage.set_prepared_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>write new prepared signal to storage</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ELDAmwl.storage.data_storage.register_datastorage">
+<code class="sig-prename descclassname"><span class="pre">ELDAmwl.storage.data_storage.</span></code><code class="sig-name descname"><span class="pre">register_datastorage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_storage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.storage.data_storage.register_datastorage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.storage">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl.storage" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Ina Mattis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

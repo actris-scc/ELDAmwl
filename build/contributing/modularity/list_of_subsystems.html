@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview on modularized algorithm subsystems &mdash; ELDAmwl 0.1 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> ELDAmwl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modindex.html">Module Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">ELDAmwl</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ELDAmwl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Overview on modularized algorithm subsystems</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/contributing/modularity/list_of_subsystems.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="overview-on-modularized-algorithm-subsystems">
+<h1>Overview on modularized algorithm subsystems<a class="headerlink" href="#overview-on-modularized-algorithm-subsystems" title="Permalink to this headline">¶</a></h1>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">list of BaseOperationFactories and corresponding BaseOperations</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>BaseOperationFactory</p></td>
+<td><p>BaseOperation</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RunELDAmwl</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">GetBasicProducts</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">GetBasicProductsDefault</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RayleighLidarRatio</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">RayleighLidarRatioFromConst</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.prepare_signals.PrepareSignals" title="ELDAmwl.prepare_signals.PrepareSignals"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrepareSignals</span></code></a></p></td>
+<td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.prepare_signals.PrepareSignalsDefault" title="ELDAmwl.prepare_signals.PrepareSignalsDefault"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrepareSignalsDefault</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.prepare_signals.PrepareBscSignals" title="ELDAmwl.prepare_signals.PrepareBscSignals"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrepareBscSignals</span></code></a></p></td>
+<td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.prepare_signals.PrepareBscSignalsDefault" title="ELDAmwl.prepare_signals.PrepareBscSignalsDefault"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrepareBscSignalsDefault</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.prepare_signals.PrepareExtSignals" title="ELDAmwl.prepare_signals.PrepareExtSignals"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrepareExtSignals</span></code></a></p></td>
+<td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.prepare_signals.PrepareExtSignalsDefault" title="ELDAmwl.prepare_signals.PrepareExtSignalsDefault"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrepareExtSignalsDefault</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtinctionFactory</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtinctionFactoryDefault</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalSlope</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedLinearFit</span></code></p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">NonWeightedLinearFit</span></code></p>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtEffBinRes</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">LinFitEffBinRes</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtUsedBinRes</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">LinFitUsedBinRes</span></code></p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">LinFit</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SlopeToExtinction</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SlopeToExtinctionDefault</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.signals.CombineDepolComponents" title="ELDAmwl.signals.CombineDepolComponents"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombineDepolComponents</span></code></a></p></td>
+<td><p><a class="reference internal" href="../../api/ELDAmwl.html#ELDAmwl.signals.CombineDepolComponentsDefault" title="ELDAmwl.signals.CombineDepolComponentsDefault"><code class="xref py py-class docutils literal notranslate"><span class="pre">CombineDepolComponentsDefault</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">WriteMWLOutput</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">WriteMWLOutputDefault</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Ina Mattis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
