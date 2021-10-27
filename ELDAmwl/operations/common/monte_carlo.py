@@ -1,12 +1,19 @@
+import sys
 from copy import deepcopy
+from multiprocessing.pool import Pool
+
+from zope import component
+
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import IExtOp
+from ELDAmwl.component.interface import IExtOp, ILogger, ICfg
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
 
 import numpy as np
 import zope
+
+from ELDAmwl.products import Products
 
 
 class MonteCarlo:
@@ -19,6 +26,14 @@ class MonteCarlo:
 
     def __init__(self, op):
         self.op = op
+
+    @property
+    def logger(self):
+        return component.queryUtility(ILogger)
+
+    @property
+    def cfg(self):
+        return component.queryUtility(ICfg)
 
     def get_sample_inputs(self, orig):
         # orig is a dict with signals used for the retrieval. e.g., Raman sig and elast sig
@@ -40,13 +55,24 @@ class MonteCarlo:
                     self.sample_inputs[sig] = samples[n]
 
     def get_sample_results(self):
-        results = []
-        for n in range(self.mc_params.nb_of_iterations):
-            # sample = self.op.run(data=self.sample_inputs[n])
-            sample = self.run(self.sample_inputs[n])
-            results.append(sample.data.values)
+        pool = Pool(4)
+        self.sample_results = []
+        results = pool.imap_unordered(self.run, self.sample_inputs)
+        for result in results:
+            if isinstance(result, Products):
+                self.sample_results.append(result.data.values)
+            else:
+                self.logger.error("%s terminated due to errors" % result)
+                sys.exit(1)
+        pool.close()
+        pool.join()
 
-        self.sample_results = results
+        # results = []
+        # for n in range(self.mc_params.nb_of_iterations):
+        #     # sample = self.op.run(data=self.sample_inputs[n])
+        #     sample = self.run(self.sample_inputs[n])
+        #     results.append(sample.data.values)
+        # self.sample_results = results
 
     def calc_mc_error(self):
         all = np.array(self.sample_results)

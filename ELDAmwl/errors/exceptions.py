@@ -20,7 +20,7 @@ from ELDAmwl.errors.error_codes import WRONG_COMMAND_LINE_PARAM
 from ELDAmwl.errors.error_codes import ZERO_DETECTION_LIMIT
 
 
-class ELDAmwlException(Exception):
+class ELDAmwlException(BaseException):
     """
     base class of exceptions raised by ELDAmwl
     """
@@ -31,7 +31,7 @@ class ELDAmwlException(Exception):
         self.prod_id = prod_id
 
 
-class Terminating(Exception):
+class Terminating(BaseException):
     """
     Marker Exception mixing for terminating Exceptions
     """
