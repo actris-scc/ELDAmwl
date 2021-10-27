@@ -9,10 +9,7 @@ from ELDAmwl.component.registry import registry
 from ELDAmwl.products import Products
 from joblib import delayed
 from joblib import Parallel
-from multiprocessing.pool import Pool
 from zope import component
-
-import dask
 
 import numpy as np
 import sys
@@ -61,12 +58,12 @@ class MonteCarlo:
 
     def get_sample_results_parallel(self):
         self.sample_results = []
-        results = Parallel(n_jobs=self.cfg.CPUS)(delayed(self.run)(sample) for sample in self.sample_inputs )
+        results = Parallel(n_jobs=self.cfg.CPUS)(delayed(self.run)(sample) for sample in self.sample_inputs)
         for result in results:
             if isinstance(result, Products):
                 self.sample_results.append(result.data.values)
             else:
-                self.logger.error("%s terminated due to errors" % result)
+                self.logger.error('{} terminated due to errors'.format(result))
                 sys.exit(1)
 
     def get_sample_results_serial(self):

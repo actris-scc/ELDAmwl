@@ -1,13 +1,11 @@
 from ELDAmwl.component.interface import ICfg
 from ELDAmwl.tests.config import PICKLE_DATA_DIR
+from ELDAmwl.utils.path_utils import abs_file_path
 from pickle import dump
 from pickle import load
 from zope import component
 
-import pathlib
 import pickle
-
-from ELDAmwl.utils.path_utils import abs_file_path
 
 
 def get_unpicklable(instance, exception=None, string='', first_only=False):

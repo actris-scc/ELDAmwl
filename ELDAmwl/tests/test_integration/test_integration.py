@@ -3,7 +3,6 @@ from ELDAmwl.component.interface import IDBConstructor
 from ELDAmwl.config import register_config
 from ELDAmwl.database.db_functions import register_db_func
 from ELDAmwl.log.log import register_logger
-from ELDAmwl.main import elda_setup_components
 from ELDAmwl.main import Main
 from ELDAmwl.operations.main.elda_mwl import register_params
 from ELDAmwl.storage.data_storage import register_datastorage
