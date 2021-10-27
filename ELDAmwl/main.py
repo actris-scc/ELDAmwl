@@ -10,8 +10,8 @@ from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import WrongCommandLineParameter
 from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
-from ELDAmwl.operations.main.elda_mwl import register_params
-from ELDAmwl.operations.main.elda_mwl import RunELDAmwl
+from ELDAmwl.main.elda_mwl import register_params
+from ELDAmwl.main.elda_mwl import RunELDAmwl
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
 from zope import component
