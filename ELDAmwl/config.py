@@ -7,7 +7,7 @@ import zope
 def register_config(env=None):
     cfg = Dynaconf(
         envvar_prefix='DYNACONF',  # replaced "DYNACONF" by 'DYNACONF'
-        settings_files=['settings.yaml', '../.secrets.yaml'],
+        settings_files=['settings.yaml', '.secrets.yaml'],
         environments=True,
         env=env,
     )

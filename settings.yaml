@@ -31,10 +31,7 @@ default:
 #  DB_USER : ''
 #  DB_PASS : ''
 #  DB_DB : ''
-  DB_SERVER : 'localhost'
-  DB_USER : 'earlinet'
-  DB_PASS : 'dwdlidar'
-  DB_DB : 'scc_dev_eldamwl'
+# You have to supply a .secrets.yaml file beside this file with the database access secrets shown above!
 
 # :::::::::::::::::::
 # Logging
