@@ -26,6 +26,7 @@ isort = "^5.5.0"
 "zope.component" = "^5.0.1"
 objsize = "^0.3.3"
 dynaconf = "^3.1.7"
+joblib = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 autodocsumm = "^0.2.7"
