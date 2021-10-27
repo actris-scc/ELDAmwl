@@ -7,13 +7,13 @@ from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IParams
-from ELDAmwl.errors.exceptions import ProductNotUnique
-from ELDAmwl.extinction.params import ExtinctionParams
-from ELDAmwl.lidar_ratio.params import LidarRatioParams
 from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
 from ELDAmwl.elda_mwl.mwl_products import GetProductMatrix
 from ELDAmwl.elda_mwl.mwl_products import QualityControl
+from ELDAmwl.errors.exceptions import ProductNotUnique
+from ELDAmwl.extinction.params import ExtinctionParams
+from ELDAmwl.lidar_ratio.params import LidarRatioParams
 from ELDAmwl.output.write_mwl_output import WriteMWLOutput
 from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams

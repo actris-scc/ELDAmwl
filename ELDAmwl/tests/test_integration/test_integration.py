@@ -2,9 +2,9 @@ from addict import Dict
 from ELDAmwl.component.interface import IDBConstructor
 from ELDAmwl.config import register_config
 from ELDAmwl.database.db_functions import register_db_func
+from ELDAmwl.elda_mwl.elda_mwl import register_params
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.main import Main
-from ELDAmwl.elda_mwl.elda_mwl import register_params
 from ELDAmwl.monte_carlo.operation import register_monte_carlo
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.tests.database.create_test_db import register_dbconstructor

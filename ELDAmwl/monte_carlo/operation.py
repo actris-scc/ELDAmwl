@@ -181,6 +181,7 @@ class CreateMCCopiesDefault(BaseOperation):
 
         return result
 
+
 def register_monte_carlo():
     gsm = zope.component.getGlobalSiteManager()
     gsm.registerAdapter(MonteCarloExtAdapter, (IExtOp,), IMonteCarlo)

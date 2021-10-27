@@ -70,7 +70,7 @@ class ElppData(object):
         try:
             nc_ds = xr.open_dataset(elpp_file)
         except Exception as e:   # ToDo Ina : which exception exactly?
-            print(e)
+            # print(e)
             raise(CannotOpenELLPFile(elpp_file))
 
         self.cloud_mask = nc_ds.cloud_mask.astype(int)

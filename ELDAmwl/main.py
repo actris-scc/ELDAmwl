@@ -4,14 +4,14 @@ from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IParams
 from ELDAmwl.config import register_config
 from ELDAmwl.database.db_functions import register_db_func
+from ELDAmwl.elda_mwl.elda_mwl import register_params
+from ELDAmwl.elda_mwl.elda_mwl import RunELDAmwl
 from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
 from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import WrongCommandLineParameter
 from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
-from ELDAmwl.elda_mwl.elda_mwl import register_params
-from ELDAmwl.elda_mwl.elda_mwl import RunELDAmwl
 from ELDAmwl.monte_carlo.operation import register_monte_carlo
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
