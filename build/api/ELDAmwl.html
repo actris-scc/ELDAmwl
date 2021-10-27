@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELDAmwl package &mdash; ELDAmwl 0.1 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ELDAmwl.configs package" href="ELDAmwl.configs.html" />
+    <link rel="prev" title="ELDAmwl" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ELDAmwl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modindex.html">Module Index</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ELDAmwl</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ELDAmwl package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.configs.html">ELDAmwl.configs package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.html">ELDAmwl.database package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.html">ELDAmwl.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-backscatter-factories-module">ELDAmwl.backscatter_factories module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-base-module">ELDAmwl.base module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-columns-module">ELDAmwl.columns module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-constants-module">ELDAmwl.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-data-storage-module">ELDAmwl.data_storage module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-elast-bsc-factories-module">ELDAmwl.elast_bsc_factories module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-elda-mwl-factories-module">ELDAmwl.elda_mwl_factories module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-error-codes-module">ELDAmwl.error_codes module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-exceptions-module">ELDAmwl.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-extinction-factories-module">ELDAmwl.extinction_factories module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-factory-module">ELDAmwl.factory module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-get-basic-products-module">ELDAmwl.get_basic_products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-lidar-ratio-factories-module">ELDAmwl.lidar_ratio_factories module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ELDAmwl.log">ELDAmwl.log module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-main-module">ELDAmwl.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ELDAmwl.prepare_signals">ELDAmwl.prepare_signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ELDAmwl.products">ELDAmwl.products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-raman-bsc-factories-module">ELDAmwl.raman_bsc_factories module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eldamwl-registry-module">ELDAmwl.registry module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ELDAmwl.signals">ELDAmwl.signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ELDAmwl">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ELDAmwl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">ELDAmwl</a> &raquo;</li>
+      <li>ELDAmwl package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ELDAmwl.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="eldamwl-package">
+<h1>ELDAmwl package<a class="headerlink" href="#eldamwl-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ELDAmwl.configs.html">ELDAmwl.configs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.configs.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.configs.html#eldamwl-configs-config-module">ELDAmwl.configs.config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.configs.html#eldamwl-configs-config-default-module">ELDAmwl.configs.config_default module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.configs.html#eldamwl-configs-config-example-module">ELDAmwl.configs.config_example module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.configs.html#eldamwl-configs-config-example-linux-module">ELDAmwl.configs.config_example_linux module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.configs.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ELDAmwl.database.html">ELDAmwl.database package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.database.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.database.tables.html">ELDAmwl.database.tables package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.tables.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.tables.html#module-ELDAmwl.database.tables.backscatter">ELDAmwl.database.tables.backscatter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.tables.html#module-ELDAmwl.database.tables.db_base">ELDAmwl.database.tables.db_base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.tables.html#module-ELDAmwl.database.tables.extinction">ELDAmwl.database.tables.extinction module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.tables.html#module-ELDAmwl.database.tables.lidar_ratio">ELDAmwl.database.tables.lidar_ratio module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.tables.html#module-ELDAmwl.database.tables.measurements">ELDAmwl.database.tables.measurements module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.tables.html#module-ELDAmwl.database.tables.system_product">ELDAmwl.database.tables.system_product module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.tables.html#eldamwl-database-tables-volkers-db-functions-module">ELDAmwl.database.tables.volkers_db_functions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.tables.html#module-ELDAmwl.database.tables">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.database.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.database.html#module-ELDAmwl.database.db">ELDAmwl.database.db module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.database.html#module-ELDAmwl.database.db_functions">ELDAmwl.database.db_functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.database.html#module-ELDAmwl.database">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ELDAmwl.tests.html">ELDAmwl.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.tests.database.html">ELDAmwl.tests.database package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.database.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.database.html#module-ELDAmwl.tests.database.create_test_db">ELDAmwl.tests.database.create_test_db module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.database.html#module-ELDAmwl.tests.database">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.html#eldamwl-tests-disable-test-elda-mwl-factories-module">ELDAmwl.tests.disable_test_elda_mwl_factories module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.html#module-ELDAmwl.tests.test_factory">ELDAmwl.tests.test_factory module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.html#module-ELDAmwl.tests.test_params">ELDAmwl.tests.test_params module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.html#module-ELDAmwl.tests.test_registry">ELDAmwl.tests.test_registry module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.html#module-ELDAmwl.tests.test_signals">ELDAmwl.tests.test_signals module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.tests.html#module-ELDAmwl.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-backscatter-factories-module">
+<h2>ELDAmwl.backscatter_factories module<a class="headerlink" href="#eldamwl-backscatter-factories-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-base-module">
+<h2>ELDAmwl.base module<a class="headerlink" href="#eldamwl-base-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-columns-module">
+<h2>ELDAmwl.columns module<a class="headerlink" href="#eldamwl-columns-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-constants-module">
+<h2>ELDAmwl.constants module<a class="headerlink" href="#eldamwl-constants-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-data-storage-module">
+<h2>ELDAmwl.data_storage module<a class="headerlink" href="#eldamwl-data-storage-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-elast-bsc-factories-module">
+<h2>ELDAmwl.elast_bsc_factories module<a class="headerlink" href="#eldamwl-elast-bsc-factories-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-elda-mwl-factories-module">
+<h2>ELDAmwl.elda_mwl_factories module<a class="headerlink" href="#eldamwl-elda-mwl-factories-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-error-codes-module">
+<h2>ELDAmwl.error_codes module<a class="headerlink" href="#eldamwl-error-codes-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-exceptions-module">
+<h2>ELDAmwl.exceptions module<a class="headerlink" href="#eldamwl-exceptions-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-extinction-factories-module">
+<h2>ELDAmwl.extinction_factories module<a class="headerlink" href="#eldamwl-extinction-factories-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-factory-module">
+<h2>ELDAmwl.factory module<a class="headerlink" href="#eldamwl-factory-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-get-basic-products-module">
+<h2>ELDAmwl.get_basic_products module<a class="headerlink" href="#eldamwl-get-basic-products-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-lidar-ratio-factories-module">
+<h2>ELDAmwl.lidar_ratio_factories module<a class="headerlink" href="#eldamwl-lidar-ratio-factories-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.log">
+<span id="eldamwl-log-module"></span><h2>ELDAmwl.log module<a class="headerlink" href="#module-ELDAmwl.log" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-main-module">
+<h2>ELDAmwl.main module<a class="headerlink" href="#eldamwl-main-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.prepare_signals">
+<span id="eldamwl-prepare-signals-module"></span><h2>ELDAmwl.prepare_signals module<a class="headerlink" href="#module-ELDAmwl.prepare_signals" title="Permalink to this headline">¶</a></h2>
+<p>Classes for preparation of signals
+(combining depol component, temporal integration, ..</p>
+<p><strong>Classes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareBscSignals" title="ELDAmwl.prepare_signals.PrepareBscSignals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrepareBscSignals</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param prod_param</dt>
+<dd class="field-odd"><p>params of the product</p>
+</dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareBscSignalsDefault" title="ELDAmwl.prepare_signals.PrepareBscSignalsDefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrepareBscSignalsDefault</span></code></a>(**kwargs)</p></td>
+<td><p>prepare ELPP signals for extinction retrieval with the steps: 1) set data points outside valid altitude range as invalid 2) normalization by number of shots 3) combination of depol component (if needed) 4) correction of atmospheric transmission due to molecular scattering (not for Klett-Fernald)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareExtSignals" title="ELDAmwl.prepare_signals.PrepareExtSignals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrepareExtSignals</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param prod_param</dt>
+<dd class="field-odd"><p>params of the product</p>
+</dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareExtSignalsDefault" title="ELDAmwl.prepare_signals.PrepareExtSignalsDefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrepareExtSignalsDefault</span></code></a>(**kwargs)</p></td>
+<td><p>prepare ELPP signals for extinction retrieval with the steps: 1) set data points outside valid altitude range as invalid 2) normalization by number of shots 3) correction of atmospheric transmission due to molecular scattering 4) divide by Rayleigh scattering and calculate logarithm</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareSignals" title="ELDAmwl.prepare_signals.PrepareSignals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrepareSignals</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param products</dt>
+<dd class="field-odd"><p>list of parameters of all basic</p>
+</dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareSignalsDefault" title="ELDAmwl.prepare_signals.PrepareSignalsDefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrepareSignalsDefault</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ELDAmwl.prepare_signals.PrepareBscSignals">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.prepare_signals.</span></code><code class="sig-name descname"><span class="pre">PrepareBscSignals</span></code><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareBscSignals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperationFactory</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prod_param</strong> (<a class="reference internal" href="#ELDAmwl.products.ProductParams" title="ELDAmwl.products.ProductParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.products.ProductParams</span></code></a>) – params of the product</p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareBscSignals.get_classname_from_db" title="ELDAmwl.prepare_signals.PrepareBscSignals.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>return: always ‘DoPrepareBscSignals’ .</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareBscSignals.name" title="ELDAmwl.prepare_signals.PrepareBscSignals.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.prepare_signals.PrepareBscSignals.get_classname_from_db">
+<code class="sig-name descname"><span class="pre">get_classname_from_db</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareBscSignals.get_classname_from_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>return: always ‘DoPrepareBscSignals’ .</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.prepare_signals.PrepareBscSignals.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'PrepareBscSignals'</span></em><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareBscSignals.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.prepare_signals.PrepareBscSignalsDefault">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.prepare_signals.</span></code><code class="sig-name descname"><span class="pre">PrepareBscSignalsDefault</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareBscSignalsDefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperation</span></code></a></p>
+<p>prepare ELPP signals for extinction retrieval with the steps:
+1) set data points outside valid altitude range as invalid
+2) normalization by number of shots
+3) combination of depol component (if needed)
+4) correction of atmospheric transmission due to molecular scattering
+(not for Klett-Fernald)</p>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareBscSignalsDefault.bsc_param" title="ELDAmwl.prepare_signals.PrepareBscSignalsDefault.bsc_param"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bsc_param</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareBscSignalsDefault.data_storage" title="ELDAmwl.prepare_signals.PrepareBscSignalsDefault.data_storage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_storage</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareBscSignalsDefault.combine_depol_components" title="ELDAmwl.prepare_signals.PrepareBscSignalsDefault.combine_depol_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine_depol_components</span></code></a>(p_param)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareBscSignalsDefault.run" title="ELDAmwl.prepare_signals.PrepareBscSignalsDefault.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.prepare_signals.PrepareBscSignalsDefault.bsc_param">
+<code class="sig-name descname"><span class="pre">bsc_param</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareBscSignalsDefault.bsc_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.prepare_signals.PrepareBscSignalsDefault.combine_depol_components">
+<code class="sig-name descname"><span class="pre">combine_depol_components</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_param</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareBscSignalsDefault.combine_depol_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.prepare_signals.PrepareBscSignalsDefault.data_storage">
+<code class="sig-name descname"><span class="pre">data_storage</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareBscSignalsDefault.data_storage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.prepare_signals.PrepareBscSignalsDefault.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareBscSignalsDefault.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.prepare_signals.PrepareExtSignals">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.prepare_signals.</span></code><code class="sig-name descname"><span class="pre">PrepareExtSignals</span></code><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareExtSignals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperationFactory</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prod_param</strong> (<a class="reference internal" href="#ELDAmwl.products.ProductParams" title="ELDAmwl.products.ProductParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.products.ProductParams</span></code></a>) – params of the product</p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareExtSignals.get_classname_from_db" title="ELDAmwl.prepare_signals.PrepareExtSignals.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>return: always ‘DoPrepareExtSignals’ .</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareExtSignals.name" title="ELDAmwl.prepare_signals.PrepareExtSignals.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.prepare_signals.PrepareExtSignals.get_classname_from_db">
+<code class="sig-name descname"><span class="pre">get_classname_from_db</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareExtSignals.get_classname_from_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>return: always ‘DoPrepareExtSignals’ .</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.prepare_signals.PrepareExtSignals.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'PrepareExtSignals'</span></em><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareExtSignals.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.prepare_signals.PrepareExtSignalsDefault">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.prepare_signals.</span></code><code class="sig-name descname"><span class="pre">PrepareExtSignalsDefault</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareExtSignalsDefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperation</span></code></a></p>
+<p>prepare ELPP signals for extinction retrieval with the steps:
+1) set data points outside valid altitude range as invalid
+2) normalization by number of shots
+3) correction of atmospheric transmission due to molecular scattering
+4) divide by Rayleigh scattering and calculate logarithm</p>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareExtSignalsDefault.data_storage" title="ELDAmwl.prepare_signals.PrepareExtSignalsDefault.data_storage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_storage</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareExtSignalsDefault.ext_param" title="ELDAmwl.prepare_signals.PrepareExtSignalsDefault.ext_param"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ext_param</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareExtSignalsDefault.run" title="ELDAmwl.prepare_signals.PrepareExtSignalsDefault.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.prepare_signals.PrepareExtSignalsDefault.data_storage">
+<code class="sig-name descname"><span class="pre">data_storage</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareExtSignalsDefault.data_storage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.prepare_signals.PrepareExtSignalsDefault.ext_param">
+<code class="sig-name descname"><span class="pre">ext_param</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareExtSignalsDefault.ext_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.prepare_signals.PrepareExtSignalsDefault.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareExtSignalsDefault.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.prepare_signals.PrepareSignals">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.prepare_signals.</span></code><code class="sig-name descname"><span class="pre">PrepareSignals</span></code><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareSignals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperationFactory</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>products</strong> – list of parameters of all basic
+products (list of :class:
+<cite>ELDAmwl.products.ProductParams</cite>)</p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareSignals.get_classname_from_db" title="ELDAmwl.prepare_signals.PrepareSignals.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>return: always ‘DoPrepareSignals’ .</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareSignals.name" title="ELDAmwl.prepare_signals.PrepareSignals.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.prepare_signals.PrepareSignals.get_classname_from_db">
+<code class="sig-name descname"><span class="pre">get_classname_from_db</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareSignals.get_classname_from_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>return: always ‘DoPrepareSignals’ .</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.prepare_signals.PrepareSignals.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'PrepareSignals'</span></em><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareSignals.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.prepare_signals.PrepareSignalsDefault">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.prepare_signals.</span></code><code class="sig-name descname"><span class="pre">PrepareSignalsDefault</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareSignalsDefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperation</span></code></a></p>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareSignalsDefault.data_storage" title="ELDAmwl.prepare_signals.PrepareSignalsDefault.data_storage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_storage</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.prepare_signals.PrepareSignalsDefault.run" title="ELDAmwl.prepare_signals.PrepareSignalsDefault.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.prepare_signals.PrepareSignalsDefault.data_storage">
+<code class="sig-name descname"><span class="pre">data_storage</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareSignalsDefault.data_storage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.prepare_signals.PrepareSignalsDefault.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.prepare_signals.PrepareSignalsDefault.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.products">
+<span id="eldamwl-products-module"></span><h2>ELDAmwl.products module<a class="headerlink" href="#module-ELDAmwl.products" title="Permalink to this headline">¶</a></h2>
+<p>base classes for products</p>
+<p><strong>Classes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeneralProductParams</span></code>()</p></td>
+<td><p>general parameters for product retrievals</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MCParams</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProductParams</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Products</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">QualityParams</span></code>()</p></td>
+<td><p>quality parameters for product retrievals</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SmoothParams</span></code>()</p></td>
+<td><p>smooth parameters for product retrievals</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SmoothRoutine</span></code>()</p></td>
+<td><p>Creates a Class for smoothing</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SmoothSavGolay</span></code>(**kwargs)</p></td>
+<td><p>smoothes a profile window with Savitzky-Golay method</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SmoothSlidingAverage</span></code>(**kwargs)</p></td>
+<td><p>calculates Raman backscatter profile like in ansmann et al 1992</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ELDAmwl.products.GeneralProductParams">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.products.</span></code><code class="sig-name descname"><span class="pre">GeneralProductParams</span></code><a class="headerlink" href="#ELDAmwl.products.GeneralProductParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.base.Params" title="ELDAmwl.bases.base.Params"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.base.Params</span></code></a></p>
+<p>general parameters for product retrievals</p>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_id</span></code>(prod_id)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_query</span></code>(query)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.products.GeneralProductParams.from_id">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_id</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.GeneralProductParams.from_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.GeneralProductParams.from_query">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_query</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.GeneralProductParams.from_query" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.products.MCParams">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.products.</span></code><code class="sig-name descname"><span class="pre">MCParams</span></code><a class="headerlink" href="#ELDAmwl.products.MCParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.base.Params" title="ELDAmwl.bases.base.Params"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.base.Params</span></code></a></p>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_db</span></code>(prod_id)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nb_of_iterations</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.products.MCParams.from_db">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_db</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.MCParams.from_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.products.MCParams.nb_of_iterations">
+<code class="sig-name descname"><span class="pre">nb_of_iterations</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.products.MCParams.nb_of_iterations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.products.ProductParams">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.products.</span></code><code class="sig-name descname"><span class="pre">ProductParams</span></code><a class="headerlink" href="#ELDAmwl.products.ProductParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.base.Params" title="ELDAmwl.bases.base.Params"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.base.Params</span></code></a></p>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_signal_role</span></code>(signal)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_to_product_list</span></code>(measurement_params)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_with_res</span></code>(res)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_db</span></code>(general_params)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_error_params</span></code>(db_options)</p></td>
+<td><p>reads error params :param db_options: product params, read from                    SCC db with read_elast_bsc_params(),                    read_extinction_params(), or                    read_raman_bsc_params :type db_options: Dict</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">includes_product_merging</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_bsc_from_depol_components</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_meta_ds_dict</span></code>(dct)</p></td>
+<td><p>writes parameter content into Dict for further export in mwl file :param dct: is a dict which will be converted into dataset. has the keys ‘attrs’ and ‘data_vars’ :type dct: addict.Dict.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">det_limit_asDataArray</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">error_method</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">error_threshold_high_asDataArray</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">error_threshold_low_asDataArray</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prod_id_str</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_method</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_params_auto</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_type</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.add_signal_role">
+<code class="sig-name descname"><span class="pre">add_signal_role</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.ProductParams.add_signal_role" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.assign_to_product_list">
+<code class="sig-name descname"><span class="pre">assign_to_product_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measurement_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.ProductParams.assign_to_product_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.calc_with_res">
+<code class="sig-name descname"><span class="pre">calc_with_res</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.ProductParams.calc_with_res" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.det_limit_asDataArray">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">det_limit_asDataArray</span></code><a class="headerlink" href="#ELDAmwl.products.ProductParams.det_limit_asDataArray" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.error_method">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">error_method</span></code><a class="headerlink" href="#ELDAmwl.products.ProductParams.error_method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.error_threshold_high_asDataArray">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">error_threshold_high_asDataArray</span></code><a class="headerlink" href="#ELDAmwl.products.ProductParams.error_threshold_high_asDataArray" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.error_threshold_low_asDataArray">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">error_threshold_low_asDataArray</span></code><a class="headerlink" href="#ELDAmwl.products.ProductParams.error_threshold_low_asDataArray" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.from_db">
+<code class="sig-name descname"><span class="pre">from_db</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">general_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.ProductParams.from_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.get_error_params">
+<code class="sig-name descname"><span class="pre">get_error_params</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.ProductParams.get_error_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads error params
+:param db_options: product params, read from</p>
+<blockquote>
+<div><p>SCC db with read_elast_bsc_params(),
+read_extinction_params(), or
+read_raman_bsc_params</p>
+</div></blockquote>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.includes_product_merging">
+<code class="sig-name descname"><span class="pre">includes_product_merging</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.ProductParams.includes_product_merging" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.is_bsc_from_depol_components">
+<code class="sig-name descname"><span class="pre">is_bsc_from_depol_components</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.ProductParams.is_bsc_from_depol_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.prod_id_str">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">prod_id_str</span></code><a class="headerlink" href="#ELDAmwl.products.ProductParams.prod_id_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.smooth_method">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">smooth_method</span></code><a class="headerlink" href="#ELDAmwl.products.ProductParams.smooth_method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.smooth_params_auto">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">smooth_params_auto</span></code><a class="headerlink" href="#ELDAmwl.products.ProductParams.smooth_params_auto" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.smooth_type">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">smooth_type</span></code><a class="headerlink" href="#ELDAmwl.products.ProductParams.smooth_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.ProductParams.to_meta_ds_dict">
+<code class="sig-name descname"><span class="pre">to_meta_ds_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dct</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.ProductParams.to_meta_ds_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>writes parameter content into Dict for further export in mwl file
+:param dct: is a dict which will be converted into dataset.</p>
+<blockquote>
+<div><p>has the keys ‘attrs’ and ‘data_vars’</p>
+</div></blockquote>
+<dl class="field-list simple">
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.products.Products">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.products.</span></code><code class="sig-name descname"><span class="pre">Products</span></code><a class="headerlink" href="#ELDAmwl.products.Products" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.signals.Signals</span></code></a></p>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_signal</span></code>(signal, p_params, **kw_args)</p></td>
+<td><p>creates an instance of Products with from general data of signal.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_to_netcdf</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code>(binres)</p></td>
+<td><p>performs smoothing of the data :param binres: :type binres: xarray.DataArray</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_meta_ds_dict</span></code>(meta_data)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_data_in_ds</span></code>(ds)</p></td>
+<td><p>insert product data into dataset</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mwl_meta_id</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_scan_angles</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">p_params</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">params</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth_routine</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.products.Products.from_signal">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_signal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_params</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.Products.from_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates an instance of Products with from general data of signal.</p>
+<p>data, err, qf, and binres have the same shape as signal,
+but are filled with nan.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.products.Products.mwl_meta_id">
+<code class="sig-name descname"><span class="pre">mwl_meta_id</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.products.Products.mwl_meta_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.products.Products.num_scan_angles">
+<code class="sig-name descname"><span class="pre">num_scan_angles</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.products.Products.num_scan_angles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.products.Products.p_params">
+<code class="sig-name descname"><span class="pre">p_params</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.products.Products.p_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.products.Products.params">
+<code class="sig-name descname"><span class="pre">params</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.products.Products.params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.Products.save_to_netcdf">
+<code class="sig-name descname"><span class="pre">save_to_netcdf</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.Products.save_to_netcdf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.Products.smooth">
+<code class="sig-name descname"><span class="pre">smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.Products.smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>performs smoothing of the data
+:param binres:
+:type binres: xarray.DataArray</p>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.products.Products.smooth_routine">
+<code class="sig-name descname"><span class="pre">smooth_routine</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.products.Products.smooth_routine" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.Products.to_meta_ds_dict">
+<code class="sig-name descname"><span class="pre">to_meta_ds_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.Products.to_meta_ds_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.Products.write_data_in_ds">
+<code class="sig-name descname"><span class="pre">write_data_in_ds</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.Products.write_data_in_ds" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert product data into dataset</p>
+<p>find the indexes where the product coordinates fit into coordinates of
+the ds and write product data there
+:param ds: empty dataset where to insert the product data
+:type ds: xr.Dataset</p>
+<p>Returns:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.products.QualityParams">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.products.</span></code><code class="sig-name descname"><span class="pre">QualityParams</span></code><a class="headerlink" href="#ELDAmwl.products.QualityParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.base.Params" title="ELDAmwl.bases.base.Params"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.base.Params</span></code></a></p>
+<p>quality parameters for product retrievals</p>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_db</span></code>(prod_id)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_query</span></code>(query)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.products.QualityParams.from_db">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_db</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.QualityParams.from_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.QualityParams.from_query">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_query</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.QualityParams.from_query" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.products.SmoothParams">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.products.</span></code><code class="sig-name descname"><span class="pre">SmoothParams</span></code><a class="headerlink" href="#ELDAmwl.products.SmoothParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.base.Params" title="ELDAmwl.bases.base.Params"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.base.Params</span></code></a></p>
+<p>smooth parameters for product retrievals</p>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_db</span></code>(prod_id)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_query</span></code>(query)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.products.SmoothParams.from_db">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_db</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.SmoothParams.from_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.SmoothParams.from_query">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_query</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.SmoothParams.from_query" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.products.SmoothRoutine">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.products.</span></code><code class="sig-name descname"><span class="pre">SmoothRoutine</span></code><a class="headerlink" href="#ELDAmwl.products.SmoothRoutine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperationFactory</span></code></a></p>
+<p>Creates a Class for smoothing</p>
+<p>Keyword Args:</p>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code>()</p></td>
+<td><p>reads from SCC db which algorithm to use</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">method_id</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.products.SmoothRoutine.get_classname_from_db">
+<code class="sig-name descname"><span class="pre">get_classname_from_db</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.SmoothRoutine.get_classname_from_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>reads from SCC db which algorithm to use</p>
+<p>Returns: name of the class for the smoothing</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.products.SmoothRoutine.method_id">
+<code class="sig-name descname"><span class="pre">method_id</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.products.SmoothRoutine.method_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.products.SmoothRoutine.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'SmoothRoutine'</span></em><a class="headerlink" href="#ELDAmwl.products.SmoothRoutine.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.products.SmoothSavGolay">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.products.</span></code><code class="sig-name descname"><span class="pre">SmoothSavGolay</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.SmoothSavGolay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperation</span></code></a></p>
+<p>smoothes a profile window with Savitzky-Golay method</p>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>(**kwargs)</p></td>
+<td><p>starts the calculation.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.products.SmoothSavGolay.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'SmoothSavGolay'</span></em><a class="headerlink" href="#ELDAmwl.products.SmoothSavGolay.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.SmoothSavGolay.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.SmoothSavGolay.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>starts the calculation.</p>
+<p>in scipy.signal.savgol_filter
+(<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html</a>),
+the filtering is done as
+convolution (scipy.ndimage.convolve1d ) of the data and SG coefficients:</p>
+<blockquote>
+<div><p>result=convolve1d(data,sgc).
+Here, the filtering can be done as simple sum (which is supposedly faster)</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window</strong> (<em>integer</em>) – total length (diameter) of the smooth window. must be an odd number</p></li>
+<li><p><strong>data</strong><strong>(</strong><strong>)</strong> – ndarray (size=window) which contains the data to be smoothed</p></li>
+<li><p><strong>err</strong><strong>(</strong><strong>)</strong> – ndarray (size=window) which contains the errors of the data to be smoothed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>addict.Dict with keys ‘data’ and ‘err’ which contains the smoothed data and its error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.products.SmoothSlidingAverage">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.products.</span></code><code class="sig-name descname"><span class="pre">SmoothSlidingAverage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.SmoothSlidingAverage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperation</span></code></a></p>
+<p>calculates Raman backscatter profile like in ansmann et al 1992</p>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>(**kwargs)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.products.SmoothSlidingAverage.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'SmoothSlidingAverage'</span></em><a class="headerlink" href="#ELDAmwl.products.SmoothSlidingAverage.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.products.SmoothSlidingAverage.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.products.SmoothSlidingAverage.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="eldamwl-raman-bsc-factories-module">
+<h2>ELDAmwl.raman_bsc_factories module<a class="headerlink" href="#eldamwl-raman-bsc-factories-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="eldamwl-registry-module">
+<h2>ELDAmwl.registry module<a class="headerlink" href="#eldamwl-registry-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.signals">
+<span id="eldamwl-signals-module"></span><h2>ELDAmwl.signals module<a class="headerlink" href="#module-ELDAmwl.signals" title="Permalink to this headline">¶</a></h2>
+<p>Classes for signals</p>
+<p><strong>Classes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.CombineDepolComponents" title="ELDAmwl.signals.CombineDepolComponents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineDepolComponents</span></code></a>()</p></td>
+<td><p>Returns an instance of BaseOperation which calculates a total signal from two signals with depolarization component.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.CombineDepolComponentsDefault" title="ELDAmwl.signals.CombineDepolComponentsDefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CombineDepolComponentsDefault</span></code></a>(**kwargs)</p></td>
+<td><p>Calculates a combined signal from depol component</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.DepolarizationCalibration" title="ELDAmwl.signals.DepolarizationCalibration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DepolarizationCalibration</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.ElppData" title="ELDAmwl.signals.ElppData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElppData</span></code></a>()</p></td>
+<td><p>Representation of one ELPP file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Signals</span></code></a>()</p></td>
+<td><p>two-dimensional (time, level) signal data</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ELDAmwl.signals.CombineDepolComponents">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.signals.</span></code><code class="sig-name descname"><span class="pre">CombineDepolComponents</span></code><a class="headerlink" href="#ELDAmwl.signals.CombineDepolComponents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperationFactory</span></code></a></p>
+<p>Returns an instance of BaseOperation which
+calculates a total signal from two signals with
+depolarization component. In this case, it will be
+always an instance of GetCombinedSignal().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>(</strong><strong>xarray.DataSet</strong> (<em>refl_sig</em>) – <dl class="simple">
+<dt>(dimensions=time,level),</dt><dd><p>variables=data,err,):</p>
+</dd>
+</dl>
+<p>data of the reflected signal</p>
+</p>
+</dd>
+</dl>
+<dl>
+<dt>:param<span class="classifier">(dimensions=time,level),</span></dt><dd><blockquote>
+<div><p>variables=data,err,):</p>
+</div></blockquote>
+<p>data of the reflected signal</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transm_sig</strong> (<em>xarray.DataSet</em><em>, </em><em>(</em><em>dimensions=time</em><em>,</em><em>level</em><em>)</em>) – data of the transmitted signal</p></li>
+<li><p><strong>depol_params</strong> (<em>Dict</em>) – all parameters needed for the
+calculation of depolarization and signal combination
+(HR, HT, GR, GT, gain factor, and gain factor correction).
+The parameter are xarray.Datasets with the variables
+‘value’, ‘statistical_error’, and ‘systematic_error’.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.CombineDepolComponents.get_classname_from_db" title="ELDAmwl.signals.CombineDepolComponents.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>return: always ‘CombineDepolComponents’ .</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.CombineDepolComponents.name" title="ELDAmwl.signals.CombineDepolComponents.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.signals.CombineDepolComponents.get_classname_from_db">
+<code class="sig-name descname"><span class="pre">get_classname_from_db</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.CombineDepolComponents.get_classname_from_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>return: always ‘CombineDepolComponents’ .</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.CombineDepolComponents.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'CombineDepolComponents'</span></em><a class="headerlink" href="#ELDAmwl.signals.CombineDepolComponents.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.signals.CombineDepolComponentsDefault">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.signals.</span></code><code class="sig-name descname"><span class="pre">CombineDepolComponentsDefault</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.CombineDepolComponentsDefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperation</span></code></a></p>
+<p>Calculates a combined signal from depol component</p>
+<p>params : Dict…</p>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.CombineDepolComponentsDefault.run" title="ELDAmwl.signals.CombineDepolComponentsDefault.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>()</p></td>
+<td><p>is created from the combination of a reflected and a transmitted signal component using the equation Sig_total = etaS/K*HR*sig_transm - HT*Sig_refl/(HR*GT - HT*GR)</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.signals.CombineDepolComponentsDefault.run">
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.CombineDepolComponentsDefault.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>is created from the combination of
+a reflected and a transmitted signal component using the equation
+Sig_total = etaS/K*HR*sig_transm - HT*Sig_refl/(HR*GT - HT*GR)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.signals.DepolarizationCalibration">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.signals.</span></code><code class="sig-name descname"><span class="pre">DepolarizationCalibration</span></code><a class="headerlink" href="#ELDAmwl.signals.DepolarizationCalibration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.DepolarizationCalibration.from_nc_file" title="ELDAmwl.signals.DepolarizationCalibration.from_nc_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_nc_file</span></code></a>(nc_ds, pol_cal_idx)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.DepolarizationCalibration.gain_factor" title="ELDAmwl.signals.DepolarizationCalibration.gain_factor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gain_factor</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.DepolarizationCalibration.gain_factor_correction" title="ELDAmwl.signals.DepolarizationCalibration.gain_factor_correction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gain_factor_correction</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.signals.DepolarizationCalibration.from_nc_file">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_nc_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nc_ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pol_cal_idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.DepolarizationCalibration.from_nc_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.DepolarizationCalibration.gain_factor">
+<code class="sig-name descname"><span class="pre">gain_factor</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.DepolarizationCalibration.gain_factor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.DepolarizationCalibration.gain_factor_correction">
+<code class="sig-name descname"><span class="pre">gain_factor_correction</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.DepolarizationCalibration.gain_factor_correction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.signals.ElppData">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.signals.</span></code><code class="sig-name descname"><span class="pre">ElppData</span></code><a class="headerlink" href="#ELDAmwl.signals.ElppData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Representation of one ELPP file.</p>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.ElppData.cfg" title="ELDAmwl.signals.ElppData.cfg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cfg</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.ElppData.read_nc_file" title="ELDAmwl.signals.ElppData.read_nc_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_nc_file</span></code></a>(p_param)</p></td>
+<td><p>reading an ELPP file</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ELDAmwl.signals.ElppData.cfg">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">cfg</span></code><a class="headerlink" href="#ELDAmwl.signals.ElppData.cfg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.ElppData.read_nc_file">
+<code class="sig-name descname"><span class="pre">read_nc_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_param</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.ElppData.read_nc_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>reading an ELPP file</p>
+<p>Signals, cloud mask, and the header are read
+from an ELPP file and put into the data_storage</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>p_param</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ELDAmwl.signals.Signals">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ELDAmwl.signals.</span></code><code class="sig-name descname"><span class="pre">Signals</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.columns.Columns" title="ELDAmwl.bases.columns.Columns"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.columns.Columns</span></code></a></p>
+<p>two-dimensional (time, level) signal data</p>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.alt_range" title="ELDAmwl.signals.Signals.alt_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alt_range</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.calc_eff_bin_res_routine" title="ELDAmwl.signals.Signals.calc_eff_bin_res_routine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_eff_bin_res_routine</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.calc_used_bin_res_routine" title="ELDAmwl.signals.Signals.calc_used_bin_res_routine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_used_bin_res_routine</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.channel_id" title="ELDAmwl.signals.Signals.channel_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">channel_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.channel_id_str" title="ELDAmwl.signals.Signals.channel_id_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">channel_id_str</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.channel_idx_in_ncfile" title="ELDAmwl.signals.Signals.channel_idx_in_ncfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">channel_idx_in_ncfile</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.detection_type" title="ELDAmwl.signals.Signals.detection_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detection_type</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.detection_wavelength" title="ELDAmwl.signals.Signals.detection_wavelength"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detection_wavelength</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.emission_wavelength" title="ELDAmwl.signals.Signals.emission_wavelength"><code class="xref py py-obj docutils literal notranslate"><span class="pre">emission_wavelength</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.g" title="ELDAmwl.signals.Signals.g"><code class="xref py py-obj docutils literal notranslate"><span class="pre">g</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.h" title="ELDAmwl.signals.Signals.h"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_Raman_sig" title="ELDAmwl.signals.Signals.is_Raman_sig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_Raman_sig</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_WV_sig" title="ELDAmwl.signals.Signals.is_WV_sig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_WV_sig</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_all_range_signal" title="ELDAmwl.signals.Signals.is_all_range_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_all_range_signal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_cross_sig" title="ELDAmwl.signals.Signals.is_cross_sig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_cross_sig</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_elast_sig" title="ELDAmwl.signals.Signals.is_elast_sig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_elast_sig</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_fr_signal" title="ELDAmwl.signals.Signals.is_fr_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_fr_signal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_nr_signal" title="ELDAmwl.signals.Signals.is_nr_signal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_nr_signal</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_parallel_sig" title="ELDAmwl.signals.Signals.is_parallel_sig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_parallel_sig</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_refl_sig" title="ELDAmwl.signals.Signals.is_refl_sig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_refl_sig</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_total_sig" title="ELDAmwl.signals.Signals.is_total_sig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_total_sig</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.is_transm_sig" title="ELDAmwl.signals.Signals.is_transm_sig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_transm_sig</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.name" title="ELDAmwl.signals.Signals.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.pol_calibr" title="ELDAmwl.signals.Signals.pol_calibr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pol_calibr</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.pol_channel_conf" title="ELDAmwl.signals.Signals.pol_channel_conf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pol_channel_conf</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.pol_channel_geometry" title="ELDAmwl.signals.Signals.pol_channel_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pol_channel_geometry</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.range" title="ELDAmwl.signals.Signals.range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">range</span></code></a></p></td>
+<td><p>range axis in m = distance from lidar</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.raw_heightres" title="ELDAmwl.signals.Signals.raw_heightres"><code class="xref py py-obj docutils literal notranslate"><span class="pre">raw_heightres</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.scale_factor_shots" title="ELDAmwl.signals.Signals.scale_factor_shots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale_factor_shots</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.scatterer" title="ELDAmwl.signals.Signals.scatterer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatterer</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.station_altitude" title="ELDAmwl.signals.Signals.station_altitude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">station_altitude</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.as_sig_ratio" title="ELDAmwl.signals.Signals.as_sig_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_sig_ratio</span></code></a>(enumerator, denominator)</p></td>
+<td><p>creates a Signals instance from the ratio of two Signals</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.correct_for_mol_transmission" title="ELDAmwl.signals.Signals.correct_for_mol_transmission"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correct_for_mol_transmission</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.data_in_vertical_range" title="ELDAmwl.signals.Signals.data_in_vertical_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_in_vertical_range</span></code></a>(v_range[, boundaries])</p></td>
+<td><p>returns subset of data within vertical range</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.eff_to_used_binres" title="ELDAmwl.signals.Signals.eff_to_used_binres"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eff_to_used_binres</span></code></a>(an_eff_binres)</p></td>
+<td><p>how many bins are used to calculate a product with the given effective bin resolution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.from_depol_components" title="ELDAmwl.signals.Signals.from_depol_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_depol_components</span></code></a>(transm_sig, refl_sig)</p></td>
+<td><p>Creates a total signal from two depolarization component.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.from_nc_file" title="ELDAmwl.signals.Signals.from_nc_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_nc_file</span></code></a>(nc_ds, idx_in_file)</p></td>
+<td><p>creates a Signals instance from the content of a NetCDF file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.get_binres_from_fixed_smooth" title="ELDAmwl.signals.Signals.get_binres_from_fixed_smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_binres_from_fixed_smooth</span></code></a>(smooth_params, res)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.get_raw_heightres" title="ELDAmwl.signals.Signals.get_raw_heightres"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_raw_heightres</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.height_to_levels" title="ELDAmwl.signals.Signals.height_to_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">height_to_levels</span></code></a>(height)</p></td>
+<td><p>converts a height value into a series of level (dim=time) Args: height (float): one requested height for all times, in m Returns: level (xarray) closest to the requested height</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.heightres_to_bins" title="ELDAmwl.signals.Signals.heightres_to_bins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">heightres_to_bins</span></code></a>(heightres)</p></td>
+<td><p>converts a height resolution into number of vertical bins Args: heightres(float): height resolution in m Returns: bins(int): number of vertical bins corresponding to the vertical resolution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.heights_to_levels" title="ELDAmwl.signals.Signals.heights_to_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">heights_to_levels</span></code></a>(heights)</p></td>
+<td><p>converts a series of height value into a series of level (dim=time) Args: heights (xarray): a requested height for each time, in m Returns: level (xarray) closest to the requested heights</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.normalize_by_shots" title="ELDAmwl.signals.Signals.normalize_by_shots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize_by_shots</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.prepare_for_extinction" title="ELDAmwl.signals.Signals.prepare_for_extinction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_for_extinction</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.register" title="ELDAmwl.signals.Signals.register"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register</span></code></a>(p_params)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.signals.Signals.set_valid_height_range" title="ELDAmwl.signals.Signals.set_valid_height_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_valid_height_range</span></code></a>(v_range)</p></td>
+<td><p>set data levels below and above v_range as invalid</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.alt_range">
+<code class="sig-name descname"><span class="pre">alt_range</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.alt_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.as_sig_ratio">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">as_sig_ratio</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enumerator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">denominator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.as_sig_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a Signals instance from the ratio of two Signals</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enumerator</strong> (<a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>) – nominator</p></li>
+<li><p><strong>denominator</strong> (<a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>) – denominator</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: Signals</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.calc_eff_bin_res_routine">
+<code class="sig-name descname"><span class="pre">calc_eff_bin_res_routine</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.calc_eff_bin_res_routine" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.calc_used_bin_res_routine">
+<code class="sig-name descname"><span class="pre">calc_used_bin_res_routine</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.calc_used_bin_res_routine" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.channel_id">
+<code class="sig-name descname"><span class="pre">channel_id</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.channel_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.channel_id_str">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">channel_id_str</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.channel_id_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.channel_idx_in_ncfile">
+<code class="sig-name descname"><span class="pre">channel_idx_in_ncfile</span></code><em class="property"> <span class="pre">=</span> <span class="pre">nan</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.channel_idx_in_ncfile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.correct_for_mol_transmission">
+<code class="sig-name descname"><span class="pre">correct_for_mol_transmission</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.correct_for_mol_transmission" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.data_in_vertical_range">
+<code class="sig-name descname"><span class="pre">data_in_vertical_range</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.data_in_vertical_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns subset of data within vertical range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v_range</strong> (<em>addict.Dict</em>) – with keys ‘min_height’ and                     ‘max_height’ which are heights in m)</p></li>
+<li><p><strong>boundaries</strong> (<em>str</em>) – ‘extend_with_binres’ or</p></li>
+<li><p><strong>or None. default = None</strong> (<em>'clip_with_binres'</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>subset of the dataset in the vertical range.
+*   if boundaries == None (default) =&gt; returns range between</p>
+<blockquote>
+<div><p>(begin of vertical range) and (end of vertical range)</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>if boundaries == ‘extend_with_binres’ =&gt; returns range                     between                     (begin of vertical range - half binres at this height)                     and                     (end of vertical range + half binres at this height)</p></li>
+<li><dl class="simple">
+<dt>if boundaries == ‘clip_with_binres’ =&gt; returns range between                     (begin of vertical range + half binres at this height)</dt><dd><p>and
+(end of vertical range - half binres at this height)</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.detection_type">
+<code class="sig-name descname"><span class="pre">detection_type</span></code><em class="property"> <span class="pre">=</span> <span class="pre">nan</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.detection_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.detection_wavelength">
+<code class="sig-name descname"><span class="pre">detection_wavelength</span></code><em class="property"> <span class="pre">=</span> <span class="pre">nan</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.detection_wavelength" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.eff_to_used_binres">
+<code class="sig-name descname"><span class="pre">eff_to_used_binres</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">an_eff_binres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.eff_to_used_binres" title="Permalink to this definition">¶</a></dt>
+<dd><p>how many bins are used to calculate a product with the given effective bin resolution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>an_eff_binres</strong> (<em>float</em>) – effective bin resolution</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>number of used bins (int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.emission_wavelength">
+<code class="sig-name descname"><span class="pre">emission_wavelength</span></code><em class="property"> <span class="pre">=</span> <span class="pre">nan</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.emission_wavelength" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.from_depol_components">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_depol_components</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transm_sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refl_sig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.from_depol_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a total signal from two depolarization component.</p>
+<p>A Signals instance (which represents a total signal)
+is created from the combination of
+a reflected and a transmitted signal component using the equation
+Sig_total = etaS/K*HR*sig_transm - HT*Sig_refl/(HR*GT - HT*GR)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transm_sig</strong> (<a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>) – the transmitted signal component</p></li>
+<li><p><strong>refl_sig</strong> (<a class="reference internal" href="#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code></a>) – the reflected signal component</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: Signals</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.from_nc_file">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_nc_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nc_ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx_in_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.from_nc_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>creates a Signals instance from the content of a NetCDF file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nc_ds</strong> (<em>xarray.Dataset</em>) – content of the NetCDF file.</p></li>
+<li><p><strong>idx_in_file</strong> (<em>int</em>) – index of the signal within the
+channel dimension of the file.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: Signals</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.g">
+<code class="sig-name descname"><span class="pre">g</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.g" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.get_binres_from_fixed_smooth">
+<code class="sig-name descname"><span class="pre">get_binres_from_fixed_smooth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smooth_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used_binres_routine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.get_binres_from_fixed_smooth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.get_raw_heightres">
+<code class="sig-name descname"><span class="pre">get_raw_heightres</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.get_raw_heightres" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.h">
+<code class="sig-name descname"><span class="pre">h</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.h" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.height_to_levels">
+<code class="sig-name descname"><span class="pre">height_to_levels</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.height_to_levels" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts a height value into a series of level (dim=time)
+Args: height (float): one requested height for all times, in m
+Returns: level (xarray) closest to the requested height</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.heightres_to_bins">
+<code class="sig-name descname"><span class="pre">heightres_to_bins</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heightres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.heightres_to_bins" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts a height resolution into number of vertical bins
+Args: heightres(float): height resolution in m
+Returns: bins(int): number of vertical bins corresponding to the vertical resolution</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.heights_to_levels">
+<code class="sig-name descname"><span class="pre">heights_to_levels</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heights</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.heights_to_levels" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts a series of height value into a series of level (dim=time)
+Args: heights (xarray): a requested height for each time, in m
+Returns: level (xarray) closest to the requested heights</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_Raman_sig">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_Raman_sig</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_Raman_sig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_WV_sig">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_WV_sig</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_WV_sig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_all_range_signal">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_all_range_signal</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_all_range_signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_cross_sig">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_cross_sig</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_cross_sig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_elast_sig">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_elast_sig</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_elast_sig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_fr_signal">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_fr_signal</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_fr_signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_nr_signal">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_nr_signal</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_nr_signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_parallel_sig">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_parallel_sig</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_parallel_sig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_refl_sig">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_refl_sig</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_refl_sig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_total_sig">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_total_sig</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_total_sig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.is_transm_sig">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_transm_sig</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.is_transm_sig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.name">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.normalize_by_shots">
+<code class="sig-name descname"><span class="pre">normalize_by_shots</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.normalize_by_shots" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.pol_calibr">
+<code class="sig-name descname"><span class="pre">pol_calibr</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.pol_calibr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.pol_channel_conf">
+<code class="sig-name descname"><span class="pre">pol_channel_conf</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.pol_channel_conf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.pol_channel_geometry">
+<code class="sig-name descname"><span class="pre">pol_channel_geometry</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.pol_channel_geometry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.prepare_for_extinction">
+<code class="sig-name descname"><span class="pre">prepare_for_extinction</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.prepare_for_extinction" title="Permalink to this definition">¶</a></dt>
+<dd><div class="math">
+<p><span class="math">sig &amp;= ln(Sig_o / Rayl) = ln(b)\\
+
+err\_sig &amp;= err\_sig_o * dSig/ dSig_o\\
+        &amp;= err\_sig_o * (dSig/db * db/dSig_o)\\
+        &amp;= err\_sig_o * ( 1/b * 1/rayl )\\
+        &amp;= err\_sig_o *  (Rayl/Sig_o * 1/Rayl)\\
+err\_sig &amp;= err\_sig_o / Sig_o</span></p>
+</div></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.range">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">range</span></code><a class="headerlink" href="#ELDAmwl.signals.Signals.range" title="Permalink to this definition">¶</a></dt>
+<dd><p>range axis in m
+= distance from lidar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>xarray.DataArray(dimensions = time, level)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.raw_heightres">
+<code class="sig-name descname"><span class="pre">raw_heightres</span></code><em class="property"> <span class="pre">=</span> <span class="pre">nan</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.raw_heightres" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.register">
+<code class="sig-name descname"><span class="pre">register</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.scale_factor_shots">
+<code class="sig-name descname"><span class="pre">scale_factor_shots</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.scale_factor_shots" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.scatterer">
+<code class="sig-name descname"><span class="pre">scatterer</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.scatterer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ELDAmwl.signals.Signals.set_valid_height_range">
+<code class="sig-name descname"><span class="pre">set_valid_height_range</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_range</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.signals.Signals.set_valid_height_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>set data levels below and above v_range as invalid</p>
+<p>levels below v_range are labeled with self.qf = BELOW_OVL
+levels above v_range are labeled as self.qf = ABOVE_MAX_ALT</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v_range</strong> (<em>addict.Dict</em>) – with keys ‘min_height’ and                     ‘max_height’ which are heights in m a.g.)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="ELDAmwl.signals.Signals.station_altitude">
+<code class="sig-name descname"><span class="pre">station_altitude</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.signals.Signals.station_altitude" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl" title="Permalink to this headline">¶</a></h2>
+<p>Init and utils.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="ELDAmwl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ELDAmwl.configs.html" class="btn btn-neutral float-right" title="ELDAmwl.configs package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Ina Mattis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
