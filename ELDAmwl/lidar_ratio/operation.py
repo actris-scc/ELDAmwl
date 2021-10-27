@@ -2,7 +2,6 @@
 """Classes for lidar ratio calculation"""
 from addict import Dict
 from copy import deepcopy
-
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IMonteCarlo

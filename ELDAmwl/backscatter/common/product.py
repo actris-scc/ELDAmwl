@@ -16,7 +16,7 @@ class Backscatters(Products):
 
         Args:
             signal (:class:`Signals`): time series of signal profiles
-            p_params (:class:`ELDAmwl.operations.backscatter.monte_carlo.params.BackscatterParams`):
+            p_params (:class:`ELDAmwl.operations.backscatter.common.params.BackscatterParams`):
                         calculation params of the backscatter product
             calibr_window (tuple):
                         first and last height_axis of the calibration window [m]

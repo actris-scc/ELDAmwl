@@ -13,7 +13,7 @@ import xarray as xr
 
 
 class FindCommonBscCalibrWindow(BaseOperationFactory):
-    """ fins a monte_carlo calibration window for all bsc products
+    """ fins a common calibration window for all bsc products
 
     Keyword Args:
         bsc_params (list of :class:`BackscatterParams`): \

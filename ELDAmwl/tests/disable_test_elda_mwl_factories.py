@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Tests for the operations"""
 from addict import Dict
-from ELDAmwl.main.elda_mwl import MeasurementParams
+from ELDAmwl.elda_mwl.elda_mwl import MeasurementParams
 
 
 def test_MeasurementParams(mocker):

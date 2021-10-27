@@ -25,7 +25,7 @@ class WriteMWLOutputDefault(BaseOperation):
     data_storage = None
     product_params = None
     out_filename = None
-    data = Dict()  # data of all main groups
+    data = Dict()  # data of all elda_mwl groups
     meta_data = Dict()  # meta_data of individual products
 
     def mwl_filename(self):
@@ -111,7 +111,7 @@ class WriteMWLOutputDefault(BaseOperation):
                 if pt not in [EXT, RBSC]:
                     p_types.remove(pt)
 
-            # todo cloudmask shall have monte_carlo altitude, time and timebounds variables
+            # todo cloudmask shall have common altitude, time and timebounds variables
             group_data.data_vars.cloud_mask = self.data_storage.get_common_cloud_mask(res)
 
             for ptype in p_types:

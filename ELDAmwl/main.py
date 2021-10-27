@@ -10,8 +10,8 @@ from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import WrongCommandLineParameter
 from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
-from ELDAmwl.main.elda_mwl import register_params
-from ELDAmwl.main.elda_mwl import RunELDAmwl
+from ELDAmwl.elda_mwl.elda_mwl import register_params
+from ELDAmwl.elda_mwl.elda_mwl import RunELDAmwl
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
 from zope import component
@@ -117,10 +117,10 @@ class Main:
             # error: the following arguments are required: meas_id
             # returns 2
             #
-            # main.py: error: unrecognized arguments: -d
+            # elda_mwl.py: error: unrecognized arguments: -d
             # returns 2
             #
-            # main.py: error: argument - l: invalid choice
+            # elda_mwl.py: error: argument - l: invalid choice
             # returns 2
         except Exception:
             raise WrongCommandLineParameter

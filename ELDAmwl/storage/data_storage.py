@@ -98,7 +98,7 @@ class DataStorage:
         self.__data.binres_auto_smooth[prod_id_str] = new_res_array  # noqa E501
 
     def set_basic_product_common_smooth(self, prod_id_str, res, new_product):
-        """write a basic product that was smoothed with onto a monte_carlo grid to storage
+        """write a basic product that was smoothed with onto a common grid to storage
         """
         self.__data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
 
@@ -108,7 +108,7 @@ class DataStorage:
         self.__data.derived_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
 
     def set_final_product_matrix(self, prod_type, res, new_dataset):
-        """write a dataset with monte_carlo grid (wavelength, time, altitude) to storage
+        """write a dataset with common grid (wavelength, time, altitude) to storage
 
         one dataset per product type and resolution
         """
@@ -329,7 +329,7 @@ class DataStorage:
     def binres_common_smooth(self, prod_id_str, resolution):
         """ copy of a bin resolution profile of a product
 
-        The bin resolution corresponds to the monte_carlo vertical resolution
+        The bin resolution corresponds to the common vertical resolution
         of all basic and derived products. Some products are smoothed with
         high resolution and low resolution.
         The transformation between bin resolution and effective
@@ -351,11 +351,11 @@ class DataStorage:
             prod_id_str,
             resolution,
             'binres_common_smooth',
-            'monte_carlo bin resolution profile',
+            'common bin resolution profile',
             'product {0} in '.format(prod_id_str))
 
     def basic_product_common_smooth(self, prod_id, resolution):
-        """copy of a basic product, derived with monte_carlo smooth
+        """copy of a basic product, derived with common smooth
 
         Args:
             prod_id_str (str) or (int):  product id
@@ -374,10 +374,10 @@ class DataStorage:
             resolution,
             'basic_products_common_smooth',
             'product',
-            'basic products with monte_carlo smoothing with')
+            'basic products with common smoothing with')
 
     def derived_product_common_smooth(self, prod_id_str, resolution):
-        """copy of a basic product, derived with monte_carlo smooth
+        """copy of a basic product, derived with common smooth
 
         Args:
             prod_id_str (str):  product id
@@ -396,10 +396,10 @@ class DataStorage:
             resolution,
             'derived_products_common_smooth',
             'product',
-            'derived products with monte_carlo smoothing with')
+            'derived products with common smoothing with')
 
     def product_common_smooth(self, prod_id_str, resolution):
-        """copy of a product, derived with monte_carlo smooth
+        """copy of a product, derived with common smooth
 
         Args:
             prod_id_str (str):  product id
@@ -419,7 +419,7 @@ class DataStorage:
                 result = self.derived_product_common_smooth(prod_id_str, resolution)
             except NotFoundInStorage:
                 raise NotFoundInStorage('product {0}'.format(prod_id_str),
-                                        'products with monte_carlo smoothing with {0}'.format(RESOLUTION_STR[resolution]))
+                                        'products with common smoothing with {0}'.format(RESOLUTION_STR[resolution]))
 
         return result
 

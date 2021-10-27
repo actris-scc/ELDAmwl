@@ -7,7 +7,6 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IExtOp
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
-from ELDAmwl.extinction.params import ExtinctionParams
 from ELDAmwl.extinction.product import Extinctions
 from ELDAmwl.extinction.tools.operation import ExtinctionAutosmooth
 from ELDAmwl.extinction.tools.operation import SignalSlope

@@ -1,6 +1,5 @@
 from ELDAmwl.backscatter.common.operation import BackscatterFactory
 from ELDAmwl.backscatter.common.operation import BackscatterFactoryDefault
-from ELDAmwl.backscatter.elastic.tools.operation import CalcElastBscProfile
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry

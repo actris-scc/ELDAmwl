@@ -73,7 +73,7 @@ class GetBasicProductsDefault(BaseOperation):
 
     def find_common_smooth(self):
         """
-        finds a monte_carlo vertical resolution (for lowres and highres) of all auto smoothed products
+        finds a common vertical resolution (for lowres and highres) of all auto smoothed products
         and calculates corresponding bin resolutions for each product
 
         """
@@ -85,7 +85,7 @@ class GetBasicProductsDefault(BaseOperation):
         fixed vertical resolution of the mwl product
 
         """
-        self.logger.info('get bin resolution of products for monte_carlo smoothing')
+        self.logger.info('get bin resolution of products for common smoothing')
         sp = self.product_params.smooth_params
 
         for prod_param in self.product_params.basic_products():
@@ -117,7 +117,7 @@ class GetBasicProductsDefault(BaseOperation):
         """get all basic products with pre-defined smoothing
 
         """
-        self.logger.info('get products on monte_carlo smooth grid')
+        self.logger.info('get products on common smooth grid')
         self.get_extinctions_fixed_smooth()
         self.get_raman_bsc_fixed_smooth()
         # todo: elsat_bsc
@@ -175,7 +175,7 @@ class GetBasicProductsDefault(BaseOperation):
         for bsc_param in self.product_params.raman_bsc_products():
             prod_id = bsc_param.prod_id_str
 
-            # if no monte_carlo calibration window for all bsc has been found
+            # if no common calibration window for all bsc has been found
             # -> use calibration window of the individual bsc product
             if self.bsc_calibr_window is not None:
                 cal_win = self.bsc_calibr_window

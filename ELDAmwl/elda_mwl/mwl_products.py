@@ -18,7 +18,7 @@ import xarray as xr
 
 class GetProductMatrixDefault(BaseOperation):
     """
-    brings all products onto a monte_carlo grid (wavelength, time, altitude)
+    brings all products onto a common grid (wavelength, time, altitude)
     """
 
     data_storage = None
@@ -80,8 +80,8 @@ class GetProductMatrixDefault(BaseOperation):
             self.shape = self.get_common_shape(res)
 
             for ptype in p_types:
-                # create a monte_carlo Dataset for each product type
-                # with monte_carlo shape and empty data variables
+                # create a common Dataset for each product type
+                # with common shape and empty data variables
                 array = np.ones(self.shape.shape) * np.nan
 
                 ds = xr.Dataset(data_vars={
@@ -114,7 +114,7 @@ class GetProductMatrixDefault(BaseOperation):
                             prod_id = param.prod_id_str
                             # get product object from data storage
                             prod = self.data_storage.product_common_smooth(prod_id, res)
-                            # write product data into monte_carlo Dataset
+                            # write product data into common Dataset
                             prod.write_data_in_ds(ds)
 
                             wl_idx = wavelengths.index(wl)

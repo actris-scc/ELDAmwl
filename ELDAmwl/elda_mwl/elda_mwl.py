@@ -10,10 +10,10 @@ from ELDAmwl.component.interface import IParams
 from ELDAmwl.errors.exceptions import ProductNotUnique
 from ELDAmwl.extinction.params import ExtinctionParams
 from ELDAmwl.lidar_ratio.params import LidarRatioParams
-from ELDAmwl.main.get_basic_products import GetBasicProducts
-from ELDAmwl.main.get_derived_products import GetDerivedProducts
-from ELDAmwl.main.mwl_products import GetProductMatrix
-from ELDAmwl.main.mwl_products import QualityControl
+from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
+from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
+from ELDAmwl.elda_mwl.mwl_products import GetProductMatrix
+from ELDAmwl.elda_mwl.mwl_products import QualityControl
 from ELDAmwl.output.write_mwl_output import WriteMWLOutput
 from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams
@@ -330,7 +330,7 @@ class RunELDAmwl(BaseOperation):
         GetDerivedProducts()(product_params=self.params).run()
 
     def get_product_matrix(self):
-        self.logger.info('bring all products and cloud mask on monte_carlo grid (altitude, time, wavelength) ')
+        self.logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
         GetProductMatrix()(product_params=self.params).run()
 
     def quality_control(self):
