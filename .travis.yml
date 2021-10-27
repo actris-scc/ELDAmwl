@@ -1,4 +1,8 @@
 sudo: false
+# safelist
+branches:
+  only:
+  - master
 language: python
 python:
   - 3.8
