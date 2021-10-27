@@ -1,19 +1,22 @@
-import sys
 from copy import deepcopy
-from multiprocessing.pool import Pool
-
-from zope import component
-
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import IExtOp, ILogger, ICfg
+from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import IExtOp
+from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
+from ELDAmwl.products import Products
+from joblib import delayed
+from joblib import Parallel
+from multiprocessing.pool import Pool
+from zope import component
+
+import dask
 
 import numpy as np
+import sys
 import zope
-
-from ELDAmwl.products import Products
 
 
 class MonteCarlo:
@@ -56,25 +59,30 @@ class MonteCarlo:
 
 #            self.sample_inputs.append({sig: 1234})
 
-    def get_sample_results(self):
-        pool = Pool(4)
+    def get_sample_results_parallel(self):
         self.sample_results = []
-        results = pool.imap_unordered(self.run, self.sample_inputs)
+        results = Parallel(n_jobs=self.cfg.CPUS)(delayed(self.run)(sample) for sample in self.sample_inputs )
         for result in results:
             if isinstance(result, Products):
                 self.sample_results.append(result.data.values)
             else:
                 self.logger.error("%s terminated due to errors" % result)
                 sys.exit(1)
-        pool.close()
-        pool.join()
 
-        # results = []
-        # for n in range(self.mc_params.nb_of_iterations):
-        #     # sample = self.op.run(data=self.sample_inputs[n])
-        #     sample = self.run(self.sample_inputs[n])
-        #     results.append(sample.data.values)
-        # self.sample_results = results
+    def get_sample_results_serial(self):
+
+        results = []
+        for n in range(self.mc_params.nb_of_iterations):
+            # sample = self.op.run(data=self.sample_inputs[n])
+            sample = self.run(self.sample_inputs[n])
+            results.append(sample.data.values)
+        self.sample_results = results
+
+    def get_sample_results(self):
+        if self.cfg.PARALLEL:
+            self.get_sample_results_parallel()
+        else:
+            self.get_sample_results_serial()
 
     def calc_mc_error(self):
         all = np.array(self.sample_results)

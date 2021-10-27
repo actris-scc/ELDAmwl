@@ -10,6 +10,12 @@ default:
 #    - FindBscCalibrWindowAsInELDA.find_calibration_window
 
 # :::::::::::::::::::
+# Parallel processing
+# :::::::::::::::::::
+  CPUS : 4
+  PARALLEL : True
+
+# :::::::::::::::::::
 # Directories
 # :::::::::::::::::::
   LOG_PATH : ''
