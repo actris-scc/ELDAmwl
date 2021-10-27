@@ -12,6 +12,7 @@ from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.elda_mwl.elda_mwl import register_params
 from ELDAmwl.elda_mwl.elda_mwl import RunELDAmwl
+from ELDAmwl.monte_carlo.operation import register_monte_carlo
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
 from zope import component
@@ -58,6 +59,9 @@ def elda_setup_components(env='Production'):
 
     # Bring up the global parameter instance
     register_params()
+
+    # REgister MontaCarlo Adapter
+    register_monte_carlo()
 
 
 class Main:

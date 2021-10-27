@@ -181,10 +181,10 @@ class CreateMCCopiesDefault(BaseOperation):
 
         return result
 
+def register_monte_carlo():
+    gsm = zope.component.getGlobalSiteManager()
+    gsm.registerAdapter(MonteCarloExtAdapter, (IExtOp,), IMonteCarlo)
 
-gsm = zope.component.getGlobalSiteManager()
-gsm.registerAdapter(MonteCarloExtAdapter, (IExtOp,), IMonteCarlo)
-
-registry.register_class(CreateMCCopies,
-                        CreateMCCopiesDefault.__name__,
-                        CreateMCCopiesDefault)
+    registry.register_class(CreateMCCopies,
+                            CreateMCCopiesDefault.__name__,
+                            CreateMCCopiesDefault)
