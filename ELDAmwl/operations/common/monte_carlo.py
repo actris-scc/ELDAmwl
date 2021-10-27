@@ -52,7 +52,7 @@ class MonteCarlo:
                     self.sample_inputs.append({sig: samples[n]})
             else:
                 for n in range(self.mc_params.nb_of_iterations):
-                    self.sample_inputs[sig] = samples[n]
+                    self.sample_inputs[n][sig] = samples[n]
 
     def get_sample_results(self):
         pool = Pool(4)
