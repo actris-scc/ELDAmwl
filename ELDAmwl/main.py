@@ -4,7 +4,8 @@ from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IParams
 from ELDAmwl.config import register_config
 from ELDAmwl.database.db_functions import register_db_func
-from ELDAmwl.elda_mwl.elda_mwl import register_params
+from ELDAmwl.elda_mwl.elda_mwl import register_params, read_tasks, read_elpp_data, prepare_signals, get_basic_products, \
+    get_derived_products, get_product_matrix, quality_control, write_mwl_output, read_params
 from ELDAmwl.elda_mwl.elda_mwl import RunELDAmwl
 from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
@@ -152,18 +153,29 @@ class Main:
         """
 
         self.logger.meas_id = arg_dict.meas_id
-        elda_mwl = RunELDAmwl(arg_dict.meas_id)
-        elda_mwl.read_tasks()
-        elda_mwl.read_elpp_data()
-        elda_mwl.prepare_signals()
-        elda_mwl.get_basic_products()
-        elda_mwl.get_derived_products()
+        elda_mwl = RunELDAmwl()
+        rp = read_params()
+        rt = read_tasks()
+        rep = read_elpp_data()
+        ps = prepare_signals()
+        gbp = get_basic_products()
+        gdp= get_derived_products()
+        elda_mwl.set_dependencies(task=rp, keyword_tasks=dict(meas_id=arg_dict.meas_id))
+        elda_mwl.set_dependencies(task=rt, upstream_tasks=[rp])
+        elda_mwl.set_dependencies(task=rep, upstream_tasks=[rt])
+        elda_mwl.set_dependencies(task=ps, upstream_tasks=[rep])
+        elda_mwl.set_dependencies(task=gbp, upstream_tasks=[ps])
+        elda_mwl.set_dependencies(task=gdp, upstream_tasks=[gbp])
 
+        gpm = get_product_matrix()
+        qc = quality_control()
+        wmo = write_mwl_output()
         #        elda_mwl.write_single_output()
-        elda_mwl.get_product_matrix()
-        elda_mwl.quality_control()
-        elda_mwl.write_mwl_output()
-
+        elda_mwl.set_dependencies(task=gpm, upstream_tasks=[gdp])
+        elda_mwl.set_dependencies(task=qc, upstream_tasks=[gpm])
+        elda_mwl.set_dependencies(task=wmo, upstream_tasks=[qc])
+        elda_mwl.visualize()
+        elda_mwl.run()
         self.logger.info('the happy end')
 
     def run(self):

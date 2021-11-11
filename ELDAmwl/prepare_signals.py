@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for preparation of signals
 (combining depol component, temporal integration, .."""
+#from prefect import Task
 
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory

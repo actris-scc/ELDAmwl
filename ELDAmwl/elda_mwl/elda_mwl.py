@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """ELDAmwl operations"""
 from addict import Dict
+from prefect import Flow, task, Task, context
+
 from ELDAmwl.backscatter.elastic.params import ElastBscParams
 from ELDAmwl.backscatter.raman.params import RamanBscParams
 from ELDAmwl.bases.base import Params
@@ -296,61 +298,75 @@ def register_params(params=None):
     component.provideUtility(params, IParams)
 
 
-class RunELDAmwl(BaseOperation):
+class RunELDAmwl(Flow):
     """
     This is the global ELDAmwl operation class
     """
+    def __init__(self):
+        super(RunELDAmwl, self).__init__('Huhu')
 
-    def __init__(self, meas_id):
-        super(RunELDAmwl, self).__init__()
+
+class read_params(BaseOperation):
+    def run(self, meas_id=None):
         # todo: read current scc version
         self.params.load_from_db(meas_id)
 
-    def read_tasks(self):
+
+class read_tasks(BaseOperation):
+    def run(self):
         self.logger.info('read tasks from db')
         self.params.read_product_list()
-        # todo: check params (e.g. whether all
-        #  time and vert. resolutions are equal)
+    # todo: check params (e.g. whether all
+    #  time and vert. resolutions are equal)
 
-    def read_elpp_data(self):
+
+class read_elpp_data(BaseOperation):
+    def run(self):
         self.logger.info('read ELPP files')
         for p_param in self.params.basic_products():
             ElppData().read_nc_file(p_param)
 
-    def prepare_signals(self):
+
+class prepare_signals(BaseOperation):
+    def run(self):
         self.logger.info('prepare signals')
         PrepareSignals()(products=self.params.basic_products()).run()
 
-    def get_basic_products(self):
+
+class get_basic_products(BaseOperation):
+    def run(self):
         self.logger.info('calc basic products ')
         GetBasicProducts()(product_params=self.params).run()
 
-    def get_derived_products(self):
+
+class get_derived_products(BaseOperation):
+    def run(self):
         self.logger.info('calc derived products ')
         GetDerivedProducts()(product_params=self.params).run()
 
-    def get_product_matrix(self):
+
+class get_product_matrix(BaseOperation):
+    def run(self):
         self.logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
         GetProductMatrix()(product_params=self.params).run()
 
-    def quality_control(self):
+
+class quality_control(BaseOperation):
+    def run(self):
         self.logger.info('synergistic quality control of all products ')
         QualityControl()(product_params=self.params).run()
 
-    def write_single_output(self):
+
+class write_single_output(BaseOperation):
+    def run(self):
         self.logger.info('write products into NetCDF files ')
 #        self.data.basic_product_common_smooth('377', LOWRES).save_to_netcdf()
 #        for p_param in self.params.basic_products():
 #            self.data.basic_product_common_smooth(p_param.prod_id_str, 'lowres').save_to_netcdf()
 
-    def write_mwl_output(self):
+
+class write_mwl_output(BaseOperation):
+    def run(self):
         self.logger.info('write all products into one NetCDF file ')
         WriteMWLOutput()(product_params=self.params).run()
 
-    @property
-    def data(self):
-        """
-        Return the global data
-        :returns: a dict with all global data
-        """
-        return component.queryUtility(IDataStorage)

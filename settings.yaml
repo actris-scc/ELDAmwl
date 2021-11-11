@@ -20,7 +20,7 @@ default:
 # :::::::::::::::::::
   LOG_PATH : ''
   SIGNAL_PATH : 'data/ELPP_files'
-  PRODUCT_PATH : 'data/ELDAmwl_files'
+  PRODUCT_PATH : 'data/ELDA_files'
   TEMP_PATH : ''
   PLUGINS_DIR : ''
 

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """base Classes for operations and operators"""
+from prefect import Task
+
 from ELDAmwl.component.interface import ICfg
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IDBFunc
@@ -45,7 +47,7 @@ class BaseOperationFactory(object):
         return klass
 
 
-class BaseOperation(object):
+class BaseOperation(Task):
     """
     Base class of operations
     """
@@ -54,6 +56,7 @@ class BaseOperation(object):
     def __init__(self, **kwargs):
         self.kwargs = kwargs
         self.data_storage = component.queryUtility(IDataStorage)
+        super(BaseOperation, self).__init__()
 
     def init(self):
         pass
@@ -63,7 +66,7 @@ class BaseOperation(object):
         return component.queryUtility(IDBFunc)
 
     @property
-    def logger(self):
+    def _logger(self):
         return component.queryUtility(ILogger)
 
     @property
