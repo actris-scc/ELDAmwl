@@ -19,7 +19,7 @@ class FindCommonBscCalibrWindow(BaseOperationFactory):
         bsc_params (list of :class:`BackscatterParams`): \
                 list of params of all backscatter products
     """
-    name = 'FindCommonBscCalibrWindow'
+    _name = 'FindCommonBscCalibrWindow'
 
     def __call__(self, **kwargs):
         assert 'data_storage' in kwargs
@@ -44,7 +44,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
       BackscatterParams.calibr_window
     """
 
-    name = 'FindBscCalibrWindowAsInELDA'
+    _name = 'FindBscCalibrWindowAsInELDA'
 
     data_storage = None
     bsc_params = None

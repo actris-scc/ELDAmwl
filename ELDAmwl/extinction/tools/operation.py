@@ -14,7 +14,7 @@ class LinFit(BaseOperation):
     """
 
     """
-    name = 'LinFit'
+    _name = 'LinFit'
 
     data = None
 
@@ -62,7 +62,7 @@ class WeightedLinearFit(BaseOperation):
     calculates a weighted linear fit
 
     """
-    name = 'WeightedLinearFit'
+    _name = 'WeightedLinearFit'
 
     def __init__(self, **kwargs):
         super(WeightedLinearFit, self).__init__(**kwargs)
@@ -90,7 +90,7 @@ class NonWeightedLinearFit(BaseOperation):
     calculates a non-weighted linear fit
 
     """
-    name = 'NonWeightedLinearFit'
+    _name = 'NonWeightedLinearFit'
 
     def __init__(self, **kwargs):
         super(NonWeightedLinearFit, self).__init__(**kwargs)
@@ -120,7 +120,7 @@ class SignalSlope(BaseOperationFactory):
         prod_id (str): id of the product
     """
 
-    name = 'SignalSlope'
+    _name = 'SignalSlope'
     prod_id = NC_FILL_STR  # Todo Ina into Base class???
 
     def __call__(self, **kwargs):
@@ -145,7 +145,7 @@ class SlopeToExtinction(BaseOperationFactory):
     will be always an instance of SlopeToExtinctionDefault().
     """
 
-    name = 'SlopeToExtinction'
+    _name = 'SlopeToExtinction'
 
     def __call__(self, **kwargs):
         assert 'slope' in kwargs
@@ -166,7 +166,7 @@ class SlopeToExtinctionDefault(BaseOperation):
     Calculates particle extinction coefficient from signal slope.
     """
 
-    name = 'SlopeToExtinctionDefault'
+    _name = 'SlopeToExtinctionDefault'
 
     def run(self):
         """
@@ -191,7 +191,7 @@ class ExtinctionAutosmoothDefault(BaseOperation):
     derives optimum vertical resolution of the extinction retrieval.
     """
 
-    name = 'ExtinctionAutosmoothDefault'
+    _name = 'ExtinctionAutosmoothDefault'
 
     signal = None
     smooth_params = None
@@ -253,7 +253,7 @@ class ExtinctionAutosmooth(BaseOperationFactory):
          * detection_limit
          each of them is xarray.DataArray
     """
-    name = 'ExtinctionAutosmooth'
+    _name = 'ExtinctionAutosmooth'
 
     def __call__(self, **kwargs):
         assert 'signal' in kwargs

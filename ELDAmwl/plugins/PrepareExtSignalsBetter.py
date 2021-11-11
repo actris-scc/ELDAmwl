@@ -7,7 +7,7 @@ from ELDAmwl.prepare_signals import PrepareExtSignals
 
 class PrepareExtSignalsBetter(BaseOperation):
 
-    name = 'PrepareExtSignalsBetter'
+    _name = 'PrepareExtSignalsBetter'
 
     def __init__(self, **kwargs):
         super(PrepareExtSignalsBetter, self).__init__(**kwargs)

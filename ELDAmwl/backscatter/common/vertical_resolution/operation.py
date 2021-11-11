@@ -18,7 +18,7 @@ class SavGolayEffBinRes(BaseOperation):
     =>  eff_binres = round(used_bins_ELDA * 1.24 - 0.24) = round(used_bins * 0.62 - 0.86)
 """
 
-    name = 'SavGolayEffBinRes'
+    _name = 'SavGolayEffBinRes'
 
     def run(self, **kwargs):
         """
@@ -53,7 +53,7 @@ class SavGolayUsedBinRes(BaseOperation):
     used_bins = used_bins_ELDA *2 +1 = round((eb+0.86)/0.62)
     """
 
-    name = 'SavGolayUsedBinRes'
+    _name = 'SavGolayUsedBinRes'
 
     def run(self, **kwargs):
         """
@@ -89,7 +89,7 @@ class RamBscEffBinRes(BaseOperationFactory):
             prod_id (str): id of the product
     """
 
-    name = 'RamBscEffBinRes'
+    _name = 'RamBscEffBinRes'
     prod_id = NC_FILL_STR
 
     def __call__(self, **kwargs):
@@ -113,7 +113,7 @@ class RamBscUsedBinRes(BaseOperationFactory):
     Keyword Args:
     """
 
-    name = 'RamBscUsedBinRes'
+    _name = 'RamBscUsedBinRes'
     prod_id = NC_FILL_STR
 
     def __call__(self, **kwargs):

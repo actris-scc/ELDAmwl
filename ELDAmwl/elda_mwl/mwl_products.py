@@ -139,7 +139,7 @@ class GetProductMatrix(BaseOperationFactory):
         product_params: global MeasurementParams
     """
 
-    name = 'GetProductMatrix'
+    _name = 'GetProductMatrix'
 
     def __call__(self, **kwargs):
         assert 'product_params' in kwargs
@@ -175,7 +175,7 @@ class QualityControl(BaseOperationFactory):
         product_params: global MeasurementParams
     """
 
-    name = 'QualityControl'
+    _name = 'QualityControl'
 
     def __call__(self, **kwargs):
         assert 'product_params' in kwargs

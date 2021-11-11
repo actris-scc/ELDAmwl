@@ -709,7 +709,7 @@ class CombineDepolComponents(BaseOperationFactory):
 
     """
 
-    name = 'CombineDepolComponents'
+    _name = 'CombineDepolComponents'
 
     def __call__(self, **kwargs):
         assert 'refl_sig' in kwargs

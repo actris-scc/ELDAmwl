@@ -12,7 +12,7 @@ import xarray as xr
 class CalcRamanBscProfileViaBR(BaseOperation):
     """calculates Raman backscatter profile via BR"""
 
-    name = 'CalcRamanBscProfileViaBR'
+    _name = 'CalcRamanBscProfileViaBR'
     sigratio = None
     error_params = None
     calibration = None
@@ -101,7 +101,7 @@ class CalcRamanBscProfile(BaseOperationFactory):
             prod_id (str): id of the product
     """
 
-    name = 'CalcRamanBscProfile'
+    _name = 'CalcRamanBscProfile'
     prod_id = NC_FILL_STR
 
     def __call__(self, **kwargs):
@@ -123,7 +123,7 @@ class CalcRamanBscProfile(BaseOperationFactory):
 # class CalcRamanBscProfileAsAnsmann(BaseOperation):
 #     """calculates Raman backscatter profile like in ansmann et al 1992"""
 #
-#     name = 'CalcRamanBscProfileAsAnsmann'
+#    _name = 'CalcRamanBscProfileAsAnsmann'
 #
 #     def run(self, **kwargs):
 #         raise UseCaseNotImplemented('CalcRamanBscProfileAsAnsmann',

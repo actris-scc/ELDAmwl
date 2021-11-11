@@ -2,8 +2,8 @@
 """Class registry"""
 
 from addict import Dict
-from ELDAmwl.errors.exceptions import OnlyOneOverrideAllowed
 
+from ELDAmwl.errors.exceptions import OnlyOneOverrideAllowed
 
 OVERRIDE = '__OVERRIDE__'
 
@@ -76,9 +76,9 @@ class Registry(object):
         Returns:
 
         """
-        if factory.name not in self.factory_registry:
-            self.factory_registry[factory.name] = FactoryRegistry()
-        return self.factory_registry[factory.name]
+        if factory._name not in self.factory_registry:
+            self.factory_registry[factory._name] = FactoryRegistry()
+        return self.factory_registry[factory._name]
 
     def register_class(self, factory, klass_name, klass, override=False):
         """
@@ -94,7 +94,7 @@ class Registry(object):
         """
         factory_registration = self.get_factory_registration(factory)
         factory_registration.register_class(
-            factory.name,
+            factory._name,
             klass_name,
             klass,
             override=override,
@@ -113,7 +113,7 @@ class Registry(object):
             Class: The registered class
 
         """
-        if factory.name in self.factory_registry:
+        if factory._name in self.factory_registry:
             factory_registration = self.get_factory_registration(factory)
         else:
             return None
@@ -135,3 +135,5 @@ class Registry(object):
 
 
 registry = Registry()
+
+

@@ -524,7 +524,7 @@ class SmoothSavGolay(BaseOperation):
 
     """
 
-    name = 'SmoothSavGolay'
+    _name = 'SmoothSavGolay'
 
     def run(self, **kwargs):
         """
@@ -564,7 +564,7 @@ class SmoothSavGolay(BaseOperation):
 class SmoothSlidingAverage(BaseOperation):
     """calculates Raman backscatter profile like in ansmann et al 1992"""
 
-    name = 'SmoothSlidingAverage'
+    _name = 'SmoothSlidingAverage'
 
     def run(self, **kwargs):
         raise UseCaseNotImplemented('SmoothSlidingAverage',
@@ -579,7 +579,7 @@ class SmoothRoutine(BaseOperationFactory):
     Keyword Args:
     """
 
-    name = 'SmoothRoutine'
+    _name = 'SmoothRoutine'
     method_id = None
 
     def __call__(self, **kwargs):

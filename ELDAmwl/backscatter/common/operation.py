@@ -10,7 +10,7 @@ class BackscatterFactoryDefault(BaseOperation):
     derives a single instance of :class:`Backscatters`.
     """
 
-    name = 'BackscatterFactoryDefault'
+    _name = 'BackscatterFactoryDefault'
 
     data_storage = None
     elast_sig = None
@@ -48,7 +48,7 @@ class BackscatterFactory(BaseOperationFactory):
     derives a single instance of :class:`Backscatters`.
     """
 
-    name = 'BackscatterFactory'
+    _name = 'BackscatterFactory'
 
     def __call__(self, **kwargs):
         assert 'data_storage' in kwargs

@@ -14,7 +14,7 @@ class RayleighLidarRatio(BaseOperationFactory):
         wavelength (float): emission wavelength of the signal
     """
 
-    name = 'RayleighLidarRatio'
+    _name = 'RayleighLidarRatio'
 
     def __call__(self, **kwargs):
         assert 'wavelength' in kwargs
@@ -31,8 +31,6 @@ class RayleighLidarRatio(BaseOperationFactory):
 
 
 class RayleighLidarRatioFromConst(BaseOperation):
-
-    name = 'RayleighLidarRatioFromConst'
 
     def run(self):
         return RAYL_LR

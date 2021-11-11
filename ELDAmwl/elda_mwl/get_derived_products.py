@@ -44,7 +44,7 @@ class GetDerivedProducts(BaseOperationFactory):
         product_params: global MeasurementParams
     """
 
-    name = 'GetDerivedProducts'
+    _name = 'GetDerivedProducts'
 
     def __call__(self, **kwargs):
         assert 'product_params' in kwargs

@@ -2,21 +2,18 @@
 from ELDAmwl.component.interface import ICfg
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IParams
-from ELDAmwl.config import register_config
-from ELDAmwl.database.db_functions import register_db_func
-from ELDAmwl.elda_mwl.elda_mwl import register_params, read_tasks, read_elpp_data, prepare_signals, get_basic_products, \
+from ELDAmwl.component.setup import ELDASetupComponents
+from ELDAmwl.elda_mwl.elda_mwl import read_tasks, read_elpp_data, prepare_signals, get_basic_products, \
     get_derived_products, get_product_matrix, quality_control, write_mwl_output, read_params
 from ELDAmwl.elda_mwl.elda_mwl import RunELDAmwl
 from ELDAmwl.errors.error_codes import NO_ERROR
 from ELDAmwl.errors.error_codes import UNKNOWN_EXCEPTION
 from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import WrongCommandLineParameter
-from ELDAmwl.log.log import register_db_logger
-from ELDAmwl.log.log import register_logger
-from ELDAmwl.monte_carlo.operation import register_monte_carlo
-from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
 from zope import component
+from prefect.run_configs import UniversalRun
+
 
 import argparse
 import sys
@@ -39,30 +36,6 @@ import traceback
 #   377: Ext 355
 #   380: Ext 532
 #   598: mwl (378 + 379 + 328)
-
-
-def elda_setup_components(env='Production'):
-    # Get the configuration
-    register_config(env=env)
-
-    # Setup the logging facility for this measurement ID
-    register_logger()
-    # register_plugins()
-
-    # Bring up the global db_access
-    register_db_func()
-
-    # Bring up DB logger
-    register_db_logger()
-
-    # Bring up the global data storage
-    register_datastorage()
-
-    # Bring up the global parameter instance
-    register_params()
-
-    # REgister MontaCarlo Adapter
-    register_monte_carlo()
 
 
 class Main:
@@ -154,13 +127,15 @@ class Main:
 
         self.logger.meas_id = arg_dict.meas_id
         elda_mwl = RunELDAmwl()
+        esc = ELDASetupComponents()
         rp = read_params()
         rt = read_tasks()
         rep = read_elpp_data()
         ps = prepare_signals()
         gbp = get_basic_products()
         gdp= get_derived_products()
-        elda_mwl.set_dependencies(task=rp, keyword_tasks=dict(meas_id=arg_dict.meas_id))
+        elda_mwl.set_dependencies(task=esc)
+        elda_mwl.set_dependencies(task=rp, upstream_tasks=[esc], keyword_tasks=dict(meas_id=arg_dict.meas_id))
         elda_mwl.set_dependencies(task=rt, upstream_tasks=[rp])
         elda_mwl.set_dependencies(task=rep, upstream_tasks=[rt])
         elda_mwl.set_dependencies(task=ps, upstream_tasks=[rep])
@@ -175,7 +150,9 @@ class Main:
         elda_mwl.set_dependencies(task=qc, upstream_tasks=[gpm])
         elda_mwl.set_dependencies(task=wmo, upstream_tasks=[qc])
         elda_mwl.visualize()
-        elda_mwl.run()
+        elda_mwl.register(project_name="ELDAmwl")
+        elda_mwl.run_agent()
+        elda_mwl.run_config = UniversalRun()
         self.logger.info('the happy end')
 
     def run(self):
@@ -199,7 +176,7 @@ class Main:
 
 
 def run():
-    elda_setup_components()
+    ELDASetupComponents().run()
     main = Main()
     main.run()
 

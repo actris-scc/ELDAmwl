@@ -15,7 +15,8 @@ import pandas as pd
 
 
 class Person:
-    name = NC_FILL_STR
+
+    _name = NC_FILL_STR
 
     @classmethod
     def from_nc_file(cls, nc_ds, nc_name):

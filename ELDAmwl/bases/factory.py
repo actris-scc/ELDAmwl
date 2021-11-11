@@ -24,7 +24,7 @@ class BaseOperationFactory(object):
     If arguments or keywords are provided,
     they are automatically passed to the BaseOperation instance.
     """
-    name = 'BaseFactory'
+    _name = 'BaseFactory'
 
     def __init__(self):
         self.data_storage = component.queryUtility(IDataStorage)

@@ -8,7 +8,7 @@ from ELDAmwl.extinction.tools.operation import SignalSlope
 
 class SavGolaySlope(BaseOperation):
 
-    name = 'SavGolaySlope'
+    _name = 'SavGolaySlope'
 
     def __init__(self, **kwargs):
         super(SavGolaySlope, self).__init__(**kwargs)

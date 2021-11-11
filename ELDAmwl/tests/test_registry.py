@@ -7,7 +7,7 @@ from ELDAmwl.component.registry import Registry
 
 
 class Factory(BaseOperationFactory):
-    name = 'Factory'
+    _name = 'Factory'
 
 
 class OperationA(BaseOperation):

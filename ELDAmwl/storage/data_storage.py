@@ -30,7 +30,7 @@ class DataStorage:
 
     """
 
-    name = 'Datastorage'
+    _name = 'Datastorage'
 
     def __init__(self):
         self.__data = Dict(

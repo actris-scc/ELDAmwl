@@ -307,12 +307,18 @@ class RunELDAmwl(Flow):
 
 
 class read_params(BaseOperation):
+
+    _name = 'read_params'
+
     def run(self, meas_id=None):
         # todo: read current scc version
         self.params.load_from_db(meas_id)
 
 
 class read_tasks(BaseOperation):
+
+    _name = 'read_tasks'
+
     def run(self):
         self.logger.info('read tasks from db')
         self.params.read_product_list()
@@ -321,6 +327,9 @@ class read_tasks(BaseOperation):
 
 
 class read_elpp_data(BaseOperation):
+
+    _name = 'read_elpp_data'
+
     def run(self):
         self.logger.info('read ELPP files')
         for p_param in self.params.basic_products():
@@ -328,36 +337,55 @@ class read_elpp_data(BaseOperation):
 
 
 class prepare_signals(BaseOperation):
+
+    _name = 'prepare_signals'
+
+
     def run(self):
         self.logger.info('prepare signals')
         PrepareSignals()(products=self.params.basic_products()).run()
 
 
 class get_basic_products(BaseOperation):
+
+    _name = 'get_basic_products'
+
     def run(self):
         self.logger.info('calc basic products ')
         GetBasicProducts()(product_params=self.params).run()
 
 
 class get_derived_products(BaseOperation):
+
+    _name = 'get_derived_products'
+
     def run(self):
         self.logger.info('calc derived products ')
         GetDerivedProducts()(product_params=self.params).run()
 
 
 class get_product_matrix(BaseOperation):
+
+    _name = 'get_product_matrix'
+
     def run(self):
         self.logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
         GetProductMatrix()(product_params=self.params).run()
 
 
 class quality_control(BaseOperation):
+
+    _name = 'quality_control'
+
     def run(self):
         self.logger.info('synergistic quality control of all products ')
         QualityControl()(product_params=self.params).run()
 
 
 class write_single_output(BaseOperation):
+
+    _name = 'write_single_output'
+
     def run(self):
         self.logger.info('write products into NetCDF files ')
 #        self.data.basic_product_common_smooth('377', LOWRES).save_to_netcdf()
@@ -366,6 +394,9 @@ class write_single_output(BaseOperation):
 
 
 class write_mwl_output(BaseOperation):
+
+    _name = 'write_mwl_output'
+
     def run(self):
         self.logger.info('write all products into one NetCDF file ')
         WriteMWLOutput()(product_params=self.params).run()

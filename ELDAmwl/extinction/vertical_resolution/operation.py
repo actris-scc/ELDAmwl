@@ -17,7 +17,7 @@ class ExtEffBinRes(BaseOperationFactory):
         prod_id (str): id of the product
     """
 
-    name = 'ExtEffBinRes'
+    _name = 'ExtEffBinRes'
     prod_id = None
 
     def __call__(self, **kwargs):
@@ -45,7 +45,7 @@ class ExtUsedBinRes(BaseOperationFactory):
         prod_id (str): id of the product
     """
 
-    name = 'ExtUsedBinRes'
+    _name = 'ExtUsedBinRes'
     prod_id = NC_FILL_STR
 
     def __call__(self, **kwargs):
@@ -68,7 +68,7 @@ class LinFitEffBinRes(BaseOperation):
     The calculation is done according to Mattis et al. 2016 with the equation
     eff_binres = round(used_bins * 0.85934 - 0.17802)
     """
-    name = 'LinFit_EffBinRes'
+    _name = 'LinFit_EffBinRes'
 
     def run(self, **kwargs):
         """
@@ -95,7 +95,7 @@ class LinFitUsedBinRes(BaseOperation):
     The calculation is done according to Mattis et al. 2016 with the equation
     used_bins = round((eff_binres + 0.17802) / 0.85934)
     """
-    name = 'LinFit_UsedBinRes'
+    _name = 'LinFit_UsedBinRes'
 
     def run(self, **kwargs):
         """

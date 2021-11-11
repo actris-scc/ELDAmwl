@@ -10,7 +10,7 @@ class ElastBackscatterFactory(BackscatterFactory):
 
     """
 
-    name = 'ElastBackscatterFactory'
+    _name = 'ElastBackscatterFactory'
 
     def get_classname_from_db(self):
         return ElastBackscatterFactoryDefault.__name__
@@ -21,7 +21,7 @@ class ElastBackscatterFactoryDefault(BackscatterFactoryDefault):
     derives a single instance of :class:`ElasticBackscatters`.
     """
 
-    name = 'ElastBackscatterFactoryDefault'
+    _name = 'ElastBackscatterFactoryDefault'
 
 
 class CalcElastBackscatter(BaseOperationFactory):
@@ -48,7 +48,7 @@ class CalcElastBackscatter(BaseOperationFactory):
 
     """
 
-    name = 'CalcElastBackscatter'
+    _name = 'CalcElastBackscatter'
 
     def __call__(self, **kwargs):
         assert 'bsc_params' in kwargs
@@ -74,7 +74,7 @@ class CalcElastBackscatterDefault(BaseOperation):
     Calculates particle backscatter coefficient from elast signal.
     """
 
-    name = 'CalcElastBackscatterDefault'
+    _name = 'CalcElastBackscatterDefault'
 
 
 registry.register_class(CalcElastBackscatter,

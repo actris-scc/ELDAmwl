@@ -69,7 +69,7 @@ class PrepareBscSignals(BaseOperationFactory):
                             params of the product
     """
 
-    name = 'PrepareBscSignals'
+    _name = 'PrepareBscSignals'
 
     def __call__(self, **kwargs):
         assert 'data_storage' in kwargs
@@ -118,7 +118,7 @@ class PrepareExtSignals(BaseOperationFactory):
                             params of the product
     """
 
-    name = 'PrepareExtSignals'
+    _name = 'PrepareExtSignals'
 
     def __call__(self, **kwargs):
         assert 'data_storage' in kwargs
@@ -145,6 +145,7 @@ class PrepareSignalsDefault(BaseOperation):
     """
 
     data_storage = None
+    _name = 'PrepareSignalsDefault'
 
     def run(self):
         products = self.kwargs['products']
@@ -165,7 +166,7 @@ class PrepareSignals(BaseOperationFactory):
                 `ELDAmwl.products.ProductParams`)
     """
 
-    name = 'PrepareSignals'
+    _name = 'PrepareSignals'
 
     def __call__(self, **kwargs):
         assert 'products' in kwargs

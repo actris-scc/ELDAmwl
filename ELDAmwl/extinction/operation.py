@@ -33,9 +33,9 @@ class CalcExtinction(BaseOperationFactory):
         ext_params (:class:`ELDAmwl.extinction.params.ExtinctionParams`): \
                 retrieval parameter of the extinction product
         slope_routine (:class:`ELDAmwl.bases.factory.BaseOperation`):
-            result of :class:`ELDAmwl.extinction.tools.operation.SignalSlope`
+            _result of :class:`ELDAmwl.extinction.tools.operation.SignalSlope`
         slope_to_ext_routine (:class:`ELDAmwl.bases.factory.BaseOperation`):
-            result of :class:`ELDAmwl.extinction.tools.operation.SlopeToExtinction`
+            _result of :class:`ELDAmwl.extinction.tools.operation.SlopeToExtinction`
         raman_signal (:class:`ELDAmwl.signals.Signals`): Raman signal
         empty_ext (:class:`ELDAmwl.extinction.product.Extinctions`): \
                 instance of Extinctions which has all meta data but profile data are empty arrays
@@ -45,7 +45,7 @@ class CalcExtinction(BaseOperationFactory):
 
     """
 
-    name = 'CalcExtinction'
+    _name = 'CalcExtinction'
 
     def __call__(self, **kwargs):
         assert 'ext_params' in kwargs
@@ -70,15 +70,15 @@ class CalcExtinctionDefault(BaseOperation):
     """
     Calculates particle extinction coefficient from Raman signal.
 
-    The result is a copy of empty_ext, but its dataset (data, err, qf) is filled with the calculated values
+    The _result is a copy of empty_ext, but its dataset (data, err, qf) is filled with the calculated values
 
     Keyword Args:
         ext_params (:class:`ELDAmwl.extinction.params.ExtinctionParams`): \
                 retrieval parameter of the extinction product
         slope_routine (:class:`ELDAmwl.bases.factory.BaseOperation`):
-            result of :class:`ELDAmwl.extinction.tools.operation.SignalSlope`
+            _result of :class:`ELDAmwl.extinction.tools.operation.SignalSlope`
         slope_to_ext_routine (:class:`ELDAmwl.bases.factory.BaseOperation`):
-            result of :class:`ELDAmwl.extinction.tools.operation.SlopeToExtinction`
+            _result of :class:`ELDAmwl.extinction.tools.operation.SlopeToExtinction`
         raman_signal (:class:`ELDAmwl.signals.Signals`): Raman signal
         empty_ext (:class:`ELDAmwl.extinction.product.Extinctions`): \
                 instance of Extinctions which has all meta data but profile data are empty arrays
@@ -87,13 +87,13 @@ class CalcExtinctionDefault(BaseOperation):
         profiles of particle extinction coefficients(:class:`ELDAmwl.extinction.product.Extinctions`)
     """
 
-    name = 'CalcExtinctionDefault'
+    _name = 'CalcExtinctionDefault'
 
     ext_params = None
     signal = None
     slope_routine = None
     slope_to_ext_routine = None
-    result = None
+    _result = None
     x_data = None
     y_data = None
     yerr_data = None
@@ -105,7 +105,7 @@ class CalcExtinctionDefault(BaseOperation):
         self.ext_params = self.kwargs['ext_params']
         self.slope_routine = self.kwargs['slope_routine']
         self.slope_to_ext_routine = self.kwargs['slope_to_ext_routine']
-        self.result = deepcopy(self.kwargs['empty_ext'])
+        self._result = deepcopy(self.kwargs['empty_ext'])
 
     def calc_slope(self, t, lev, window, half_win):
         fb = lev - half_win
@@ -118,10 +118,10 @@ class CalcExtinctionDefault(BaseOperation):
         sig_slope = self.slope_routine.run(signal=window_data)
         qf = np.bitwise_or.reduce(self.qf_data[t, fb:lb + 1])
 
-        self.result.ds['data'][t, lev] = sig_slope.slope
-        self.result.ds['err'][t, lev] = sig_slope.slope_err
-        self.result.ds['qf'][t, lev] = qf
-        self.result.ds['binres'][t, lev] = window
+        self._result.ds['data'][t, lev] = sig_slope.slope
+        self._result.ds['err'][t, lev] = sig_slope.slope_err
+        self._result.ds['qf'][t, lev] = qf
+        self._result.ds['binres'][t, lev] = window
 
     def prepare_data(self, data):
         self.x_data = np.array(data.range)
@@ -137,10 +137,10 @@ class CalcExtinctionDefault(BaseOperation):
             half_win = window // 2
 
             if lev < (fvb + half_win):
-                self.result.set_invalid_point(t, lev, BELOW_OVL)
+                self._result.set_invalid_point(t, lev, BELOW_OVL)
 
             elif lev >= (lvb - half_win):
-                self.result.set_invalid_point(t, lev, ABOVE_MAX_ALT)
+                self._result.set_invalid_point(t, lev, ABOVE_MAX_ALT)
 
             else:
                 self.calc_slope(t, lev, window, half_win)
@@ -178,10 +178,10 @@ class CalcExtinctionDefault(BaseOperation):
 
         # SlopeToExtinction converts the slope into extinction coefficients
         self.slope_to_ext_routine(
-            slope=self.result.ds,
+            slope=self._result.ds,
             ext_params=param_dct).run()
 
-        return self.result
+        return self._result
 
 
 class ExtinctionFactory(BaseOperationFactory):
@@ -189,7 +189,7 @@ class ExtinctionFactory(BaseOperationFactory):
     optional argument resolution, can be LOWRES(=0) or HIGHRES(=1)
     """
 
-    name = 'ExtinctionFactory'
+    _name = 'ExtinctionFactory'
 
     def __call__(self, **kwargs):
         assert 'data_storage' in kwargs
@@ -211,7 +211,7 @@ class ExtinctionFactoryDefault(BaseOperation):
     derives particle extinction coefficient.
     """
 
-    name = 'ExtinctionFactoryDefault'
+    _name = 'ExtinctionFactoryDefault'
     param = None
     raman_sig = None
     smooth_res = None
@@ -273,7 +273,7 @@ class ExtinctionFactoryDefault(BaseOperation):
         if not self.param.includes_product_merging():
             ext = self.get_non_merge_product()
         else:
-            # todo: result = Extinctions.from_merged_signals()
+            # todo: _result = Extinctions.from_merged_signals()
             ext = None
             pass
 

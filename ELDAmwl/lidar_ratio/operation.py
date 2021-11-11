@@ -20,7 +20,7 @@ class LidarRatioFactory(BaseOperationFactory):
      argument resolution, can be LOWRES(=0) or HIGHRES(=1)
     """
 
-    name = 'LidarRatioFactory'
+    _name = 'LidarRatioFactory'
 
     def __call__(self, **kwargs):
         # assert 'data_storage' in kwargs
@@ -42,14 +42,12 @@ class LidarRatioFactoryDefault(BaseOperation):
     derives a single instance of :class:`LidarRatios`.
     """
 
-    name = 'lidarRatioFactoryDefault'
-
     param = None
     resolution = None
     ext = None
     bsc = None
     empty_lr = None
-    result = None
+#    result = None
     prod_id = NC_FILL_STR
     resolution = NC_FILL_INT
 
@@ -123,7 +121,7 @@ class CalcLidarRatio(BaseOperationFactory):
 
     """
 
-    name = 'CalcLidarRatio'
+    _name = 'CalcLidarRatio'
 
     def __call__(self, **kwargs):
         assert 'lr_params' in kwargs
@@ -161,7 +159,7 @@ class CalcLidarRatioDefault(BaseOperation):
 
     """
 
-    name = 'CalcLidarRatioDefault'
+    _name = 'CalcLidarRatioDefault'
 
     ext = None
     bsc = None

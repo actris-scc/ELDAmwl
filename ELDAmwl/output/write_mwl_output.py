@@ -133,7 +133,7 @@ class WriteMWLOutput(BaseOperationFactory):
         product_params: global MeasurementParams
     """
 
-    name = 'WriteMWLOutput'
+    _name = 'WriteMWLOutput'
 
     def __call__(self, **kwargs):
         assert 'product_params' in kwargs

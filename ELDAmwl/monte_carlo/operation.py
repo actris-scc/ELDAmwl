@@ -124,7 +124,7 @@ class CreateMCCopies(BaseOperationFactory):
 
    """
 
-    name = 'CreateMCCopies'
+    _name = 'CreateMCCopies'
 
     def __call__(self, **kwargs):
         assert 'original' in kwargs
@@ -148,7 +148,7 @@ class CreateMCCopiesDefault(BaseOperation):
     The data values of the copies are randomly varied within the uncertainty range of the original.
     """
 
-    name = 'CreateMCCopiesDefault'
+    _name = 'CreateMCCopiesDefault'
 
     def run(self):
         """

@@ -42,7 +42,7 @@ GET_EFF_BINRES_CLASSES = {
 class GetBasicProductsDefault(BaseOperation):
     """
     """
-    name = 'GetBasicProductsDefault'
+    _name = 'GetBasicProductsDefault'
 
     data_storage = None
     product_params = None
@@ -208,7 +208,7 @@ class GetBasicProducts(BaseOperationFactory):
         product_params: global MeasurementParams
     """
 
-    name = 'GetBasicProducts'
+    _name = 'GetBasicProducts'
     smooth_type = None
 
     def __call__(self, **kwargs):

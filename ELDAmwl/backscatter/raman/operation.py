@@ -25,7 +25,7 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
     This factory class handles the different use cases.
     """
 
-    name = 'RamanBackscatterFactoryDefault'
+    _name = 'RamanBackscatterFactoryDefault'
 
     raman_sig = None
     sig_ratio = None
@@ -87,7 +87,7 @@ class CalcRamanBackscatterDefault(BaseOperation):
 
     """
 
-    name = 'CalcRamanBackscatterDefault'
+    _name = 'CalcRamanBackscatterDefault'
 
     bsc_params = None
     sigratio = None
@@ -152,7 +152,7 @@ class RamanBackscatterFactory(BackscatterFactory):
 
     """
 
-    name = 'RamanBackscatterFactory'
+    _name = 'RamanBackscatterFactory'
 
     def get_classname_from_db(self):
         return RamanBackscatterFactoryDefault.__name__
@@ -181,7 +181,7 @@ class CalcRamanBackscatter(BaseOperationFactory):
 
     """
 
-    name = 'CalcRamanBackscatter'
+    _name = 'CalcRamanBackscatter'
 
     def __call__(self, **kwargs):
         assert 'bsc_params' in kwargs
