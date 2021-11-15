@@ -161,6 +161,9 @@ class Main:
 
         elda_mwl.read_elpp_data()
         elda_mwl.prepare_signals()
+        dot = component.queryUtility(IGraph)
+        stag_dot = dot.unflatten(stagger=5)
+        stag_dot.render('graph_1', view=True)
 
         elda_mwl.get_basic_products()
         elda_mwl.get_derived_products()
