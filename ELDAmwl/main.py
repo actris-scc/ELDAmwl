@@ -150,9 +150,11 @@ class Main:
         elda_mwl.set_dependencies(task=qc, upstream_tasks=[gpm])
         elda_mwl.set_dependencies(task=wmo, upstream_tasks=[qc])
         elda_mwl.visualize()
-        elda_mwl.register(project_name="ELDAmwl")
-        elda_mwl.run_agent()
-        elda_mwl.run_config = UniversalRun()
+        #        elda_mwl.register(project_name="ELDAmwl")
+        #        elda_mwl.run_agent()
+        #        elda_mwl.run_config = UniversalRun()
+        elda_mwl.run()
+
         self.logger.info('the happy end')
 
     def run(self):
