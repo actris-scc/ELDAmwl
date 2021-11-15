@@ -56,24 +56,25 @@ class MonteCarlo:
 #            self.sample_inputs.append({sig: 1234})
 
     def get_sample_results(self):
-        pool = Pool(4)
-        self.sample_results = []
-        results = pool.imap_unordered(self.run, self.sample_inputs)
-        for result in results:
-            if isinstance(result, Products):
-                self.sample_results.append(result.data.values)
-            else:
-                self.logger.error('{} terminated due to errors'.format(result))
-                sys.exit(1)
-        pool.close()
-        pool.join()
-
-        # results = []
-        # for n in range(self.mc_params.nb_of_iterations):
-        #     # sample = self.op.run(data=self.sample_inputs[n])
-        #     sample = self.run(self.sample_inputs[n])
-        #     results.append(sample.data.values)
-        # self.sample_results = results
+        if self.cfg.PARALLEL:
+            pool = Pool(self.cfg.CPUS)
+            self.sample_results = []
+            results = pool.imap_unordered(self.run, self.sample_inputs)
+            for result in results:
+                if isinstance(result, Products):
+                    self.sample_results.append(result.data.values)
+                else:
+                    self.logger.error('{} terminated due to errors'.format(result))
+                    sys.exit(1)
+            pool.close()
+            pool.join()
+        else:
+            results = []
+            for n in range(self.mc_params.nb_of_iterations):
+                # sample = self.op.run(data=self.sample_inputs[n])
+                sample = self.run(self.sample_inputs[n])
+                results.append(sample.data.values)
+            self.sample_results = results
 
     def calc_mc_error(self):
         all = np.array(self.sample_results)

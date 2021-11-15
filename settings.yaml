@@ -13,7 +13,14 @@ default:
 # Parallel processing
 # :::::::::::::::::::
   CPUS : 4
-  PARALLEL : True
+  PARALLEL : False
+
+
+
+# :::::::::::::::::::
+# Call Graph
+# :::::::::::::::::::
+  GRAPH_INSTANCES : False
 
 # :::::::::::::::::::
 # Directories

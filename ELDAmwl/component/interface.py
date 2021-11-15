@@ -71,3 +71,9 @@ class IRamBscOp(interface.Interface):
     """
     Marker Interface for Extinction operation
     """
+
+
+class IGraph(interface.Interface):
+    """
+    Marker Interface for the global graph
+    """

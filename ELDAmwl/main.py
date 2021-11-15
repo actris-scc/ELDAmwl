@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import ICfg, IGraph
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IParams
 from ELDAmwl.config import register_config
@@ -38,6 +38,7 @@ import traceback
 #   377: Ext 355
 #   380: Ext 532
 #   598: mwl (378 + 379 + 328)
+from ELDAmwl.utils.graph import register_graph
 
 
 def elda_setup_components(env='Production'):
@@ -60,8 +61,11 @@ def elda_setup_components(env='Production'):
     # Bring up the global parameter instance
     register_params()
 
-    # REgister MontaCarlo Adapter
+    # Register MontaCarlo Adapter
     register_monte_carlo()
+
+    # register call graph visualization
+    register_graph()
 
 
 class Main:
@@ -154,8 +158,10 @@ class Main:
         self.logger.meas_id = arg_dict.meas_id
         elda_mwl = RunELDAmwl(arg_dict.meas_id)
         elda_mwl.read_tasks()
+
         elda_mwl.read_elpp_data()
         elda_mwl.prepare_signals()
+
         elda_mwl.get_basic_products()
         elda_mwl.get_derived_products()
 
@@ -163,6 +169,13 @@ class Main:
         elda_mwl.get_product_matrix()
         elda_mwl.quality_control()
         elda_mwl.write_mwl_output()
+
+        dot = component.queryUtility(IGraph)
+        stag_dot = dot.unflatten(stagger=5)
+        stag_dot.render('graph', view=True)
+        with open('graph.dot', 'w') as graph:
+            graph.write(dot.source)
+
 
         self.logger.info('the happy end')
 
