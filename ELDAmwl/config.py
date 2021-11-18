@@ -3,11 +3,13 @@ from ELDAmwl.component.interface import ICfg
 
 import zope
 
+from ELDAmwl.utils.path_utils import abs_file_path
+
 
 def register_config(env=None):
     cfg = Dynaconf(
         envvar_prefix='DYNACONF',  # replaced "DYNACONF" by 'DYNACONF'
-        settings_files=['settings.yaml', '.secrets.yaml'],
+        settings_files=[abs_file_path('settings.yaml'), abs_file_path('.secrets.yaml')],
         environments=True,
         env=env,
     )

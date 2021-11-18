@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from prefect.executors import DaskExecutor
+
 from ELDAmwl.component.interface import ICfg
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IParams
@@ -150,6 +152,10 @@ class Main:
         elda_mwl.set_dependencies(task=qc, upstream_tasks=[gpm])
         elda_mwl.set_dependencies(task=wmo, upstream_tasks=[qc])
 #        elda_mwl.visualize()
+        executor = DaskExecutor(address='dask_master:8786')
+        elda_mwl.executor = executor
+
+        elda_mwl.run()
         elda_mwl.register(project_name="ELDAmwl")
         elda_mwl.run_agent()
 #        elda_mwl.run()
