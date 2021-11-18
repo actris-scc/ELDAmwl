@@ -303,7 +303,7 @@ class RunELDAmwl(Flow):
     This is the global ELDAmwl operation class
     """
     def __init__(self):
-        super(RunELDAmwl, self).__init__('Huhu')
+        super(RunELDAmwl, self).__init__('ELDmwl')
 
 
 class read_params(BaseOperation):
