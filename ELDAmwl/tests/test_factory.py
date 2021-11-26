@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """Tests for Signals"""
-
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import Registry
+from unittest.mock import patch
 
-import pytest
+import unittest
 
 
 class Factory(BaseOperationFactory):
@@ -20,13 +20,10 @@ class OperationB(BaseOperation):
     pass
 
 
-@pytest.fixture(scope='module')
-def db(request):
-    data = [
-        ('TestA', OperationA),
-        ('TestB', OperationB),
-    ]
-    return data
+DB_DATA = [
+    ('TestA', OperationA),
+    ('TestB', OperationB),
+]
 
 
 def test_factory_registration():
@@ -42,19 +39,18 @@ def test_factory_registration():
     assert registry.find_class_by_name(Factory, 'TestB') == OperationB
 
 
-def test_factory(db, mocker):
+class TestFactory(unittest.TestCase):
 
-    from ELDAmwl.component.registry import registry
+    @patch.object(Factory, 'get_classname_from_db')
+    def test_factory(self, mock_get_classname_from_db):
 
-    for klass_name, klass in db:
-        registry.register_class(Factory, klass_name, klass)
+        from ELDAmwl.component.registry import registry
 
-    for klass_name, klass in db:
+        for klass_name, klass in DB_DATA:
+            registry.register_class(Factory, klass_name, klass)
 
-        mocker.patch.object(
-            Factory,
-            'get_classname_from_db',
-            return_value=klass_name,
-        )
+        for klass_name, klass in DB_DATA:
 
-        assert Factory()().__class__ == klass
+            mock_get_classname_from_db.return_value = klass_name
+
+            assert Factory()().__class__ == klass
