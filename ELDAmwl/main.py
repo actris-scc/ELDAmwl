@@ -40,9 +40,9 @@ import traceback
 #   598: mwl (378 + 379 + 328)
 
 
-def elda_setup_components(env='Production'):
+def elda_setup_components(args=None, env='Production'):
     # Get the configuration
-    register_config(env=env)
+    register_config(args, env=env)
 
     # Setup the logging facility for this measurement ID
     register_logger()
@@ -95,8 +95,8 @@ class Main:
                             help='how many output is written to the '
                                  'log file. default = debug')
 
-        parser.add_argument('-g', dest='test_data', default=None, type=str,
-                            help='Class for which testdata should be generated. default = None')
+        parser.add_argument('-c', dest='config_dir', default='.', type=str,
+                            help='Config directory. default = "."')
 
         #    parser.add_argument('-L', dest='ll_db', default='QUIET', type=str,
         #                        choices=['QUIET', 'CRITICAL', 'ERROR',
@@ -131,6 +131,8 @@ class Main:
 
         # Get the measurement ID from the command line
         meas_id = args.meas_id
+
+        elda_setup_components(args=args)
 
         # customize the logger according to command line parameters
         if args.ll_file:
@@ -169,13 +171,16 @@ class Main:
     def run(self):
 
         try:
-            meas_id = self.elda_cmdline()
-            self.elda(meas_id)
+            args = self.elda_cmdline()
+            self.elda(args)
 
             sys.exit(NO_ERROR)
 
         except ELDAmwlException as e:
-            self.logger.error('exception raised {0} {1}'.format(e.return_value, e))
+            if not self.logger:
+                print('exception raised {0} {1}'.format(e.return_value, e))
+            else:
+                self.logger.error('exception raised {0} {1}'.format(e.return_value, e))
             sys.exit(e.return_value)
 
         except Exception as e:
@@ -185,9 +190,7 @@ class Main:
                 self.logger.error('exception: {}' % (line[:-1]))  # noqa P103
             sys.exit(UNKNOWN_EXCEPTION)
 
-
 def run():
-    elda_setup_components()
     main = Main()
     main.run()
 

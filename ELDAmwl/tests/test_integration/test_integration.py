@@ -16,7 +16,7 @@ import unittest
 
 class TestTestDB(unittest.TestCase):
     def setUp(self):
-        register_config(env='testing')
+        register_config(args=None, env='testing')
         # Setup the logging facility for this measurement ID
         register_logger()
         register_dbconstructor()
@@ -29,7 +29,7 @@ class TestTestDB(unittest.TestCase):
 class Test(unittest.TestCase):
 
     def setUp(self):
-        register_config(env='testing')
+        register_config(args=None, env='testing')
         register_logger()
         register_dbconstructor()
         db_constructor = component.queryUtility(IDBConstructor)
