@@ -178,7 +178,7 @@ class Main:
 
         except ELDAmwlException as e:
             if not self.logger:
-                print('exception raised {0} {1}'.format(e.return_value, e))
+                print('exception raised {0} {1}'.format(e.return_value, e))  # noqa T001
             else:
                 self.logger.error('exception raised {0} {1}'.format(e.return_value, e))
             sys.exit(e.return_value)
@@ -189,6 +189,7 @@ class Main:
             for line in traceback.format_tb(exc_traceback):
                 self.logger.error('exception: {}' % (line[:-1]))  # noqa P103
             sys.exit(UNKNOWN_EXCEPTION)
+
 
 def run():
     main = Main()

@@ -62,7 +62,7 @@ class ConfigFileNotFound(ELDAmwlException):
         self.file_path = file_path
 
     def __str__(self):
-        return('Config file {} not found'.format(self.file_path)    )
+        return 'Config file {} not found'.format(self.file_path)
 
 
 class FillTableFailed(ELDAmwlException):
