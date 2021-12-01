@@ -153,6 +153,7 @@ class CreateMCCopiesDefault(BaseOperation):
     def run(self):
         """
         """
+        # todo: variation of assumed lidar ratio
         original = self.kwargs['original']
         num_samples = self.kwargs['n']
 

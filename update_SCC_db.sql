@@ -93,6 +93,9 @@ ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name
 ALTER TABLE `_elast_bsc_methods`
 ADD COLUMN `python_classname` varchar(100) NOT NULL DEFAULT '' COMMENT 'the name of the python class in ELDAmwl which performs the calculation';
 
+UPDATE `_ext_methods` set `python_classname` = 'CalcBscProfileKF' where ID=0;
+UPDATE `_ext_methods` set `python_classname` = 'CalcBscProfileIter' where ID=1;
+
 #-------------------------
 
 ALTER TABLE `_ext_methods`

@@ -136,9 +136,24 @@ class ElastBscEffBinRes(BaseOperationFactory):
     used in the retrieval of ...
 
     Keyword Args:
+            prod_id (str): id of the product
     """
 
-    pass
+    name = 'ElastBscEffBinRes'
+    prod_id = NC_FILL_STR
+
+    def __call__(self, **kwargs):
+        assert 'prod_id' in kwargs
+        self.prod_id = kwargs['prod_id']
+        res = super(ElastBscEffBinRes, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """ reads from SCC db which algorithm to use
+
+        Returns: name of the class for the bsc calculation
+        """
+        return self.db_func.read_elast_bsc_effbin_algorithm(self.prod_id)
 
 
 class ElastBscUsedBinRes(BaseOperationFactory):
@@ -148,8 +163,21 @@ class ElastBscUsedBinRes(BaseOperationFactory):
 
     Keyword Args:
     """
+    name = 'ElastBscUsedBinRes'
+    prod_id = NC_FILL_STR
 
-    pass
+    def __call__(self, **kwargs):
+        assert 'prod_id' in kwargs
+        self.prod_id = kwargs['prod_id']
+        res = super(ElastBscUsedBinRes, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """ reads from SCC db which algorithm to use
+
+        Returns: name of the class for the bsc calculation
+        """
+        return self.db_func.read_elast_bsc_usedbin_algorithm(self.prod_id)
 
 
 registry.register_class(RamBscUsedBinRes,
@@ -157,5 +185,13 @@ registry.register_class(RamBscUsedBinRes,
                         SavGolayUsedBinRes)
 
 registry.register_class(RamBscEffBinRes,
+                        SavGolayEffBinRes.__name__,
+                        SavGolayEffBinRes)
+
+registry.register_class(ElastBscUsedBinRes,
+                        SavGolayUsedBinRes.__name__,
+                        SavGolayUsedBinRes)
+
+registry.register_class(ElastBscEffBinRes,
                         SavGolayEffBinRes.__name__,
                         SavGolayEffBinRes)

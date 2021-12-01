@@ -52,3 +52,49 @@ def find_minimum_window(means, sems, w_width, error_threshold):
     win_first_idx = (win_last_idx[:] - w_width[:, 0])
 
     return win_first_idx, win_last_idx
+
+
+def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=None):
+    """finds the bin which has the value closest to the search value
+    Args:
+        data(np.array) : vertical profile of the data
+        error(np.array): vertical profile of absolute data errors. Default = None
+                        if provided: if the closest bin is not equal to the search value within its error, returns None.
+        first_bin, last_bin (int): first and last bin of the profile, where the search shall be done.
+                                Default: None => the complete profile is used
+        search_value (float): Default=None. if not provided, the mean value of the profile is used
+    returns:
+        idx (int): the index which has the value closest to the search value
+    """
+
+    if first_bin is not None:
+        _data = data[first_bin:]
+    else:
+        _data = data
+    if last_bin is not None:
+        _data = data[: last_bin]
+    else:
+        _data = data
+
+    if search_value is not None:
+        _search_value = search_value
+    else:
+        _search_value = np.nanmean(_data)
+
+    diff = np.absolute(data - _search_value)
+    min_idx = np.argmin(diff)
+
+    if first_bin is not None:
+        result = first_bin + min_idx
+    else:
+        result = min_idx
+
+    if error is not None:
+        if abs(data[min_idx] - search_value) > error [min_idx]:
+            result = None
+
+    return result
+
+def integral_profile(data, error=None, first_bin=None, last_bin=None):
+    pass
+

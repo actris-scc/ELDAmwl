@@ -10,19 +10,21 @@ class Backscatters(Products):
 
     @classmethod
     def init(cls, signal, p_params, calibr_window=None):
-        """calculates Backscatters from an elastic signal.
+        """creates an empty instance of Backscatters with meta data copied from signal.
 
-        The signal was previously prepared by PrepareBscSignals .
+        The signal was previously prepared by PrepareBscSignals.
 
         Args:
             signal (:class:`Signals`): time series of signal profiles
             p_params (:class:`ELDAmwl.operations.backscatter.common.params.BackscatterParams`):
                         calculation params of the backscatter product
-            calibr_window (tuple):
-                        first and last height_axis of the calibration window [m]
+            calibr_window (xarray.DataArray): variable
+                                    'backscatter_calibration_range'
+                                    (time, nv: 2)
         """
         result = super(Backscatters, cls).from_signal(signal, p_params)
-        # cls.calibr_window = calibr_window  ToDo: Ina debug
+
+        result.calibr_window = calibr_window
 
         return result
 

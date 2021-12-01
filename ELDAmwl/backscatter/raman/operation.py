@@ -68,7 +68,7 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
 @zope.interface.implementer(IRamBscOp)
 class CalcRamanBackscatterDefault(BaseOperation):
     """
-    Calculates particle backscatter coefficient from Raman signal.
+    Calculates particle backscatter coefficient from the ratio of  an elastic and a Raman signal.
 
     The result is a copy of empty_bsc, but its dataset (data, err, qf) is filled with the calculated values
 

@@ -5,7 +5,7 @@ class RamanBackscatters(Backscatters):
 
     @classmethod
     def init(cls, sigratio, p_params, calibr_window=None):
-        """calculates RamanBackscatters from a signal ratio.
+        """creates an empty instance of RamanBackscatters with meta data copied from sigratio.
 
         The signals were previously prepared by PrepareBscSignals .
 
@@ -23,9 +23,8 @@ class RamanBackscatters(Backscatters):
         result = super(RamanBackscatters, cls).init(sigratio,
                                                     p_params,
                                                     calibr_window)
-        # todo ina: check documentation calibr_window is tupe or dataarray?
 
-        result.calibr_window = calibr_window
+        # result.calibr_window = calibr_window
 
         # cal_first_lev = sigratio.heights_to_levels(
         #     calibr_window[:, 0])
