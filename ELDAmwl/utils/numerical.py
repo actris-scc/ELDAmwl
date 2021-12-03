@@ -1,5 +1,8 @@
+from copy import deepcopy
+
 from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
 from scipy.stats import sem
+from scipy.integrate import cumulative_trapezoid
 
 import numpy as np
 import xarray as xr
@@ -95,6 +98,78 @@ def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=No
 
     return result
 
-def integral_profile(data, error=None, first_bin=None, last_bin=None):
-    pass
+def integral_profile(data,
+                     range=None,
+                     quality_flag=None,
+                     use_flags=None,
+                     fill_overlap_region=None,
+                     first_bin=None,
+                     last_bin=None):
+    """
+    calculates the vertical integral of a profile
+    Args:
+
+    Returns:
+
+    """
+    data_cp = deepcopy(data)
+
+    ydata = data_cp.values
+
+    if range is None:
+        xdata = data_cp.altitude.values
+    else:
+        xdata = deepcopy(range).values
+
+    if last_bin is None:
+        lb = ydata.size
+    else:
+        lb = last_bin
+
+    if first_bin is None:
+        fb = 0
+    else:
+        fb = first_bin
+
+    # if integration direction is downward -> flip data arrays and exchange fb, lb
+    reverse = False
+    if lb < fb:
+        reverse = True
+        xdata = np.flip(xdata)
+        ydata = np.flip(ydata)
+
+        lb = ydata.size - lb
+        fb = ydata.size - fb - 1
+
+    # use only  profile parts between first_bin and  last_bin
+    ydata = ydata[fb:lb]
+    xdata = xdata[fb:lb]
+
+    # remove data points with flags different from 'good' flags
+    filter_flags = False
+    if (use_flags is not None) and (quality_flag is not None):
+        filter_flags = True
+        fdata = deepcopy(quality_flag).values[fb:lb]
+        for qf in use_flags:
+            pass
+
+    # calculate cumulative integral
+    result = cumulative_trapezoid(ydata, x=xdata, initial=0)
+
+    # if integration direction is downward, the integral is negative
+    # because the differential x axis is negative -> flip result and invert sign
+    if reverse:
+        result = result * -1
+        result[0] = 0
+        result = np.flip(result)
+
+    if fill_overlap_region is not None:
+        result = result + (xdata[0] * ydata[0])
+
+    del xdata
+    del ydata
+    if filter_flags:
+        del fdata
+
+    return result
 

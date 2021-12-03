@@ -18,11 +18,11 @@ class CalcBscProfileKF(BaseOperation):
     uses equations and symbols from Althausen et al. JOTECH 2000
     (https://doi.org/10.1175/1520-0426(2000)017<1469:SWCAL>2.0.CO;2)
 
-    bsc_part(r) = A(r) / [B - 2S * AA ] - bsc_mol(r)
+    bsc_part(r) = A(r) / [B - 2S * A_int ] - bsc_mol(r)
 
     M(r) = Int_Rref^r{bsc_mol(R)dR}
     A(r) = sig(r) * exp{-2(S_par-S_mol) * M(r)}
-    AA(r) = Int_Rref^r{A(R)dR}
+    A_int(r) = Int_Rref^r{A(R)dR}
     B = sig(r_ref) / [bsc_part(r_ref) + bsc_mol(r_ref)]
 
     S: lidar ratio
@@ -35,6 +35,7 @@ class CalcBscProfileKF(BaseOperation):
     name = 'CalcBscProfileKF'
     elast_sig = None
     rayl_scat = None
+    range_axis = None
     error_params = None
     calibration = None
 
@@ -57,14 +58,19 @@ class CalcBscProfileKF(BaseOperation):
         assert 'error_params' in kwargs
         assert 'calibration' in kwargs
 
+        # prepare
         elast_sig = kwargs['elast_sig']
         calibration = kwargs['calibration']
         error_params = kwargs['error_params']
+
+        if 'range_axis' in kwargs:
+            range_axis = kwargs['range_axis']
+        else:
+            range_axis = elast_sig.altitude
+
         rayl_bsc = elast_sig.mol_extinction / RAYL_LR
         rayl_bsc.name = 'mol_backscatter'
         lidar_ratio = elast_sig.assumed_particle_lidar_ratio
-
-        # 1) calculate calibration factor
 
         times = elast_sig.dims['time']
         calibr_factor = np.ones(times) * np.nan
@@ -72,7 +78,10 @@ class CalcBscProfileKF(BaseOperation):
         calibr_factor_err = np.ones(times) * np.nan
         # sqr_rel_calibr_err = np.ones(times) * np.nan
         M = np.full(rayl_bsc.shape, np.nan)
-        #
+        A_int = np.full(rayl_bsc.shape, np.nan)
+        lr_diff = lidar_ratio- RAYL_LR
+
+        # 1) calculate calibration factor
         for t in range(times):
             # convert elast_sig.ds (xr.Dataset) into pd.Dataframe for easier selection of calibration window
             df_sig = elast_sig.data.isel({'level':
@@ -122,14 +131,26 @@ class CalcBscProfileKF(BaseOperation):
 
         # 3) calculate M, A, and B
 
-            M[t, calibr_bin:] = integral_profile(rayl_bsc, first_bin=calibr_bin[t])
-            M[t, calibr_bin] = 0
-            M[t, :calibr_bin] = integral_profile(rayl_bsc, last_bin=calibr_bin[t] - 1)
+            M[t, calibr_bin:] = integral_profile(rayl_bsc[t],
+                                                 first_bin=calibr_bin)
+            M[t, :calibr_bin + 1] = integral_profile(rayl_bsc[t],
+                                                 first_bin=calibr_bin,
+                                                 last_bin=0)
 
-            lr_diff = lidar_ratio - RAYL_LR
-            A = elast_sig.data[t] * np.exp(-2 * lr_diff * M)
+            A = elast_sig.data[t] * np.exp(-2 * lr_diff[t] * M[t])
+            A_int[t, calibr_bin:] = integral_profile(A[t],
+                                                 # quality_flag=elast_sig.qf,
+                                                 # use_flags=[],
+                                                 # fill_overlap_region='const',
+                                                 first_bin=calibr_bin)
+            A_int[t, :calibr_bin + 1] = integral_profile(A[t],
+                                                 # quality_flag=elast_sig.qf,
+                                                 # use_flags=[],
+                                                 # fill_overlap_region='const',
+                                                 first_bin=calibr_bin,
+                                                 last_bin=0)
 
-            B = elast_sig.data[t, calibr_bin] / ( + rayl_bsc[t, calibr_bin])
+        B = elast_sig.data[t, calibr_bin] / ( + rayl_bsc[t, calibr_bin])
 
         # # 2) calculate backscatter ratio
         bsc = xr.Dataset()
