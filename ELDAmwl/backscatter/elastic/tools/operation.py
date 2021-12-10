@@ -132,21 +132,25 @@ class CalcBscProfileKF(BaseOperation):
         # 3) calculate M, A, and B
 
             M[t, calibr_bin:] = integral_profile(rayl_bsc[t],
+                                                 range=range_axis[t],
                                                  first_bin=calibr_bin)
             M[t, :calibr_bin + 1] = integral_profile(rayl_bsc[t],
+                                                     range=range_axis[t],
                                                  first_bin=calibr_bin,
                                                  last_bin=0)
 
             A = elast_sig.data[t] * np.exp(-2 * lr_diff[t] * M[t])
-            A_int[t, calibr_bin:] = integral_profile(A[t],
+            A_int[t, calibr_bin:] = integral_profile(A,
+                                                     range=range_axis[t],
                                                  # quality_flag=elast_sig.qf,
                                                  # use_flags=[],
-                                                 # fill_overlap_region='const',
+                                                 #extrapolate_ovl_factor=1,
                                                  first_bin=calibr_bin)
-            A_int[t, :calibr_bin + 1] = integral_profile(A[t],
+            A_int[t, :calibr_bin + 1] = integral_profile(A,
+                                                         range=range_axis[t],
                                                  # quality_flag=elast_sig.qf,
                                                  # use_flags=[],
-                                                 # fill_overlap_region='const',
+                                                 extrapolate_ovl_factor=1,
                                                  first_bin=calibr_bin,
                                                  last_bin=0)
 

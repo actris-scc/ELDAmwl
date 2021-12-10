@@ -110,7 +110,7 @@ class CalcElastBackscatterDefault(BaseOperation):
                 contains bottom and top height of calibration window for each time slice
         calc_routine (:class:`ELDAmwl.bases.factory.BaseOperation`):
                     result of :class:`ELDAmwl.backscatter.elast.tools.operation.CalcElastBscProfile`
-        elast_signal (:class:`ELDAmwl.signals.Signals`): signal ratio
+        elast_signal (:class:`ELDAmwl.signals.Signals`): elastic signal
         empty_bsc (:class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters`): \
                 instance of ElastBackscatters which has all meta data but profile data are empty arrays
 
@@ -173,6 +173,7 @@ class CalcElastBackscatterDefault(BaseOperation):
 
         self.result.ds = self.calc_routine.run(
             elast_sig=data.ds,
+            range_axis=data.range,
             error_params=error_params,
             calibration=cal_params
         )

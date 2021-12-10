@@ -102,7 +102,7 @@ def integral_profile(data,
                      range=None,
                      quality_flag=None,
                      use_flags=None,
-                     fill_overlap_region=None,
+                     extrapolate_ovl_factor=None,
                      first_bin=None,
                      last_bin=None):
     """
@@ -130,6 +130,11 @@ def integral_profile(data,
         fb = 0
     else:
         fb = first_bin
+
+    # fill the overlap region with extrapolated values
+    if extrapolate_ovl_factor is not None:
+        xdata = np.insert(xdata, 0, np.array([0]))
+        ydata = np.insert(ydata, 0, np.array(ydata[0]) * extrapolate_ovl_factor)
 
     # if integration direction is downward -> flip data arrays and exchange fb, lb
     reverse = False
@@ -163,8 +168,8 @@ def integral_profile(data,
         result[0] = 0
         result = np.flip(result)
 
-    if fill_overlap_region is not None:
-        result = result + (xdata[0] * ydata[0])
+#    if fill_overlap_region is not None:
+#        result = result + (xdata[0] * ydata[0])
 
     del xdata
     del ydata
