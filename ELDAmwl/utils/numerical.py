@@ -100,14 +100,23 @@ def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=No
 
 def integral_profile(data,
                      range=None,
-                     quality_flag=None,
-                     use_flags=None,
                      extrapolate_ovl_factor=None,
                      first_bin=None,
                      last_bin=None):
     """
     calculates the vertical integral of a profile
+
+    uses the scipy.integrate.cumulative_trapezoid method
     Args:
+        data (xarray.DataArray, 1 dimensional): the variable 'data' contains the ydata to be integrated
+        range (xarray.DataArray, 1 dimensional): (optional, default = data.altitude) the variable 'data' contains the xdata.
+        first_bin (int): (optional, default = 0) the first bin of the integration
+        last_bin (int): (optional, default = ydata.size) the last bin of the integration.
+                            if last_bin < first_bin, the integration direction is reversed
+        extrapolate_ovl_factor (float): (optional, default = None) if not None, the profile is extrapolated towards
+                    the ground by inserting a new data point with values
+                    range_new = 0, data_new = data[0] * extrapolate_ovl_factor
+
 
     Returns:
 
@@ -131,11 +140,6 @@ def integral_profile(data,
     else:
         fb = first_bin
 
-    # fill the overlap region with extrapolated values
-    if extrapolate_ovl_factor is not None:
-        xdata = np.insert(xdata, 0, np.array([0]))
-        ydata = np.insert(ydata, 0, np.array(ydata[0]) * extrapolate_ovl_factor)
-
     # if integration direction is downward -> flip data arrays and exchange fb, lb
     reverse = False
     if lb < fb:
@@ -150,13 +154,13 @@ def integral_profile(data,
     ydata = ydata[fb:lb]
     xdata = xdata[fb:lb]
 
-    # remove data points with flags different from 'good' flags
-    filter_flags = False
-    if (use_flags is not None) and (quality_flag is not None):
-        filter_flags = True
-        fdata = deepcopy(quality_flag).values[fb:lb]
-        for qf in use_flags:
-            pass
+    # fill the overlap region with extrapolated values
+    # this is done by inserting an additional point at
+    # the beginning of xdata and ydata arrays
+    # the new point has the values xdata= 0 and ydata = ydata[0] * extrapolate_ovl_factor
+    if extrapolate_ovl_factor is not None:
+        xdata = np.insert(xdata, 0, np.array([0]))
+        ydata = np.insert(ydata, 0, np.array(ydata[0]) * extrapolate_ovl_factor)
 
     # calculate cumulative integral
     result = cumulative_trapezoid(ydata, x=xdata, initial=0)
@@ -164,17 +168,18 @@ def integral_profile(data,
     # if integration direction is downward, the integral is negative
     # because the differential x axis is negative -> flip result and invert sign
     if reverse:
-        result = result * -1
         result[0] = 0
         result = np.flip(result)
 
-#    if fill_overlap_region is not None:
-#        result = result + (xdata[0] * ydata[0])
+    # if the overlap region was filled with extrapolated values,
+    # an addional data point was inserted before integration.
+    # This first bin of the integral array needs to be removed
+    # to ensure that result has the same shape as input data
+    if extrapolate_ovl_factor is not None:
+        result = result[1:]
 
     del xdata
     del ydata
-    if filter_flags:
-        del fdata
 
     return result
 

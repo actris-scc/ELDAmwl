@@ -153,6 +153,8 @@ class CalcElastBackscatterDefault(BaseOperation):
         if data is None:
             data = self.elast_sig
 
+        # todo: self.calibr_window is hard coded here for testing. remove and check, why it is different from ELDA
+        self.calibr_window[0, :] = [14529.52, 15008.35]
         cal_first_lev = data.heights_to_levels(
             self.calibr_window[:, 0])
         cal_last_lev = data.heights_to_levels(

@@ -46,7 +46,8 @@ class CalcBscProfileKF(BaseOperation):
                 elast_sig (xarray.DataSet):
                     already smoothed elastic signal with \
                     variables 'data', 'error', 'qf',
-                    'binres', 'mol_extinction', 'assumed_particle_lidar_ratio'
+                    'binres', 'mol_extinction', 'assumed_particle_lidar_ratio', 'altitude'
+                range_axis (xarray.DataArray): range axis of the elast_signal with variable 'data'
                 error_params (addict.Dict):
                     with keys 'lowrange' and 'highrange' =
                         maximum allowable relative statistical error
@@ -68,21 +69,27 @@ class CalcBscProfileKF(BaseOperation):
         else:
             range_axis = elast_sig.altitude
 
+        num_times = elast_sig.dims['time']
+
+        # calculate Rayleigh backscatter profiles
         rayl_bsc = elast_sig.mol_extinction / RAYL_LR
         rayl_bsc.name = 'mol_backscatter'
-        lidar_ratio = elast_sig.assumed_particle_lidar_ratio
 
-        times = elast_sig.dims['time']
-        calibr_factor = np.ones(times) * np.nan
-        # calibr_bin = np.ones(times, dtype=int) * NC_FILL_INT
-        calibr_factor_err = np.ones(times) * np.nan
-        # sqr_rel_calibr_err = np.ones(times) * np.nan
-        M = np.full(rayl_bsc.shape, np.nan)
-        A_int = np.full(rayl_bsc.shape, np.nan)
+        # calculate difference profile between particle and Rayleigh lidar ratio
+        lidar_ratio = elast_sig.assumed_particle_lidar_ratio
         lr_diff = lidar_ratio- RAYL_LR
 
+        # prepare empty arrays
+        calibr_factor = np.ones(num_times) * np.nan
+        # calibr_bin = np.ones(times, dtype=int) * NC_FILL_INT
+        calibr_factor_err = np.ones(num_times) * np.nan
+        # sqr_rel_calibr_err = np.ones(times) * np.nan
+        M = np.full(rayl_bsc.shape, np.nan)
+        A = np.full(rayl_bsc.shape, np.nan)
+        A_int = np.full(rayl_bsc.shape, np.nan)
+
         # 1) calculate calibration factor
-        for t in range(times):
+        for t in range(num_times):
             # convert elast_sig.ds (xr.Dataset) into pd.Dataframe for easier selection of calibration window
             df_sig = elast_sig.data.isel({'level':
                                     range(calibration['cal_first_lev'][t],
@@ -110,14 +117,7 @@ class CalcBscProfileKF(BaseOperation):
                 calibr_factor_err[t] = calibr_factor[t] * \
                     np.sqrt(np.square(rel_sem_sig) + np.square(calibration.calibr_value.rel_error))
                 # sqr_rel_calibr_err[t] = np.square(calibr_factor_err[t] / calibr_factor[t])
-        #
-        # cf = xr.DataArray(calibr_factor,
-        #                   dims=['time'],
-        #                   coords=[sigratio.time])
-        # sqr_cf_err = xr.DataArray(sqr_rel_calibr_err,
-        #                           dims=['time'],
-        #                           coords=[sigratio.time])
-        #
+
         # 2) find signal bin which has the value closest to the mean of the calibration window
             calibr_bin = closest_bin(elast_sig.data[t].values,
                                      elast_sig.err[t].values,
@@ -136,29 +136,25 @@ class CalcBscProfileKF(BaseOperation):
                                                  first_bin=calibr_bin)
             M[t, :calibr_bin + 1] = integral_profile(rayl_bsc[t],
                                                      range=range_axis[t],
-                                                 first_bin=calibr_bin,
-                                                 last_bin=0)
+                                                     first_bin=calibr_bin,
+                                                     last_bin=0)
 
-            A = elast_sig.data[t] * np.exp(-2 * lr_diff[t] * M[t])
-            A_int[t, calibr_bin:] = integral_profile(A,
+            A[t] = elast_sig.data[t] * np.exp(-2 * lr_diff[t] * M[t])
+            A_int[t, calibr_bin:] = integral_profile(A[t],
                                                      range=range_axis[t],
-                                                 # quality_flag=elast_sig.qf,
-                                                 # use_flags=[],
-                                                 #extrapolate_ovl_factor=1,
-                                                 first_bin=calibr_bin)
-            A_int[t, :calibr_bin + 1] = integral_profile(A,
+                                                     first_bin=calibr_bin)
+            A_int[t, :calibr_bin + 1] = integral_profile(A[t],
                                                          range=range_axis[t],
-                                                 # quality_flag=elast_sig.qf,
-                                                 # use_flags=[],
-                                                 extrapolate_ovl_factor=1,
-                                                 first_bin=calibr_bin,
-                                                 last_bin=0)
+                                                         extrapolate_ovl_factor=1,
+                                                         first_bin=calibr_bin,
+                                                         last_bin=0)
 
-        B = elast_sig.data[t, calibr_bin] / ( + rayl_bsc[t, calibr_bin])
+        B = calibr_factor
 
-        # # 2) calculate backscatter ratio
+        # 4) calculate backscatter coefficient
+        # bsc_part(r) = A(r) / [B - 2S * A_int] - bsc_mol(r)
         bsc = xr.Dataset()
-        # bsc['data'] = sigratio.data * cf
+        bsc['data'] = A / (B - lr_diff * A_int) - rayl_bsc
         # bsc['err'] = bsc.data * np.sqrt(np.square(sigratio.err / sigratio.data) + sqr_cf_err)
         #
         # # 3) calculate backscatter coefficient
