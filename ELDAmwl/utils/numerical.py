@@ -106,14 +106,17 @@ def integral_profile(data,
     """
     calculates the vertical integral of a profile
 
-    uses the scipy.integrate.cumulative_trapezoid method
+    uses the scipy.integrate.cumulative_trapezoid method.
+    if there are nan values, they are removed before integration and the resulting cumulative integral
+    will be interpolated to the original range axis.
+
     Args:
-        data (xarray.DataArray, 1 dimensional): the variable 'data' contains the ydata to be integrated
-        range (xarray.DataArray, 1 dimensional): (optional, default = data.altitude) the variable 'data' contains the xdata.
-        first_bin (int): (optional, default = 0) the first bin of the integration
-        last_bin (int): (optional, default = ydata.size) the last bin of the integration.
+        data (ndarray, 1 dimensional): the ydata to be integrated
+        range (ndarray, 1 dimensional):  the xdata.
+        first_bin (int, optional): (default = 0) the first bin of the integration
+        last_bin (int, optional): (default = ydata.size) the last bin of the integration.
                             if last_bin < first_bin, the integration direction is reversed
-        extrapolate_ovl_factor (float): (optional, default = None) if not None, the profile is extrapolated towards
+        extrapolate_ovl_factor (float, optional): (default = None) if not None, the profile is extrapolated towards
                     the ground by inserting a new data point with values
                     range_new = 0, data_new = data[0] * extrapolate_ovl_factor
 
@@ -121,14 +124,8 @@ def integral_profile(data,
     Returns:
 
     """
-    data_cp = deepcopy(data)
-
-    ydata = data_cp.values
-
-    if range is None:
-        xdata = data_cp.altitude.values
-    else:
-        xdata = deepcopy(range).values
+    ydata = deepcopy(data)
+    xdata = deepcopy(range)
 
     if last_bin is None:
         lb = ydata.size
@@ -154,29 +151,61 @@ def integral_profile(data,
     ydata = ydata[fb:lb]
     xdata = xdata[fb:lb]
 
+    # remove nan data points
+    fill_nan = False
+    orig_xdata = None
+    if np.any(np.isnan(ydata)):
+        fill_nan = True
+        orig_xdata = xdata
+        nan_idxs = np.where(np.isnan(ydata))
+        ydata = np.delete(ydata, nan_idxs)
+        xdata = np.delete(xdata, nan_idxs)
+
     # fill the overlap region with extrapolated values
     # this is done by inserting an additional point at
-    # the beginning of xdata and ydata arrays
-    # the new point has the values xdata= 0 and ydata = ydata[0] * extrapolate_ovl_factor
+    # the beginning (if ascending range axis) or end (if descending range axis) of xdata and ydata arrays
+    # the insert_pos is 0 or -1, respectively.
+    # the new point has the values xdata= 0 and ydata = ydata[insert_pos] * extrapolate_ovl_factor
+    insert_pos = None
     if extrapolate_ovl_factor is not None:
-        xdata = np.insert(xdata, 0, np.array([0]))
-        ydata = np.insert(ydata, 0, np.array(ydata[0]) * extrapolate_ovl_factor)
+        # if the range axis is ascending, insert at position 0
+        if xdata[0] < xdata[-1]:
+            xdata = np.insert(xdata, 0, np.array([0]))
+            ydata = np.insert(ydata, 0, np.array(ydata[0]) * extrapolate_ovl_factor)
+        # if range axis is descending, append at the end
+        else:
+            xdata = np.append(xdata, np.array([0]))
+            ydata = np.append(ydata, np.array(ydata[-1]) * extrapolate_ovl_factor)
 
     # calculate cumulative integral
     result = cumulative_trapezoid(ydata, x=xdata, initial=0)
 
-    # if integration direction is downward, the integral is negative
-    # because the differential x axis is negative -> flip result and invert sign
+    # if integration direction is downward -> flip result and xdata
+    # note: the integral is usually negative because the differential x axis is negative
     if reverse:
-        result[0] = 0
         result = np.flip(result)
+        xdata = np.flip(xdata)
+        if fill_nan:
+            orig_xdata = np.flip(orig_xdata)
+
+    # if nan data points were removed before integration, the result is interpolated
+    # to the original range axis in order to ensure that it has the same shape as input data.
+    # This step has to be done after flipping the result (in case of downward integration)
+    # because np.interp requires monotonically increasing sample points.
+    if fill_nan:
+        result = np.interp(orig_xdata, xdata, result)
+        del orig_xdata
 
     # if the overlap region was filled with extrapolated values,
-    # an addional data point was inserted before integration.
-    # This first bin of the integral array needs to be removed
-    # to ensure that result has the same shape as input data
-    if extrapolate_ovl_factor is not None:
-        result = result[1:]
+    # an additional data point was inserted before integration.
+    # If nan values have been removed, the original shape was restored
+    # in the previous step (interpolation). Otherwise,
+    # the additional bin of the integral array needs to be removed
+    # to ensure that result has the same shape as input data.
+    # In case of downward integration, the result array has been flipped 2 steps before.
+    # Therefore, the additional bin is always at position 0
+    if (extrapolate_ovl_factor is not None) and (not fill_nan):
+        result = np.delete(result, 0)
 
     del xdata
     del ydata
