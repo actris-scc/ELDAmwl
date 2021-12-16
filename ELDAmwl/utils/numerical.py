@@ -60,7 +60,7 @@ def find_minimum_window(means, sems, w_width, error_threshold):
 def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=None):
     """finds the bin which has the value closest to the search value
     Args:
-        data(np.array) : vertical profile of the data
+        data(np.array) : 1-dimensional vertical profile of the data
         error(np.array): vertical profile of absolute data errors. Default = None
                         if provided: if the closest bin is not equal to the search value within its error, returns None.
         first_bin, last_bin (int): first and last bin of the profile, where the search shall be done.
@@ -70,21 +70,19 @@ def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=No
         idx (int): the index which has the value closest to the search value
     """
 
-    if first_bin is not None:
-        _data = data[first_bin:]
-    else:
-        _data = data
-    if last_bin is not None:
-        _data = data[: last_bin]
-    else:
-        _data = data
+    if first_bin is None:
+        first_bin = 0
+    if last_bin is None:
+        last_bin = data.size
+
+    _data = data[first_bin:last_bin]
 
     if search_value is not None:
         _search_value = search_value
     else:
         _search_value = np.nanmean(_data)
 
-    diff = np.absolute(data - _search_value)
+    diff = np.absolute(_data - _search_value)
     min_idx = np.argmin(diff)
 
     if first_bin is not None:
@@ -99,7 +97,7 @@ def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=No
     return result
 
 def integral_profile(data,
-                     range=None,
+                     range_axis=None,
                      extrapolate_ovl_factor=None,
                      first_bin=None,
                      last_bin=None):
@@ -112,7 +110,7 @@ def integral_profile(data,
 
     Args:
         data (ndarray, 1 dimensional): the ydata to be integrated
-        range (ndarray, 1 dimensional):  the xdata.
+        range_axis (ndarray, 1 dimensional):  the xdata.
         first_bin (int, optional): (default = 0) the first bin of the integration
         last_bin (int, optional): (default = ydata.size) the last bin of the integration.
                             if last_bin < first_bin, the integration direction is reversed
@@ -125,7 +123,7 @@ def integral_profile(data,
 
     """
     ydata = deepcopy(data)
-    xdata = deepcopy(range)
+    xdata = deepcopy(range_axis)
 
     if last_bin is None:
         lb = ydata.size
@@ -179,6 +177,8 @@ def integral_profile(data,
 
     # calculate cumulative integral
     result = cumulative_trapezoid(ydata, x=xdata, initial=0)
+    # add half first bin
+    result = result + ydata[0] * (xdata[1] - xdata[0]) / 2
 
     # if integration direction is downward -> flip result and xdata
     # note: the integral is usually negative because the differential x axis is negative

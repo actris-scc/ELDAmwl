@@ -18,17 +18,29 @@ class CalcBscProfileKF(BaseOperation):
     uses equations and symbols from Althausen et al. JOTECH 2000
     (https://doi.org/10.1175/1520-0426(2000)017<1469:SWCAL>2.0.CO;2)
 
-    bsc_part(r) = A(r) / [B - 2S * A_int ] - bsc_mol(r)
+    ..math::
 
-    M(r) = Int_Rref^r{bsc_mol(R)dR}
-    A(r) = sig(r) * exp{-2(S_par-S_mol) * M(r)}
-    A_int(r) = Int_Rref^r{A(R)dR}
-    B = calibr_factor = sig(r_ref) / [bsc_part(r_ref) + bsc_mol(r_ref)]
+        \beta_{part}(r) &= \frac{A(r)}{B - 2 S A_{int}} - \beta_{mol}(r) \\
 
-    S: lidar ratio
-    sig: range corrected signal
-    r_ref / Rref: calibration altitude
-    r / R: range
+        A &= P(r) * \exp(-2(S_{par} - S_{mol}) M(r)) \\
+
+        M(r) &= \int_{r_{ref}}^{r} \beta_{mol}(R) \mathrm{d}R \\
+
+        A_{int} &= \int_{r_{ref}}^{r} A(R) \mathrm{d}R \\
+
+        B &= \frac{ P(r_{ref}) }{\beta_{part}(r_{ref})  + \beta_{mol}(r_{ref})}
+
+    with
+    :math:`\beta_{par}`, :math:`\beta_{mol}`: backscatter coeffcient of particles and molecules, respectively
+
+    :math:`S_{par}`, :math:`S_{mol}`: lidar ratio of particles and molecules, respectively
+
+    :math:`P(r)`: prepared signal
+
+    :math: `r`, :math: `R`: range
+
+    :math: `r_{ref}`: reference (calibration) range
+
 
     """
 
@@ -87,7 +99,7 @@ class CalcBscProfileKF(BaseOperation):
 
         # calculate difference profile between particle and Rayleigh lidar ratio
         lidar_ratio = elast_sig.assumed_particle_lidar_ratio
-        lr_diff = lidar_ratio- RAYL_LR
+        lr_diff = lidar_ratio - RAYL_LR
 
         # prepare empty arrays
         calibr_factor = np.ones(num_times) * np.nan
@@ -105,7 +117,7 @@ class CalcBscProfileKF(BaseOperation):
             # convert elast_sig.ds (xr.Dataset) into pd.Dataframe for easier selection of calibration window
             df_sig = elast_sig.data.isel({'level':
                                     range(calibration['cal_first_lev'][t],
-                                          calibration['cal_last_lev'][t]),
+                                          calibration['cal_last_lev'][t] + 1),
                                      'time': t})\
                 .to_dataframe()
             mean_sig = df_sig.data.mean()
@@ -114,7 +126,7 @@ class CalcBscProfileKF(BaseOperation):
 
             df_rayl = rayl_bsc.isel({'level':
                                     range(calibration['cal_first_lev'][t],
-                                          calibration['cal_last_lev'][t]),
+                                          calibration['cal_last_lev'][t] + 1),
                                      'time': t})\
                 .to_dataframe()
             mean_rayl_bsc = df_rayl.mol_backscatter.mean()
@@ -143,33 +155,44 @@ class CalcBscProfileKF(BaseOperation):
         # 3) calculate M, A, A_int, B, and B_err
 
             M[t, calibr_bin[t]:] = integral_profile(rayl_bsc[t].values,
-                                                 range=range_axis[t].values,
-                                                 first_bin=calibr_bin[t])
+                                                    range_axis=range_axis[t].values,
+                                                    first_bin=calibr_bin[t])
             M[t, :calibr_bin[t] + 1] = integral_profile(rayl_bsc[t].values,
-                                                     range=range_axis[t].values,
-                                                     first_bin=calibr_bin[t],
-                                                     last_bin=0)
+                                                        range_axis=range_axis[t].values,
+                                                        first_bin=calibr_bin[t],
+                                                        last_bin=0)
+
+            # following 2 lines were used to compare with ELDA (where dr == 30 )
+            # dz = range_axis[0, 1] - range_axis[0, 0]
+            # M = M / dz.values*30
+            M[t, calibr_bin[t]] = 0
 
             A[t] = elast_sig.data[t] * np.exp(-2 * lr_diff[t] * M[t])
             A_int[t, calibr_bin[t]:] = integral_profile(A[t],
-                                                     range=range_axis[t].values,
-                                                     first_bin=calibr_bin[t])
+                                                        range_axis=range_axis[t].values,
+                                                        first_bin=calibr_bin[t])
             A_int[t, :calibr_bin[t] + 1] = integral_profile(A[t],
-                                                         range=range_axis[t].values,
-                                                         extrapolate_ovl_factor=1,
-                                                         first_bin=calibr_bin[t],
-                                                         last_bin=0)
+                                                            range_axis=range_axis[t].values,
+                                                            extrapolate_ovl_factor=1,
+                                                            first_bin=calibr_bin[t],
+                                                            last_bin=0)
+
+            # following line was used to compare with ELDA (where dr == 30 )
+            # A_int = A_int/dz.values * 30
+            A_int[t, calibr_bin[t]] = 0
+
+
             B[t, :] = calibr_factor[t]
             B_err[t, :] = calibr_factor_err[t]
 
         # 4) calculate backscatter coefficient
-        D = B - lr_diff * A_int
+        denominator = B - 2 * lidar_ratio * A_int
         bsc = xr.Dataset()
-        bsc['data'] = A / D - rayl_bsc
+        bsc['data'] = A / denominator - rayl_bsc
         # the uncertainty contains only the uncertainty of the calibration,
         # not the uncertainty of signal noise nor uncertainty of lidar ratio estimation
         bsc['err'] = np.abs(
-            (A * D - np.square(A)) / np.power(D, 3) * B_err)
+            (A * denominator - np.square(A)) / np.power(denominator, 3) * B_err)
         bsc['qf'] = elast_sig.qf
         bsc['binres'] = elast_sig.binres
         bsc['calibration_bin'] = xr.DataArray(calibr_bin,
