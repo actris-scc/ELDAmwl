@@ -12,8 +12,8 @@ default:
 # :::::::::::::::::::
 # Parallel processing
 # :::::::::::::::::::
-  CPUS : 4
-  PARALLEL : True
+  NUM_CPU : 4
+  PARALLEL : False
 
 # :::::::::::::::::::
 # Directories
@@ -41,7 +41,7 @@ default:
   # general log level
   log_level : DEBUG
   # The desired log_level for console output
-  log_level_console : INFO
+  log_level_console : DEBUG
   # The desired log_level for the logfile
   log_level_file : INFO
   # Colors for the log console output (Options see color_log-package)

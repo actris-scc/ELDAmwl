@@ -21,6 +21,8 @@ class ElastBscParams(BackscatterParams):
         ebp = self.db_func.read_elast_bsc_params(general_params.prod_id)
 
         self.elast_bsc_algorithm = ebp['elast_bsc_method']
+        self.smooth_params.smooth_method = ebp['smooth_method']
+
         if self.elast_bsc_algorithm == IT:
             self.iter_params = IterBscParams.from_db(general_params)  # noqa E501
 

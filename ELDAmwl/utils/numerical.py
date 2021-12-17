@@ -91,7 +91,7 @@ def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=No
         result = min_idx
 
     if error is not None:
-        if abs(data[min_idx] - search_value) > error [min_idx]:
+        if abs(data[result] - search_value) > error[result]:
             result = None
 
     return result
@@ -177,8 +177,12 @@ def integral_profile(data,
 
     # calculate cumulative integral
     result = cumulative_trapezoid(ydata, x=xdata, initial=0)
+
     # add half first bin
-    result = result + ydata[0] * (xdata[1] - xdata[0]) / 2
+    if ydata.size > 1:
+        result = result + ydata[0] * (xdata[1] - xdata[0]) / 2
+    else:
+        result = np.array([np.nan])
 
     # if integration direction is downward -> flip result and xdata
     # note: the integral is usually negative because the differential x axis is negative

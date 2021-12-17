@@ -69,5 +69,11 @@ class IExtOp(interface.Interface):
 
 class IRamBscOp(interface.Interface):
     """
-    Marker Interface for Extinction operation
+    Marker Interface for Raman backscatter operation
+    """
+
+
+class IElastBscOp(interface.Interface):
+    """
+    Marker Interface for elast backscatter operation
     """

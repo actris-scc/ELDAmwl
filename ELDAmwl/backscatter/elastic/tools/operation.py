@@ -162,9 +162,6 @@ class CalcBscProfileKF(BaseOperation):
                                                         first_bin=calibr_bin[t],
                                                         last_bin=0)
 
-            # following 2 lines were used to compare with ELDA (where dr == 30 )
-            # dz = range_axis[0, 1] - range_axis[0, 0]
-            # M = M / dz.values*30
             M[t, calibr_bin[t]] = 0
 
             A[t] = elast_sig.data[t] * np.exp(-2 * lr_diff[t] * M[t])
@@ -177,8 +174,6 @@ class CalcBscProfileKF(BaseOperation):
                                                             first_bin=calibr_bin[t],
                                                             last_bin=0)
 
-            # following line was used to compare with ELDA (where dr == 30 )
-            # A_int = A_int/dz.values * 30
             A_int[t, calibr_bin[t]] = 0
 
 

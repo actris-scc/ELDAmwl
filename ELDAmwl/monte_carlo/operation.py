@@ -1,7 +1,7 @@
 from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import ICfg, IElastBscOp
 from ELDAmwl.component.interface import IExtOp
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IMonteCarlo
@@ -13,6 +13,8 @@ from zope import component
 import numpy as np
 import sys
 import zope
+
+from ELDAmwl.utils.constants import FIXED
 
 
 class MonteCarlo:
@@ -46,34 +48,38 @@ class MonteCarlo:
                                             )
             samples = mc_generator.run()
 
+            # if the list of samples is empty: create a dictionary for each iteration
             if len(self.sample_inputs) == 0:
                 for n in range(self.mc_params.nb_of_iterations):
                     self.sample_inputs.append({sig: samples[n]})
+
+            # if the list already exists: add a new key with the new sample for each iteration
             else:
                 for n in range(self.mc_params.nb_of_iterations):
                     self.sample_inputs[n][sig] = samples[n]
 
-#            self.sample_inputs.append({sig: 1234})
-
     def get_sample_results(self):
-        pool = Pool(4)
-        self.sample_results = []
-        results = pool.imap_unordered(self.run, self.sample_inputs)
-        for result in results:
-            if isinstance(result, Products):
-                self.sample_results.append(result.data.values)
-            else:
-                self.logger.error('{} terminated due to errors'.format(result))
-                sys.exit(1)
-        pool.close()
-        pool.join()
+        if self.cfg.PARALLEL:
+            pool = Pool(self.cfg.NUM_CPU)
+            self.sample_results = []
+            results = pool.imap_unordered(self.run, self.sample_inputs)
+            for result in results:
+                if isinstance(result, Products):
+                    self.sample_results.append(result.data.values)
+                else:
+                    self.logger.error('{} terminated due to errors'.format(result))
+                    sys.exit(1)
+            pool.close()
+            pool.join()
 
-        # results = []
-        # for n in range(self.mc_params.nb_of_iterations):
-        #     # sample = self.op.run(data=self.sample_inputs[n])
-        #     sample = self.run(self.sample_inputs[n])
-        #     results.append(sample.data.values)
-        # self.sample_results = results
+        else:
+            results = []
+            for n in range(self.mc_params.nb_of_iterations):
+                # sample = self.op.run(data=self.sample_inputs[n])
+                self.logger.debug('calc sample {}'.format(n))
+                sample = self.run(self.sample_inputs[n])
+                results.append(sample.data.values)
+            self.sample_results = results
 
     def calc_mc_error(self):
         all = np.array(self.sample_results)
@@ -106,6 +112,45 @@ class MonteCarloExtAdapter(MonteCarlo):
         Returns the operation result
         """
         return self.op.run(data=data['raman_sig'])
+
+
+@zope.component.adapter(IElastBscOp)
+@zope.interface.implementer(IMonteCarlo)
+class MonteCarloElastBscAdapter(MonteCarlo):
+
+    def get_data(self):
+        """
+        Returns the data monte carlo has to operate on.
+        Usually this is a dict with Columns
+        """
+        return {'elast_sig': self.op.elast_sig}
+
+    def run(self, data):
+        """
+        puts the mc copy of data into the operation and runs the operation
+        Returns the operation result
+        """
+        return self.op.run(data=data['elast_sig'])
+
+    def get_sample_inputs(self, orig):
+        super(MonteCarloElastBscAdapter, self).get_sample_inputs(orig)
+
+        if self.op.bsc_params.lr_input_method == FIXED:
+            orig_lr = self.op.elast_sig.ds.assumed_particle_lidar_ratio.values.mean()
+            orig_lr_uncertainty = self.op.elast_sig.ds.assumed_particle_lidar_ratio_error.values.mean()
+
+            if np.isnan(orig_lr_uncertainty):
+                self.logger.warning('no lidar ratio uncertainty provided for product {}'.format(self.op.bsc_params.prod_id_str))
+                return
+
+            lr_samples = np.random.normal(loc=orig_lr,
+                                          scale=orig_lr_uncertainty,
+                                          size=self.mc_params.nb_of_iterations)
+
+            for sample in range(self.mc_params.nb_of_iterations):
+                self.sample_inputs[sample]['elast_sig'].ds.assumed_particle_lidar_ratio[:] = lr_samples[sample]
+
+        # todo: variation in case of lr_input_method == PROFILE
 
 
 class CreateMCCopies(BaseOperationFactory):
@@ -153,7 +198,6 @@ class CreateMCCopiesDefault(BaseOperation):
     def run(self):
         """
         """
-        # todo: variation of assumed lidar ratio
         original = self.kwargs['original']
         num_samples = self.kwargs['n']
 
@@ -186,6 +230,7 @@ class CreateMCCopiesDefault(BaseOperation):
 def register_monte_carlo():
     gsm = zope.component.getGlobalSiteManager()
     gsm.registerAdapter(MonteCarloExtAdapter, (IExtOp,), IMonteCarlo)
+    gsm.registerAdapter(MonteCarloElastBscAdapter, (IElastBscOp,), IMonteCarlo)
 
     registry.register_class(CreateMCCopies,
                             CreateMCCopiesDefault.__name__,

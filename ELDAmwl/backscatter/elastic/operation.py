@@ -5,11 +5,12 @@ import zope
 from addict import Dict
 from ELDAmwl.backscatter.common.operation import BackscatterFactory
 from ELDAmwl.backscatter.common.operation import BackscatterFactoryDefault
+from ELDAmwl.backscatter.elastic.product import ElastBackscatters
 from ELDAmwl.backscatter.elastic.tools.operation import CalcElastBscProfile
 from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import IMonteCarlo
+from ELDAmwl.component.interface import IMonteCarlo, IElastBscOp
 from ELDAmwl.component.registry import registry
 from ELDAmwl.utils.constants import MC
 
@@ -32,6 +33,12 @@ class ElastBackscatterFactoryDefault(BackscatterFactoryDefault):
 
     name = 'ElastBackscatterFactoryDefault'
 
+    def prepare(self):
+        super(ElastBackscatterFactoryDefault, self).prepare()
+
+        self.empty_bsc = ElastBackscatters.init(
+            self.elast_sig, self.param, self.calibr_window)
+
     def get_non_merge_product(self):
 
         bsc_retrieval_routine = CalcElastBackscatter()(
@@ -46,6 +53,7 @@ class ElastBackscatterFactoryDefault(BackscatterFactoryDefault):
         if self.param.error_method == MC:
             adapter = zope.component.getAdapter(bsc_retrieval_routine, IMonteCarlo)
             bsc.err[:] = adapter(self.param.mc_params)
+
         else:
             bsc = bsc
 
@@ -96,7 +104,7 @@ class CalcElastBackscatter(BaseOperationFactory):
         return 'CalcElastBackscatterDefault'
 
 
-# @zope.interface.implementer(IRamBscOp)
+@zope.interface.implementer(IElastBscOp)
 class CalcElastBackscatterDefault(BaseOperation):
     """
     Calculates particle backscatter coefficient from an elastic signal.

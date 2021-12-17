@@ -203,8 +203,10 @@ class GetBasicProductsDefault(BaseOperation):
             del bsc
 
     def get_elast_bsc_fixed_smooth(self):
+        self.logger.debug('get_elast_bsc_fixed_smooth')
         for bsc_param in self.product_params.elast_bsc_products():
             prod_id = bsc_param.prod_id_str
+            self.logger.debug('product {}'.format(prod_id))
 
             # if no common calibration window for all bsc has been found
             # -> use calibration window of the individual bsc product

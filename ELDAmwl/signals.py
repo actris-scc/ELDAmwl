@@ -509,7 +509,7 @@ class Signals(Columns):
     def range(self):
         """xarray.DataArray(dimensions = time, level): range axis in m
                                                     = distance from lidar"""
-        return self.height * xr.ufuncs.cos(xr.ufuncs.radians(self.ds.laser_pointing_angle))  # noqa E501
+        return self.height / xr.ufuncs.cos(xr.ufuncs.radians(self.ds.laser_pointing_angle))  # noqa E501
 
     @property
     def is_WV_sig(self):
