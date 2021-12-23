@@ -67,11 +67,6 @@ class BscCalibrMethod(Base):
         nullable=False,
         server_default=text("''"),
     )
-    python_classname = Column(
-        String(100),
-        nullable=False,
-        server_default=text("''"),
-    )
 
 
 class BscMethod(Base):
@@ -111,11 +106,6 @@ class RamanBscMethod(Base):
         nullable=False,
         server_default=text("''"),
     )
-    python_classname = Column(
-        String(100),
-        nullable=False,
-        server_default=text("''"),
-    )
 
 
 class ElastBscMethod(Base):
@@ -131,11 +121,6 @@ class ElastBscMethod(Base):
         server_default=text("'0'"),
     )
     method = Column(
-        String(100),
-        nullable=False,
-        server_default=text("''"),
-    )
-    python_classname = Column(
         String(100),
         nullable=False,
         server_default=text("''"),

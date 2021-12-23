@@ -1,4 +1,4 @@
-ID,product_type,better_name,nc_file_id,processor_ID,is_mwl_only_product,is_in_mwl_products,is_basic_product
+ID,product_type,description,nc_file_id,processor_ID,is_mwl_only_product,is_in_mwl_products,is_basic_product
 1,extinction only,particle extinction coefficient (Raman),e,1,0,1,1
 2,lidar ratio and extinction,parrticle lidar ratio (Raman),e,1,0,1,0
 0,Raman backscatter,particle backscatter coefficient (Raman),b,1,0,1,1

@@ -11,7 +11,8 @@ from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
-from ELDAmwl.database.tables.elda_logs import ELDALogs
+from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
+from ELDAmwl.database.tables.general import ELDAmwlLogs
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
@@ -50,7 +51,7 @@ class DBFunc(DBUtils):
         super(DBFunc, self).__init__(connect_string)
 
     def db_log(self, level, datetime, measurement_id, product_id, module_version, msg):
-        log_msg = ELDALogs(
+        log_msg = ELDAmwlLogs(
             meas_id=measurement_id,
             level=level,
             datetime=datetime,
@@ -80,6 +81,24 @@ class DBFunc(DBUtils):
                 'no prepared signal files for measurement {0}'.format(measurement_id),
             )
 
+    def read_classname(self, method):
+        """reads from db in which python class the method is implemented
+            Args:
+                method_id (str): the method name
+
+            Returns:
+                str: name of the BaseOperation class to be used
+         """
+        classes = self.session.query(EldamwlClassNames)\
+            .filter(EldamwlClassNames.method == method)
+
+        if classes.count() == 1:
+            return classes.first().classname
+        else:
+            self.logger.error('wrong number {0} of class names for method {1}'
+                              .format(classes.count(), method))
+
+
     def read_algorithm(self, method_id, method_table):
         """ read from db which algorithm shall be used for product retrieval.
 
@@ -95,7 +114,7 @@ class DBFunc(DBUtils):
             .filter(method_table.ID == method_id)
 
         if methods.count() == 1:
-            result = methods.first().python_classname
+            result = self.read_classname(methods.first().method)
             return result
         else:
             self.logger.error(
@@ -119,7 +138,7 @@ class DBFunc(DBUtils):
             .filter(method_table.ID == method_id)
 
         if methods.count() == 1:
-            result = methods.first().python_classname_get_effective_binres
+            result = self.read_classname(methods.first().method_for_getting_effective_binres)
             return result
         else:
             self.logger.error(
@@ -142,7 +161,7 @@ class DBFunc(DBUtils):
             .filter(method_table.ID == method_id)
 
         if methods.count() == 1:
-            result = methods.first().python_classname_get_used_binres
+            result = self.read_classname(methods.first().method_for_getting_used_binres)
             return result
         else:
             self.logger.error(

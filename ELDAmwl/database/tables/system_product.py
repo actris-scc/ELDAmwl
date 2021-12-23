@@ -102,7 +102,7 @@ class ProductTypes(Base):
         nullable=False,
     )
     # Changed to Nullable for csv import to work.
-    better_name = Column(
+    description = Column(
         CHAR(100),
         nullable=True,
     )
@@ -292,17 +292,12 @@ class SmoothMethod(Base):
         nullable=False,
         server_default=text("''"),
     )
-    python_classname = Column(
+    method_for_getting_used_binres = Column(
         String(100),
         nullable=False,
         server_default=text("''"),
     )
-    python_classname_get_used_binres = Column(
-        String(100),
-        nullable=False,
-        server_default=text("''"),
-    )
-    python_classname_get_effective_binres = Column(
+    method_for_getting_effective_binres = Column(
         String(100),
         nullable=False,
         server_default=text("''"),

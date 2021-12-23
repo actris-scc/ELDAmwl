@@ -1,0 +1,48 @@
+id,description
+0,Finished without errors
+1,Configuration file not found
+2,Lidar ratio file not found
+3,Intermediate signal file not found
+4,File with Savitzky-Golay coefficients not found
+5,Invalid measurement ID
+6,Directory for log file not found
+7,Use case not yet implemented
+8,Product not yet implemented
+9,Cannot connect to db
+10,Cannot read ncfile
+11,Calibration range higher than valid data range
+12,Cannot find variable Lidar_Ratio in lr file
+13,No valid data points for calibration
+14,Cannot create merged signal
+15,Cannot average products: profiles have different height axis or vertical resolutions
+16,Noise of far-range profile too large for merging
+17,Some of the needed options for product calculation were not found in the db. Please check in the products page that all needed values were defined correctly (e.g. product options, monte carlo options, ...).
+18,Cannot average signals with different scan angles
+19,Cannot create near range or far range extinction profile
+20,Iterative bsc calculation does not converge
+21,Not enough pre-calculated Savitzky-Golay coefficients
+22,Unknown runtime exception
+255,Timeout
+23,Number of MonteCarlo iterations must be larger than 1
+24,Klett bsc retrieval requires Error method = Monte-Carlo; no MC options are provided for the retrieval of Klett bsc
+25,no mathematically stable solution of Klett retrieval
+254,General error (most probably segmentation fault)
+26,no channel_id in nc file -> rerun ELPP
+27,negative calibration value, signal might be negative
+28,This version of ELDA requires pre-processed files generated with ELPP version 7.00 or larger
+29,more than 1 depolarization per product not yet implemented
+30,cannot find correct channel idx in pre-processed file
+31,detection limit of products must be larger than 0.
+32,Wrong SCC version. "re-run ELDA" is not possible because pre-processed files have been generated with a previous SCC version. You need to apply "reprocess all"
+33,no dimension "depolarization" in pre-processed file
+34,cannot find positive values in profile
+41,wrong command line parameter
+42,different cloud masks exist for measurement
+43,different header information in ELPP files of measurement
+44,calibration params of backscatter products of the measurement are not equal
+45,No MonteCarlo Options for product
+46,No backscatter calibration options for product
+47,could not find overlap file in database
+48,could not find calibration window for backscatter retrieval
+100,internal error: cannot fnd requested information in data storage
+101,internal error: more than 1 override to class registry

@@ -1,0 +1,15 @@
+ID,method,classname
+1,weighted linear fit,WeightedLinearFit
+2,non-weighted linear fit,NonWeightedLinearFit
+3,used_bin_resolution_of_linear_fit,LinFitUsedBinRes
+4,effective_bin_resolution_of_linear_fit,LinFitEffBinRes
+5,Savitzky-Golay,SmoothSavGolay
+6,sliding average,SmoothSlidingAverage
+7,used_bin_resolution_of_savitzky_golay_smoothing,SavGolayUsedBinRes
+8,used_bin_resolution_of_sliding_average,SlidAvrgUsedBinRes
+9,effective_bin_resolution_of_savitzky_golay_smoothing,SavGolayEffBinRes
+10,effective_bin_resolution_of_sliding_average,SlidAvrgEffBinRes
+11,Ansmann method,CalcRamanBscProfileAsAnsmann,
+12,via backscatter ratio,CalcRamanBscProfileViaBR,
+13,minimum,FindCalibrWindowMinimum,
+14,fit-slope,FindCalibrationWindowFitSlope

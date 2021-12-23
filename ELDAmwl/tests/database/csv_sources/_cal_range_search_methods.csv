@@ -1,3 +1,3 @@
-Id,method,python_classname
-0,minimum,dummy
-1,fit-slope,dummy
+Id,method
+0,minimum
+1,fit-slope

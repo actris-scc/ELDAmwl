@@ -13,9 +13,12 @@ from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
+from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
+from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
+from ELDAmwl.database.tables.general import ELDAmwlLogs
 from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
@@ -47,34 +50,37 @@ import zope
 
 # List of all DB tables in the test DB
 ALL_DB_TABLES = [
-    BscCalibrOption,
     BscCalibrMethod,
+    BscCalibrOption,
     BscMethod,
-    RamanBscMethod,
-    ElastBscMethod,
-    RamanBackscatterOption,
-    ElastBackscatterOption,
-    IterBackscatterOption,
-    LRFile,
-    ProductChannels,
     Channels,
-    ExtMethod,
+    ElastBackscatterOption,
+    ElastBscMethod,
+    EldamwlClassNames,
+    ELDAmwlLogs,
+    EldamwlProducts,
+    ErrorThresholds,
     ExtinctionOption,
-    OverlapFile,
-    LidarConstants,
     ExtBscOption,
+    ExtMethod,
+    IterBackscatterOption,
+    LidarConstants,
+    LRFile,
+    MCOption,
     Measurements,
-    SystemProduct,
     MWLproductProduct,
+    OverlapFile,
+    PreparedSignalFile,
+    PreProcOptions,
+    ProductChannels,
     Products,
     ProductTypes,
-    PreProcOptions,
-    SmoothOptions,
-    ErrorThresholds,
-    SmoothTypes,
+    RamanBackscatterOption,
+    RamanBscMethod,
     SmoothMethod,
-    PreparedSignalFile,
-    MCOption,
+    SmoothOptions,
+    SmoothTypes,
+    SystemProduct,
 ]
 
 # Where does the test-DB live

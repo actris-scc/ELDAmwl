@@ -1,35 +1,31 @@
-"""SCC log table"""
+"""SCC database table for logging and exit codes"""
 
 from ELDAmwl.database.tables.db_base import Base
-from sqlalchemy import Column
+from sqlalchemy import Column, VARCHAR, BIGINT
 from sqlalchemy import DateTime
 from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy import text
 
 
-class ELDALogs(Base):
+class ELDAmwlLogs(Base):
     """
     SCC log table
     """
 
-    __tablename__ = 'elda_logs'
+    __tablename__ = 'eldamwl_logs'
 
     ID = Column(
-        INTEGER,
+        BIGINT,
         primary_key=True,
     )
-    meas_id = Column(
-        '__measurements__ID',
-        String(100),
+    measurements_id = Column(
+        VARCHAR(15),
         nullable=False,
-        server_default=text("''"),
     )
     product_id = Column(
-        'product_ID',
         INTEGER,
         nullable=True,
-        server_default=text("'-1'"),
     )
     level = Column(
         INTEGER,
@@ -47,6 +43,24 @@ class ELDALogs(Base):
     )
     message = Column(
         String(400),
+        nullable=False,
+        server_default=text("''"),
+    )
+
+
+class ELDAmwlExitCodes(Base):
+    """
+    Stable with description of exit codes
+    """
+
+    __tablename__ = 'eldamwl_exitcodes'
+
+    ID = Column(
+        INTEGER,
+        primary_key=True,
+    )
+    description = Column(
+        String(100),
         nullable=False,
         server_default=text("''"),
     )

@@ -28,17 +28,12 @@ class ExtMethod(Base):
         nullable=False,
         server_default=text("''"),
     )
-    python_classname = Column(
+    method_for_getting_used_binres = Column(
         String(100),
         nullable=False,
         server_default=text("''"),
     )
-    python_classname_get_used_binres = Column(
-        String(100),
-        nullable=False,
-        server_default=text("''"),
-    )
-    python_classname_get_effective_binres = Column(
+    method_for_getting_effective_binres = Column(
         String(100),
         nullable=False,
         server_default=text("''"),
