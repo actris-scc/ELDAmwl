@@ -16,8 +16,9 @@ class EldamwlProducts(Base):
     __tablename__ = 'eldamwl_products'
 
     ID = Column(
-        BIGINT,
+        INTEGER,
         primary_key=True,
+        autoincrement=True,
     )
     measurements_id = Column(
         VARCHAR(15),

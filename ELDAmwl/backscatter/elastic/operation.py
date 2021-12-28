@@ -187,6 +187,7 @@ class CalcElastBackscatterDefault(BaseOperation):
             error_params=error_params,
             calibration=cal_params
         )
+        self.result.ds['assumed_particle_lidar_ratio'] = deepcopy(data.ds.assumed_particle_lidar_ratio)
 
         return self.result
 

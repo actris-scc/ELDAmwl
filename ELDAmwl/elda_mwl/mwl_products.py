@@ -74,7 +74,7 @@ class GetProductMatrixDefault(BaseOperation):
 
             # todo: remove limit to EXT when other prod types are included
             for pt in p_types:
-                if pt not in [EXT, RBSC, LR]:
+                if pt not in [EXT, RBSC, LR, EBSC]:
                     p_types.remove(pt)
 
             self.shape = self.get_common_shape(res)

@@ -36,7 +36,7 @@ class Logger:
 
     def __init__(self):
         self.module_version = '4711'
-        self.meas_id = '1174'
+        self.meas_id = '20181017oh00'
         self.setup_logger()
 
     @property

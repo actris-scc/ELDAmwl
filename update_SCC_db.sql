@@ -157,7 +157,9 @@ INSERT INTO `eldamwl_class_names` (`id`, `method`, `classname`) VALUES
     (11, 'Ansmann method', 'CalcRamanBscProfileAsAnsmann'),
     (12, 'via backscatter ratio', 'CalcRamanBscProfileViaBR'),
     (13, 'minimum', 'FindCalibrWindowMinimum'),
-    (14, 'fit-slope', 'FindCalibrationWindowFitSlope');
+    (14, 'fit-slope', 'FindCalibrationWindowFitSlope'),
+    (15, 'Klett', 'CalcBscProfileKF'),
+    (16, 'iter', 'CalcBscProfileIter');
 
 /*
 * ===================================================================================

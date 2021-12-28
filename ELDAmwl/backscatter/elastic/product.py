@@ -26,3 +26,11 @@ class ElastBackscatters(Backscatters):
         # result.calibr_window = calibr_window
 
         return result
+
+    def to_meta_ds_dict(self, meta_data):
+        # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
+        # and attributes it with key self.mwl_meta_id to meta_data
+        super(ElastBackscatters, self).to_meta_ds_dict(meta_data)
+        dct = meta_data[self.mwl_meta_id]
+        dct.data_vars.assumed_particle_lidar_ratio = self.ds.assumed_particle_lidar_ratio
+

@@ -15,6 +15,7 @@ from ELDAmwl.utils.constants import MWL
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTIONS
 from ELDAmwl.utils.path_utils import abs_file_path
+from datetime import datetime
 
 import xarray as xr
 
@@ -93,6 +94,18 @@ class WriteMWLOutputDefault(BaseOperation):
                 format='NETCDF4')
             ds.close()
 
+    def register_to_db(self):
+        # todo: write real data of  sccversion
+        header = self.data_storage.header
+
+        self.db_func.register_mwl_file_to_db(
+            header.attrs.measurement_ID,
+            self.product_params.mwl_product_id,
+            5, # scc version_id
+            datetime.now(),
+            self.mwl_filename()
+        )
+
     def run(self):
         self.product_params = self.kwargs['product_params']
         self.out_filename = abs_file_path(self.cfg.PRODUCT_PATH, self.mwl_filename())
@@ -125,6 +138,7 @@ class WriteMWLOutputDefault(BaseOperation):
             self.data[MWLFileStructure.RES_GROUP[res]] = group_data
 
         self.write_groups()
+        self.register_to_db()
 
 
 class WriteMWLOutput(BaseOperationFactory):

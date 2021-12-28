@@ -9,7 +9,9 @@ ID,method,classname
 8,used_bin_resolution_of_sliding_average,SlidAvrgUsedBinRes
 9,effective_bin_resolution_of_savitzky_golay_smoothing,SavGolayEffBinRes
 10,effective_bin_resolution_of_sliding_average,SlidAvrgEffBinRes
-11,Ansmann method,CalcRamanBscProfileAsAnsmann,
-12,via backscatter ratio,CalcRamanBscProfileViaBR,
-13,minimum,FindCalibrWindowMinimum,
+11,Ansmann method,CalcRamanBscProfileAsAnsmann
+12,via backscatter ratio,CalcRamanBscProfileViaBR
+13,minimum,FindCalibrWindowMinimum
 14,fit-slope,FindCalibrationWindowFitSlope
+15,Klett,CalcBscProfileKF
+16,iter,CalcBscProfileIter

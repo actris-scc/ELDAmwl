@@ -12,6 +12,7 @@ from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
+from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.general import ELDAmwlLogs
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
@@ -52,7 +53,7 @@ class DBFunc(DBUtils):
 
     def db_log(self, level, datetime, measurement_id, product_id, module_version, msg):
         log_msg = ELDAmwlLogs(
-            meas_id=measurement_id,
+            measurements_id=measurement_id,
             level=level,
             datetime=datetime,
             product_id=product_id,
@@ -879,3 +880,26 @@ class DBFunc(DBUtils):
 
             """
         return self.read_algorithm(method_id, SmoothMethod)
+
+    def register_mwl_file_to_db(self, meas_id, prod_id, scc_version_id, nowtime, filename):
+        mwl_file = self.session.query(EldamwlProducts)\
+            .filter(EldamwlProducts.filename == filename)
+
+        db_entry = EldamwlProducts(
+            measurements_id=meas_id,
+            product_id=prod_id,
+            scc_version_id=scc_version_id,
+            InscribedAt=nowtime,
+            filename=filename
+        )
+        if mwl_file.count() == 0:
+            self.session.add(db_entry)
+        elif mwl_file.count() == 1:
+            mwl_file.update({'scc_version_id': scc_version_id,
+                             'InscribedAt': nowtime,
+                             },
+                            synchronize_session=False)
+        else:
+            self.logger.error('wrong number ({0}) of ELDAmwl product files in db '.format(mwl_file.count()))
+
+        self.session.commit()
