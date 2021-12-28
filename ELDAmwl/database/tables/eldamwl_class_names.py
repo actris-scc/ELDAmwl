@@ -2,10 +2,7 @@
 """Classes for db table which reflect the relation between method names and ELDAmwl class names"""
 
 from ELDAmwl.database.tables.db_base import Base
-from sqlalchemy import CHAR
 from sqlalchemy import Column
-from sqlalchemy import DateTime
-from sqlalchemy import DECIMAL
 from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy import text
@@ -33,4 +30,3 @@ class EldamwlClassNames(Base):
         nullable=False,
         server_default=text("''"),
     )
-

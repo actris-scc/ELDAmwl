@@ -1,8 +1,5 @@
-from copy import deepcopy
-
-import zope
-
 from addict import Dict
+from copy import deepcopy
 from ELDAmwl.backscatter.common.operation import BackscatterFactory
 from ELDAmwl.backscatter.common.operation import BackscatterFactoryDefault
 from ELDAmwl.backscatter.elastic.product import ElastBackscatters
@@ -10,9 +7,12 @@ from ELDAmwl.backscatter.elastic.tools.operation import CalcElastBscProfile
 from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import IMonteCarlo, IElastBscOp
+from ELDAmwl.component.interface import IElastBscOp
+from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
 from ELDAmwl.utils.constants import MC
+
+import zope
 
 
 class ElastBackscatterFactory(BackscatterFactory):
@@ -155,7 +155,8 @@ class CalcElastBackscatterDefault(BaseOperation):
             data (:class:`ELDAmwl.signals.Signals`): elastic signals, default=None
 
         Returns:
-            profiles of particle backscatter coefficients(:class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters`)
+            profiles of particle backscatter
+            coefficients(:class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters`)
 
         """
         if data is None:
@@ -185,7 +186,7 @@ class CalcElastBackscatterDefault(BaseOperation):
             elast_sig=data.ds,
             range_axis=data.range,
             error_params=error_params,
-            calibration=cal_params
+            calibration=cal_params,
         )
         self.result.ds['assumed_particle_lidar_ratio'] = deepcopy(data.ds.assumed_particle_lidar_ratio)
 

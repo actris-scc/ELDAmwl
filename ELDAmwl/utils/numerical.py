@@ -1,8 +1,7 @@
 from copy import deepcopy
-
 from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
-from scipy.stats import sem
 from scipy.integrate import cumulative_trapezoid
+from scipy.stats import sem
 
 import numpy as np
 import xarray as xr
@@ -96,6 +95,7 @@ def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=No
 
     return result
 
+
 def integral_profile(data,
                      range_axis=None,
                      extrapolate_ovl_factor=None,
@@ -164,7 +164,7 @@ def integral_profile(data,
     # the beginning (if ascending range axis) or end (if descending range axis) of xdata and ydata arrays
     # the insert_pos is 0 or -1, respectively.
     # the new point has the values xdata= 0 and ydata = ydata[insert_pos] * extrapolate_ovl_factor
-    insert_pos = None
+    # insert_pos = None
     if extrapolate_ovl_factor is not None:
         # if the range axis is ascending, insert at position 0
         if xdata[0] < xdata[-1]:
@@ -215,4 +215,3 @@ def integral_profile(data,
     del ydata
 
     return result
-

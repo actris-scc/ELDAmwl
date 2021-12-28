@@ -2,11 +2,13 @@
 """Classes for writing multi-wavelength output to NetCDF
 """
 from addict import Dict
+from datetime import datetime
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import ELDA_MWL_VERSION, EBSC
+from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import ELDA_MWL_VERSION
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import HIGHRES
 from ELDAmwl.utils.constants import LOWRES
@@ -15,7 +17,6 @@ from ELDAmwl.utils.constants import MWL
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTIONS
 from ELDAmwl.utils.path_utils import abs_file_path
-from datetime import datetime
 
 import xarray as xr
 
@@ -101,9 +102,9 @@ class WriteMWLOutputDefault(BaseOperation):
         self.db_func.register_mwl_file_to_db(
             header.attrs.measurement_ID,
             self.product_params.mwl_product_id,
-            5, # scc version_id
+            5,  # scc version_id
             datetime.now(),
-            self.mwl_filename()
+            self.mwl_filename(),
         )
 
     def run(self):

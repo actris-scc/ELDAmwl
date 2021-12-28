@@ -1,11 +1,13 @@
 """SCC database table for logging and exit codes"""
 
 from ELDAmwl.database.tables.db_base import Base
-from sqlalchemy import Column, VARCHAR, BIGINT
+from sqlalchemy import BIGINT
+from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy import text
+from sqlalchemy import VARCHAR
 
 
 class ELDAmwlLogs(Base):

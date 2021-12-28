@@ -1,20 +1,20 @@
 from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import ICfg, IElastBscOp
+from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import IElastBscOp
 from ELDAmwl.component.interface import IExtOp
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
 from ELDAmwl.products import Products
+from ELDAmwl.utils.constants import FIXED
 from multiprocessing.pool import Pool
 from zope import component
 
 import numpy as np
 import sys
 import zope
-
-from ELDAmwl.utils.constants import FIXED
 
 
 class MonteCarlo:

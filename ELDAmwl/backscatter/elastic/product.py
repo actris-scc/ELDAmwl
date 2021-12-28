@@ -33,4 +33,3 @@ class ElastBackscatters(Backscatters):
         super(ElastBackscatters, self).to_meta_ds_dict(meta_data)
         dct = meta_data[self.mwl_meta_id]
         dct.data_vars.assumed_particle_lidar_ratio = self.ds.assumed_particle_lidar_ratio
-

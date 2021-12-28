@@ -1,7 +1,7 @@
 """SCC database table for registering ELDAmwl results"""
 
 from ELDAmwl.database.tables.db_base import Base
-from sqlalchemy import Column, BIGINT
+from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import INTEGER
 from sqlalchemy import String

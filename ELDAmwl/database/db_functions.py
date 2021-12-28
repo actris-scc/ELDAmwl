@@ -13,10 +13,10 @@ from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
-from ELDAmwl.database.tables.general import ELDAmwlLogs
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
+from ELDAmwl.database.tables.general import ELDAmwlLogs
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import ErrorThresholds
@@ -85,7 +85,7 @@ class DBFunc(DBUtils):
     def read_classname(self, method):
         """reads from db in which python class the method is implemented
             Args:
-                method_id (str): the method name
+                method (str): the method name
 
             Returns:
                 str: name of the BaseOperation class to be used
@@ -98,7 +98,6 @@ class DBFunc(DBUtils):
         else:
             self.logger.error('wrong number {0} of class names for method {1}'
                               .format(classes.count(), method))
-
 
     def read_algorithm(self, method_id, method_table):
         """ read from db which algorithm shall be used for product retrieval.
@@ -477,6 +476,8 @@ class DBFunc(DBUtils):
                     overlap_correction = True
                     overlap_file = o_file.first().OverlapFile.filename
                 else:
+                    overlap_file = None
+                    overlap_correction = False
                     self.logger.error(
                         'cannot find overlap file with id {0} in db'.format(options('_overlap_file_ID')),
                     )
@@ -782,6 +783,8 @@ class DBFunc(DBUtils):
                 calibration parameter
 
             """
+        BackscatterOption = None
+
         if bsc_type == EBSC:
             BackscatterOption = aliased(ElastBackscatterOption,
                                         name='BackscatterOption')
@@ -890,7 +893,7 @@ class DBFunc(DBUtils):
             product_id=prod_id,
             scc_version_id=scc_version_id,
             InscribedAt=nowtime,
-            filename=filename
+            filename=filename,
         )
         if mwl_file.count() == 0:
             self.session.add(db_entry)

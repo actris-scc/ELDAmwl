@@ -2,14 +2,15 @@
 """Classes for elastic backscatter calculation"""
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
-from ELDAmwl.utils.constants import RAYL_LR, NC_FILL_INT
 from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
+from ELDAmwl.utils.constants import NC_FILL_INT
+from ELDAmwl.utils.constants import RAYL_LR
+from ELDAmwl.utils.numerical import closest_bin
+from ELDAmwl.utils.numerical import integral_profile
 
 import numpy as np
 import xarray as xr
-
-from ELDAmwl.utils.numerical import closest_bin, integral_profile
 
 
 class CalcBscProfileKF(BaseOperation):
@@ -65,7 +66,8 @@ class CalcBscProfileKF(BaseOperation):
                         maximum allowable relative statistical error
                 calibration (addict.Dict):
                     with keys 'cal_first_lev',
-                    'cal_last_lev', and 'calibr_value'. calibr_value is the assumed backscatter ratio at calibration level
+                    'cal_last_lev', and 'calibr_value'.
+                    calibr_value is the assumed backscatter ratio at calibration level
             Returns:
                 bsc (xarray.DataSet) with variables
                     'data' (particle backscatter coefficient),
@@ -115,10 +117,10 @@ class CalcBscProfileKF(BaseOperation):
         # 1) calculate calibration factor
         for t in range(num_times):
             # convert elast_sig.ds (xr.Dataset) into pd.Dataframe for easier selection of calibration window
-            df_sig = elast_sig.data.isel({'level':
-                                    range(calibration['cal_first_lev'][t],
-                                          calibration['cal_last_lev'][t] + 1),
-                                     'time': t})\
+            df_sig = elast_sig.data.isel(
+                {'level': range(calibration['cal_first_lev'][t],
+                                calibration['cal_last_lev'][t] + 1),
+                 'time': t})\
                 .to_dataframe()
             mean_sig = df_sig.data.mean()
             sem_sig = df_sig.data.sem()
@@ -142,11 +144,12 @@ class CalcBscProfileKF(BaseOperation):
                     np.sqrt(np.square(rel_sem_sig) + np.square(calibration.calibr_value.rel_error))
 
         # 2) find signal bin which has the value closest to the mean of the calibration window
-            calibr_bin[t] = closest_bin(elast_sig.data[t].values,
-                                     elast_sig.err[t].values,
-                                     first_bin=calibration['cal_first_lev'][t],
-                                     last_bin=calibration['cal_last_lev'][t],
-                                     search_value=mean_sig)
+            calibr_bin[t] = closest_bin(
+                elast_sig.data[t].values,
+                elast_sig.err[t].values,
+                first_bin=calibration['cal_first_lev'][t],
+                last_bin=calibration['cal_last_lev'][t],
+                search_value=mean_sig)
 
             if calibr_bin[t] is None:
                 self.logger.error('cannot find altitude bin close enough to mean signal within calibration window')
@@ -176,7 +179,6 @@ class CalcBscProfileKF(BaseOperation):
 
             A_int[t, calibr_bin[t]] = 0
 
-
             B[t, :] = calibr_factor[t]
             B_err[t, :] = calibr_factor_err[t]
 
@@ -194,6 +196,7 @@ class CalcBscProfileKF(BaseOperation):
                                               coords=[bsc.time],
                                               dims=['time'])
         return bsc
+
 
 class CalcBscProfileIter(BaseOperation):
     """calculates bsc profiles with iterative method"""
