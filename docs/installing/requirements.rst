@@ -1,7 +1,7 @@
 Requirements
 ============
 
-* Python 3.7
+* Python 3.8
 * MySQL
 
 In order to run ELDAmwl you need an instance of the SCC

@@ -17,30 +17,9 @@ class CalcBscProfileKF(BaseOperation):
     """calculates elast backscatter profile with Klett-Fernald method
 
     uses equations and symbols from Althausen et al. JOTECH 2000
-    (https://doi.org/10.1175/1520-0426(2000)017<1469:SWCAL>2.0.CO;2)
+    (https://journals.ametsoc.org/view/journals/atot/17/11/1520-0426_2000_017_1469_swcal_2_0_co_2.xml)
 
-    ..math::
 
-        \beta_{part}(r) &= \frac{A(r)}{B - 2 S A_{int}} - \beta_{mol}(r) \\
-
-        A &= P(r) * \exp(-2(S_{par} - S_{mol}) M(r)) \\
-
-        M(r) &= \int_{r_{ref}}^{r} \beta_{mol}(R) \mathrm{d}R \\
-
-        A_{int} &= \int_{r_{ref}}^{r} A(R) \mathrm{d}R \\
-
-        B &= \frac{ P(r_{ref}) }{\beta_{part}(r_{ref})  + \beta_{mol}(r_{ref})}
-
-    with
-    :math:`\beta_{par}`, :math:`\beta_{mol}`: backscatter coeffcient of particles and molecules, respectively
-
-    :math:`S_{par}`, :math:`S_{mol}`: lidar ratio of particles and molecules, respectively
-
-    :math:`P(r)`: prepared signal
-
-    :math: `r`, :math: `R`: range
-
-    :math: `r_{ref}`: reference (calibration) range
 
 
     """

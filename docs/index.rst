@@ -26,6 +26,7 @@ the addition and replacement of algorithm components.
     :caption: ELDAmwl Documentation
     :maxdepth: 2
 
+    usage/usage
     installing/installing
     algorithms/algorithms
     contributing/contributing
