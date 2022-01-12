@@ -363,7 +363,7 @@ INSERT INTO `_bsc_methods` (`id`, `method`) VALUES
 
 CREATE TABLE IF NOT EXISTS `eldamwl_exitcodes` (
   `exit_code` int(11) NOT NULL,
-  `description`varchar(100) NOT NULL DEFAULT ''
+  `description`varchar(200) NOT NULL DEFAULT ''
 )
 
 INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
@@ -384,7 +384,7 @@ INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
 	(14, 'Cannot create merged signal'),
 	(15, 'Cannot average products: profiles have different height axis or vertical resolutions'),
 	(16, 'Noise of far-range profile too large for merging'),
-	(17, 'Some of the needed options for product calculation were not found in the db. Please check in the products page that all needed values were defined correctly (e.g. product options, monte carlo options, ...).'),
+	(17, 'Some of the needed options for product calculation were not found in the db. Please check in the products page (e.g. product options, monte carlo options, ...).'),
 	(18, 'Cannot average signals with different scan angles'),
 	(19, 'Cannot create near range or far range extinction profile'),
 	(20, 'Iterative bsc calculation does not converge'),
