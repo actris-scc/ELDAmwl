@@ -16,16 +16,16 @@ The corresponding table `_ext_methods` looks like
 .. image:: table_ext_methods_2.png
 
 The third column (`python_classname`) provides the exact name
-of the corresponding :class:`ELDAmwl.factory.BaseOperation` classes.
+of the corresponding :class:`ELDAmwl.bases.factory.BaseOperation` classes.
 
 The BaseOperationFactory class for the retrieval of the signal slope
-:class:`ELDAmwl.extinction_factories.SignalSlope`
+:class:`ELDAmwl.extinction.tools.operation.SignalSlope`
 is implemented as follows:
 
 .. code:: python
 
     from ELDAmwl.database.db_functions import read_extinction_algorithm
-    from ELDAmwl.factory import BaseOperationFactory
+    from ELDAmwl.bases.factory import BaseOperationFactory
 
 
     class SignalSlope(BaseOperationFactory):
@@ -51,16 +51,16 @@ is implemented as follows:
 
 
 The function :meth:`ELDAmwl.database.db_functions.read_extinction_algorithm`
-reads the class name of the :class:`ELDAmwl.factory.BaseOperation` to be used for the
+reads the class name of the :class:`ELDAmwl.bases.factory.BaseOperation` to be used for the
 actual product from the SCC database.
 
 The two available BaseOperation classes
-(:class:`ELDAmwl.extinction_factories.WeightedLinearFit` and
-:class:`ELDAmwl.extinction_factories.NonWeightedLinearFit`) are implemented as follows:
+(:class:`ELDAmwl.extinction.tools.operation.WeightedLinearFit` and
+:class:`ELDAmwl.extinction.tools.operation.NonWeightedLinearFit`) are implemented as follows:
 
 .. code:: python
 
-    from ELDAmwl.factory import BaseOperation
+    from ELDAmwl.bases.factory import BaseOperation
 
 
     class WeightedLinearFit(BaseOperation):

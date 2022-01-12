@@ -57,7 +57,9 @@ def find_minimum_window(means, sems, w_width, error_threshold):
 
 
 def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=None):
-    """finds the bin which has the value closest to the search value
+    """
+    finds the bin which has the value closest to the search value
+
     Args:
         data(np.array) : 1-dimensional vertical profile of the data
         error(np.array): vertical profile of absolute data errors. Default = None
@@ -67,6 +69,7 @@ def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=No
         search_value (float): Default=None. if not provided, the mean value of the profile is used
     returns:
         idx (int): the index which has the value closest to the search value
+
     """
 
     if first_bin is None:

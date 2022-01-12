@@ -14,13 +14,11 @@ import xarray as xr
 
 
 class CalcBscProfileKF(BaseOperation):
-    """calculates elast backscatter profile with Klett-Fernald method
+    """
+    calculates elast backscatter profile with Klett-Fernald method
 
     uses equations and symbols from Althausen et al. JOTECH 2000
     (https://journals.ametsoc.org/view/journals/atot/17/11/1520-0426_2000_017_1469_swcal_2_0_co_2.xml)
-
-
-
 
     """
 
