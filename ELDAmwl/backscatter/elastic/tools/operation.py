@@ -4,8 +4,8 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
+from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.utils.constants import NC_FILL_INT
-from ELDAmwl.utils.constants import RAYL_LR
 from ELDAmwl.utils.numerical import closest_bin
 from ELDAmwl.utils.numerical import integral_profile
 
@@ -35,8 +35,8 @@ class CalcBscProfileKF(BaseOperation):
             Keyword Args:
                 elast_sig (xarray.DataSet):
                     already smoothed elastic signal with \
-                    variables 'data', 'error', 'qf',
-                    'binres', 'mol_extinction', 'assumed_particle_lidar_ratio', 'altitude'
+                    variables 'data', 'error', 'qf', 'altitude',
+                    'binres', 'mol_extinction', 'mol_bckscatter', 'assumed_particle_lidar_ratio'
                 range_axis (xarray.DataArray): range axis of the elast_signal with variable 'data'
                 error_params (addict.Dict):
                     with keys 'lowrange' and 'highrange' =
@@ -65,6 +65,9 @@ class CalcBscProfileKF(BaseOperation):
         calibration = kwargs['calibration']
         error_params = kwargs['error_params']
 
+        rayl_lr = RayleighLidarRatio()(wavelength=elast_sig.emission_wavelength).run()
+        rayl_bsc = elast_sig.mol_backscatter
+
         if 'range_axis' in kwargs:
             range_axis = kwargs['range_axis']
         else:
@@ -72,13 +75,9 @@ class CalcBscProfileKF(BaseOperation):
 
         num_times = elast_sig.dims['time']
 
-        # calculate Rayleigh backscatter profiles
-        rayl_bsc = elast_sig.mol_extinction / RAYL_LR
-        rayl_bsc.name = 'mol_backscatter'
-
         # calculate difference profile between particle and Rayleigh lidar ratio
         lidar_ratio = elast_sig.assumed_particle_lidar_ratio
-        lr_diff = lidar_ratio - RAYL_LR
+        lr_diff = lidar_ratio - rayl_lr
 
         # prepare empty arrays
         calibr_factor = np.ones(num_times) * np.nan

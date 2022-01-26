@@ -12,6 +12,7 @@ from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import CannotOpenELLPFile
 from ELDAmwl.errors.exceptions import ELPPFileNotFound
 from ELDAmwl.header import Header
+from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.utils.constants import ABOVE_MAX_ALT
 from ELDAmwl.utils.constants import ALL_OK
 from ELDAmwl.utils.constants import ALL_RANGE
@@ -303,6 +304,7 @@ class Signals(Columns):
                     lidar_ratio_err)
 
         result.get_raw_heightres()
+        result.calc_mol_backscatter()
 
         return result
 
@@ -504,6 +506,13 @@ class Signals(Columns):
 
         self.ds['err'] = self.rel_err
         self.ds['data'] = np.log(self.ds.data / self.ds.mol_extinction)
+
+    def calc_mol_backscatter(self):
+        rayl_lr = RayleighLidarRatio()(wavelength=self.emission_wavelength).run()
+        mol_bsc = self.ds.mol_extinction / rayl_lr
+        self.ds['mol_backscatter'] = mol_bsc.assign_attrs(
+            {'units': 'm-1 sr-1',
+             'long_name': 'calculated molecular backscatter coefficient at emission wavelength'})
 
     @property
     def range(self):

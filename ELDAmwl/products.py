@@ -104,6 +104,7 @@ class Products(Signals):
 
             for lev in range(fsb, lsb):
                 self.qf[t, lev] = np.bitwise_or.reduce(self.qf.values[t, int(fb[lev, t]):int(nb[lev, t])])
+                # todo: smoothing of mol_extinction, mol_backscatter, transmission, cloudflag etc
                 smoothed = self.smooth_routine.run(window=int(binres[t, lev]),
                                                    data=self.data.values[t, int(fb[lev, t]):int(nb[lev, t])],
                                                    err=self.err.values[t, int(fb[lev, t]):int(nb[lev, t])])

@@ -28,6 +28,13 @@ class Backscatters(Products):
 
         return result
 
+    @property
+    def bsc_ratio(self):
+        """xarray.DataArray(imensions = time, level): bckscatter ratio (dimensionless)
+        """
+        result = self.data / self.mol_backscatter + 1
+        return result
+
     def to_meta_ds_dict(self, meta_data):
         # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
         # and attributes it with key self.mwl_meta_id to meta_data
