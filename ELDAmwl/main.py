@@ -160,6 +160,7 @@ class Main:
         elda_mwl.prepare_signals()
         elda_mwl.get_basic_products()
         elda_mwl.get_derived_products()
+        # elda_mwl.get_lidar_constants()
 
         #        elda_mwl.write_single_output()
         elda_mwl.get_product_matrix()

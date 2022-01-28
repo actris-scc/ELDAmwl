@@ -9,6 +9,7 @@ from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IParams
 from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
+from ELDAmwl.elda_mwl.get_lidar_constants import GetLidarConstants
 from ELDAmwl.elda_mwl.mwl_products import GetProductMatrix
 from ELDAmwl.elda_mwl.mwl_products import QualityControl
 from ELDAmwl.errors.exceptions import ProductNotUnique
@@ -328,6 +329,10 @@ class RunELDAmwl(BaseOperation):
     def get_derived_products(self):
         self.logger.info('calc derived products ')
         GetDerivedProducts()(product_params=self.params).run()
+
+    def get_lidar_constants(self):
+        self.logger.info('calc lidar constants ')
+        GetLidarConstants()(product_params=self.params).run()
 
     def get_product_matrix(self):
         self.logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
