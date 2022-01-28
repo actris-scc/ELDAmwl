@@ -182,6 +182,9 @@ class CalcElastBackscatterDefault(BaseOperation):
                             self.bsc_params.quality_params.error_threshold,
                              })
 
+        # copy wavelength into data.ds, because only data.ds is provided to the calculation routine
+        data.ds['emission_wavelength'] = data.emission_wavelength
+
         self.result.ds = self.calc_routine.run(
             elast_sig=data.ds,
             range_axis=data.range,
