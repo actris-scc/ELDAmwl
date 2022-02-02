@@ -684,6 +684,8 @@ class DBFunc(DBUtils):
                       'lr_input_method': options.first().lr_input_method_id,
                       'error_method': options.first().error_method_id,
                       'smooth_method': options.first().smooth_method_id,
+                      'fixed_lr': options.first().fixed_lr,
+                      'fixed_lr_error': options.first().fixed_lr_error,
                       }
 
             # if options.first()._lr_input_method_id == PROFILE:

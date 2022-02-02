@@ -30,7 +30,6 @@ class GetDerivedProductsDefault(BaseOperation):
             for res in RESOLUTIONS:
                 if lr_param in self.product_params.all_products_of_res(res):
                     lr = LidarRatioFactory()(
-                        # data_storage=self.data_storage,
                         lr_param=lr_param,
                         resolution=res).get_product()
 

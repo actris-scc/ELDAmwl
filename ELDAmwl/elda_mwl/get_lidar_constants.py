@@ -4,6 +4,7 @@
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
+from ELDAmwl.lidar_constant.operation import LidarConstantFactory
 from ELDAmwl.lidar_ratio.operation import LidarRatioFactory
 from ELDAmwl.utils.constants import RESOLUTIONS
 
@@ -19,7 +20,11 @@ class GetLidarConstantsDefault(BaseOperation):
         self.get_lidar_constants()
 
     def get_lidar_constants(self):
-        for bsc_param in self.product_params.all_bsc_products():
+        wavelengths = self.product_params.wavelengths()
+        for wl in wavelengths:
+            lc = LidarConstantFactory()(
+                wl=wl,
+                product_params=self.product_params).run()
             pass
             self.data_storage.product_common_smooth(bsc_param.prod_id_str, res)
             #if bsc_param.calc_with_res(1) and bsc_param.calc_with_res(0):

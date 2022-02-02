@@ -135,14 +135,25 @@ class MeasurementParams(Params):
         return self.filtered_list(ids)
 
     def all_products_of_res(self, res):
-        """list of parameters of all basic products with resolution res
+        """list of parameters of all products with resolution res
 
         Returns:
             list of :class:`ELDAmwl.products.ProductParams`:
-            list of parameters of all basic products with resolution res
+            list of parameters of all products with resolution res
         """
         prod_df = self.measurement_params.product_table
         ids = prod_df['id'][prod_df[RESOLUTION_STR[res]]]
+        return self.filtered_list(ids)
+
+    def all_basic_products_of_wl(self, wl):
+        """list of parameters of all basic products with wavelength wl
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all basic products with wavelength wl
+        """
+        prod_df = self.measurement_params.product_table
+        ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.basic)]
         return self.filtered_list(ids)
 
     def extinction_products(self):

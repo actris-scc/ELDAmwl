@@ -154,3 +154,11 @@ MAX_AVERAGE_TIME = 2 * 60 * 60  # 2h
 MIN_AVERAGE_TIME = 30 * 60  # 30min
 RANGE_BOUNDARY = 2000
 RANGE_BOUNDARY_KM = RANGE_BOUNDARY / 1000.
+
+# =========================================
+# settings for retrieval of lidar constants
+# =========================================
+ANGSTROEM_DEFAULT = 1.6
+ASSUMED_LR_DEFAULT = 50
+ASSUMED_LR_ERROR_DEFAULT = 10
+LOWEST_HEIGHT_RANGE = 100 #m
