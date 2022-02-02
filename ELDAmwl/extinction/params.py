@@ -65,7 +65,7 @@ class ExtinctionParams(ProductParams):
 
         """
         super(ExtinctionParams, self).to_meta_ds_dict(dct)
-        dct.data_vars.assumed_angstroem_exponent = self.ang_exp_asDataArray
+        dct.data_vars.angstroem_exponent = self.ang_exp_asDataArray
         mwl_vars = MWLFileVarsFromDB()
         dct.data_vars.evaluation_algorithm = mwl_vars.ext_algorithm_var(self.ext_method)
 

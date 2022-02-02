@@ -17,13 +17,11 @@ import zope
 
 class LidarRatioFactory(BaseOperationFactory):
     """
-     argument resolution, can be LOWRES(=0) or HIGHRES(=1)
     """
 
     name = 'LidarRatioFactory'
 
     def __call__(self, **kwargs):
-        # assert 'data_storage' in kwargs
         assert 'lr_param' in kwargs
         assert 'resolution' in kwargs
         res = super(LidarRatioFactory, self).__call__(**kwargs)
