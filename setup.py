@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Installer for the ELDAmwl package."""
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 long_description = '\n\n'.join([
@@ -27,20 +27,16 @@ setup(
     author_email='ina@ina-mattis.de',
     url='https://pypi.python.org/pypi/ELDAmwl',
     license='GPL version 2',
-    packages=['ELDAmwl','ELDAmwl.bases'],
+    packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
     install_requires=[
         # -*- Extra requirements: -*-
+        'addict',
         'autodocsumm',
-        'setuptools',
-        'netcdf4',
-        'sqlalchemy',
-        'SQLAlchemy-Utils',
         'colorlog',
-        'pymysql',
+        'dynaconf',
         'flake8',
-        'isort',
         'flake8-isort',
         'flake8-blind-except',
         'flake8-coding',
@@ -53,14 +49,19 @@ setup(
         'flake8-quotes',
         'flake8-string-format',
         'flake8-todo',
+        'isort',
+        'netcdf4',
+        'pymysql',
         'pytest',
         'pytest-mock',
-        'addict',
         'scipy',
+        'setuptools',
         'sphinx',
         'sphinxcontrib-qthelp',
         'sphinxcontrib-serializinghtml',
         'sphinx-rtd-theme',
+        'sqlalchemy',
+        'SQLAlchemy-Utils',
         'xarray',
     ],
     extras_require={
