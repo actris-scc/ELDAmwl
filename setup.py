@@ -28,6 +28,7 @@ setup(
     url='https://pypi.python.org/pypi/ELDAmwl',
     license='GPL version 2',
     packages=['ELDAmwl'],
+    package_dir={'': '', 'ELDAmwl':'bases'},
     include_package_data=True,
     zip_safe=False,
     install_requires=[
