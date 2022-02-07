@@ -9,7 +9,7 @@ import zope
 import numpy as np
 
 from ELDAmwl.utils.constants import RESOLUTIONS, EXT, RBSC, EBSC, ANGSTROEM_DEFAULT, ASSUMED_LR_DEFAULT, \
-    ASSUMED_LR_ERROR_DEFAULT, FIXED, LR, LOWEST_HEIGHT_RANGE
+    ASSUMED_LR_ERROR_DEFAULT, FIXED, LR, LOWEST_HEIGHT_RANGE, RAMAN
 
 
 class LidarConstantFactory(BaseOperationFactory):
@@ -43,6 +43,8 @@ class LidarConstantFactoryDefault(BaseOperation):
     wl = None
     used_resolution = None
     bsc_param = None
+    bsc = None
+    signals = None
     calibr_height = np.nan
     assumed_angstroem = ANGSTROEM_DEFAULT
     assumed_lr = np.nan
@@ -58,11 +60,31 @@ class LidarConstantFactoryDefault(BaseOperation):
         self.measurement_product_params = self.kwargs['product_params']
 
         self.find_bsc_product()
+        self.find_signals()
         self.find_angstroem()
-        self.find_calibration_height()
+        self.find_calibration_height_and_res()
+        self.bsc = self.data_storage.product_common_smooth(self.bsc_param.prod_id_str,
+                                                           self.used_resolution),
         self.find_lidar_ratio()
 
-        # prod_params = self.product_params.all_basic_products_of_wl(self.wl)
+    def find_signals(self):
+        self.signals = Dict({
+            'total': self.data_storage.elpp_signal(
+                self.bsc_param.prod_id_str,
+                self.bsc_param.total_sig_id)})
+
+        if self.bsc_param.is_bsc_from_depol_components():
+            self.signals['refl'] = self.data_storage.elpp_signal(
+                self.bsc_param.prod_id_str,
+                self.bsc_param.refl_sig_id)
+            self.signals['transm'] = self.data_storage.elpp_signal(
+                self.bsc_param.prod_id_str,
+                self.bsc_param.transm_sig_id)
+
+        if self.bsc_param.bsc_method == RAMAN:
+            self.signals['raman'] = self.data_storage.elpp_signal(
+                self.bsc_param.prod_id_str,
+                self.bsc_param.raman_sig_id)
 
     def find_angstroem(self):
         """
@@ -83,10 +105,9 @@ class LidarConstantFactoryDefault(BaseOperation):
             self.bsc_param = self.measurement_product_params.prod_param(EBSC, self.wl)
 
         if self.bsc_param is None:
-            pass
             self.logger.warning('cannot calculate lidar constant without backscatter product')
 
-    def find_calibration_height(self):
+    def find_calibration_height_and_res(self):
         """
         the height of calibration is the lowest point of the backscatter profile at this wavelength
         """
@@ -203,12 +224,9 @@ class LidarConstantFactoryDefault(BaseOperation):
             'calibr_height': self.calibr_height,
         })
 
-        # self.data_storage.elpp_signal(self.bsc_param.prod_id_str, self.bsc_param.total_sig_id)
-        #self.bsc_param.is_bsc_from_depol_components()
-
         calc_routine = CalcLidarConstant()(
-            bsc=self.data_storage.product_common_smooth(self.bsc_param.prod_id_str,
-                                                        self.used_resolution),
+            bsc=self.bsc,
+            signals=self.signals,
             lc_params=lc_params)
 
         lc = calc_routine.run()
@@ -235,10 +253,9 @@ class CalcLidarConstant(BaseOperationFactory):
     name = 'CalcLidarConstant'
 
     def __call__(self, **kwargs):
-        assert 'lr_params' in kwargs
-        assert 'ext' in kwargs
         assert 'bsc' in kwargs
-        assert 'empty_lr' in kwargs
+        assert 'signals' in kwargs
+        assert 'lc_params' in kwargs
 
         res = super(CalcLidarConstant, self).__call__(**kwargs)
         return res
@@ -271,12 +288,14 @@ class CalcLidarConstantDefault(BaseOperation):
 
     bsc = None
     result = None
+    signals = None
 
     def __init__(self, **kwargs):
+        super(CalcLidarConstantDefault, self).__init__(**kwargs)
+        self.signals = kwargs['signals']
         self.bsc = kwargs['bsc']
-        self.result = deepcopy(kwargs['empty_lr'])
 
-    def run(self, bsc=None):
+    def run(self):
         """
         run the lidar constant calculation
 
@@ -291,8 +310,6 @@ class CalcLidarConstantDefault(BaseOperation):
             time series if lidar constants (:class:`ELDAmwl.`)
 
         """
-        if bsc is None:
-            bsc = self.bsc
 
         # self.result.ds['data'] = ext.data / bsc.data
         # self.result.ds['err'] = self.result.data * np.sqrt(
