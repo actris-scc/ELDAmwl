@@ -27,8 +27,7 @@ setup(
     author_email='ina@ina-mattis.de',
     url='https://pypi.python.org/pypi/ELDAmwl',
     license='GPL version 2',
-    packages=['ELDAmwl'],
-    package_dir={'': '', 'ELDAmwl':'bases'},
+    packages=['ELDAmwl','ELDAmwl.bases'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
