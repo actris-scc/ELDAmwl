@@ -71,20 +71,20 @@ class LidarConstantFactoryDefault(BaseOperation):
         self.signals = Dict({
             'total': self.data_storage.elpp_signal(
                 self.bsc_param.prod_id_str,
-                self.bsc_param.total_sig_id)})
+                self.bsc_param.total_sig_id_str)})
 
         if self.bsc_param.is_bsc_from_depol_components():
             self.signals['refl'] = self.data_storage.elpp_signal(
                 self.bsc_param.prod_id_str,
-                self.bsc_param.refl_sig_id)
+                self.bsc_param.refl_sig_id_str)
             self.signals['transm'] = self.data_storage.elpp_signal(
                 self.bsc_param.prod_id_str,
-                self.bsc_param.transm_sig_id)
+                self.bsc_param.transm_sig_id_str)
 
         if self.bsc_param.bsc_method == RAMAN:
             self.signals['raman'] = self.data_storage.elpp_signal(
                 self.bsc_param.prod_id_str,
-                self.bsc_param.raman_sig_id)
+                self.bsc_param.raman_sig_id_str)
 
     def find_angstroem(self):
         """
@@ -114,6 +114,7 @@ class LidarConstantFactoryDefault(BaseOperation):
 
         # find the lowest height of the backscatter profile. test all resolutions
 
+        self.db_func.read_full_overlap(int(self.bsc_param.total_sig_id[0]))
         # todo: in case of Raman backscatter -> use full overlap height
         for res in RESOLUTIONS:
             if self.bsc_param.calc_with_res(res):

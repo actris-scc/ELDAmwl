@@ -35,7 +35,7 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
         if not self.param.includes_product_merging():
             self.raman_sig = self.data_storage.prepared_signal(
                 self.prod_id,
-                self.param.raman_sig_id)
+                self.param.raman_sig_id_str)
 
             self.sig_ratio = Signals.as_sig_ratio(self.elast_sig, self.raman_sig)
 

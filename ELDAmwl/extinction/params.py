@@ -10,6 +10,7 @@ class ExtinctionParams(ProductParams):
 
     def __init__(self):
         super(ExtinctionParams, self).__init__()
+        self.raman_sig_id_str = None
         self.raman_sig_id = None
         self.ext_method = np.nan
         self.angstroem = np.nan
@@ -31,7 +32,8 @@ class ExtinctionParams(ProductParams):
     def add_signal_role(self, signal):
         super(ExtinctionParams, self)
         if signal.is_Raman_sig:
-            self.raman_sig_id = signal.channel_id_str
+            self.raman_sig_id_str = signal.channel_id_str
+            self.raman_sig_id = signal.channel_id.values
         else:
             self.logger.debug('channel {0} is no Raman signal'.format(signal.channel_id_str))
 

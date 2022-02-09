@@ -27,7 +27,7 @@ class BackscatterFactoryDefault(BaseOperation):
         if not self.param.includes_product_merging():
             self.elast_sig = self.data_storage.prepared_signal(
                 self.param.prod_id_str,
-                self.param.total_sig_id)
+                self.param.total_sig_id_str)
 
     def get_non_merge_product(self):
         pass

@@ -239,7 +239,7 @@ class ExtinctionFactoryDefault(BaseOperation):
         # raman_sig is a deepcopy from data_storage
         self.raman_sig = self.data_storage.prepared_signal(
             self.param.prod_id_str,
-            self.param.raman_sig_id)
+            self.param.raman_sig_id_str)
 
         self.get_smooth_res()
 

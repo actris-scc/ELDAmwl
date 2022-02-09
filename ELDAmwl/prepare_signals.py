@@ -29,9 +29,9 @@ class PrepareBscSignalsDefault(BaseOperation):
         pid = p_param.prod_id_str
         # transm_sig and refl_sig are deepcopies from the data storage
         transm_sig = self.data_storage.prepared_signal(pid,
-                                                       p_param.transm_sig_id)
+                                                       p_param.transm_sig_id_str)
         refl_sig = self.data_storage.prepared_signal(pid,
-                                                     p_param.refl_sig_id)
+                                                     p_param.refl_sig_id_str)
         total_sig = Signals.from_depol_components(transm_sig,
                                                   refl_sig)
         self.data_storage.set_prepared_signal(p_param.prod_id_str,
