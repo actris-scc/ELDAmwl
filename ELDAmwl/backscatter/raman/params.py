@@ -7,6 +7,7 @@ class RamanBscParams(BackscatterParams):
 
     def __init__(self):
         super(RamanBscParams, self).__init__()
+        self.raman_sig_id_str = None
         self.raman_sig_id = None
 
         self.raman_bsc_algorithm = None
@@ -23,7 +24,8 @@ class RamanBscParams(BackscatterParams):
     def add_signal_role(self, signal):
         super(RamanBscParams, self).add_signal_role(signal)
         if signal.is_Raman_sig:
-            self.raman_sig_id = signal.channel_id_str
+            self.raman_sig_id_str = signal.channel_id_str
+            self.raman_sig_id = signal.channel_id.values
 
     def to_meta_ds_dict(self, dct):
         """

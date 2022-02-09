@@ -89,12 +89,12 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         """
 
         el_sig = self.data_storage.prepared_signal(bsc_param.prod_id_str,
-                                                   bsc_param.total_sig_id)
+                                                   bsc_param.total_sig_id_str)
         error_threshold = bsc_param.quality_params.error_threshold.highrange
 
         if bsc_param.general_params.product_type == RBSC:
             r_sig = self.data_storage.prepared_signal(
-                bsc_param.prod_id_str, bsc_param.raman_sig_id)
+                bsc_param.prod_id_str, bsc_param.raman_sig_id_str)
             sigratio = Signals.as_sig_ratio(el_sig, r_sig)
             ds = sigratio.data_in_vertical_range(
                 bsc_param.calibration_params.cal_interval)

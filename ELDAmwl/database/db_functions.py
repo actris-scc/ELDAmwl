@@ -9,7 +9,7 @@ from ELDAmwl.database.tables.backscatter import ElastBscMethod
 from ELDAmwl.database.tables.backscatter import IterBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBscMethod
-from ELDAmwl.database.tables.channels import Channels
+from ELDAmwl.database.tables.channels import Channels, Telescopes
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
@@ -885,6 +885,29 @@ class DBFunc(DBUtils):
 
             """
         return self.read_algorithm(method_id, SmoothMethod)
+
+    def read_full_overlap(self, channel_id):
+        """ read height of full overlap of a channel
+
+            Args:
+                channel_id (int): the id of the channel
+
+            Returns:
+                float: height of the full overlap in m a.g.
+
+        """
+        ovl_heights = self.session.query(
+            Channels, Telescopes,
+        ).filter(
+            Channels.ID == channel_id,
+        ).filter(Channels.telescope_id == Telescopes.ID)
+
+        if ovl_heights.count() > 0:
+            return ovl_heights.first().Telescopes.full_overlap_height_m
+        else:
+            self.logger.error('wrong number of overlap heights ({0}) for channel {1}'.
+                              format(ovl_heights.count(),
+                                     channel_id))
 
     def register_mwl_file_to_db(self, meas_id, prod_id, scc_version_id, nowtime, filename):
         mwl_file = self.session.query(EldamwlProducts)\
