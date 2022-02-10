@@ -10,6 +10,7 @@ import numpy as np
 
 from ELDAmwl.utils.constants import RESOLUTIONS, EXT, RBSC, EBSC, ANGSTROEM_DEFAULT, ASSUMED_LR_DEFAULT, \
     ASSUMED_LR_ERROR_DEFAULT, FIXED, LR, LOWEST_HEIGHT_RANGE, RAMAN
+from ELDAmwl.utils.numerical import integral_profile
 
 
 class LidarConstantFactory(BaseOperationFactory):
@@ -114,7 +115,7 @@ class LidarConstantFactoryDefault(BaseOperation):
 
         # find the lowest height of the backscatter profile. test all resolutions
 
-        self.db_func.read_full_overlap(int(self.bsc_param.total_sig_id[0]))
+        # self.db_func.read_full_overlap(int(self.bsc_param.total_sig_id[0]))
         # todo: in case of Raman backscatter -> use full overlap height
         for res in RESOLUTIONS:
             if self.bsc_param.calc_with_res(res):
@@ -290,11 +291,13 @@ class CalcLidarConstantDefault(BaseOperation):
     bsc = None
     result = None
     signals = None
+    lc_params = None
 
     def __init__(self, **kwargs):
         super(CalcLidarConstantDefault, self).__init__(**kwargs)
         self.signals = kwargs['signals']
         self.bsc = kwargs['bsc']
+        self.lc_params = kwargs['lc_params']
 
     def run(self):
         """
@@ -316,6 +319,21 @@ class CalcLidarConstantDefault(BaseOperation):
         # self.result.ds['err'] = self.result.data * np.sqrt(
         #     np.power(ext.err / ext.err, 2) + np.power(bsc.err / bsc.err, 2))
         # self.result.ds['qf'] = ext.qf | bsc.qf
+
+        self.signals['total'].ds.mol_backscatter
+        self.signals['total'].data
+        self.bsc[0].data
+
+        self.bsc[0].height_to_levels(self.kwargs['lc_params'].calibr_height)
+        self.signals['total'].ds.mol_backscatter[:, self.signals['total'].height_to_levels(733)]
+
+        transm = integral_profile(data,
+                     range_axis=None,
+                     extrapolate_ovl_factor=None,
+                     first_bin=None,
+                     last_bin=None):
+
+
 
         return self.result
 
