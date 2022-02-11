@@ -468,3 +468,69 @@ UPDATE `eldamwl_class_names` SET `method` = 'eff_bin_resolution_of_sliding_avera
 */
 UPDATE `_smooth_methods` set `method_for_getting_effective_binres` = 'eff_bin_resolution_of_savitzky_golay_smoothing' WHERE ID = 0;
 UPDATE `_smooth_methods` set `method_for_getting_effective_binres` = 'eff_bin_resolution_of_sliding_average' WHERE ID = 1;
+
+/*
+* ===================================================================================
+* create a table for VLDR options (vldr_options)
+* fill vldr_options with data of this example (for system 182)
+* 1) add new vldr product to table products
+* 2) add new entry to table polarization_options
+* 3) add new entry to table vldr_options
+* ===================================================================================
+*/
+
+CREATE TABLE IF NOT EXISTS `vldr_options` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `_product_ID` int(11) NOT NULL DEFAULT '-1',
+  `_error_method_ID` int(11) NOT NULL DEFAULT '-1',
+  PRIMARY KEY (`ID`)
+);
+
+INSERT INTO `products` (`_usecase_ID`, `_prod_type_ID`, `__hoi_stations__ID`, `_hirelpp_product_option_ID`, `_ltool_product_option_ID`) VALUES
+	(0, 15, 'hpb', NULL, NULL);
+select max(ID) into @vldr_id from products;
+
+INSERT INTO `vldr_options` (`_product_ID`, `_error_method_ID`) VALUES
+	(@vldr_id, 0);
+
+INSERT INTO `polarization_options` (
+    `_product_ID`,
+    `_pol_calibration_method_ID`,
+    `_crosstalk_parameter_method_ID`,
+    `_correction_factor_method_ID`) VALUES
+	(@vldr_id, 2, 2, 3);
+
+
+/*
+* ===================================================================================
+* create a table for PLDR options (pldr_options)
+* fill pldr_options with data of this example (for system 182)
+* 1) add 2 new pldr products to table products
+* 2) add 2 new entries to table pldr_options (1 for Raman bsc, 1 for elast bsc)
+* ===================================================================================
+*/
+
+CREATE TABLE IF NOT EXISTS `pldr_options` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `_product_ID` int(11) NOT NULL DEFAULT '-1',
+  `_vldr_product_ID` int(11) NOT NULL DEFAULT '-1',
+  `_bsc_product_ID` int(11) NOT NULL DEFAULT '-1',
+  `_error_method_ID` int(11) NOT NULL DEFAULT '-1',
+  `min_BscRatio_for_PLDR` decimal(10,4) NOT NULL DEFAULT '1.0000',
+  PRIMARY KEY (`ID`)
+);
+
+INSERT INTO `products` (`_usecase_ID`, `_prod_type_ID`, `__hoi_stations__ID`, `_hirelpp_product_option_ID`, `_ltool_product_option_ID`) VALUES
+	(NULL, 16, 'hpb', NULL, NULL),
+	(NULL, 16, 'hpb', NULL, NULL);
+select max(ID) into @pldr_id from products;
+
+INSERT INTO `pldr_options` (
+    `_product_ID`,
+    `_vldr_product_ID`,
+    `_bsc_product_ID`,
+    `_error_method_ID`,
+    `min_BscRatio_for_PLDR`) VALUES
+	(@pldr_id -1, @vldr_id, 324, 0, 1.01),
+	(@pldr_id, @vldr_id, 332, 0, 1.01);
+
