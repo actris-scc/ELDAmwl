@@ -326,7 +326,11 @@ class CalcLidarConstantDefault(BaseOperation):
         self.bsc[0].data
 
         calibr_bins = self.bsc[0].height_to_levels(self.lc_params.calibr_height).values
-        self.signals['total'].ds.mol_backscatter[:, self.signals['total'].height_to_levels(733)]
+        mol_bsc = self.signals['total'].ds.mol_backscatter[:, self.signals['total'].height_to_levels(733)].values
+        part_bsc = self.bsc[0].data.values
+        sig = self.signals['total'].data[:, self.signals['total'].height_to_levels(733)].values
+
+        self.result = xr.DataArray(dims=['time'], coords=dict(time=self.bsc[0].ds.time))
 
         for t in range(self.bsc[0].num_times):
             int_bsc = integral_profile(self.bsc[0].data[0].values,
@@ -336,10 +340,9 @@ class CalcLidarConstantDefault(BaseOperation):
                          last_bin=None)
 
             aod = int_bsc * self.lc_params.lidar_ratio
-
             transm = np.exp( -2 * aod[calibr_bins[t]])
 
-
+            self.result.data[t] = sig[t] / (mol_bsc[t] + self.bsc[0].data[0].values[calibr_bins[t]]) / transm
 
         return self.result
 
