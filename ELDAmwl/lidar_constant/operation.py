@@ -327,11 +327,11 @@ class CalcLidarConstantDefault(BaseOperation):
         self.bsc[0].height_to_levels(self.kwargs['lc_params'].calibr_height)
         self.signals['total'].ds.mol_backscatter[:, self.signals['total'].height_to_levels(733)]
 
-        transm = integral_profile(data,
+        transm = integral_profile(self.bsc[0].data,
                      range_axis=None,
                      extrapolate_ovl_factor=None,
                      first_bin=None,
-                     last_bin=None):
+                     last_bin=None)
 
 
 
