@@ -5,6 +5,7 @@ from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
 from ELDAmwl.utils.constants import NC_FILL_STR
 from ELDAmwl.utils.constants import RAYL_LR
 
+from copy import deepcopy
 import numpy as np
 import xarray as xr
 
@@ -19,7 +20,7 @@ class CalcRamanBscProfileViaBR(BaseOperation):
 
     def run(self, **kwargs):
         """calculates Raman bsc profile from elast and Raman signals
-        and calibration window
+        and calibration window.
 
             Keyword Args:
                 sigratio (xarray.DataSet):
@@ -32,6 +33,10 @@ class CalcRamanBscProfileViaBR(BaseOperation):
                 calibration (addict.Dict):
                     with keys 'cal_first_lev',
                     'cal_last_lev', and 'calibr_value'
+
+            Returns:
+                Raman backscatter profile (xarray.DataSet) with calculated variables
+                'data' and 'error'. all other variables and attibutes are copied from from sigratio
         """
         assert 'sigratio' in kwargs
         assert 'error_params' in kwargs
@@ -77,18 +82,13 @@ class CalcRamanBscProfileViaBR(BaseOperation):
                                   coords=[sigratio.time])
 
         # 2) calculate backscatter ratio
-        # todo ina: test whether this copy makes sense and is necessary
-        # bsc = deepcopy(sigratio)
-        bsc = xr.Dataset()
+        bsc = deepcopy(sigratio)
         bsc['data'] = sigratio.data * cf
         bsc['err'] = bsc.data * np.sqrt(np.square(sigratio.err / sigratio.data) + sqr_cf_err)
 
         # 3) calculate backscatter coefficient
         bsc['data'] = (bsc.data - 1.) * rayl_bsc
         bsc['err'] = abs(bsc.err * rayl_bsc)
-
-        bsc['qf'] = sigratio.qf
-        bsc['binres'] = sigratio.binres
 
         return bsc
 
