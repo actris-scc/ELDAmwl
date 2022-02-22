@@ -45,7 +45,7 @@ class Products(Signals):
 
     @classmethod
     def from_signal(cls, signal, p_params, **kw_args):
-        """creates an instance of Products with from general data of signal.
+        """creates an instance of Products from general data of signal.
 
         data, err, qf, and binres have the same shape as signal,
         but are filled with nan.

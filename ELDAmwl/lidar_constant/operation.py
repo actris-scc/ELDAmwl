@@ -7,6 +7,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 import zope
 import numpy as np
+import xarray as xr
 
 from ELDAmwl.utils.constants import RESOLUTIONS, EXT, RBSC, EBSC, ANGSTROEM_DEFAULT, ASSUMED_LR_DEFAULT, \
     ASSUMED_LR_ERROR_DEFAULT, FIXED, LR, LOWEST_HEIGHT_RANGE, RAMAN
@@ -324,14 +325,19 @@ class CalcLidarConstantDefault(BaseOperation):
         self.signals['total'].data
         self.bsc[0].data
 
-        self.bsc[0].height_to_levels(self.kwargs['lc_params'].calibr_height)
+        calibr_bins = self.bsc[0].height_to_levels(self.lc_params.calibr_height).values
         self.signals['total'].ds.mol_backscatter[:, self.signals['total'].height_to_levels(733)]
 
-        transm = integral_profile(self.bsc[0].data,
-                     range_axis=None,
-                     extrapolate_ovl_factor=None,
-                     first_bin=None,
-                     last_bin=None)
+        for t in range(self.bsc[0].num_times):
+            int_bsc = integral_profile(self.bsc[0].data[0].values,
+                         range_axis=self.bsc[0].range[0].values,
+                         extrapolate_ovl_factor=1.,
+                         first_bin=None,
+                         last_bin=None)
+
+            aod = int_bsc * self.lc_params.lidar_ratio
+
+            transm = np.exp( -2 * aod[calibr_bins[t]])
 
 
 
