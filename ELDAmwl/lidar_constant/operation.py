@@ -5,6 +5,7 @@ from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
+from ELDAmwl.lidar_constant.product import LidarConstants
 import zope
 import numpy as np
 import xarray as xr
@@ -66,8 +67,9 @@ class LidarConstantFactoryDefault(BaseOperation):
         self.find_angstroem()
         self.find_calibration_height_and_res()
         self.bsc = self.data_storage.product_common_smooth(self.bsc_param.prod_id_str,
-                                                           self.used_resolution),
+                                                           self.used_resolution)[0],
         self.find_lidar_ratio()
+        self.empty_lc = LidarConstants.init(self.bsc)
 
     def find_signals(self):
         self.signals = Dict({
@@ -325,24 +327,24 @@ class CalcLidarConstantDefault(BaseOperation):
         self.signals['total'].data
         self.bsc[0].data
 
-        calibr_bins = self.bsc[0].height_to_levels(self.lc_params.calibr_height).values
+        calibr_bins = self.bsc.height_to_levels(self.lc_params.calibr_height).values
         mol_bsc = self.signals['total'].ds.mol_backscatter[:, self.signals['total'].height_to_levels(733)].values
-        part_bsc = self.bsc[0].data.values
+        part_bsc = self.bsc.data.values
         sig = self.signals['total'].data[:, self.signals['total'].height_to_levels(733)].values
 
-        self.result = xr.DataArray(dims=['time'], coords=dict(time=self.bsc[0].ds.time))
+        self.result = xr.DataArray(dims=['time'], coords=dict(time=self.bsc.ds.time))
 
-        for t in range(self.bsc[0].num_times):
-            int_bsc = integral_profile(self.bsc[0].data[0].values,
-                         range_axis=self.bsc[0].range[0].values,
+        for t in range(self.bsc.num_times):
+            int_bsc = integral_profile(self.bsc.data[t].values,
+                         range_axis=self.bsc.range[t].values,
                          extrapolate_ovl_factor=1.,
                          first_bin=None,
                          last_bin=None)
 
             aod = int_bsc * self.lc_params.lidar_ratio
-            transm = np.exp( -2 * aod[calibr_bins[t]])
+            transm = np.exp(-2 * aod[calibr_bins[t]])
 
-            self.result.data[t] = sig[t] / (mol_bsc[t] + self.bsc[0].data[0].values[calibr_bins[t]]) / transm
+            self.result.data[t] = sig[t] / (mol_bsc[t] + self.bsc.data[t].values[calibr_bins[t]]) / transm
 
         return self.result
 

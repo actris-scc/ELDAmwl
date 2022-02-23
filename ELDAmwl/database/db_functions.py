@@ -931,3 +931,6 @@ class DBFunc(DBUtils):
             self.logger.error('wrong number ({0}) of ELDAmwl product files in db '.format(mwl_file.count()))
 
         self.session.commit()
+
+    def write_lidar_constant_in_db(self):
+        pass
