@@ -41,6 +41,7 @@ class DataStorage:
                 'basic_products_raw': Dict(),
                 'basic_products_auto_smooth': Dict(),
                 'binres_auto_smooth': Dict(),
+                'lidar_constants': Dict(),
 
                 'binres_common_smooth': Dict(
                     {
@@ -106,6 +107,11 @@ class DataStorage:
         """write a derived product to storage
         """
         self.__data.derived_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
+
+    def set_lidar_constant(self, wl, new_lidar_constant):
+        """write a lidar constant to storage
+        """
+        self.__data.lidar_constants[wl] = new_lidar_constant  # noqa E501
 
     def set_final_product_matrix(self, prod_type, res, new_dataset):
         """write a dataset with common grid (wavelength, time, altitude) to storage

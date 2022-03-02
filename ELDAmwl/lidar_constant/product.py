@@ -14,45 +14,42 @@ class LidarConstants(object):
     time series of lidar constants
     """
 
-    data = Dict()
+    ds = xr.Dataset()
     product_id = None
     measurement_id = None
     system_id = None
+    channel_id = None
+    wavelength = None
 
     @classmethod
-    def init(cls, bsc):
-        """creates an empty instance of LidarConstants, meta data are copied from bsc and
-        retrieved from global data storage.
+    def init(cls, bsc, sig):
+        """creates an empty instance of LidarConstants, meta data are copied from bsc and sig
 
         Args:
             bsc (Backscatters): time series of backscatter profiles
+            sig (signals): time series of signals
         """
         result = cls()
 
-        data_storage = component.queryUtility(IDataStorage)
+        # global measurement params
         meas_params = component.queryUtility(IParams).measurement_params
 
         result.measurement_id = meas_params.meas_id
         result.system_id = meas_params.system_id
         result.product_id = bsc.params.prod_id
-        prod_id_str = bsc.params.prod_id_str
+        result.channel_id = int(sig.channel_id.values)
+        result.wavelength = float(sig.detection_wavelength.values)
 
-        total_sig = data_storage.prepared_signal(prod_id_str,
-                                                 bsc.params.total_sig_id_str)
-
-        result.data['total_sig'] = xr.Dataset()
-        result.data.total_sig['time'] = bsc.ds.time
-        result.data.total_sig['time_bounds'] = bsc.ds.time_bounds
-        result.data.total_sig['data'] = xr.DataArray(
+        result.ds['time'] = bsc.ds.time
+        result.ds['time_bounds'] = bsc.ds.time_bounds
+        result.ds['lidar_constant'] = xr.DataArray(
             np.ones((bsc.ds.dims['time'])) * np.nan,
             dims=['time'])
-        result.data.total_sig['err'] = result.data.total_sig.data
-        result.data.total_sig.attrs['wavelength'] = float(total_sig.detection_wavelength.values)
-        result.data.total_sig.attrs['channel_id'] = int(total_sig.channel_id.values)
+        result.ds['lidar_constant_err'] = xr.DataArray(
+            np.ones((bsc.ds.dims['time'])) * np.nan,
+            dims=['time'])
 
-        # if bsc.params.is_bsc_from_depol_components():
-
-        result.data.total_sig.load()
+        result.ds.load()
         return result
 
     @property

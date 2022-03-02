@@ -23,7 +23,7 @@ class LidarConstantFactory(BaseOperationFactory):
 
     def __call__(self, **kwargs):
         assert 'wl' in kwargs
-        assert 'product_params' in kwargs
+        assert 'mwl_product_params' in kwargs
         res = super(LidarConstantFactory, self).__call__(**kwargs)
         return res
 
@@ -38,16 +38,20 @@ class LidarConstantFactory(BaseOperationFactory):
 class LidarConstantFactoryDefault(BaseOperation):
     """
     derives a single instance of :class:`LidarConstants` from all products of the same wavelength.
+    Params:
+        wl (float): wavelength for which the lidar constant shall be derived
+        mwl_product_params (MeasurementParams): parameter of the mwl product
     """
 
     name = 'LidarConstantFactoryDefault'
 
-    measurement_product_params = None
+    mwl_product_params = None
     wl = None
     used_resolution = None
     bsc_param = None
     bsc = None
     signals = None
+    lidar_constants = Dict()
     calibr_height = np.nan
     assumed_angstroem = ANGSTROEM_DEFAULT
     assumed_lr = np.nan
@@ -60,16 +64,32 @@ class LidarConstantFactoryDefault(BaseOperation):
             * angstroem exponent below lowest bin of backscatter profile
         """
         self.wl = self.kwargs['wl']
-        self.measurement_product_params = self.kwargs['product_params']
+        self.mwl_product_params = self.kwargs['mwl_product_params']
 
+        # which backscatter product is attributed to the wavelength ? -> self.bsc_param
         self.find_bsc_product()
+
+        # which signals are used for the retrieval of this backscatter ? -> self.signals
         self.find_signals()
+
+        # find the best value for the angstroem assumption -> assumed_angstroem
         self.find_angstroem()
+
+        # find calibration height and resolution -> self.calibr_height
+        #                                       -> self.used_resolution
         self.find_calibration_height_and_res()
-        self.bsc = self.data_storage.product_common_smooth(self.bsc_param.prod_id_str,
-                                                           self.used_resolution)[0],
+
+        # find the best value for lidar ratio assumption -> self.assumed_lr
+        #                                                  -> self.assumed_lr_err
         self.find_lidar_ratio()
-        self.empty_lc = LidarConstants.init(self.bsc)
+
+        # import the backscatter profiles from data storage
+        self.bsc = self.data_storage.product_common_smooth(self.bsc_param.prod_id_str,
+                                                           self.used_resolution)
+
+        # create empty lidar constants (with all meta data) for each involved signals
+        for key, value in self.signals.items():
+            self.lidar_constants[key] = LidarConstants.init(self.bsc, value)
 
     def find_signals(self):
         self.signals = Dict({
@@ -96,7 +116,7 @@ class LidarConstantFactoryDefault(BaseOperation):
         the angstroem assumption of this product is used.
         Otherwise, a default value (defined in ELDAmwl.utils.constants) is used.
         """
-        ext_param = self.measurement_product_params.prod_param(EXT, self.wl)
+        ext_param = self.mwl_product_params.prod_param(EXT, self.wl)
         if ext_param is not None:
             self.assumed_angstroem = ext_param.angstroem
 
@@ -104,32 +124,40 @@ class LidarConstantFactoryDefault(BaseOperation):
         """
         find the backscatter product at this wavelength
         """
-        self.bsc_param = self.measurement_product_params.prod_param(RBSC, self.wl)
+        self.bsc_param = self.mwl_product_params.prod_param(RBSC, self.wl)
         if self.bsc_param is None:
-            self.bsc_param = self.measurement_product_params.prod_param(EBSC, self.wl)
+            self.bsc_param = self.mwl_product_params.prod_param(EBSC, self.wl)
 
         if self.bsc_param is None:
             self.logger.warning('cannot calculate lidar constant without backscatter product')
 
     def find_calibration_height_and_res(self):
         """
-        the height of calibration is the lowest point of the backscatter profile at this wavelength
+        The height of calibration is the height of full overlap.
+        If the backscatter profile starts at larger height, use the lowest height of the backscatter profile instead.
+        If the backscatter profile is calculated with several resolutions,
+        the resolution with the lowest calibration height is used for further retrievals.
         """
 
-        # find the lowest height of the backscatter profile. test all resolutions
+        ovl_height = np.nan
+        if not self.bsc_param.includes_product_merging():
+            for sig in self.signals.values():
+                ovl_height = ovl_height = np.nanmax([np.nan, self.db_func.read_full_overlap(int(sig.channel_id))])
+        else:
+            self.logger.error('lidar constant from merged product not yet implemented')
 
-        # self.db_func.read_full_overlap(int(self.bsc_param.total_sig_id[0]))
-        # todo: in case of Raman backscatter -> use full overlap height
         for res in RESOLUTIONS:
             if self.bsc_param.calc_with_res(res):
                 profile = self.data_storage.product_common_smooth(self.bsc_param.prod_id_str, res)
-                calibr_height = np.nan
+
+                # start with overlap height
+                calibr_height = ovl_height
                 for t in range(profile.ds.dims['time']):
                     # use the maximum of all time_slices
                     calibr_idx = profile.first_valid_bin(t)
                     calibr_height = np.nanmax([calibr_height, profile.height[t, calibr_idx]])
 
-                # use the minimum of all resolutions
+                # use the minimum of all resolutions, initial value of self.calibr_height is nan
                 self.calibr_height = np.nanmin([self.calibr_height, calibr_height])
 
                 # if this resolution has minimum calibration height -> use this resolution
@@ -185,7 +213,7 @@ class LidarConstantFactoryDefault(BaseOperation):
         avrg_height_top = self.calibr_height + LOWEST_HEIGHT_RANGE
 
         # get product parameters of requested data type and wavelength
-        prod_param = self.measurement_product_params.prod_param(data_type, self.wl)
+        prod_param = self.mwl_product_params.prod_param(data_type, self.wl)
 
         result_avrg = np.nan
         result_err = np.nan
@@ -231,11 +259,15 @@ class LidarConstantFactoryDefault(BaseOperation):
 
         calc_routine = CalcLidarConstant()(
             bsc=self.bsc,
-            signals=self.signals,
-            lc_params=lc_params)
+            signal=self.signals.total,
+            lc_params=lc_params,
+            empty_lc=self.lidar_constants.total.ds
+        )
 
         lc = calc_routine.run()
+        lc.write_to_database()
 
+        return lc
 
 
 class CalcLidarConstant(BaseOperationFactory):
@@ -259,7 +291,7 @@ class CalcLidarConstant(BaseOperationFactory):
 
     def __call__(self, **kwargs):
         assert 'bsc' in kwargs
-        assert 'signals' in kwargs
+        assert 'signal' in kwargs
         assert 'lc_params' in kwargs
 
         res = super(CalcLidarConstant, self).__call__(**kwargs)
@@ -281,70 +313,73 @@ class CalcLidarConstantDefault(BaseOperation):
 
     Keyword Args:
         bsc (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters`): particle backscatter profiles
-        empty_lc (:class:`ELDAmwl.l`): \
+        signal(:class:`ELDAmwl.signals.Signals`): total signal
+        empty_lc (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
                 instance of LidarConstants which has all meta data but data are empty arrays
+        lc_params (Dict): dictionary with mandatory keys ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
 
     Returns:
-        time series if lidar constants (:class:`ELDAmwl.`)
-
+        time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
     """
 
     name = 'CalcLidarConstantDefault'
 
     bsc = None
     result = None
-    signals = None
+    signal = None
     lc_params = None
+    result = None
 
     def __init__(self, **kwargs):
         super(CalcLidarConstantDefault, self).__init__(**kwargs)
-        self.signals = kwargs['signals']
+        self.signal = kwargs['signal']
         self.bsc = kwargs['bsc']
         self.lc_params = kwargs['lc_params']
+        self.result = deepcopy(kwargs['empty_lc'])
 
     def run(self):
         """
         run the lidar constant calculation
 
-        The the optional keyword args  'bsc' allow to feed new input data into
-        an existing instance of CalcLidarRatioDefault and run a new calculation.
-        This feature is used e.g., for Monte-Carlo error retrievals
-
-        Keyword Args:
-            bsc (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters`): Raman backscatter profiles, default=None
-
         Returns:
-            time series if lidar constants (:class:`ELDAmwl.`)
+            time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
 
         """
 
-        # self.result.ds['data'] = ext.data / bsc.data
-        # self.result.ds['err'] = self.result.data * np.sqrt(
-        #     np.power(ext.err / ext.err, 2) + np.power(bsc.err / bsc.err, 2))
-        # self.result.ds['qf'] = ext.qf | bsc.qf
+        # bin numbers of calibration height in backscatter profile
+        bsc_calibr_bins = self.bsc.height_to_levels(self.lc_params.calibr_height).values
 
-        self.signals['total'].ds.mol_backscatter
-        self.signals['total'].data
-        self.bsc[0].data
+        # bin numbers of calibration height in signal profile
+        sig_calibr_bins = self.signal.height_to_levels(self.lc_params.calibr_height).values
 
-        calibr_bins = self.bsc.height_to_levels(self.lc_params.calibr_height).values
-        mol_bsc = self.signals['total'].ds.mol_backscatter[:, self.signals['total'].height_to_levels(733)].values
-        part_bsc = self.bsc.data.values
-        sig = self.signals['total'].data[:, self.signals['total'].height_to_levels(733)].values
-
-        self.result = xr.DataArray(dims=['time'], coords=dict(time=self.bsc.ds.time))
-
+        # calculation of calibration constant (has to be done for each time slice)
         for t in range(self.bsc.num_times):
-            int_bsc = integral_profile(self.bsc.data[t].values,
+            # value of the molecular backscatter at calibration height
+            mol_bsc = self.signal.ds.mol_backscatter[t, sig_calibr_bins[t]].values
+
+            # value of the signal at calibration height
+            sig = self.signal.data[t, sig_calibr_bins[t]].values
+
+            # backscatter profile data (might have values below calibration height)
+            part_bsc = self.bsc.data[t].values
+
+            # calculate atmospheric transmission below calibration height
+            # 1) integrated backscatter
+            int_bsc = integral_profile(part_bsc,
                          range_axis=self.bsc.range[t].values,
                          extrapolate_ovl_factor=1.,
                          first_bin=None,
                          last_bin=None)
 
+            # 2) aod = integrated backscatter * assumed lidar ratio
             aod = int_bsc * self.lc_params.lidar_ratio
-            transm = np.exp(-2 * aod[calibr_bins[t]])
 
-            self.result.data[t] = sig[t] / (mol_bsc[t] + self.bsc.data[t].values[calibr_bins[t]]) / transm
+            # 3) transmission at calibration height = exp(-2 aod[calibration height])
+            transm = np.exp(-2 * aod[bsc_calibr_bins[t]])
+
+            # calculate lidar constant
+            # lc = signal / ((mol bsc + part bsc) * transmission)
+            self.result.data_vars['lidar_constant'][t] = sig / (mol_bsc + part_bsc[bsc_calibr_bins[t]]) / transm
 
         return self.result
 
