@@ -11,7 +11,7 @@ import numpy as np
 import xarray as xr
 
 from ELDAmwl.utils.constants import RESOLUTIONS, EXT, RBSC, EBSC, ANGSTROEM_DEFAULT, ASSUMED_LR_DEFAULT, \
-    ASSUMED_LR_ERROR_DEFAULT, FIXED, LR, LOWEST_HEIGHT_RANGE, RAMAN
+    ASSUMED_LR_ERROR_DEFAULT, FIXED, LR, LOWEST_HEIGHT_RANGE, RAMAN, OVL_FACTOR_ERR, OVL_FACTOR
 from ELDAmwl.utils.numerical import integral_profile
 
 
@@ -332,7 +332,7 @@ class CalcLidarConstantDefault(BaseOperation):
 
     def __init__(self, **kwargs):
         super(CalcLidarConstantDefault, self).__init__(**kwargs)
-        self.signal = kwargs['signal']
+        self.signal = deepcopy(kwargs['signal'])
         self.bsc = kwargs['bsc']
         self.lc_params = kwargs['lc_params']
         self.result = deepcopy(kwargs['empty_lc'])
@@ -352,13 +352,15 @@ class CalcLidarConstantDefault(BaseOperation):
         # bin numbers of calibration height in signal profile
         sig_calibr_bins = self.signal.height_to_levels(self.lc_params.calibr_height).values
 
+        cor_sig = self.signal.correct_for_mol_transmission()
+
         # calculation of calibration constant (has to be done for each time slice)
         for t in range(self.bsc.num_times):
             # value of the molecular backscatter at calibration height
-            mol_bsc = self.signal.ds.mol_backscatter[t, sig_calibr_bins[t]].values
+            mol_bsc = cor_sig.ds.mol_backscatter[t, sig_calibr_bins[t]].values
 
             # value of the signal at calibration height
-            sig = self.signal.data[t, sig_calibr_bins[t]].values
+            sig = cor_sig.data[t, sig_calibr_bins[t]].values
 
             # backscatter profile data (might have values below calibration height)
             part_bsc = self.bsc.data[t].values
@@ -367,18 +369,36 @@ class CalcLidarConstantDefault(BaseOperation):
             # 1) integrated backscatter
             int_bsc = integral_profile(part_bsc,
                          range_axis=self.bsc.range[t].values,
-                         extrapolate_ovl_factor=1.,
+                         extrapolate_ovl_factor=OVL_FACTOR,
+                         first_bin=None,
+                         last_bin=None)
+
+            int_bsc_min = integral_profile(part_bsc,
+                         range_axis=self.bsc.range[t].values,
+                         extrapolate_ovl_factor=(OVL_FACTOR - OVL_FACTOR_ERR),
+                         first_bin=None,
+                         last_bin=None)
+
+            int_bsc_max = integral_profile(part_bsc,
+                         range_axis=self.bsc.range[t].values,
+                         extrapolate_ovl_factor=(OVL_FACTOR + OVL_FACTOR_ERR),
                          first_bin=None,
                          last_bin=None)
 
             # 2) aod = integrated backscatter * assumed lidar ratio
-            aod = int_bsc * self.lc_params.lidar_ratio
+            lr = self.lc_params.lidar_ratio
+            lr_err = self.lc_params.lidar_ratio_err
+            aod = int_bsc * lr
+            aod_max = int_bsc_max * (lr + lr_err)
+            aod_min = int_bsc_min * (lr - lr_err)
 
             # 3) transmission at calibration height = exp(-2 aod[calibration height])
             transm = np.exp(-2 * aod[bsc_calibr_bins[t]])
+            transm_min = np.exp(-2 * aod_max[bsc_calibr_bins[t]])
+            transm_max = np.exp(-2 * aod_min[bsc_calibr_bins[t]])
 
             # calculate lidar constant
-            # lc = signal / ((mol bsc + part bsc) * transmission)
+            # lc = signal / ((mol bsc + part bsc) * total transmission)
             self.result.data_vars['lidar_constant'][t] = sig / (mol_bsc + part_bsc[bsc_calibr_bins[t]]) / transm
 
         return self.result

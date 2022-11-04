@@ -181,9 +181,9 @@ def integral_profile(data,
     # calculate cumulative integral
     result = cumulative_trapezoid(ydata, x=xdata, initial=0)
 
-    # add half first bin
+    # add half first bin (covers the integral between x=0 and x[0])
     if ydata.size > 1:
-        result = result + ydata[0] * (xdata[1] - xdata[0]) / 2
+        result = result + ydata[0] * xdata[0] / 2
     else:
         result = np.array([np.nan])
 

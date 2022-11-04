@@ -1,3 +1,7 @@
+*************
+Klett-Fernald
+*************
+
 .. math::
 
     \beta_{part}(r) &= \frac{A(r)}{B - 2 S A_{int}} - \beta_{mol}(r) \\
