@@ -51,6 +51,14 @@ class MeasurementParams(Params):
         self.measurement_params = None
 
     def load_from_db(self, meas_id):
+        """ reads the parameters of a measurement from db
+
+        Args:
+            meas_id: measurement id
+
+        Returns:
+
+        """
         self.measurement_params = Params()
         self.measurement_params.meas_id = meas_id
         self.measurement_params.system_id = self.db_func.read_system_id(self.meas_id)
@@ -280,7 +288,7 @@ class MeasurementParams(Params):
             raise ProductNotUnique(prod_type, wl)
 
     def prod_id(self, prod_type, wl):
-        """
+        """finds the id of a given product type and wavelength
 
         Args:
             prod_type: int
@@ -319,54 +327,83 @@ class RunELDAmwl(BaseOperation):
         self.params.load_from_db(meas_id)
 
     def read_tasks(self):
+        """read from db which products shall be calculated
+
+        """
         self.logger.info('read tasks from db')
         self.params.read_product_list()
         # todo: check params (e.g. whether all
         #  time and vert. resolutions are equal)
 
     def read_elpp_data(self):
+        """read pre-processed signals from ELPP files
+
+        """
         self.logger.info('read ELPP files')
         for p_param in self.params.basic_products():
             ElppData().read_nc_file(p_param)
 
     def prepare_signals(self):
+        """prepare signal data for optical retrievals
+
+        """
         self.logger.info('prepare signals')
         PrepareSignals()(products=self.params.basic_products()).run()
 
     def get_basic_products(self):
+        """calculate basic products
+
+        """
         self.logger.info('calc basic products ')
         GetBasicProducts()(product_params=self.params).run()
 
     def get_derived_products(self):
+        """calculate derived products
+
+        """
         self.logger.info('calc derived products ')
         GetDerivedProducts()(product_params=self.params).run()
 
     def get_lidar_constants(self):
+        """calculate lidar constants
+
+        """
         self.logger.info('calc lidar constants ')
         GetLidarConstants()(product_params=self.params).run()
 
     def get_product_matrix(self):
+        """combine all products in common matrixes
+
+        """
         self.logger.info('bring all products and cloud mask on common grid (altitude, time, wavelength) ')
         GetProductMatrix()(product_params=self.params).run()
 
     def quality_control(self):
+        """synergystic quality control of all products
+
+        """
         self.logger.info('synergistic quality control of all products ')
         QualityControl()(product_params=self.params).run()
 
     def write_single_output(self):
+        """write products in single nc files (old style)  - not yet implemented
+
+        """
         self.logger.info('write products into NetCDF files ')
 #        self.data.basic_product_common_smooth('377', LOWRES).save_to_netcdf()
 #        for p_param in self.params.basic_products():
 #            self.data.basic_product_common_smooth(p_param.prod_id_str, 'lowres').save_to_netcdf()
 
     def write_mwl_output(self):
+        """write mwl output in single nc file
+
+        """
         self.logger.info('write all products into one NetCDF file ')
         WriteMWLOutput()(product_params=self.params).run()
 
     @property
     def data(self):
-        """
-        Return the global data
+        """link to global data storage
         :returns: a dict with all global data
         """
         return component.queryUtility(IDataStorage)
