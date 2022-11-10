@@ -26,7 +26,7 @@ class GetLidarConstantsDefault(BaseOperation):
                 wl=wl,
                 mwl_product_params=self.mwl_product_params).run()
 
-            self.data_storage.set_lidar_constant(lc)
+            self.data_storage.set_lidar_constant(wl, lc)
 
 
 class GetLidarConstants(BaseOperationFactory):

@@ -187,7 +187,7 @@ class LidarConstantFactoryDefault(BaseOperation):
 
         else:
             # try option b)
-            mean_lr, mean_lr_err = self.calc_mean_lr(EBSC, 'assumed_lidar_ratio', 'assumed_lidar_ratio_error')
+            mean_lr, mean_lr_err = self.calc_mean_lr(EBSC, 'assumed_particle_lidar_ratio', 'assumed_particle_lidar_ratio_error')
             if (not np.isnan(mean_lr)) and (not np.isnan(mean_lr_err)):
                 self.assumed_lr = mean_lr
                 self.assumed_lr_err = mean_lr_err
@@ -269,7 +269,7 @@ class LidarConstantFactoryDefault(BaseOperation):
         )
 
         lc = calc_routine.run()
-        lc.write_to_database()
+        # lc.write_to_database()
 
         return lc
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for preparation of signals
 (combining depol component, temporal integration, .."""
+from copy import deepcopy
 
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
@@ -48,14 +49,15 @@ class PrepareBscSignalsDefault(BaseOperation):
         pid = self.bsc_param.prod_id_str
         # sig is a deepcopy from the data storage
         for sig in self.data_storage.elpp_signals(pid):
-            sig.set_valid_height_range(self.bsc_param.valid_alt_range)
-            sig.normalize_by_shots()
+            prep_sig = deepcopy(sig)
+            prep_sig.set_valid_height_range(self.bsc_param.valid_alt_range)
+            prep_sig.normalize_by_shots()
             if (self.bsc_param.product_type == EBSC) and (self.bsc_param.elast_bsc_algorithm == KF):
                 pass
             else:
-                sig.correct_for_mol_transmission()
+                prep_sig.correct_for_mol_transmission()
 
-            self.data_storage.set_prepared_signal(pid, sig)
+            self.data_storage.set_prepared_signal(pid, prep_sig)
 
         if self.bsc_param.is_bsc_from_depol_components():
             self.combine_depol_components(self.bsc_param)
@@ -102,12 +104,13 @@ class PrepareExtSignalsDefault(BaseOperation):
         # sig is deepcopy from data storage
         for sig in self.data_storage.elpp_signals(pid):
             if sig.is_Raman_sig:
-                sig.set_valid_height_range(self.ext_param.valid_alt_range)
-                sig.normalize_by_shots()
-                sig.correct_for_mol_transmission()
-                sig.prepare_for_extinction()
+                prep_sig = deepcopy(sig)
+                prep_sig.set_valid_height_range(self.ext_param.valid_alt_range)
+                prep_sig.normalize_by_shots()
+                prep_sig.correct_for_mol_transmission()
+                prep_sig.prepare_for_extinction()
 
-                self.data_storage.set_prepared_signal(pid, sig)
+                self.data_storage.set_prepared_signal(pid, prep_sig)
 
 
 class PrepareExtSignals(BaseOperationFactory):

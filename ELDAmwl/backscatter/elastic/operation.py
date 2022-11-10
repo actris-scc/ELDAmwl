@@ -192,6 +192,9 @@ class CalcElastBackscatterDefault(BaseOperation):
             calibration=cal_params,
         )
         self.result.ds['assumed_particle_lidar_ratio'] = deepcopy(data.ds.assumed_particle_lidar_ratio)
+        self.result.ds['assumed_particle_lidar_ratio_error'] = deepcopy(data.ds.assumed_particle_lidar_ratio_error)
+        self.result.ds['time_bounds'] = deepcopy(data.ds.time_bounds)
+        self.result.ds['laser_pointing_angle'] = deepcopy(data.ds.laser_pointing_angle)
 
         return self.result
 
