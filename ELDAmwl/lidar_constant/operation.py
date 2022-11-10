@@ -5,10 +5,14 @@ from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.lidar_constant.product import LidarConstants
 import zope
 import numpy as np
 import xarray as xr
+from numpy import square as sqr
+from numpy import sqrt
+
 
 from ELDAmwl.utils.constants import RESOLUTIONS, EXT, RBSC, EBSC, ANGSTROEM_DEFAULT, ASSUMED_LR_DEFAULT, \
     ASSUMED_LR_ERROR_DEFAULT, FIXED, LR, LOWEST_HEIGHT_RANGE, RAMAN, OVL_FACTOR_ERR, OVL_FACTOR
@@ -278,12 +282,14 @@ class CalcLidarConstant(BaseOperationFactory):
     In this case, it will be always an instance of CalcLidarConstantDefault().
 
     Keyword Args:
-        bsc (:class:`ELDAmwl.backscatter.raman.product.Backscatters`): particle backscatter profiles
-        empty_lr (:class:`ELDAmwl.lidar_ratio.product.LidarRatios`): \
-                instance of LidarRatios which has all meta data but profile data are empty arrays
+        bsc (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters`): particle backscatter profiles
+        signal(:class:`ELDAmwl.signals.Signals`): total signal
+        empty_lc (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
+                instance of LidarConstants which has all meta data but data are empty arrays
+        lc_params (Dict): dictionary with mandatory keys ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
 
     Returns:
-        instance of :class:`ELDAmwl.bases.factory.BaseOperation`
+        time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
 
     """
 
@@ -352,54 +358,74 @@ class CalcLidarConstantDefault(BaseOperation):
         # bin numbers of calibration height in signal profile
         sig_calibr_bins = self.signal.height_to_levels(self.lc_params.calibr_height).values
 
-        cor_sig = self.signal.correct_for_mol_transmission()
+        # backscatter and signal profiles must have the same altitude axis
+        # if not -> exception
+        if np.any(bsc_calibr_bins != sig_calibr_bins):
+            raise (UseCaseNotImplemented('different height axis in signal and backscatter profile',
+                                         'lidar constant calculation',
+                                         '?'))
+
+        self.signal.correct_for_mol_transmission()
 
         # calculation of calibration constant (has to be done for each time slice)
         for t in range(self.bsc.num_times):
             # value of the molecular backscatter at calibration height
-            mol_bsc = cor_sig.ds.mol_backscatter[t, sig_calibr_bins[t]].values
+            mol_bsc = self.signal.ds.mol_backscatter[t, sig_calibr_bins[t]].values
 
             # value of the signal at calibration height
-            sig = cor_sig.data[t, sig_calibr_bins[t]].values
+            sig = self.signal.data[t, sig_calibr_bins[t]].values
+            sig_err = self.signal.err[t, sig_calibr_bins[t]].values
 
             # backscatter profile data (might have values below calibration height)
             part_bsc = self.bsc.data[t].values
+            part_bsc_err = self.bsc.err[t].values
+
+            # volume bsc
+            vol_bsc = (part_bsc + mol_bsc)[bsc_calibr_bins[t]]
+            vol_bsc_err = vol_bsc * (part_bsc_err/part_bsc)[bsc_calibr_bins[t]]
 
             # calculate atmospheric transmission below calibration height
-            # 1) integrated backscatter
+            # 1) integrated backscatter with lower and upper error bound
             int_bsc = integral_profile(part_bsc,
                          range_axis=self.bsc.range[t].values,
                          extrapolate_ovl_factor=OVL_FACTOR,
                          first_bin=None,
-                         last_bin=None)
+                         last_bin=None)[bsc_calibr_bins[t]]
 
-            int_bsc_min = integral_profile(part_bsc,
+            int_bsc_min = integral_profile(part_bsc - part_bsc_err,
                          range_axis=self.bsc.range[t].values,
                          extrapolate_ovl_factor=(OVL_FACTOR - OVL_FACTOR_ERR),
                          first_bin=None,
-                         last_bin=None)
+                         last_bin=None)[bsc_calibr_bins[t]]
 
-            int_bsc_max = integral_profile(part_bsc,
+            int_bsc_max = integral_profile(part_bsc + part_bsc_err,
                          range_axis=self.bsc.range[t].values,
                          extrapolate_ovl_factor=(OVL_FACTOR + OVL_FACTOR_ERR),
                          first_bin=None,
-                         last_bin=None)
+                         last_bin=None)[bsc_calibr_bins[t]]
+
+            int_bsc_err = abs(int_bsc_max - int_bsc_min) / 2
 
             # 2) aod = integrated backscatter * assumed lidar ratio
             lr = self.lc_params.lidar_ratio
             lr_err = self.lc_params.lidar_ratio_err
             aod = int_bsc * lr
-            aod_max = int_bsc_max * (lr + lr_err)
-            aod_min = int_bsc_min * (lr - lr_err)
+            aod_err = aod * sqrt(sqr(lr_err/lr) + sqr(int_bsc_err/int_bsc))
 
-            # 3) transmission at calibration height = exp(-2 aod[calibration height])
-            transm = np.exp(-2 * aod[bsc_calibr_bins[t]])
-            transm_min = np.exp(-2 * aod_max[bsc_calibr_bins[t]])
-            transm_max = np.exp(-2 * aod_min[bsc_calibr_bins[t]])
+            # 3) transmission at calibration height = exp(-2 aod)
+            # transm_err = sqrt(sqr(-2*transm * aod_err)) = 2 * transm * aod_err
+            transm = np.exp(-2 * aod)
+            transm_err = 2 * transm * aod_err
 
-            # calculate lidar constant
+            # calculate lidar constant lc
             # lc = signal / ((mol bsc + part bsc) * total transmission)
-            self.result.data_vars['lidar_constant'][t] = sig / (mol_bsc + part_bsc[bsc_calibr_bins[t]]) / transm
+            lc = sig / vol_bsc / transm
+            lc_err = lc * sqrt(sqr(sig_err / sig) +
+                               sqr(vol_bsc_err / vol_bsc) +
+                               sqr(transm_err / transm))
+
+            self.result.data_vars['lidar_constant'][t] = lc
+            self.result.data_vars['lidar_constant_err'][t] = lc_err
 
         return self.result
 
