@@ -17,7 +17,9 @@ class Columns(object):
     def __init__(self):
         self.ds = xr.Dataset(
             {'data': (['time', 'level'], np.empty((0, 0))),
-             'err': (['time', 'level'], np.empty((0, 0))),
+             'err': (['time', 'level'], np.empty((0, 0))),  # statistical error
+             'sys_err_neg': (['time', 'level'], np.empty((0, 0))),
+             'sys_err_pos': (['time', 'level'], np.empty((0, 0))),
              'qf': (['time', 'level'], np.empty((0, 0), dtype=np.int8)),
              'binres': (['time', 'level'], np.empty((0, 0), dtype=np.int64)),
              'time_bounds': (['time', 'nv'],
@@ -30,6 +32,8 @@ class Columns(object):
         self.ds.load()
         self.station_altitude = None
 
+        self.has_sys_err = False
+
     @property
     def logger(self):
         return component.queryUtility(ILogger)
@@ -37,6 +41,8 @@ class Columns(object):
     def set_invalid_point(self, time, level, qf):
         self.ds['data'][time, level] = np.nan
         self.ds['err'][time, level] = np.nan
+        self.ds['sys_err_neg'][time, level] = np.nan
+        self.ds['sys_err_pos'][time, level] = np.nan
         self.ds['binres'][time, level] = NC_FILL_INT
         if self.ds.qf[time, level] != NC_FILL_BYTE:
             self.ds['qf'][time, level] = self.ds.qf[time, level] | qf
@@ -89,6 +95,20 @@ class Columns(object):
     @property
     def err(self):
         return self.ds.err
+
+    @property
+    def sys_err_neg(self):
+        if self.has_sys_err:
+            return self.ds.sys_err_neg
+        else:
+            return None
+
+    @property
+    def sys_err_pos(self):
+        if self.has_sys_err:
+            return self.ds.sys_err_pos
+        else:
+            return None
 
     @property
     def rel_err(self):

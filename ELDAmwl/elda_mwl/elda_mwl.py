@@ -20,7 +20,7 @@ from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams
 from ELDAmwl.products import SmoothParams
 from ELDAmwl.signals import ElppData
-from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EBSC, VLDR
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import HIGHRES
 from ELDAmwl.utils.constants import LOWRES
@@ -195,6 +195,17 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
         ids = prod_df['id'][prod_df.type == EBSC]
+        return self.filtered_list(ids)
+
+    def vldr_products(self):
+        """list of parameters of all vldr products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all vldr products
+        """
+        prod_df = self.measurement_params.product_table
+        ids = prod_df['id'][prod_df.type == VLDR]
         return self.filtered_list(ids)
 
     def all_bsc_products(self):

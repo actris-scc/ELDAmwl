@@ -12,12 +12,13 @@ from ELDAmwl.backscatter.raman.operation import RamanBackscatterFactory
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
+from ELDAmwl.depol.vertical_resolution.operation import VLDRUsedBinRes, VLDREffBinRes
 from ELDAmwl.errors.exceptions import NoCalibrWindowFound
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.extinction.operation import ExtinctionFactory
 from ELDAmwl.extinction.vertical_resolution.operation import ExtEffBinRes
 from ELDAmwl.extinction.vertical_resolution.operation import ExtUsedBinRes
-from ELDAmwl.utils.constants import AUTO
+from ELDAmwl.utils.constants import AUTO, VLDR
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import FIXED
@@ -30,6 +31,7 @@ GET_USED_BINRES_CLASSES = {
     RBSC: RamBscUsedBinRes,
     EBSC: ElastBscUsedBinRes,
     EXT: ExtUsedBinRes,
+    VLDR: VLDRUsedBinRes,
 }
 
 # classes to convert bin resolution used in retrievals into effective resolution
@@ -37,6 +39,7 @@ GET_EFF_BINRES_CLASSES = {
     RBSC: RamBscEffBinRes,
     EBSC: ElastBscEffBinRes,
     EXT: ExtEffBinRes,
+    VLDR: VLDREffBinRes,
 }
 
 
@@ -91,7 +94,7 @@ class GetBasicProductsDefault(BaseOperation):
 
         for prod_param in self.product_params.basic_products():
             pid = prod_param.prod_id_str
-            if prod_param.product_type in [EXT, RBSC, EBSC]:  # todo remove this limit
+            if prod_param.product_type in [EXT, RBSC, EBSC, VLDR]:  # todo remove this limit
                 used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
                 for res in RESOLUTIONS:
                     # dummy_sig is a deepcopy from data storage
@@ -122,7 +125,7 @@ class GetBasicProductsDefault(BaseOperation):
         self.get_extinctions_fixed_smooth()
         self.get_raman_bsc_fixed_smooth()
         self.get_elast_bsc_fixed_smooth()
-        # todo: vol_depol
+        self.get_vldr_fixed_smooth()
 
     def get_extinctions_auto_smooth(self):
         """get extinction products with automatic smoothing
@@ -233,6 +236,26 @@ class GetBasicProductsDefault(BaseOperation):
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_bsc)
             del bsc
+
+    def get_vldr_fixed_smooth(self):
+        for depol_param in self.product_params.vldr_products():
+            prod_id = depol_param.prod_id_str
+
+            # calc preliminary vlrd
+            vldr = VLRDFactory()(
+                data_storage=self.data_storage,
+                depol_param=depol_param,
+                autosmooth=False,
+            ).get_product()
+
+            for res in RESOLUTIONS:
+                # if resolution res is required: make a copy of bsc and smooth it
+                if depol_param in self.product_params.all_products_of_res(res):
+                    smooth_vldr = deepcopy(vldr)
+                    smooth_vldr.smooth(self.data_storage.binres_common_smooth(prod_id, res))
+                    self.data_storage.set_basic_product_common_smooth(
+                        prod_id, res, smooth_vldr)
+            del vldr
 
 
 class GetBasicProducts(BaseOperationFactory):
