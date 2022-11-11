@@ -3,7 +3,8 @@
 from addict import Dict
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.database.db import DBUtils
-from ELDAmwl.database.tables.backscatter import BscCalibrOption
+from ELDAmwl.database.tables.backscatter import BscCalibrLowestHeight, BscCalibrUpperHeight, \
+    BscCalibrWindow, BscCalibrValue, BscCalibrRangeSearchMethod
 from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
 from ELDAmwl.database.tables.backscatter import ElastBscMethod
 from ELDAmwl.database.tables.backscatter import IterBackscatterOption
@@ -795,9 +796,22 @@ class DBFunc(DBUtils):
                                         name='BackscatterOption')
 
         cal_params = self.session.query(
-            BscCalibrOption, BackscatterOption,
+            BscCalibrLowestHeight,
+            BscCalibrUpperHeight,
+            BscCalibrWindow,
+            BscCalibrValue,
+            BscCalibrRangeSearchMethod,
+            BackscatterOption,
         ).filter(
-            BscCalibrOption.ID == BackscatterOption.bsc_calibr_options_id,
+            BackscatterOption.bsc_calibration_lowestheight_id == BscCalibrLowestHeight.ID
+        ).filter(
+            BackscatterOption.bsc_calibration_upperheight_id == BscCalibrUpperHeight.ID
+        ).filter(
+            BackscatterOption.bsc_calibration_window_id == BscCalibrWindow.ID
+        ).filter(
+            BackscatterOption.bsc_calibration_value_id == BscCalibrValue.ID
+        ). filter(
+            BackscatterOption.bsc_calibration_range_search_method_id == BscCalibrRangeSearchMethod.ID
         ).filter(BackscatterOption.product_id == bsc_prod_id)
 
         if cal_params.count() > 0:

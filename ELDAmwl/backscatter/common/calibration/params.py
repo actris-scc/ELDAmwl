@@ -23,15 +23,15 @@ class BscCalibrationParams(Params):
         query = db_func.get_bsc_cal_params_query(general_params.prod_id, general_params.product_type)
 
         result.cal_range_search_algorithm = \
-            query.BscCalibrOption.calRangeSearchMethod_ID
+            query.BscCalibrRangeSearchMethod.method_id
         result.window_width = \
-            float(query.BscCalibrOption.WindowWidth)
+            float(query.BscCalibrWindow.width)
         result.cal_value = \
-            float(query.BscCalibrOption.calValue)
+            float(query.BscCalibrValue.bsc_ratio)
         result.cal_interval['min_height'] = \
-            float(query.BscCalibrOption.LowestHeight)
+            float(query.BscCalibrLowestHeight.height)
         result.cal_interval['max_height'] = \
-            float(query.BscCalibrOption.TopHeight)
+            float(query.BscCalibrUpperHeight.height)
 
         return result
 
