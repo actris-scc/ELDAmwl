@@ -10,43 +10,122 @@ from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy import text
 
-
-class BscCalibrOption(Base):
-    """content of the db table bsc_calibr_options
+class BscCalibrLowestHeight(Base):
+    """content of the db table _bsc_calibration_lowestheight
 
     """
 
-    __tablename__ = 'bsc_calibr_options'
+    __tablename__ = '_bsc_calibration_lowestheight'
 
     ID = Column(
+        'id',
         INTEGER, primary_key=True,
     )
-    LowestHeight = Column(
-        DECIMAL(10, 4),
-        nullable=False,
-        server_default=text("'0.0000'"),
-    )
-    TopHeight = Column(
-        DECIMAL(10, 4),
-        nullable=False,
-        server_default=text("'0.0000'"),
-    )
-    WindowWidth = Column(
-        DECIMAL(10, 4),
-        nullable=False,
-        server_default=text("'0.0000'"),
-    )
-    calValue = Column(
-        DECIMAL(10, 4),
-        nullable=False,
-        server_default=text("'0.0000'"),
-    )
-    calRangeSearchMethod_ID = Column(
-        '_calRangeSearchMethod_ID',
+    height = Column(
         INTEGER,
-        nullable=False,
-        server_default=text("'-1'"),
     )
+
+
+class BscCalibrUpperHeight(Base):
+    """content of the db table _bsc_calibration_upperheight
+
+    """
+
+    __tablename__ = '_bsc_calibration_upperheight'
+
+    ID = Column(
+        'id',
+        INTEGER, primary_key=True,
+    )
+    height = Column(
+        INTEGER,
+    )
+
+
+class BscCalibrWindow(Base):
+    """content of the db table _bsc_calibration_window
+
+    """
+
+    __tablename__ = '_bsc_calibration_window'
+
+    ID = Column(
+        'id',
+        INTEGER, primary_key=True,
+    )
+    width = Column(
+        INTEGER,
+    )
+
+
+class BscCalibrValue(Base):
+    """content of the db table _bsc_calibration_value
+
+    """
+
+    __tablename__ = '_bsc_calibration_value'
+
+    ID = Column(
+        'id',
+        INTEGER, primary_key=True,
+    )
+    bsc_ratio = Column(
+        DECIMAL(10, 2),
+    )
+
+
+class BscCalibrRangeSearchMethod(Base):
+    """content of the db table _bsc_calibration_range_search_method
+
+    """
+
+    __tablename__ = '_bsc_calibration_range_search_method'
+
+    ID = Column(
+        'Id',
+        INTEGER, primary_key=True,
+    )
+    method_id = Column(
+        INTEGER,
+    )
+
+
+# class BscCalibrOption(Base):
+#     """content of the db table bsc_calibr_options
+#
+#     """
+#
+#     __tablename__ = 'bsc_calibr_options'
+#
+#     ID = Column(
+#         INTEGER, primary_key=True,
+#     )
+#     LowestHeight = Column(
+#         DECIMAL(10, 4),
+#         nullable=False,
+#         server_default=text("'0.0000'"),
+#     )
+#     TopHeight = Column(
+#         DECIMAL(10, 4),
+#         nullable=False,
+#         server_default=text("'0.0000'"),
+#     )
+#     WindowWidth = Column(
+#         DECIMAL(10, 4),
+#         nullable=False,
+#         server_default=text("'0.0000'"),
+#     )
+#     calValue = Column(
+#         DECIMAL(10, 4),
+#         nullable=False,
+#         server_default=text("'0.0000'"),
+#     )
+#     calRangeSearchMethod_ID = Column(
+#         '_calRangeSearchMethod_ID',
+#         INTEGER,
+#         nullable=False,
+#         server_default=text("'-1'"),
+#     )
 
 
 class BscCalibrMethod(Base):
@@ -152,12 +231,35 @@ class RamanBackscatterOption(Base):
         index=True,
         server_default=text("'-1'"),
     )
-    bsc_calibr_options_id = Column(
-        '_bsc_calibr_options_ID',
+    bsc_calibration_lowestheight_id = Column(
+        '__bsc_calibration_lowestheight__id',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+    )
+    bsc_calibration_upperheight_id = Column(
+        '__bsc_calibration_upperheight__id',
+        INTEGER,
+        nullable=False,
+        index=True,
+    )
+    bsc_calibration_window_id = Column(
+        '__bsc_calibration_window__id',
+        INTEGER,
+        nullable=False,
+        index=True,
+    )
+    bsc_calibration_value_id = Column(
+        '__bsc_calibration_value__id',
+        INTEGER,
+        nullable=False,
+        index=True,
+    )
+    bsc_calibration_range_search_method_id = Column(
+        '__bsc_calibration_range_search_method__id',
+        INTEGER,
+        nullable=False,
+        index=True,
     )
     error_method_id = Column(
         '_error_method_ID',
@@ -199,12 +301,35 @@ class ElastBackscatterOption(Base):
         index=True,
         server_default=text("'-1'"),
     )
-    bsc_calibr_options_id = Column(
-        '_bsc_calibr_options_ID',
+    bsc_calibration_lowestheight_id = Column(
+        '__bsc_calibration_lowestheight__id',
         INTEGER,
         nullable=False,
         index=True,
-        server_default=text("'-1'"),
+    )
+    bsc_calibration_upperheight_id = Column(
+        '__bsc_calibration_upperheight__id',
+        INTEGER,
+        nullable=False,
+        index=True,
+    )
+    bsc_calibration_window_id = Column(
+        '__bsc_calibration_window__id',
+        INTEGER,
+        nullable=False,
+        index=True,
+    )
+    bsc_calibration_value_id = Column(
+        '__bsc_calibration_value__id',
+        INTEGER,
+        nullable=False,
+        index=True,
+    )
+    bsc_calibration_range_search_method_id = Column(
+        '__bsc_calibration_range_search_method__id',
+        INTEGER,
+        nullable=False,
+        index=True,
     )
     error_method_id = Column(
         '_error_method_ID',
