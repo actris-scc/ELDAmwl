@@ -2,8 +2,8 @@
 from ELDAmwl.component.interface import IDBConstructor
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.database.db import DBUtils
-from ELDAmwl.database.tables.backscatter import BscCalibrMethod
-from ELDAmwl.database.tables.backscatter import BscCalibrOption
+from ELDAmwl.database.tables.backscatter import BscCalibrMethod, BscCalibrRangeSearchMethod, BscCalibrValue, \
+    BscCalibrWindow, BscCalibrUpperHeight, BscCalibrLowestHeight
 from ELDAmwl.database.tables.backscatter import BscMethod
 from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
 from ELDAmwl.database.tables.backscatter import ElastBscMethod
@@ -11,7 +11,7 @@ from ELDAmwl.database.tables.backscatter import IterBackscatterOption
 from ELDAmwl.database.tables.backscatter import LRFile
 from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBscMethod
-from ELDAmwl.database.tables.channels import Channels
+from ELDAmwl.database.tables.channels import Channels, Telescopes
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
@@ -51,7 +51,11 @@ import zope
 # List of all DB tables in the test DB
 ALL_DB_TABLES = [
     BscCalibrMethod,
-    BscCalibrOption,
+    BscCalibrLowestHeight,
+    BscCalibrUpperHeight,
+    BscCalibrWindow,
+    BscCalibrValue,
+    BscCalibrRangeSearchMethod,
     BscMethod,
     Channels,
     ElastBackscatterOption,
@@ -81,6 +85,7 @@ ALL_DB_TABLES = [
     SmoothOptions,
     SmoothTypes,
     SystemProduct,
+    Telescopes,
 ]
 
 # Where does the test-DB live
