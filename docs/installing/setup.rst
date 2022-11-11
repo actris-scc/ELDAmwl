@@ -94,10 +94,10 @@ check whether installation was successfull
 .. code:: console
 
     $ poetry shell
-    $ elda -h
+    $ elda_mwl -h
 
 or
 
 .. code:: console
 
-    $ poetry run elda -h
+    $ poetry run elda_mwl -h
