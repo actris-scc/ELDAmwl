@@ -146,7 +146,7 @@ class LidarConstantFactoryDefault(BaseOperation):
         ovl_height = np.nan
         if not self.bsc_param.includes_product_merging():
             for sig in self.signals.values():
-                ovl_height = ovl_height = np.nanmax([np.nan, self.db_func.read_full_overlap(int(sig.channel_id))])
+                ovl_height = np.nanmax([np.nan, self.db_func.read_full_overlap(int(sig.channel_id))])
         else:
             self.logger.error('lidar constant from merged product not yet implemented')
 

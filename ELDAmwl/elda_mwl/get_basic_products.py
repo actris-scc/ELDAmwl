@@ -125,7 +125,7 @@ class GetBasicProductsDefault(BaseOperation):
         self.get_extinctions_fixed_smooth()
         self.get_raman_bsc_fixed_smooth()
         self.get_elast_bsc_fixed_smooth()
-        self.get_vldr_fixed_smooth()
+        # self.get_vldr_fixed_smooth()
 
     def get_extinctions_auto_smooth(self):
         """get extinction products with automatic smoothing

@@ -20,4 +20,23 @@ class EldamwlProducts(Base):
         primary_key=True,
         autoincrement=True,
     )
-
+    measurements_id = Column(
+        VARCHAR(15),
+        nullable=False,
+    )
+    product_id = Column(
+        INTEGER,
+        nullable=False,
+    )
+    inscribed_at = Column(
+        'InscribedAt',
+        DateTime,
+        nullable=False,
+    )
+    scc_version_id = Column(
+        INTEGER,
+    )
+    filename = Column(
+        VARCHAR(100),
+        nullable=False,
+    )

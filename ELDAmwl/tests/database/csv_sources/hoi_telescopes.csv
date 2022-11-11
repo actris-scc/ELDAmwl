@@ -1,2 +1,2 @@
-ID,type,diameter,focal_length,full_overlap_height_m,manufacturer,model,obscuration_diameter,field_of_view,field_stop_type,field_stop_size,optical_fiber_num_aperture,optical_fiber_manufacturer,optical_fiber_type,collimation_focal_length,entry_update_date,collimation_type,collimation_model,__hoi_stations__ID,locked
-54,Newton,primary parabolic flat folding mirror,300.0,900.0,700.0,\N,\N,\N,\N,\N,\N,\N,\N,\N,\N,\N,\N,\N,hpb,0
+ID,type,diameter,focal_length,full_overlap_height_m,__hoi_stations__ID,locked
+54,Newton primary parabolic flat folding mirror,300.0,900.0,0.0,hpb,0

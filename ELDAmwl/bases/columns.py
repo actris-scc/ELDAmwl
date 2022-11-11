@@ -41,8 +41,8 @@ class Columns(object):
     def set_invalid_point(self, time, level, qf):
         self.ds['data'][time, level] = np.nan
         self.ds['err'][time, level] = np.nan
-        self.ds['sys_err_neg'][time, level] = np.nan
-        self.ds['sys_err_pos'][time, level] = np.nan
+        # self.ds['sys_err_neg'][time, level] = np.nan
+        # self.ds['sys_err_pos'][time, level] = np.nan
         self.ds['binres'][time, level] = NC_FILL_INT
         if self.ds.qf[time, level] != NC_FILL_BYTE:
             self.ds['qf'][time, level] = self.ds.qf[time, level] | qf
@@ -96,20 +96,20 @@ class Columns(object):
     def err(self):
         return self.ds.err
 
-    @property
-    def sys_err_neg(self):
-        if self.has_sys_err:
-            return self.ds.sys_err_neg
-        else:
-            return None
-
-    @property
-    def sys_err_pos(self):
-        if self.has_sys_err:
-            return self.ds.sys_err_pos
-        else:
-            return None
-
+    # @property
+    # def sys_err_neg(self):
+    #     if self.has_sys_err:
+    #         return self.ds.sys_err_neg
+    #     else:
+    #         return None
+    #
+    # @property
+    # def sys_err_pos(self):
+    #     if self.has_sys_err:
+    #         return self.ds.sys_err_pos
+    #     else:
+    #         return None
+    #
     @property
     def rel_err(self):
         return self._relative_error()

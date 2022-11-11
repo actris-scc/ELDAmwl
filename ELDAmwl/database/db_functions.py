@@ -931,14 +931,14 @@ class DBFunc(DBUtils):
             measurements_id=meas_id,
             product_id=prod_id,
             scc_version_id=scc_version_id,
-            InscribedAt=nowtime,
+            inscribed_at=nowtime,
             filename=filename,
         )
         if mwl_file.count() == 0:
             self.session.add(db_entry)
         elif mwl_file.count() == 1:
             mwl_file.update({'scc_version_id': scc_version_id,
-                             'InscribedAt': nowtime,
+                             'inscribed_at': nowtime,
                              },
                             synchronize_session=False)
         else:
