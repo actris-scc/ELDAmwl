@@ -1,2 +1,2 @@
-ID,_product_ID,_elast_bsc_method_ID,_bsc_calibr_options_ID,_error_method_ID,_lr_input_method_id,fixed_lr,fixed_lr_error,_iter_bsc_options_id,_smooth_method_ID
-63,330,0,11,0,1,40.0000,0.0000,1,0
+ID,_product_ID,_elast_bsc_method_ID,_bsc_calibr_options_ID,__bsc_calibration_lowestheight__id,__bsc_calibration_upperheight__id,__bsc_calibration_window__id,__bsc_calibration_value__id,__bsc_calibration_range_search_method__id,_error_method_ID,_lr_input_method_id,fixed_lr,fixed_lr_error,_iter_bsc_options_id,_smooth_method_ID
+63,330,0,19,6,6,2,10,2,0,1,40.0000,0.0000,1,0
