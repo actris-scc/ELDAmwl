@@ -4,9 +4,13 @@ from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IParams
 from zope import component
+from datetime import datetime
 
 import numpy as np
 import xarray as xr
+
+from ELDAmwl.utils.constants import ELDA_MWL_VERSION
+from ELDAmwl.utils.numerical import np_datetime64_to_datetime
 
 
 class LidarConstants(object):
@@ -20,6 +24,7 @@ class LidarConstants(object):
     system_id = None
     channel_id = None
     wavelength = None
+    calibr_height = None
 
     @classmethod
     def init(cls, bsc, sig):
@@ -58,4 +63,19 @@ class LidarConstants(object):
 
     def write_to_database(self):
         db_func = component.queryUtility(IDBFunc)
-        db_func.write_lidar_constant_in_db()
+        for t in range(self.ds.dims['time']):
+            db_func.write_lidar_constant_in_db(self.measurement_id,
+                                               self.product_id,
+                                               self.channel_id,
+                                               self.system_id,
+                                               self.wavelength,
+                                               'unknown ELDAmwl file',
+                                               ELDA_MWL_VERSION,
+                                               datetime.now(),
+                                               np_datetime64_to_datetime(self.ds.time_bounds[t,0].values),
+                                               np_datetime64_to_datetime(self.ds.time_bounds[t,1].values),
+                                               float(self.ds.lidar_constant[t]),
+                                               None,  # systematic error
+                                               float(self.ds.lidar_constant_err[t]),
+                                               float(self.calibr_height), float(self.calibr_height))
+        # todo: find correct filename here

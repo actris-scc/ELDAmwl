@@ -94,6 +94,7 @@ class LidarConstantFactoryDefault(BaseOperation):
         # create empty lidar constants (with all meta data) for each involved signals
         for key, value in self.signals.items():
             self.lidar_constants[key] = LidarConstants.init(self.bsc, value)
+            self.lidar_constants[key].calibr_height = self.calibr_height
 
     def find_signals(self):
         self.signals = Dict({
@@ -268,8 +269,8 @@ class LidarConstantFactoryDefault(BaseOperation):
             empty_lc=self.lidar_constants.total.ds
         )
 
-        lc = calc_routine.run()
-        # lc.write_to_database()
+        self.lidar_constants.total.ds = calc_routine.run()
+        self.lidar_constants.total.write_to_database()
 
         return lc
 
@@ -341,7 +342,8 @@ class CalcLidarConstantDefault(BaseOperation):
         self.signal = deepcopy(kwargs['signal'])
         self.bsc = kwargs['bsc']
         self.lc_params = kwargs['lc_params']
-        self.result = deepcopy(kwargs['empty_lc'])
+        # self.result = deepcopy(kwargs['empty_lc'])
+        self.result = kwargs['empty_lc']
 
     def run(self):
         """
