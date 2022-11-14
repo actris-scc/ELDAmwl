@@ -30,6 +30,7 @@ from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SmoothMethod
 from ELDAmwl.database.tables.system_product import SmoothOptions
 from ELDAmwl.database.tables.system_product import SystemProduct
+from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.errors.exceptions import NoBscCalOptions
 from ELDAmwl.errors.exceptions import NOMCOptions
 from ELDAmwl.utils.constants import EBSC
@@ -946,5 +947,45 @@ class DBFunc(DBUtils):
 
         self.session.commit()
 
-    def write_lidar_constant_in_db(self):
-        pass
+    def write_lidar_constant_in_db(self, meas_id, prod_id, chan_id, hoi_system_id, detection_wl,
+                                   filename,
+                                   nowtime, profile_start, profile_end,
+                                   new_lc, new_lc_sys_err, new_lc_stat_err,
+                                   calibr_window_bottom, calibr_window_top,
+                                   processor_version):
+        lidar_const = self.session.query(LidarConstants)\
+            .filter(LidarConstants.measurements_id == meas_id)\
+            .filter(LidarConstants.product_id == prod_id)\
+            .filter(LidarConstants.channel_id == chan_id)\
+            .filter(LidarConstants.profile_start_time == profile_start)\
+            .filter(LidarConstants.profile_end_time == profile_end)
+
+        new_db_entry = LidarConstants(
+            measurements_id=meas_id,
+            product_id=prod_id,
+            channel_id=chan_id,
+            hoi_system_id=hoi_system_id,
+            InscribedAt=nowtime,
+            profile_start_time=profile_start,
+            profile_end_time=profile_end,
+            filename=filename,
+            ELDA_version=processor_version,
+            lidar_const=new_lc,
+            lidar_const_sys_err=new_lc_sys_err,
+            lidar_const_stat_err=new_lc_stat_err,
+            calibr_window_bottom=calibr_window_bottom,
+            calibr_window_top=calibr_window_top,
+            detection_wavelength=detection_wl,
+            is_latest_value=1
+        )
+        if lidar_const.count() == 0:
+            self.session.add(new_db_entry)
+        elif lidar_const.count() == 1:
+            lidar_const.update({'is_latest_value': 0,
+                                },
+                               synchronize_session=False)
+        else:
+            self.logger.error('wrong number ({0}) of lidar constants in db '.format(lidar_const.count()))
+
+        self.session.commit()
+

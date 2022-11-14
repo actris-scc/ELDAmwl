@@ -7,6 +7,10 @@ import numpy as np
 import xarray as xr
 
 
+def np_datetime64_to_datetime(np_datetme_64):
+    return np_datetme_64.astype('M8[ms]').astype('O')
+
+
 def rolling_mean_sem(data, level):
     """calculate rolling mean and stderror of mean"""
     means = data.rolling(level=level).reduce(np.mean)
