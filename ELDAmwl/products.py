@@ -365,7 +365,7 @@ class GeneralProductParams(Params):
         try:
             result.calc_with_hr = bool(query.MWLproductProduct.create_with_hr)
             result.calc_with_lr = bool(query.MWLproductProduct.create_with_lr)
-            result.elpp_file = query.PreparedSignalFile.filename
+            # result.elpp_file = query.PreparedSignalFile.filename
         except AttributeError:
             pass
 
