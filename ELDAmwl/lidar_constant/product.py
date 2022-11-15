@@ -53,6 +53,12 @@ class LidarConstants(object):
         result.ds['lidar_constant_err'] = xr.DataArray(
             np.ones((bsc.ds.dims['time'])) * np.nan,
             dims=['time'])
+        result.ds['particle_transmission'] = xr.DataArray(
+            np.ones((bsc.ds.dims['time'])) * np.nan,
+            dims=['time'])
+        result.ds['particle_transmission_err'] = xr.DataArray(
+            np.ones((bsc.ds.dims['time'])) * np.nan,
+            dims=['time'])
 
         result.ds.load()
         return result

@@ -111,7 +111,7 @@ class DataStorage:
     def set_lidar_constant(self, wl, new_lidar_constant):
         """write a lidar constant to storage
         """
-        self.__data.lidar_constants[wl] = new_lidar_constant  # noqa E501
+        self.__data.lidar_constants[wl] = new_lidar_constant
 
     def set_final_product_matrix(self, prod_type, res, new_dataset):
         """write a dataset with common grid (wavelength, time, altitude) to storage
