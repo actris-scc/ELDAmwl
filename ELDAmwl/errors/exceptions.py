@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -176,6 +176,20 @@ class UseCaseNotImplemented(ELDAmwlException):
         if self.instead:
             msg.join('use {0} instead.'.format(self.instead))
         return msg
+
+
+class DifferentWlForLR(ELDAmwlException):
+    """raised when the backscatter and extinction products for a lidar ratio
+    retrieval have different wavelengths"""
+    return_value = DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR
+
+    def __init__(self, product_id):
+        self.product_id = product_id
+
+    def __str__(self):
+        return('the extinction and backscatter products '
+               'for the retrieval of lidar ratio (product_id={0}) '
+               'have different wavelengths'.format(self.product_id))
 
 
 class CalRangeHigherThanValid(ELDAmwlException):

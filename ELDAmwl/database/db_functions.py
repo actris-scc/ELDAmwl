@@ -65,29 +65,29 @@ class DBFunc(DBUtils):
         self.session.add(log_msg)
         self.session.commit()
 
-    def read_signal_filename(self, product_id, measurement_id):
-        """
-
-        Args:
-            measurement_id:
-
-        Returns:
-
-        """
-        signals = self.session.query(PreparedSignalFile)\
-            .filter(PreparedSignalFile.measurements_id == measurement_id)\
-            .filter(PreparedSignalFile.product_id == product_id)
-
-        if signals.count() == 1:
-            return signals.first().filename
-        elif signals.count() == 0:
-            self.logger.error(
-                'no prepared signal file for measurement {0} and product {1}'.format(measurement_id, product_id),
-            )
-        else:
-            self.logger.error(
-                'more than one file for measurement {0} and product {1}'.format(measurement_id, product_id),
-            )
+    # def read_signal_filename(self, product_id, measurement_id):
+    #     """
+    #
+    #     Args:
+    #         measurement_id:
+    #
+    #     Returns:
+    #
+    #     """
+    #     signals = self.session.query(PreparedSignalFile)\
+    #         .filter(PreparedSignalFile.measurements_id == measurement_id)\
+    #         .filter(PreparedSignalFile.product_id == product_id)
+    #
+    #     if signals.count() == 1:
+    #         return signals.first().filename
+    #     elif signals.count() == 0:
+    #         self.logger.error(
+    #             'no prepared signal file for measurement {0} and product {1}'.format(measurement_id, product_id),
+    #         )
+    #     else:
+    #         self.logger.error(
+    #             'more than one file for measurement {0} and product {1}'.format(measurement_id, product_id),
+    #         )
 
     def read_classname(self, method):
         """reads from db in which python class the method is implemented
@@ -501,7 +501,7 @@ class DBFunc(DBUtils):
                 'wrong number of extinction options ({0})'.format(options.count()),
             )
 
-    def get_products_query(self, mwl_prod_id, measurement_id):
+    def get_basic_products_query(self, mwl_prod_id, measurement_id):
         """ read from db which of the products correlated to
             this system is the mwl product.
 
@@ -514,10 +514,10 @@ class DBFunc(DBUtils):
 
             """
 
-        ErrorThresholdsLow = aliased(ErrorThresholds,
-                                     name='ErrorThresholdsLow')
-        ErrorThresholdsHigh = aliased(ErrorThresholds,
-                                      name='ErrorThresholdsHigh')
+        # ErrorThresholdsLow = aliased(ErrorThresholds,
+        #                              name='ErrorThresholdsLow')
+        # ErrorThresholdsHigh = aliased(ErrorThresholds,
+        #                               name='ErrorThresholdsHigh')
 
         products = self.session.query(
             MWLproductProduct,
@@ -525,9 +525,9 @@ class DBFunc(DBUtils):
             ProductTypes,
             SmoothOptions,
             PreProcOptions,
-            ErrorThresholdsLow,
-            ErrorThresholdsHigh,
-            # PreparedSignalFile,
+            # ErrorThresholdsLow,
+            # ErrorThresholdsHigh,
+            PreparedSignalFile,
             ProductChannels,
             Channels,
         ).filter(
@@ -539,21 +539,23 @@ class DBFunc(DBUtils):
         ).filter(
             ProductTypes.is_in_mwl_products == 1,
         ).filter(
+            ProductTypes.is_basic_product == 1,
+        ).filter(
             SmoothOptions.product_id == Products.ID,
         ).filter(
             PreProcOptions.product_id == Products.ID,
-        ).filter(
-            SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
-        ).filter(
-            SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
+        # ).filter(
+        #     SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
+        # ).filter(
+        #     SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
         ).filter(
             ProductChannels.prod_id == Products.ID,
         ).filter(
             ProductChannels.channel_id == Channels.ID,
-        # ).filter(
-        #     PreparedSignalFile.product_id == Products.ID,
-        # ).filter(
-        #     PreparedSignalFile.measurements_id == measurement_id,
+        ).filter(
+            PreparedSignalFile.product_id == Products.ID,
+        ).filter(
+            PreparedSignalFile.measurements_id == measurement_id,
         ).group_by(Products.ID)
 
         if products.count() > 0:
@@ -561,7 +563,58 @@ class DBFunc(DBUtils):
         else:
             self.logger.error('no individual products for mwl product')
 
-    def get_general_params_query(self, prod_id):
+    def get_derived_products_query(self, mwl_prod_id, measurement_id):
+        """ read from db which of the products correlated to
+            this system is the mwl product.
+
+            Args:
+                mwl_prod_id (int): product id of mwl product
+                measurement_id(str): id of measurement
+
+            Returns:
+                list of individual product IDs corresponding to this mwl product
+
+            """
+
+        # ErrorThresholdsLow = aliased(ErrorThresholds,
+        #                              name='ErrorThresholdsLow')
+        # ErrorThresholdsHigh = aliased(ErrorThresholds,
+        #                               name='ErrorThresholdsHigh')
+
+        products = self.session.query(
+            MWLproductProduct,
+            Products,
+            ProductTypes,
+            SmoothOptions,
+            PreProcOptions,
+            # ErrorThresholdsLow,
+            # ErrorThresholdsHigh,
+        ).filter(
+            MWLproductProduct.mwl_product_id == mwl_prod_id,
+        ).filter(
+            MWLproductProduct.product_id == Products.ID,
+        ).filter(
+            Products.prod_type_id == ProductTypes.ID,
+        ).filter(
+            ProductTypes.is_in_mwl_products == 1,
+        ).filter(
+            ProductTypes.is_basic_product == 0,
+        ).filter(
+            SmoothOptions.product_id == Products.ID,
+        ).filter(
+            PreProcOptions.product_id == Products.ID,
+        # ).filter(
+        #     SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
+        # ).filter(
+        #     SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
+        ).group_by(Products.ID)
+
+        if products.count() > 0:
+            return products
+        else:
+            self.logger.error('no individual products for mwl product')
+
+    def get_extended_general_params_query(self, prod_id):
         """ read general params of a product from db
 
             Args:
@@ -572,18 +625,18 @@ class DBFunc(DBUtils):
 
             """
 
-        ErrorThresholdsLow = aliased(ErrorThresholds,
-                                     name='ErrorThresholdsLow')
-        ErrorThresholdsHigh = aliased(ErrorThresholds,
-                                      name='ErrorThresholdsHigh')
+        # ErrorThresholdsLow = aliased(ErrorThresholds,
+        #                              name='ErrorThresholdsLow')
+        # ErrorThresholdsHigh = aliased(ErrorThresholds,
+        #                               name='ErrorThresholdsHigh')
 
         options = self.session.query(
             Products,
             ProductTypes,
             PreProcOptions,
             SmoothOptions,
-            ErrorThresholdsLow,
-            ErrorThresholdsHigh,
+            # ErrorThresholdsLow,
+            # ErrorThresholdsHigh,
             ProductChannels,
             Channels,
         ).filter(
@@ -594,10 +647,10 @@ class DBFunc(DBUtils):
             Products.prod_type_id == ProductTypes.ID,
         ).filter(
             ProductTypes.is_in_mwl_products == 1,
-        ).filter(
-            SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
-        ).filter(
-            SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
+        # ).filter(
+        #     SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
+        # ).filter(
+        #     SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
         ).filter(
             ProductChannels.prod_id == Products.ID,
         ).filter(
