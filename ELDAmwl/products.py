@@ -338,22 +338,28 @@ class GeneralProductParams(Params):
         self.signals = []
 
     @classmethod
-    def from_query(cls, query):
+    def from_extended_query(cls, query):
+        result = cls.from_short_query(query)
+
+        result.emission_wavelength = float(query.Channels.emission_wavelength)
+
+        try:
+            result.elpp_file = query.PreparedSignalFile.filename
+        except AttributeError:
+            pass
+
+        return result
+
+    @classmethod
+    def from_short_query(cls, query):
         result = cls()
 
         result.prod_id = query.Products.ID
         result.product_type = query.Products.prod_type_id
         result.usecase = query.Products.usecase_id
-        result.emission_wavelength = float(query.Channels.emission_wavelength)
 
         result.is_basic_product = query.ProductTypes.is_basic_product == 1
         result.is_derived_product = not result.is_basic_product
-
-#        result.error_threshold.low = query.ErrorThresholdsLow.value
-#        result.error_threshold.high = query.ErrorThresholdsHigh.value
-#        result.detection_limit = query.ProductOptions.detection_limit
-#        if result.detection_limit == 0.0:
-#            raise(DetectionLimitZero, result.prod_id)
 
         result.valid_alt_range.min_height = float(query.PreProcOptions.min_height)
         result.valid_alt_range.max_height = float(query.PreProcOptions.max_height)
@@ -365,7 +371,6 @@ class GeneralProductParams(Params):
         try:
             result.calc_with_hr = bool(query.MWLproductProduct.create_with_hr)
             result.calc_with_lr = bool(query.MWLproductProduct.create_with_lr)
-            # result.elpp_file = query.PreparedSignalFile.filename
         except AttributeError:
             pass
 
@@ -376,8 +381,8 @@ class GeneralProductParams(Params):
     @classmethod
     def from_id(cls, prod_id):
         db_func = component.queryUtility(IDBFunc)
-        query = db_func.get_general_params_query(prod_id)
-        result = cls.from_query(query)
+        query = db_func.get_extended_general_params_query(prod_id)
+        result = cls.from_extended_query(query)
         return result
 
 

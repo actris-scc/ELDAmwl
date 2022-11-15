@@ -262,11 +262,27 @@ class MeasurementParams(Params):
         product_list (dict) from where
         they can be assessed by their product_id_str (str).
         """
-        p_query = self.db_func.get_products_query(
+
+        # read basic products first (with info on used channels, elpp files etc.)
+        p_query = self.db_func.get_basic_products_query(
             self.mwl_product_id,
             self.measurement_params.meas_id)
         for q in p_query:
-            general_params = GeneralProductParams.from_query(q)
+            general_params = GeneralProductParams.from_extended_query(q)
+            prod_type = general_params.product_type
+            if prod_type in PARAM_CLASSES:
+                prod_params = PARAM_CLASSES[prod_type]()
+                prod_params.from_db(general_params)
+                prod_params.assign_to_product_list(self.measurement_params)
+            else:
+                self.logger.error('product type {} not yet implemented'.format(prod_type))
+
+        # next, read derived products
+        p_query = self.db_func.get_derived_products_query(
+            self.mwl_product_id,
+            self.measurement_params.meas_id)
+        for q in p_query:
+            general_params = GeneralProductParams.from_short_query(q)
             prod_type = general_params.product_type
             if prod_type in PARAM_CLASSES:
                 prod_params = PARAM_CLASSES[prod_type]()
@@ -355,9 +371,6 @@ class RunELDAmwl(BaseOperation):
         """
         self.logger.info('read ELPP files')
         for p_param in self.params.basic_products():
-            p_param.general_params.elpp_file = self.db_func.read_signal_filename(
-                p_param.prod_id,
-                self.params.measurement_params.meas_id)
             ElppData().read_nc_file(p_param)
 
     def prepare_signals(self):
