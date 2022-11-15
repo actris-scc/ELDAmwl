@@ -65,7 +65,7 @@ class DBFunc(DBUtils):
         self.session.add(log_msg)
         self.session.commit()
 
-    def read_signal_filenames(self, measurement_id):
+    def read_signal_filename(self, product_id, measurement_id):
         """
 
         Args:
@@ -75,13 +75,18 @@ class DBFunc(DBUtils):
 
         """
         signals = self.session.query(PreparedSignalFile)\
-            .filter(PreparedSignalFile.measurements_id == measurement_id)
+            .filter(PreparedSignalFile.measurements_id == measurement_id)\
+            .filter(PreparedSignalFile.product_id == product_id)
 
-        if signals.count() > 0:
-            return signals
+        if signals.count() == 1:
+            return signals.first().filename
+        elif signals.count() == 0:
+            self.logger.error(
+                'no prepared signal file for measurement {0} and product {1}'.format(measurement_id, product_id),
+            )
         else:
             self.logger.error(
-                'no prepared signal files for measurement {0}'.format(measurement_id),
+                'more than one file for measurement {0} and product {1}'.format(measurement_id, product_id),
             )
 
     def read_classname(self, method):
@@ -522,7 +527,7 @@ class DBFunc(DBUtils):
             PreProcOptions,
             ErrorThresholdsLow,
             ErrorThresholdsHigh,
-            PreparedSignalFile,
+            # PreparedSignalFile,
             ProductChannels,
             Channels,
         ).filter(
@@ -545,10 +550,10 @@ class DBFunc(DBUtils):
             ProductChannels.prod_id == Products.ID,
         ).filter(
             ProductChannels.channel_id == Channels.ID,
-        ).filter(
-            PreparedSignalFile.product_id == Products.ID,
-        ).filter(
-            PreparedSignalFile.measurements_id == measurement_id,
+        # ).filter(
+        #     PreparedSignalFile.product_id == Products.ID,
+        # ).filter(
+        #     PreparedSignalFile.measurements_id == measurement_id,
         ).group_by(Products.ID)
 
         if products.count() > 0:

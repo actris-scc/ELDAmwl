@@ -534,3 +534,6 @@ INSERT INTO `pldr_options` (
 	(@pldr_id -1, @vldr_id, 324, 0, 1.01),
 	(@pldr_id, @vldr_id, 332, 0, 1.01);
 
+INSERT INTO `prepared_signal_files` (`ID`, `__measurements__ID`, `_Product_ID`, `creation_date`, `_scc_version_ID`, `filename`) VALUES
+	(NULL, '20181017oh00', 324, '2021-11-10', 17, 'hpb_007_0000328_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc'),
+	(NULL, '20181017oh00', 377, '2021-11-10', 17, 'hpb_002_0000381_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc');

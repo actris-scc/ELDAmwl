@@ -29,13 +29,13 @@ class LidarRatioParams(ProductParams):
         self.backscatter_params = RamanBscParams()
         self.backscatter_params.from_db(bsc_general_params)  # noqa E501
         self.backscatter_params.general_params.calc_with_lr = True
-        self.backscatter_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
+        # self.backscatter_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
 
         ext_general_params = self.from_id(self.ext_prod_id)
         self.extinction_params = ExtinctionParams()
         self.extinction_params.from_db(ext_general_params)
         self.extinction_params.general_params.calc_with_lr = True
-        self.extinction_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
+        # self.extinction_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
 
     def assign_to_product_list(self, global_product_list):
         super(LidarRatioParams, self).assign_to_product_list(

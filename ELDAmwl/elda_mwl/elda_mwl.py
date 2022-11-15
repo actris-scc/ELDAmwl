@@ -268,9 +268,12 @@ class MeasurementParams(Params):
         for q in p_query:
             general_params = GeneralProductParams.from_query(q)
             prod_type = general_params.product_type
-            prod_params = PARAM_CLASSES[prod_type]()
-            prod_params.from_db(general_params)
-            prod_params.assign_to_product_list(self.measurement_params)
+            if prod_type in PARAM_CLASSES:
+                prod_params = PARAM_CLASSES[prod_type]()
+                prod_params.from_db(general_params)
+                prod_params.assign_to_product_list(self.measurement_params)
+            else:
+                self.logger.error('product type {} not yet implemented'.format(prod_type))
 
     def prod_params(self, prod_type, wl):
         """ returns a list with params of all products of type prod_type and wavelength wl
@@ -352,6 +355,9 @@ class RunELDAmwl(BaseOperation):
         """
         self.logger.info('read ELPP files')
         for p_param in self.params.basic_products():
+            p_param.general_params.elpp_file = self.db_func.read_signal_filename(
+                p_param.prod_id,
+                self.params.measurement_params.meas_id)
             ElppData().read_nc_file(p_param)
 
     def prepare_signals(self):
@@ -380,7 +386,7 @@ class RunELDAmwl(BaseOperation):
 
         """
         self.logger.info('calc lidar constants ')
-        GetLidarConstants()(product_params=self.params).run()
+        # GetLidarConstants()(product_params=self.params).run()
 
     def get_product_matrix(self):
         """combine all products in common matrixes
