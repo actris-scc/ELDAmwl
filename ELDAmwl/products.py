@@ -7,7 +7,7 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import DetectionLimitZero
+from ELDAmwl.errors.exceptions import DetectionLimitZero, DifferentWlForLR
 from ELDAmwl.errors.exceptions import NotEnoughMCIterations
 from ELDAmwl.errors.exceptions import SizeMismatch
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
@@ -180,6 +180,49 @@ class ProductParams(Params):
         if self.error_method == MC:
             self.mc_params = MCParams.from_db(self.prod_id)
 
+    def harmonize_resolution_settings(self, params):
+        """applicable for derived products.
+        make sure that basic profiles are calculated with the same resolution(s) as derived product
+
+        Args:
+            params: list of basic params (:class:`ELDAmwl.products.ProductParams`)
+        """
+        if self.general_params.calc_with_lr:
+            for param in params:
+                param.general_params.calc_with_lr = True
+        if self.general_params.calc_with_hr:
+            for param in params:
+                param.general_params.calc_with_hr = True
+
+    def ensure_same_wavelength(self, params):
+        """applicable for derived products.
+        make sure that basic profiles are calculated with the same wavelength as derived product
+
+        Args:
+            params: list of basic params (:class:`ELDAmwl.products.ProductParams`)
+        """
+        for param in params:
+            if self.general_params.emission_wavelength != param.emission_wavelength:
+                raise DifferentWlForLR(self.prod_id_str)
+
+    def get_valid_alt_range(self, params):
+        """applicable for derived products.
+        determine the valid_alt_range as min/max of the limits of the basic profiles
+
+        Args:
+            params: list of basic params (:class:`ELDAmwl.products.ProductParams`)
+        """
+        min_heights = []
+        max_heights = []
+
+        for param in params:
+            min_heights.append(param.general_params.valid_alt_range.min_height)
+            max_heights.append(param.general_params.valid_alt_range.max_height)
+
+        self.general_params.valid_alt_range.min_height = max(min_heights)
+        self.general_params.valid_alt_range.max_height = min(max_heights)
+
+
     @property
     def prod_id_str(self):
         return str(self.general_params.prod_id)
@@ -341,6 +384,8 @@ class GeneralProductParams(Params):
     def from_extended_query(cls, query):
         result = cls.from_short_query(query)
 
+        result.valid_alt_range.min_height = float(query.PreProcOptions.min_height)
+        result.valid_alt_range.max_height = float(query.PreProcOptions.max_height)
         result.emission_wavelength = float(query.Channels.emission_wavelength)
 
         try:
@@ -361,8 +406,6 @@ class GeneralProductParams(Params):
         result.is_basic_product = query.ProductTypes.is_basic_product == 1
         result.is_derived_product = not result.is_basic_product
 
-        result.valid_alt_range.min_height = float(query.PreProcOptions.min_height)
-        result.valid_alt_range.max_height = float(query.PreProcOptions.max_height)
 
         # the MWLproducProduct and PreparedSignalFile tables
         # are not available if query is

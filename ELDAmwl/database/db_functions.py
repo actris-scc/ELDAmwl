@@ -65,30 +65,6 @@ class DBFunc(DBUtils):
         self.session.add(log_msg)
         self.session.commit()
 
-    # def read_signal_filename(self, product_id, measurement_id):
-    #     """
-    #
-    #     Args:
-    #         measurement_id:
-    #
-    #     Returns:
-    #
-    #     """
-    #     signals = self.session.query(PreparedSignalFile)\
-    #         .filter(PreparedSignalFile.measurements_id == measurement_id)\
-    #         .filter(PreparedSignalFile.product_id == product_id)
-    #
-    #     if signals.count() == 1:
-    #         return signals.first().filename
-    #     elif signals.count() == 0:
-    #         self.logger.error(
-    #             'no prepared signal file for measurement {0} and product {1}'.format(measurement_id, product_id),
-    #         )
-    #     else:
-    #         self.logger.error(
-    #             'more than one file for measurement {0} and product {1}'.format(measurement_id, product_id),
-    #         )
-
     def read_classname(self, method):
         """reads from db in which python class the method is implemented
             Args:
@@ -513,7 +489,8 @@ class DBFunc(DBUtils):
                 list of individual product IDs corresponding to this mwl product
 
             """
-
+        # todo: keep this ErrorThreshold tables in this query. we might need it when
+        #  we implement automatic smoothing later. but for the moment, keep the lines inactive
         # ErrorThresholdsLow = aliased(ErrorThresholds,
         #                              name='ErrorThresholdsLow')
         # ErrorThresholdsHigh = aliased(ErrorThresholds,
@@ -576,19 +553,10 @@ class DBFunc(DBUtils):
 
             """
 
-        # ErrorThresholdsLow = aliased(ErrorThresholds,
-        #                              name='ErrorThresholdsLow')
-        # ErrorThresholdsHigh = aliased(ErrorThresholds,
-        #                               name='ErrorThresholdsHigh')
-
         products = self.session.query(
             MWLproductProduct,
             Products,
             ProductTypes,
-            SmoothOptions,
-            PreProcOptions,
-            # ErrorThresholdsLow,
-            # ErrorThresholdsHigh,
         ).filter(
             MWLproductProduct.mwl_product_id == mwl_prod_id,
         ).filter(
@@ -599,14 +567,6 @@ class DBFunc(DBUtils):
             ProductTypes.is_in_mwl_products == 1,
         ).filter(
             ProductTypes.is_basic_product == 0,
-        ).filter(
-            SmoothOptions.product_id == Products.ID,
-        ).filter(
-            PreProcOptions.product_id == Products.ID,
-        # ).filter(
-        #     SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
-        # ).filter(
-        #     SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
         ).group_by(Products.ID)
 
         if products.count() > 0:
@@ -624,7 +584,7 @@ class DBFunc(DBUtils):
                 general products
 
             """
-
+        # todo: same as in self.get_basic_products_query()
         # ErrorThresholdsLow = aliased(ErrorThresholds,
         #                              name='ErrorThresholdsLow')
         # ErrorThresholdsHigh = aliased(ErrorThresholds,

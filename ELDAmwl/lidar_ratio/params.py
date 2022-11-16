@@ -36,34 +36,16 @@ class LidarRatioParams(ProductParams):
 
         # self. extinction_params is a link to the parameters of the basic ext product
         self.extinction_params = meas_params.product_list[str(self.ext_prod_id)]
-        self.extinction_params.general_params.calc_with_lr = True
 
-        # check wavelength consistency
-        if self.backscatter_params.general_params.emission_wavelength != \
-            self.extinction_params.general_params.emission_wavelength:
-            raise DifferentWlForLR(self.prod_id_str)
-
-        # make sure that basic profiles are calculated with the same resolution as lidar ratio
-        if self.general_params.calc_with_lr:
-            for param in [self.backscatter_params.general_params, self.extinction_params.general_params]:
-                param.calc_with_lr = 1
-        if self.general_params.calc_with_hr:
-            for param in [self.backscatter_params.general_params, self.extinction_params.general_params]:
-                param.calc_with_hr = 1
-
+        # use emission wavelength of ext product also for this lr
         self.general_params.emission_wavelength = self.backscatter_params.general_params.emission_wavelength
 
-        # bsc_general_params = self.from_id(self.bsc_prod_id)
-        # self.backscatter_params = RamanBscParams()
-        # self.backscatter_params.from_db(bsc_general_params)  # noqa E501
-        # self.backscatter_params.general_params.calc_with_lr = True
-        # # self.backscatter_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
-        #
-        # ext_general_params = self.from_id(self.ext_prod_id)
-        # self.extinction_params = ExtinctionParams()
-        # self.extinction_params.from_db(ext_general_params)
-        # self.extinction_params.general_params.calc_with_lr = True
-        # # self.extinction_params.general_params.elpp_file = general_params.elpp_file  # noqa E501
+        # some consistency tests and harmonization of / with bsc and ext params
+        basic_params = [self.backscatter_params, self.extinction_params]
+        self.harmonize_resolution_settings(basic_params)
+        self.ensure_same_wavelength(basic_params)
+        self.get_valid_alt_range(basic_params)
+
 
     def assign_to_product_list(self, global_product_list):
         super(LidarRatioParams, self).assign_to_product_list(
