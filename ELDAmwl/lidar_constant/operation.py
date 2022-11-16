@@ -579,6 +579,10 @@ class CalcRamanLidarConstantDefault(BaseOperation):
         return self.result
 
 
+class SplitDepolLidarConstant(BaseOperationFactory):
+    pass
+
+
 registry.register_class(CalcRamanLidarConstant,
                         CalcRamanLidarConstantDefault.__name__,
                         CalcRamanLidarConstantDefault)
