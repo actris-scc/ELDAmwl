@@ -28,8 +28,14 @@ class WriteMWLOutputDefault(BaseOperation):
     data_storage = None
     product_params = None
     out_filename = None
-    data = Dict()  # data of all elda_mwl groups
-    meta_data = Dict()  # meta_data of individual products
+    data = None  # data of all elda_mwl groups
+    meta_data = None  # meta_data of individual products
+
+    def init(self):
+        self.data = Dict()  # data of all elda_mwl groups
+        self.meta_data = Dict()  # meta_data of individual products
+        self.product_params = self.kwargs['product_params']
+        self.out_filename = abs_file_path(self.cfg.PRODUCT_PATH, self.mwl_filename())
 
     def mwl_filename(self):
         header = self.data_storage.header
@@ -108,8 +114,7 @@ class WriteMWLOutputDefault(BaseOperation):
         )
 
     def run(self):
-        self.product_params = self.kwargs['product_params']
-        self.out_filename = abs_file_path(self.cfg.PRODUCT_PATH, self.mwl_filename())
+        self.init()
 
         self.collect_header_info()
         self.collect_meta_data()

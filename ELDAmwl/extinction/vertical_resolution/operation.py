@@ -46,7 +46,7 @@ class ExtUsedBinRes(BaseOperationFactory):
     """
 
     name = 'ExtUsedBinRes'
-    prod_id = NC_FILL_STR
+    prod_id = None
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs

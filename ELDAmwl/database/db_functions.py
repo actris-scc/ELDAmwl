@@ -976,7 +976,8 @@ class DBFunc(DBUtils):
             .filter(LidarConstants.product_id == prod_id)\
             .filter(LidarConstants.channel_id == chan_id)\
             .filter(LidarConstants.profile_start_time == profile_start)\
-            .filter(LidarConstants.profile_end_time == profile_end)
+            .filter(LidarConstants.profile_end_time == profile_end)\
+            .filter(LidarConstants.is_latest_value == 1)
 
         new_db_entry = LidarConstants(
             measurements_id=meas_id,

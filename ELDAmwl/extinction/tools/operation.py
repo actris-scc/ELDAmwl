@@ -121,7 +121,7 @@ class SignalSlope(BaseOperationFactory):
     """
 
     name = 'SignalSlope'
-    prod_id = NC_FILL_STR  # Todo Ina into Base class???
+    prod_id = None  # Todo Ina into Base class???
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs

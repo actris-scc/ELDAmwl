@@ -90,7 +90,7 @@ class RamBscEffBinRes(BaseOperationFactory):
     """
 
     name = 'RamBscEffBinRes'
-    prod_id = NC_FILL_STR
+    prod_id = None
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs
@@ -114,7 +114,7 @@ class RamBscUsedBinRes(BaseOperationFactory):
     """
 
     name = 'RamBscUsedBinRes'
-    prod_id = NC_FILL_STR
+    prod_id = None
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs
@@ -140,7 +140,7 @@ class ElastBscEffBinRes(BaseOperationFactory):
     """
 
     name = 'ElastBscEffBinRes'
-    prod_id = NC_FILL_STR
+    prod_id = None
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs
@@ -164,7 +164,7 @@ class ElastBscUsedBinRes(BaseOperationFactory):
     Keyword Args:
     """
     name = 'ElastBscUsedBinRes'
-    prod_id = NC_FILL_STR
+    prod_id = None
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs

@@ -120,17 +120,17 @@ class Signals(Columns):
 
     """
 
-    emission_wavelength = np.nan
-    detection_wavelength = np.nan
+    emission_wavelength = None
+    detection_wavelength = None
     channel_id = None
-    detection_type = np.nan
-    channel_idx_in_ncfile = np.nan
+    detection_type = None
+    channel_idx_in_ncfile = None
     scatterer = None
     alt_range = None
     pol_channel_conf = None
     scale_factor_shots = None
     pol_calibr = None
-    raw_heightres = np.nan
+    raw_heightres = None
     station_altitude = None
 
     calc_eff_bin_res_routine = None

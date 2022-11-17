@@ -48,8 +48,8 @@ class LidarRatioFactoryDefault(BaseOperation):
     bsc = None
     empty_lr = None
     result = None
-    prod_id = NC_FILL_STR
-    resolution = NC_FILL_INT
+    prod_id = None
+    resolution = None
 
     def prepare(self):
         self.param = self.kwargs['lr_param']

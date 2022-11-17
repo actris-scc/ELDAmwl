@@ -17,7 +17,7 @@ class VLDREffBinRes(BaseOperationFactory):
     """
 
     name = 'VLDREffBinRes'
-    prod_id = NC_FILL_STR
+    prod_id = None
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs
@@ -43,7 +43,7 @@ class VLDRUsedBinRes(BaseOperationFactory):
     """
 
     name = 'VLDRUsedBinRes'
-    prod_id = NC_FILL_STR
+    prod_id = None
 
     def __call__(self, **kwargs):
         assert 'prod_id' in kwargs

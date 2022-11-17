@@ -15,7 +15,7 @@ import pandas as pd
 
 
 class Person:
-    name = NC_FILL_STR
+    name = None
 
     @classmethod
     def from_nc_file(cls, nc_ds, nc_name):
@@ -62,11 +62,13 @@ class Header(ELDABase):
     vars = None
     start_time = None
     end_time = None
-    class_attrs = Dict({'pi': 'PI',
-                        'data_originator': 'Data_Originator'})
+    class_attrs = None
 
     def __init__(self):
         super(Header, self).__init__()
+        self.class_attrs = Dict({'pi': 'PI',
+                            'data_originator': 'Data_Originator'})
+
         self.attrs = Dict()
         self.vars = Dict()
         self.mwl_struct = MWLFileStructure()

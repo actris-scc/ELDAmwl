@@ -216,8 +216,8 @@ class ExtinctionFactoryDefault(BaseOperation):
     raman_sig = None
     smooth_res = None
     empty_ext = None
-    prod_id = NC_FILL_STR
-    resolution = NC_FILL_INT
+    prod_id = None
+    resolution = None
 
     def get_smooth_res(self):
         if self.kwargs['autosmooth']:

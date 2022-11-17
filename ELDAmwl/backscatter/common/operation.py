@@ -17,7 +17,7 @@ class BackscatterFactoryDefault(BaseOperation):
     calibr_window = None
     param = None
     empty_bsc = None
-    prod_id = NC_FILL_STR
+    prod_id = None
 
     def prepare(self):
         self.param = self.kwargs['bsc_param']

@@ -23,7 +23,7 @@ class GetLidarConstantsDefault(BaseOperation):
         wavelengths = self.mwl_product_params.wavelengths()
         for wl in wavelengths:
             lc = LidarConstantFactory()(
-                wl=wl,
+                wavelength=wl,
                 mwl_product_params=self.mwl_product_params).run()
 
             self.data_storage.set_lidar_constant(wl, lc)

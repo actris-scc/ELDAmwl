@@ -75,7 +75,7 @@ class BackscatterParams(ProductParams):
 class IterBscParams(Params):
 
     conv_crit = np.nan
-    max_iteration_count = NC_FILL_INT
+    max_iteration_count = None
     ram_bsc_method = None
 
     @classmethod

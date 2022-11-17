@@ -27,7 +27,7 @@ class LidarConstantFactory(BaseOperationFactory):
     name = 'LidarConstantFactory'
 
     def __call__(self, **kwargs):
-        assert 'wl' in kwargs
+        assert 'wavelength' in kwargs
         assert 'mwl_product_params' in kwargs
         res = super(LidarConstantFactory, self).__call__(**kwargs)
         return res
@@ -56,12 +56,21 @@ class LidarConstantFactoryDefault(BaseOperation):
     bsc_param = None
     bsc = None
     signals = None
-    lidar_constants = Dict()
-    calibr_height = np.nan
-    assumed_angstroem = ANGSTROEM_DEFAULT
-    assumed_lr = np.nan
-    assumed_lr_err = np.nan
+    lidar_constants = None
+    calibr_height = None
+    assumed_angstroem = None
+    assumed_lr = None
+    assumed_lr_err = None
     lc_params = None
+
+    def init(self):
+        self.lidar_constants = Dict()
+        self.calibr_height = np.nan
+        self.assumed_angstroem = ANGSTROEM_DEFAULT
+        self.assumed_lr = np.nan
+        self.assumed_lr_err = np.nan
+        self.wl = self.kwargs['wavelength']
+        self.mwl_product_params = self.kwargs['mwl_product_params']
 
     def prepare(self):
         """collect input values from measurement or assumed values
@@ -73,8 +82,7 @@ class LidarConstantFactoryDefault(BaseOperation):
             * angstroem exponent below lowest bin of backscatter profile
             * the height of full overlap is the height for calculation the lidar constant
         """
-        self.wl = self.kwargs['wl']
-        self.mwl_product_params = self.kwargs['mwl_product_params']
+        self.init()
 
         # which backscatter product is attributed to the wavelength ? -> self.bsc_param
         self.find_bsc_product()
