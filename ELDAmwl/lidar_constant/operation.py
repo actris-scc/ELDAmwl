@@ -61,6 +61,7 @@ class LidarConstantFactoryDefault(BaseOperation):
     assumed_angstroem = ANGSTROEM_DEFAULT
     assumed_lr = np.nan
     assumed_lr_err = np.nan
+    lc_params = None
 
     def prepare(self):
         """collect input values from measurement or assumed values
@@ -97,9 +98,9 @@ class LidarConstantFactoryDefault(BaseOperation):
                                                            self.used_resolution)
 
         # create empty lidar constants (with all meta data) for each involved signals
-        for key, value in self.signals.items():
-            self.lidar_constants[key] = LidarConstants.init(self.bsc, value)
-            self.lidar_constants[key].calibr_height = self.calibr_height
+        for sig in self.signals.keys():
+            self.lidar_constants[sig] = LidarConstants.init(self.bsc, self.signals[sig])
+            self.lidar_constants[sig].calibr_height = self.calibr_height
 
     def find_signals(self):
         """
@@ -265,38 +266,63 @@ class LidarConstantFactoryDefault(BaseOperation):
 
         return result_avrg, result_err
 
+    def calc_lc_total(self):
+        calc_routine = CalcLidarConstant()(
+            bsc=self.bsc,
+            signal=self.signals.total,
+            lc_params=self.lc_params,
+            empty_lc=self.lidar_constants.total
+        )
+
+        self.lidar_constants.total = calc_routine.run()
+
+    def calc_lc_raman(self):
+        raman_calc_routine = CalcRamanLidarConstant()(
+            signal=self.signals.raman,
+            lc_params=self.lc_params,
+            elast_lc=self.lidar_constants.total,
+            empty_lc=self.lidar_constants.raman
+        )
+
+        self.lidar_constants.raman = raman_calc_routine.run()
+
+    def calc_lc_depol(self):
+        depol_calc_routine = SplitDepolLidarConstant()(
+            refl_signal=self.signals.refl,
+            transm_signal=self.signals.transm,
+            lc_params=self.lc_params,
+            total_lc=self.lidar_constants.total,
+            empty_lc_refl=self.lidar_constants.refl,
+            empty_lc_transm=self.lidar_constants.transm,
+        )
+
+        self.lidar_constants.refl, self.lidar_constants.transm = \
+            depol_calc_routine.run()
+
+    def write_lc_to_db(self):
+        for lc in self.lidar_constants.values():
+            lc.write_to_database()
+
     def run(self):
         self.prepare()
 
         # create Dict with all params which are needed for the calculation
-        lc_params = Dict({
+        self.lc_params = Dict({
             'angstroem': self.assumed_angstroem,
             'lidar_ratio': self.assumed_lr,
             'lidar_ratio_err': self.assumed_lr_err,
             'calibr_height': self.calibr_height,
         })
 
-        calc_routine = CalcLidarConstant()(
-            bsc=self.bsc,
-            signal=self.signals.total,
-            lc_params=lc_params,
-            empty_lc=self.lidar_constants.total
-        )
-
-        self.lidar_constants.total = calc_routine.run()
+        self.calc_lc_total()
 
         if 'raman' in self.signals:
-            calc_routine = CalcRamanLidarConstant()(
-                signal=self.signals.raman,
-                lc_params=lc_params,
-                elast_lc=self.lidar_constants.total,
-                empty_lc=self.lidar_constants.raman
-            )
+            self.calc_lc_raman()
 
-            self.lidar_constants.raman = calc_routine.run()
+        if self.bsc_param.is_bsc_from_depol_components():
+            self.calc_lc_depol()
 
-        self.lidar_constants.total.write_to_database()
-        self.lidar_constants.raman.write_to_database()
+        self.write_lc_to_db()
 
         return self.lidar_constants
 
@@ -326,6 +352,7 @@ class CalcLidarConstant(BaseOperationFactory):
         assert 'bsc' in kwargs
         assert 'signal' in kwargs
         assert 'lc_params' in kwargs
+        assert 'empty_lc' in kwargs
 
         res = super(CalcLidarConstant, self).__call__(**kwargs)
         return res
@@ -342,7 +369,8 @@ class CalcLidarConstantDefault(BaseOperation):
     """
     Calculates lidar constant from backscatter profile.
 
-    The result is a copy of empty_lc, but its dataset is filled with the calculated values
+    The result is a copy of empty_lc, but its dataset is filled with the calculated values.
+    Input signal and bsc are not modified.
 
     Keyword Args:
         bsc (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters`): particle backscatter profiles
@@ -366,7 +394,7 @@ class CalcLidarConstantDefault(BaseOperation):
     def __init__(self, **kwargs):
         super(CalcLidarConstantDefault, self).__init__(**kwargs)
         self.signal = deepcopy(kwargs['signal'])
-        self.bsc = kwargs['bsc']
+        self.bsc = deepcopy(kwargs['bsc'])
         self.lc_params = kwargs['lc_params']
         self.result = kwargs['empty_lc']
 
@@ -486,6 +514,7 @@ class CalcRamanLidarConstant(BaseOperationFactory):
         assert 'signal' in kwargs
         assert 'elast_lc' in kwargs
         assert 'lc_params' in kwargs
+        assert 'empty_lc' in kwargs
 
         res = super(CalcRamanLidarConstant, self).__call__(**kwargs)
         return res
@@ -503,7 +532,8 @@ class CalcRamanLidarConstantDefault(BaseOperation):
 
     the lidar constant is retrieved from the Raman signal
     and the lidar constant of the elastic signal.
-    The result is a copy of empty_lc, but its dataset is filled with the calculated values
+    The result is a copy of empty_lc, but its dataset is filled with the calculated values.
+    Input signal and elast_lc are not modified.
 
     Keyword Args:
         signal(:class:`ELDAmwl.signals.Signals`): Raman signal
@@ -530,7 +560,7 @@ class CalcRamanLidarConstantDefault(BaseOperation):
         super(CalcRamanLidarConstantDefault, self).__init__(**kwargs)
         self.signal = deepcopy(kwargs['signal'])
         self.lc_params = kwargs['lc_params']
-        self.elast_lc = kwargs['elast_lc']
+        self.elast_lc = deepcopy(kwargs['elast_lc'])
         self.result = kwargs['empty_lc']
 
     def run(self):
@@ -545,6 +575,7 @@ class CalcRamanLidarConstantDefault(BaseOperation):
         # bin numbers of calibration height in signal profile
         sig_calibr_bins = self.signal.height_to_levels(self.lc_params.calibr_height).values
 
+        self.signal.normalize_by_shots()
         self.signal.correct_for_mol_transmission()
 
         raman_wl = float(self.signal.detection_wavelength)
@@ -559,29 +590,161 @@ class CalcRamanLidarConstantDefault(BaseOperation):
         transm = np.power(elast_transm, wl_dep)
         transm_err = transm * elast_transm_err / elast_transm * wl_dep
 
-        self.result.ds.data_vars['particle_transmission'] = transm
-        self.result.ds.data_vars['particle_transmission_err'] = transm_err
-
-        sig = self.signal.data
-        sig_err = self.signal.err
-
-        # value of the molecular backscatter at calibration height
-        rayl_bsc = self.signal.ds.mol_backscatter
-
-        lc = (sig / rayl_bsc / transm)[:, sig_calibr_bins]
-        lc_err = lc * sqrt(sqr(sig_err / sig) +
-                           sqr(transm_err / transm))
+        self.result.ds.data_vars['particle_transmission'].values = transm
+        self.result.ds.data_vars['particle_transmission_err'].values = transm_err
 
         for t in range(self.signal.ds.dims['time']):
-            self.result.ds.data_vars['lidar_constant'][t] = lc[t, sig_calibr_bins[t]]
-            self.result.ds.data_vars['lidar_constant_err'][t] = lc_err[t, sig_calibr_bins[t]]
+            sig = self.signal.data[t, sig_calibr_bins[t]]
+            sig_err = self.signal.err[t, sig_calibr_bins[t]]
+
+            # value of the molecular backscatter at calibration height
+            rayl_bsc = self.signal.ds.mol_backscatter[t, sig_calibr_bins[t]]
+
+            lc = (sig / rayl_bsc / transm[t])
+            lc_err = lc * sqrt(sqr(sig_err / sig) +
+                               sqr(transm_err[t] / transm[t]))
+            self.result.ds.data_vars['lidar_constant'][t] = lc
+            self.result.ds.data_vars['lidar_constant_err'][t] = lc_err
 
         return self.result
 
 
 class SplitDepolLidarConstant(BaseOperationFactory):
-    pass
+    """
+    creates a Class for the calculation of a lidar constant of a Raman signal
 
+    Returns an instance of BaseOperation which calculates the lidar constant.
+    In this case, it will be always an instance of CalcLidarConstantDefault().
+
+    Keyword Args:
+        refl_signal(:class:`ELDAmwl.signals.Signals`): Raman signal
+        transm_signal(:class:`ELDAmwl.signals.Signals`): Raman signal
+        empty_lc_refl (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
+                instance of LidarConstants which has all meta data but data are empty arrays
+        empty_lc_transm (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
+                instance of LidarConstants which has all meta data but data are empty arrays
+        total_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
+                lidar constant of the total elastic signal
+        lc_params (Dict): dictionary with mandatory keys ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+
+    Returns:
+        time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
+
+    """
+
+    name = 'SplitDepolLidarConstant'
+
+    def __call__(self, **kwargs):
+        assert 'refl_signal' in kwargs
+        assert 'transm_signal' in kwargs
+        assert 'total_lc' in kwargs
+        assert 'lc_params' in kwargs
+        assert 'empty_lc_refl' in kwargs
+        assert 'empty_lc_transm' in kwargs
+
+        res = super(SplitDepolLidarConstant, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """
+
+        return: always 'SplitDepolLidarConstantDefault' .
+        """
+        return 'SplitDepolLidarConstantDefault'
+
+
+class SplitDepolLidarConstantDefault(BaseOperation):
+    """Calculates lidar constants of a transmitted and a reflected signal.
+
+    the lidar constant is retrieved from the reflected and transmitted signal
+    and the lidar constant of the total elastic signal.
+    The result is a copy of empty_lc, but its dataset is filled with the calculated values.
+    Input signals and total_lc are not modified.
+
+    Keyword Args:
+        refl_signal(:class:`ELDAmwl.signals.Signals`): Raman signal
+        transm_signal(:class:`ELDAmwl.signals.Signals`): Raman signal
+        empty_lc_refl (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
+                instance of LidarConstants which has all meta data but data are empty arrays
+        empty_lc_transm (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
+                instance of LidarConstants which has all meta data but data are empty arrays
+        total_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
+                lidar constant of the total elastic signal
+        lc_params (Dict): dictionary with mandatory keys ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+
+    Returns:
+        time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
+    """
+
+    name = 'SplitDepolLidarConstantDefault'
+
+    bsc = None
+    result = None
+    refl_signal = None
+    transm_signal = None
+    lc_params = None
+    total_lc = None
+    result = None
+
+    def __init__(self, **kwargs):
+        super(SplitDepolLidarConstantDefault, self).__init__(**kwargs)
+        self.refl_signal = deepcopy(kwargs['refl_signal'])
+        self.transm_signal = deepcopy(kwargs['transm_signal'])
+        self.lc_params = kwargs['lc_params']
+        self.total_lc = deepcopy(kwargs['total_lc'])
+        self.result = Dict({'refl': kwargs['empty_lc_refl'],
+                            'transm': kwargs['empty_lc_transm'],
+                            })
+
+    def run(self):
+        """
+        run the lidar constant calculation
+
+        Returns:
+            time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
+
+        """
+        # bin numbers of calibration height in signal profile
+        sig_calibr_bins = self.refl_signal.height_to_levels(self.lc_params.calibr_height).values
+
+        self.refl_signal.normalize_by_shots()
+        self.signal.normalize_by_shots()
+        self.transm_signal.correct_for_mol_transmission()
+        self.transm_signal.correct_for_mol_transmission()
+
+        sigratio = Signals.as_sig_ratio(self.refl_signal, self.transm_signal)
+        HR = float(self.refl_signal.h.data)
+        HT = float(self.transm_signal.h.data)
+        K = float(self.refl_signal.pol_calibr.gain_factor_correction.data)
+        err_K = float(self.refl_signal.pol_calibr.gain_factor_correction.statistical_error)  # noqa E501
+        if np.isnan(err_K):
+            err_K = 0
+        etaS = float(self.refl_signal.pol_calibr.gain_factor.data)
+        err_etaS = float(self.refl_signal.pol_calibr.gain_factor_correction.statistical_error)
+        if np.isnan(err_etaS):
+            err_etaS = 0
+
+        factor = etaS / K / HR
+        factor_err = factor * sqrt(sqr(err_etaS) + sqr(err_K))
+
+        lc_refl = self.total_lc / (factor / sigratio - HT)
+        lc_refl_err = None
+
+        lc_transm = self.total_lc / (factor - HT * sigratio)
+        lc_transm_err = None
+
+        for t in range(self.signal.ds.dims['time']):
+            self.result.refl.ds.data_vars['lidar_constant'][t] = lc_refl[t, sig_calibr_bins[t]]
+            self.result.transm.ds.data_vars['lidar_constant'][t] = lc_transm[t, sig_calibr_bins[t]]
+            self.result.refl.ds.data_vars['lidar_constant_err'][t] = lc_refl_err[t, sig_calibr_bins[t]]
+            self.result.transm.ds.data_vars['lidar_constant_err'][t] = lc_transm_err[t, sig_calibr_bins[t]]
+
+        return self.result
+
+
+registry.register_class(SplitDepolLidarConstant,
+                        SplitDepolLidarConstantDefault.__name__,
+                        SplitDepolLidarConstantDefault)
 
 registry.register_class(CalcRamanLidarConstant,
                         CalcRamanLidarConstantDefault.__name__,

@@ -112,6 +112,9 @@ class DataStorage:
         """write a lidar constant to storage
         """
         self.__data.lidar_constants[wl] = new_lidar_constant
+        for lc in new_lidar_constant.values():
+            channel_id = lc.channel_id
+            self.__data.lidar_constants[channel_id] = lc
 
     def set_final_product_matrix(self, prod_type, res, new_dataset):
         """write a dataset with common grid (wavelength, time, altitude) to storage
@@ -176,6 +179,63 @@ class DataStorage:
         except AttributeError:
             raise NotFoundInStorage('ELPP signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
+
+    def lidar_constant(self, channel_id):
+        """copies the lidar constants of a given channel id
+
+        """
+        try:
+            result = deepcopy(self.__data.lidar_constants[channel_id])
+            return result
+        except AttributeError:
+            raise NotFoundInStorage('lidar constant',
+                                    'channel id {0}'.format(channel_id))
+
+    def lidar_constant(self, channel_id):
+        """copies the lidar constant of a given channel id
+
+        Args:
+            channel_id (int):  channel_id id
+
+        Returns:
+            :class:`ELDAmwl.lidar_constant.product.LidarConstants`: the lidar constant of the requested channel
+
+        Raises:
+             NotFoundInStorage: if no lidar constant for the given channel id
+                is found in storage
+        """
+        if channel_id in self.__data.lidar_constants:
+            result = deepcopy(self.__data.lidar_constants[channel_id])
+            return result
+        else:
+            raise NotFoundInStorage('lidar constant',
+                                    'channel id {0}'.format(channel_id))
+
+    def lidar_constants(self, wavelength):
+        """copies the lidar constants of a given wavelength
+
+        Args:
+            wavelength (float):  wavelength
+
+        Returns:
+            addict.Dict with lidar constants of all channels of this emission wavelength
+            (:class:`ELDAmwl.lidar_constant.product.LidarConstants`
+            the Dict has the following keys:
+            * 'total'
+            * 'raman' (optional)
+            * 'refl' (optional)
+            * 'transm' (optional)
+
+        Raises:
+             NotFoundInStorage: if no lidar constants for the given wavelength
+                are found in storage
+        """
+        if wavelength in self.__data.lidar_constants:
+            result = deepcopy(self.__data.lidar_constants[wavelength])
+            return result
+        else:
+            raise NotFoundInStorage('lidar constant',
+                                    'wavelength {0}'.format(wavelength))
 
     def prepared_signals(self, prod_id_str):
         """copies of all prepared signals of one product

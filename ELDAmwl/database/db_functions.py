@@ -966,11 +966,11 @@ class DBFunc(DBUtils):
         self.session.commit()
 
     def write_lidar_constant_in_db(self, meas_id, prod_id, chan_id, hoi_system_id, detection_wl,
-                                   filename,
+                                   filename, processor_version,
                                    nowtime, profile_start, profile_end,
                                    new_lc, new_lc_sys_err, new_lc_stat_err,
                                    calibr_window_bottom, calibr_window_top,
-                                   processor_version):
+                                   ):
         lidar_const = self.session.query(LidarConstants)\
             .filter(LidarConstants.measurements_id == meas_id)\
             .filter(LidarConstants.product_id == prod_id)\

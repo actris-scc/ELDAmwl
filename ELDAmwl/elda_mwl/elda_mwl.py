@@ -399,7 +399,7 @@ class RunELDAmwl(BaseOperation):
 
         """
         self.logger.info('calc lidar constants ')
-        # GetLidarConstants()(product_params=self.params).run()
+        GetLidarConstants()(product_params=self.params).run()
 
     def get_product_matrix(self):
         """combine all products in common matrixes

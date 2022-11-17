@@ -18,7 +18,7 @@ class LidarConstants(object):
     time series of lidar constants
     """
 
-    ds = xr.Dataset()
+    ds = None
     product_id = None
     measurement_id = None
     system_id = None
@@ -45,21 +45,22 @@ class LidarConstants(object):
         result.channel_id = int(sig.channel_id.values)
         result.wavelength = float(sig.detection_wavelength.values)
 
-        result.ds['time'] = bsc.ds.time
-        result.ds['time_bounds'] = bsc.ds.time_bounds
-        result.ds['lidar_constant'] = xr.DataArray(
-            np.ones((bsc.ds.dims['time'])) * np.nan,
-            dims=['time'])
-        result.ds['lidar_constant_err'] = xr.DataArray(
-            np.ones((bsc.ds.dims['time'])) * np.nan,
-            dims=['time'])
-        result.ds['particle_transmission'] = xr.DataArray(
-            np.ones((bsc.ds.dims['time'])) * np.nan,
-            dims=['time'])
-        result.ds['particle_transmission_err'] = xr.DataArray(
-            np.ones((bsc.ds.dims['time'])) * np.nan,
-            dims=['time'])
-
+        result.ds = xr.Dataset(data_vars=dict(
+            time=bsc.ds.time,
+            time_bounds=bsc.ds.time_bounds,
+            lidar_constant=xr.DataArray(
+                np.ones((bsc.ds.dims['time'])) * np.nan,
+                dims=['time']),
+            lidar_constant_err=xr.DataArray(
+                np.ones((bsc.ds.dims['time'])) * np.nan,
+                dims=['time']),
+            particle_transmission=xr.DataArray(
+                np.ones((bsc.ds.dims['time'])) * np.nan,
+                dims=['time']),
+            particle_transmission_err=xr.DataArray(
+                np.ones((bsc.ds.dims['time'])) * np.nan,
+                dims=['time']),
+        ))
         result.ds.load()
         return result
 
