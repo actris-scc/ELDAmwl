@@ -38,8 +38,47 @@ import xarray as xr
 
 
 class ElppData(object):
-    """Representation of one ELPP file.
+    r"""Representation of one ELPP file.
 
+    An ELPP file contains a cloud mask and one or several range-corrected,
+    background-subtracted signals which were prepared by the SCC module ELPP.
+
+    Each ELPP file contains all the signals that are needed to calculate one basic optical product
+    (particle extinction coefficient, particle backscatter coefficient, volume linear depolarization ratio).
+
+    Those signals are described by the lidar equation:
+
+    .. math::
+        P_{\lambda}(t,z) &= C_{\lambda}(t)\:
+                        \bigl( \beta_{\lambda}^{par}(t,z) +
+                        \beta_{\lambda}^{mol}(t,z)\bigr)\:
+                        T_{\lambda}(t,z) \\
+        T_{\lambda}(t,z) &= T_{\lambda_{up}}^{mol}(t,z)\: T_{\lambda_{up}}^{par}(t,z) \:
+                          T_{\lambda_{down}}^{mol}(t,z)\: T_{\lambda_{down}}^{par}(t,z) \\
+        T_{\lambda}^{scat}(t,z) &= \Bigl( \exp \bigl( \tau_{\lambda}^{scat}(t,z)\bigr)\Bigr)^{-1} \\
+        \tau_{\lambda}^{scat}(t,z) &= \int_{z=0}^{z} \alpha_{\lambda}^{scat}(t,\zeta) d\zeta \\
+        \alpha_{\lambda}^{scat}(t,z) &= \beta_{\lambda}^{scat}(t,z) \: S_{\lambda}^{scat}(t,z)
+
+    with
+
+    :math:`P_{\lambda}(t,z)`: prepared signal at wavelength :math:`\lambda`
+
+    :math:`C_{\lambda}(t)`: the lidar constant
+
+    :math:`z`: the height above the lidar
+
+    :math:`t`: time of the measurement
+
+    :math:`\beta(t,z)`: the backscatter coefficient from scattering at
+    molecules (:math:`scat = mol`) and particles (:math:`scat = par`)
+
+    :math:`T_{\lambda}(t,z)`: the 2-way (up and down) atmospheric transmission
+
+    :math:`\tau_{\lambda}^{scat}(t,z)`: the optical depth
+
+    :math:`\alpha_{\lambda}^{scat}(t,z)`: the extinction coefficient
+
+    :math:`S_{\lambda}^{scat}(t,z)`: the lidar ratio
     """
 
     @property
@@ -149,8 +188,8 @@ class Signals(Columns):
         """creates a Signals instance from the ratio of two Signals
 
         Args:
-            enumerator (:class:`Signals`): nominator
-            denominator (:class:`Signals`): denominator
+            enumerator (`.Signals`): nominator
+            denominator (`.Signals`): denominator
 
         Returns: Signals
 
@@ -453,6 +492,35 @@ class Signals(Columns):
         p_params.add_signal_role(self)
 
     def normalize_by_shots(self):
+        r"""normalizes the signal by the number of laser shots
+
+        .. math::
+            \widetilde{P_{\lambda}(t,z)}
+                &= \widetilde {C_{\lambda}(t)} \:
+                   \bigl( \beta_{\lambda}^{par}(t,z) +
+                          \beta_{\lambda}^{mol}(t,z)\bigr)\:
+                   T_{\lambda}(t,z)\\
+                &= \frac {P_{\lambda}(t,z)}
+                         {n_{shots}(t)} \\
+            \widetilde {C_{\lambda}(t)}
+                &= \frac {C_{\lambda}(t)}
+                         {n_{shots}(t)} \\
+
+        With
+
+        :math:`P_{\lambda}(t,z)` and :math:`\widetilde{P_{\lambda}(t,z)}`
+        being the original and corrected signal,
+
+        :math:`C_{\lambda}(t)` and :math:`\widetilde{C_{\lambda}(t)}`
+        being the original and corrected lidar constant, and
+
+        :math:`n_{shots}(t)` the number of laser shots accumulated in the time slice.
+
+        .. note::
+            This procedure affects only signals which were detected in
+            photon-counting mode or glued signals. analog signals remain unchanged.
+
+        """
         self.ds['err'] = self.ds['err'] * self.scale_factor_shots
         self.ds['data'] = self.ds['data'] * self.scale_factor_shots
 
@@ -484,6 +552,37 @@ class Signals(Columns):
                 self.set_invalid_point(t, level, ABOVE_MAX_ALT)
 
     def correct_for_mol_transmission(self):
+        r"""the signal data are corrected for molecular atmospheric transmission
+
+        The following equations are applied with :math:`P_{\lambda}(t,z)`
+        being the signal as described in `.ELPPData`
+
+        .. math::
+            \widetilde{P_{\lambda}(t,z)}
+                &= C_{\lambda}(t)\:
+                   \bigl( \beta_{\lambda}^{par}(t,z) +
+                          \beta_{\lambda}^{mol}(t,z)\bigr)\:
+                   T_{\lambda_{up}}^{par}(t,z) \: T_{\lambda_{down}}^{par}(t,z)\\
+                &= \frac {P_{\lambda}(t,z)}
+                         {T_{\lambda_{up}}^{mol}(t,z)\: T_{\lambda_{down}}^{mol}(t,z)} \\
+
+            \Delta \widetilde{P_{\lambda}(t,z)}
+                &= \frac {\Delta P_{\lambda}(t,z)}
+                         {T_{\lambda_{up}}^{mol}(t,z)\: T_{\lambda_{down}}^{mol}(t,z)}
+        With
+
+        :math:`P_{\lambda}(t,z)` and :math:`\Delta P_{\lambda}(t,z)`
+        being the original signal and its statistical uncertainty and
+
+        :math:`\widetilde{P_{\lambda}(t,z)}` and :math:`\Delta \widetilde{P_{\lambda}(t,z)}`
+        being the corrected signal and its statistical uncertainty.
+
+        .. warning::
+            This procedure does not check whether the correction has been done before.
+            The developer has to ensure that the correction is not applied multiple
+            times to the same data.
+
+        """
         self.ds['data'] = self.ds['data'] / \
             self.ds.mol_trasm_at_emission_wl /\
             self.ds.mol_trasm_at_detection_wl
@@ -497,11 +596,13 @@ class Signals(Columns):
         .. math::
             sig &= ln(Sig_o / Rayl) = ln(b)\\
 
-            err\_sig &= err\_sig_o * dSig/ dSig_o\\
+            \Delta_{sig} &= err\_sig_o * dSig/ dSig_o\\
                     &= err\_sig_o * (dSig/db * db/dSig_o)\\
-                    &= err\_sig_o * ( 1/b * 1/rayl )\\
+                    &= err\_sig_o * ( 1/b * 1/Rayl )\\
                     &= err\_sig_o *  (Rayl/Sig_o * 1/Rayl)\\
             err\_sig &= err\_sig_o / Sig_o
+
+        with :math:`sig`: prepared signal
         """
 
         self.ds['err'] = self.rel_err
