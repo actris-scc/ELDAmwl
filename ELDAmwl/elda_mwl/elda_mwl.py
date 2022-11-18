@@ -364,6 +364,9 @@ class RunELDAmwl(BaseOperation):
         self.params.read_product_list()
         # todo: check params (e.g. whether all
         #  time and vert. resolutions are equal)
+        # todo: check whether the products have at
+        #  least one resolution with which they shall be derived
+        #  (calc_with_lr or calc_with_hr)
 
     def read_elpp_data(self):
         """read pre-processed signals from ELPP files

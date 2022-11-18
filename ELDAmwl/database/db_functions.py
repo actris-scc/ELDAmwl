@@ -984,7 +984,7 @@ class DBFunc(DBUtils):
             product_id=prod_id,
             channel_id=chan_id,
             hoi_system_id=hoi_system_id,
-            InscribedAt=nowtime,
+            inscribed_at=nowtime,
             profile_start_time=profile_start,
             profile_end_time=profile_end,
             filename=filename,

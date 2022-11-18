@@ -17,8 +17,9 @@ class LidarConstants(Base):
     __tablename__ = 'lidar_constants'
 
     ID = Column(
-        BIGINT,
+        INTEGER,
         primary_key=True,
+        autoincrement=True,
     )
     # Rule is: If a column has two underscores reduce to one
     measurements_id = Column(
@@ -89,7 +90,8 @@ class LidarConstants(Base):
         FLOAT,
         nullable=True,
     )
-    InscribedAt = Column(
+    inscribed_at = Column(
+        'InscribedAt',
         DateTime,
         nullable=False,
     )

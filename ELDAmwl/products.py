@@ -165,8 +165,9 @@ class ProductParams(Params):
 
     def from_db(self, general_params):
         self.general_params = general_params
-        self.smooth_params = SmoothParams.from_db(general_params.prod_id)
-        self.quality_params = QualityParams.from_db(general_params.prod_id)
+        if self.general_params.is_basic_product:
+            self.smooth_params = SmoothParams.from_db(general_params.prod_id)
+            self.quality_params = QualityParams.from_db(general_params.prod_id)
 
     def get_error_params(self, db_options):
         """reads error params
