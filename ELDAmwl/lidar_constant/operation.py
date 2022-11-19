@@ -8,16 +8,23 @@ from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.lidar_constant.product import LidarConstants
 from ELDAmwl.signals import Signals
-import zope
-import numpy as np
-import xarray as xr
-from numpy import square as sqr
-from numpy import sqrt
-
-
-from ELDAmwl.utils.constants import RESOLUTIONS, EXT, RBSC, EBSC, ANGSTROEM_DEFAULT, ASSUMED_LR_DEFAULT, \
-    ASSUMED_LR_ERROR_DEFAULT, FIXED, LR, LOWEST_HEIGHT_RANGE, RAMAN, OVL_FACTOR_ERR, OVL_FACTOR
+from ELDAmwl.utils.constants import ANGSTROEM_DEFAULT
+from ELDAmwl.utils.constants import ASSUMED_LR_DEFAULT
+from ELDAmwl.utils.constants import ASSUMED_LR_ERROR_DEFAULT
+from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EXT
+from ELDAmwl.utils.constants import LOWEST_HEIGHT_RANGE
+from ELDAmwl.utils.constants import LR
+from ELDAmwl.utils.constants import OVL_FACTOR
+from ELDAmwl.utils.constants import OVL_FACTOR_ERR
+from ELDAmwl.utils.constants import RAMAN
+from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.utils.constants import RESOLUTIONS
 from ELDAmwl.utils.numerical import integral_profile
+from numpy import sqrt
+from numpy import square as sqr
+
+import numpy as np
 
 
 class LidarConstantFactory(BaseOperationFactory):
@@ -211,7 +218,10 @@ class LidarConstantFactoryDefault(BaseOperation):
 
         else:
             # try option b)
-            mean_lr, mean_lr_err = self.calc_mean_lr(EBSC, 'assumed_particle_lidar_ratio', 'assumed_particle_lidar_ratio_error')
+            mean_lr, mean_lr_err = self.calc_mean_lr(
+                EBSC,
+                'assumed_particle_lidar_ratio',
+                'assumed_particle_lidar_ratio_error')
             if (not np.isnan(mean_lr)) and (not np.isnan(mean_lr_err)):
                 self.assumed_lr = mean_lr
                 self.assumed_lr_err = mean_lr_err
@@ -253,10 +263,10 @@ class LidarConstantFactoryDefault(BaseOperation):
                     profile = self.data_storage.product_common_smooth(prod_param.prod_id_str, res)
 
                     # get the data points (data and error) within the requested height range
-                    avrg_data = profile.ds[var_name].where((profile.height >= avrg_height_bottom) &
-                                                   (profile.height <= avrg_height_top), drop=True)
-                    avrg_error_data = profile.ds[error_var_name].where((profile.height >= avrg_height_bottom) &
-                                                   (profile.height <= avrg_height_top), drop=True)
+                    avrg_data = profile.ds[var_name].where(
+                        (profile.height >= avrg_height_bottom) & (profile.height <= avrg_height_top), drop=True)
+                    avrg_error_data = profile.ds[error_var_name].where(
+                        (profile.height >= avrg_height_bottom) & (profile.height <= avrg_height_top), drop=True)
 
                     # calculate average of data, average of error, stddev of data
                     avrg = np.nanmean(avrg_data)
@@ -279,7 +289,7 @@ class LidarConstantFactoryDefault(BaseOperation):
             bsc=self.bsc,
             signal=self.signals.total,
             lc_params=self.lc_params,
-            empty_lc=self.lidar_constants.total
+            empty_lc=self.lidar_constants.total,
         )
 
         self.lidar_constants.total = calc_routine.run()
@@ -289,7 +299,7 @@ class LidarConstantFactoryDefault(BaseOperation):
             signal=self.signals.raman,
             lc_params=self.lc_params,
             elast_lc=self.lidar_constants.total,
-            empty_lc=self.lidar_constants.raman
+            empty_lc=self.lidar_constants.raman,
         )
 
         self.lidar_constants.raman = raman_calc_routine.run()
@@ -339,18 +349,25 @@ class CalcLidarConstant(BaseOperationFactory):
     """
     creates a Class for the calculation of a lidar constant
 
-    Returns an instance of BaseOperation which calculates the lidar constant.
-    In this case, it will be always an instance of CalcLidarConstantDefault().
-
     Keyword Args:
-        bsc (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters`): particle backscatter profiles
-        signal(:class:`ELDAmwl.signals.Signals`): total signal
-        empty_lc (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
+        bsc (`.RamanBackscatters`): profiles of particle backscatter coefficient
+        signal(`.Signals`): :math:`P_{\lambda_0}(t,z)`: elastically backscattered signal
+                           (total signal or combined from depolarizaion components).
+                           The signal must be directly from the ELPP file
+                           without any modifications.
+        empty_lc (`.LidarConstants`): \
                 instance of LidarConstants which has all meta data but data are empty arrays
-        lc_params (Dict): dictionary with mandatory keys ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+        lc_params (addict.Dict): dictionary with mandatory keys
+
+                * 'lidar_ratio' and 'lidar_ratio_err' (used for estimation of atmospheric transmission below calibr_height)
+
+                * 'calibr_height' (height of full overlap of the signal)
 
     Returns:
-        time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
+            Returns an instance of BaseOperation which calculates the
+            lidar constant. In this case,
+            it will always return an instance of `.CalcLidarConstantDefault`.
+
 
     """
 
@@ -381,14 +398,8 @@ class CalcLidarConstantDefault(BaseOperation):
     Input signal and bsc are not modified.
 
     Keyword Args:
-        bsc (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters`): particle backscatter profiles
-        signal(:class:`ELDAmwl.signals.Signals`): total signal
-        empty_lc (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
-                instance of LidarConstants which has all meta data but data are empty arrays
-        lc_params (Dict): dictionary with mandatory keys ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+        ~: the same as for `.CalcLidarConst`
 
-    Returns:
-        time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
     """
 
     name = 'CalcLidarConstantDefault'
@@ -407,13 +418,80 @@ class CalcLidarConstantDefault(BaseOperation):
         self.result = kwargs['empty_lc']
 
     def run(self):
-        """
-        run the lidar constant calculation
+        r"""run the lidar constant calculation.
+
+        * The height at which the lidar constant is calculated is :math:`z_c` = self.lc_params.calibr_height
+        * The signal data are normalized for the number of laser shots (see `.Signals.normalize_by_shots()`) and corrected for molecular transmission (see `.Signals.correct_for_mol_transmission()`) .
+
+        .. math::
+            \widetilde{P_{\lambda_0}}(t,z)
+                &= C_{\lambda_0}(t)\:
+                   \beta_{\lambda_0}(t,z) \:
+                   T_{\lambda_0}^{par}(t,z)\\
+        * The volume backscatter profile at calibration height is
+
+        .. math::
+            \beta_{\lambda_0}(t,z_c) &= \beta_{\lambda_0}^{par}(t,z_c) +
+                      \beta_{\lambda_0}^{mol}(t,z_c)\\
+        * atmospheric transmission due to scattering at particles below :math:`z_c` is
+
+        .. math::
+            T_{\lambda_0}^{par}(t,z_c) &=
+                    T_{\lambda_{up}}^{par}(t,z) \:
+                    T_{\lambda_{down}}^{par}(t,z)\\
+                                       &= \Bigl( 2\: \exp
+                                       \bigl( \tau_{\lambda_0}^{par}(t,z_0)
+                                       \bigr)\Bigr)^{-1} \\
+            \Delta T_{\lambda_0}^{par}(t,z_c) &= 2 \: T_{\lambda_0}^{par}(t,z_c) \:
+                                                    \Delta \tau_{\lambda_0}^{par}(t,z_c)\\
+
+        * The optical depth and its uncertainty are
+
+        .. math::
+            \tau_{\lambda_0}^{par}(t,z_c)
+                &= S^{par} \: \int_0^{z_c}\beta_{\lambda_0}^{par}(t,\zeta) d\zeta\\
+            \Delta \tau_{\lambda_0}^{par}(t,z_c)
+                &= \tau_{\lambda_0}^{par}(t,z_c) \:
+                    \sqrt{\Biggl( \frac{\Delta S^{par}}
+                                       {S^{par}}
+                          \Biggr)^2 +
+                          \Biggl( \frac{\Delta \int_0^{z_c}\beta_{\lambda_0}^{par}(t,\zeta) d\zeta}
+                                       {\int_0^{z_c}\beta_{\lambda_0}^{par}(t,\zeta) d\zeta}
+                          \Biggr)^2 +
+                    }\\
+
+        with :math:`S^{par}` and :math:`\Delta S^{par}` = self.lc_params.lidar_ratio and self.lc_params.lidar_ratio_err.
+
+        The integral is calculated with `.ELDAmwl.utils.numerical.integral_profile` which includes an extrapolation
+        of the data to the ground and an estimation of the uncertrainty.
+
+        * finally, the lidar constant and its uncertainty is derived as
+
+        .. math::
+            C_{\lambda_0}(t) &= \frac{\widetilde{P_{\lambda_0}}(t,z_c)}
+                                    {\beta_{\lambda_0}(t,z_c) \:
+                                    T_{\lambda_0}^{par}(t,z_c)}\\
+            \Delta C_{\lambda_0}(t) &= C_{\lambda_0}(t) \:
+                                        \sqrt{\Biggl( \frac
+                                            {\Delta \widetilde{P_{\lambda_0}}(t,z_c)}
+                                            {\widetilde{P_{\lambda_0}}(t,z_c)}
+                                            \Biggr)^2 +
+                                            \Biggl( \frac
+                                            {\Delta \beta_{\lambda_0}(t,z_c)}
+                                            {\beta_{\lambda_0}(t,z_c)}
+                                            \Biggr)^2 +
+                                            \Biggl( \frac
+                                            {\Delta T_{\lambda_0}^{par}(t,z_c)}
+                                            {T_{\lambda_0}^{par}(t,z_c)}
+                                            \Biggr)^2
+                                            }\\
+
 
         Returns:
-            time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
+            `.LidarConstants`: :math:`C_{\lambda_0}(t)`: time series of lidar constants of the elastic total signal
 
         """
+        # todo: finish equations
 
         # bin numbers of calibration height in backscatter profile
         bsc_calibr_bins = self.bsc.height_to_levels(self.lc_params.calibr_height).values
@@ -446,27 +524,27 @@ class CalcLidarConstantDefault(BaseOperation):
 
             # volume bsc
             vol_bsc = (part_bsc + mol_bsc)[bsc_calibr_bins[t]]
-            vol_bsc_err = vol_bsc * (part_bsc_err/part_bsc)[bsc_calibr_bins[t]]
+            vol_bsc_err = vol_bsc * (part_bsc_err / part_bsc)[bsc_calibr_bins[t]]
 
             # calculate atmospheric transmission below calibration height
             # 1) integrated backscatter with lower and upper error bound
             int_bsc = integral_profile(part_bsc,
-                         range_axis=self.bsc.range[t].values,
-                         extrapolate_ovl_factor=OVL_FACTOR,
-                         first_bin=None,
-                         last_bin=None)[bsc_calibr_bins[t]]
+                                       range_axis=self.bsc.range[t].values,
+                                       extrapolate_ovl_factor=OVL_FACTOR,
+                                       first_bin=None,
+                                       last_bin=None)[bsc_calibr_bins[t]]
 
             int_bsc_min = integral_profile(part_bsc - part_bsc_err,
-                         range_axis=self.bsc.range[t].values,
-                         extrapolate_ovl_factor=(OVL_FACTOR - OVL_FACTOR_ERR),
-                         first_bin=None,
-                         last_bin=None)[bsc_calibr_bins[t]]
+                                           range_axis=self.bsc.range[t].values,
+                                           extrapolate_ovl_factor=(OVL_FACTOR - OVL_FACTOR_ERR),
+                                           first_bin=None,
+                                           last_bin=None)[bsc_calibr_bins[t]]
 
             int_bsc_max = integral_profile(part_bsc + part_bsc_err,
-                         range_axis=self.bsc.range[t].values,
-                         extrapolate_ovl_factor=(OVL_FACTOR + OVL_FACTOR_ERR),
-                         first_bin=None,
-                         last_bin=None)[bsc_calibr_bins[t]]
+                                           range_axis=self.bsc.range[t].values,
+                                           extrapolate_ovl_factor=(OVL_FACTOR + OVL_FACTOR_ERR),
+                                           first_bin=None,
+                                           last_bin=None)[bsc_calibr_bins[t]]
 
             int_bsc_err = abs(int_bsc_max - int_bsc_min) / 2
 
@@ -474,7 +552,7 @@ class CalcLidarConstantDefault(BaseOperation):
             lr = self.lc_params.lidar_ratio
             lr_err = self.lc_params.lidar_ratio_err
             aod = int_bsc * lr
-            aod_err = aod * sqrt(sqr(lr_err/lr) + sqr(int_bsc_err/int_bsc))
+            aod_err = aod * sqrt(sqr(lr_err / lr) + sqr(int_bsc_err / int_bsc))
 
             # 3) transmission at calibration height = exp(-2 aod)
             # transm_err = sqrt(sqr(-2*transm * aod_err)) = 2 * transm * aod_err
@@ -484,8 +562,8 @@ class CalcLidarConstantDefault(BaseOperation):
             # calculate lidar constant lc
             # lc = signal / ((mol bsc + part bsc) * total transmission)
             lc = sig / vol_bsc / transm
-            lc_err = lc * sqrt(sqr(sig_err / sig) +
-                               sqr(vol_bsc_err / vol_bsc) +
+            lc_err = lc * sqrt(sqr(sig_err / sig)
+                               + sqr(vol_bsc_err / vol_bsc) +
                                sqr(transm_err / transm))
 
             self.result.ds.data_vars['lidar_constant'][t] = lc
@@ -509,7 +587,8 @@ class CalcRamanLidarConstant(BaseOperationFactory):
                 instance of LidarConstants which has all meta data but data are empty arrays
         elast_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
                 lidar constant of the elastic signal
-        lc_params (Dict): dictionary with mandatory keys ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+        lc_params (Dict): dictionary with mandatory keys
+                    ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
 
     Returns:
         time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
@@ -549,7 +628,8 @@ class CalcRamanLidarConstantDefault(BaseOperation):
                 instance of LidarConstants which has all meta data but data are empty arrays
         elast_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
                 lidar constant of the elastic signal
-        lc_params (Dict): dictionary with mandatory keys ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+        lc_params (Dict): dictionary with mandatory keys
+                      ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
 
     Returns:
         time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
@@ -633,7 +713,8 @@ class SplitDepolLidarConstant(BaseOperationFactory):
                 instance of LidarConstants which has all meta data but data are empty arrays
         total_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
                 lidar constant of the total elastic signal
-        lc_params (Dict): dictionary with mandatory keys ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+        lc_params (Dict): dictionary with mandatory keys
+                      ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
 
     Returns:
         time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
@@ -678,7 +759,8 @@ class SplitDepolLidarConstantDefault(BaseOperation):
                 instance of LidarConstants which has all meta data but data are empty arrays
         total_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
                 lidar constant of the total elastic signal
-        lc_params (Dict): dictionary with mandatory keys ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+        lc_params (Dict): dictionary with mandatory keys
+                        ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
 
     Returns:
         time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
@@ -716,32 +798,34 @@ class SplitDepolLidarConstantDefault(BaseOperation):
         sig_calibr_bins = self.refl_signal.height_to_levels(self.lc_params.calibr_height).values
 
         self.refl_signal.normalize_by_shots()
-        self.signal.normalize_by_shots()
+        self.refl_signal.normalize_by_shots()
         self.transm_signal.correct_for_mol_transmission()
         self.transm_signal.correct_for_mol_transmission()
 
         sigratio = Signals.as_sig_ratio(self.refl_signal, self.transm_signal)
-        HR = float(self.refl_signal.h.data)
-        HT = float(self.transm_signal.h.data)
-        K = float(self.refl_signal.pol_calibr.gain_factor_correction.data)
-        err_K = float(self.refl_signal.pol_calibr.gain_factor_correction.statistical_error)  # noqa E501
-        if np.isnan(err_K):
-            err_K = 0
-        etaS = float(self.refl_signal.pol_calibr.gain_factor.data)
-        err_etaS = float(self.refl_signal.pol_calibr.gain_factor_correction.statistical_error)
-        if np.isnan(err_etaS):
-            err_etaS = 0
+        h_refl = float(self.refl_signal.h.data)
+        h_transm = float(self.transm_signal.h.data)
+        gain_factor_correction = float(self.refl_signal.pol_calibr.gain_factor_correction.data)
+        gain_factor_correction_err = float(self.refl_signal.pol_calibr.gain_factor_correction.statistical_error)  # noqa E501
+        if np.isnan(gain_factor_correction_err):
+            gain_factor_correction_err = 0
 
-        factor = etaS / K / HR
-        factor_err = factor * sqrt(sqr(err_etaS) + sqr(err_K))
+        gain_factor = float(self.refl_signal.pol_calibr.gain_factor.data)
+        gain_factor_err = float(self.refl_signal.pol_calibr.gain_factor_correction.statistical_error)
+        if np.isnan(gain_factor_err):
+            gain_factor_err = 0
 
-        lc_refl = self.total_lc / (factor / sigratio - HT)
+        factor = gain_factor / gain_factor_correction / h_refl
+        factor_err = factor * sqrt(sqr(gain_factor_err) + sqr(gain_factor_correction_err))
+        # todo: error propagation
+
+        lc_refl = self.total_lc / (factor / sigratio - h_transm)
         lc_refl_err = None
 
-        lc_transm = self.total_lc / (factor - HT * sigratio)
+        lc_transm = self.total_lc / (factor - h_transm * sigratio)
         lc_transm_err = None
 
-        for t in range(self.signal.ds.dims['time']):
+        for t in range(sigratio.ds.dims['time']):
             self.result.refl.ds.data_vars['lidar_constant'][t] = lc_refl[t, sig_calibr_bins[t]]
             self.result.transm.ds.data_vars['lidar_constant'][t] = lc_transm[t, sig_calibr_bins[t]]
             self.result.refl.ds.data_vars['lidar_constant_err'][t] = lc_refl_err[t, sig_calibr_bins[t]]
