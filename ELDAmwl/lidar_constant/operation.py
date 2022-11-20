@@ -350,7 +350,7 @@ class CalcLidarConstant(BaseOperationFactory):
     creates a Class for the calculation of a lidar constant
 
     Keyword Args:
-        bsc (`.RamanBackscatters`): profiles of particle backscatter coefficient
+        bsc (`.Backscatters`): profiles of particle backscatter coefficient
         signal(`.Signals`): :math:`P_{\lambda_0}(t,z)`: elastically backscattered signal
                            (total signal or combined from depolarizaion components).
                            The signal must be directly from the ELPP file
@@ -364,10 +364,9 @@ class CalcLidarConstant(BaseOperationFactory):
                 * 'calibr_height' (height of full overlap of the signal)
 
     Returns:
-            Returns an instance of BaseOperation which calculates the
+            Returns an instance of `.BaseOperation` which calculates the
             lidar constant. In this case,
             it will always return an instance of `.CalcLidarConstantDefault`.
-
 
     """
 
@@ -392,7 +391,7 @@ class CalcLidarConstant(BaseOperationFactory):
 
 class CalcLidarConstantDefault(BaseOperation):
     """
-    Calculates lidar constant from backscatter profile.
+    Calculates the lidar constant of an elastic signal from a backscatter profile.
 
     The result is a copy of empty_lc, but its dataset is filled with the calculated values.
     Input signal and bsc are not modified.
@@ -491,7 +490,6 @@ class CalcLidarConstantDefault(BaseOperation):
             `.LidarConstants`: :math:`C_{\lambda_0}(t)`: time series of lidar constants of the elastic total signal
 
         """
-        # todo: finish equations
 
         # bin numbers of calibration height in backscatter profile
         bsc_calibr_bins = self.bsc.height_to_levels(self.lc_params.calibr_height).values
@@ -578,9 +576,6 @@ class CalcRamanLidarConstant(BaseOperationFactory):
     """
     creates a Class for the calculation of a lidar constant of a Raman signal
 
-    Returns an instance of BaseOperation which calculates the lidar constant.
-    In this case, it will be always an instance of CalcLidarConstantDefault().
-
     Keyword Args:
         signal(:class:`ELDAmwl.signals.Signals`): total signal
         empty_lc (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
@@ -590,8 +585,25 @@ class CalcRamanLidarConstant(BaseOperationFactory):
         lc_params (Dict): dictionary with mandatory keys
                     ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
 
+    Keyword Args:
+        signal(`.Signals`): :math:`P_{\lambda_R}(t,z)`: Raman signal
+                           (total signal or combined from depolarizaion components).
+                           The signal must be directly from the ELPP file
+                           without any modifications.
+        empty_lc (`.LidarConstants`): \
+                instance of LidarConstants which has all meta data but data are empty arrays
+        empty_lc (`.LidarConstants`): \
+                the lidar constant of the elastic signal arrays
+        lc_params (addict.Dict): dictionary with mandatory keys
+
+                * 'angstroem' (used for estimation of atmospheric transmission below calibr_height)
+
+                * 'calibr_height' (height of full overlap of the signal)
+
     Returns:
-        time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
+            Returns an instance of `.BaseOperation` which calculates the
+            lidar constant of the Raman signal. In this case,
+            it will always return an instance of `.CalcRamanLidarConstantDefault`.
 
     """
 
@@ -615,30 +627,20 @@ class CalcRamanLidarConstant(BaseOperationFactory):
 
 
 class CalcRamanLidarConstantDefault(BaseOperation):
-    """Calculates lidar constant of a Raman signal.
+    """
+    Calculates the lidar constant of a Raman signal from the Raman signal and
+    the lidar constant of the elastic signal.
 
-    the lidar constant is retrieved from the Raman signal
-    and the lidar constant of the elastic signal.
     The result is a copy of empty_lc, but its dataset is filled with the calculated values.
-    Input signal and elast_lc are not modified.
+    Input signal and bsc are not modified.
 
     Keyword Args:
-        signal(:class:`ELDAmwl.signals.Signals`): Raman signal
-        empty_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
-                instance of LidarConstants which has all meta data but data are empty arrays
-        elast_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
-                lidar constant of the elastic signal
-        lc_params (Dict): dictionary with mandatory keys
-                      ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+        ~: the same as for `.CalcRamanLidarConst`
 
-    Returns:
-        time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
     """
 
     name = 'CalcRamanLidarConstantDefault'
 
-    bsc = None
-    result = None
     signal = None
     lc_params = None
     elast_lc = None
@@ -652,11 +654,64 @@ class CalcRamanLidarConstantDefault(BaseOperation):
         self.result = kwargs['empty_lc']
 
     def run(self):
-        """
-        run the lidar constant calculation
+        r"""run the lidar constant calculation.
+
+        Here, the reference for this calibration is the Rayleigh backscatter profile, not the Raman backscatter profile.
+        If the lidar constant is derived in this way,
+        the finally calibrated Raman signal corresponds to the attenuated Rayleigh backscatter
+        profile and is more useful for further applications than the attenuated Raman backscatter would be.
+
+        * The height at which the lidar constant is calculated is :math:`z_c` = self.lc_params.calibr_height
+        * The Raman signal data are normalized for the number of laser shots (see `.Signals.normalize_by_shots()`) and corrected for molecular transmission (see `.Signals.correct_for_mol_transmission()`) .
+
+        .. math::
+            \widetilde{P_{\lambda_R}}(t,z)
+                &= C_{\lambda_R}(t)\:
+                   \beta_{\lambda_R}^{mol}(t,z) \:
+                   T_{\lambda_0}^{par}(t,z)\\
+
+        * :math:`\beta_{\lambda_R}^{mol}(t,z)` is the Rayleigh backscatter coefficient.
+
+        * :math: `T_0^{par}(t,z_c)` is the 2-way atmospheric transmission at emission wavelength due to scattering at particles below :math:`z_c`. It is included in the data of keyword argument elast_lc
+        * The Ångström exponent :math:`\ae` is included in the keyword parameter lc_params
+        * The 2-way atmospheric transmission of the Raman signal and its uncertainty are
+
+        .. math::
+            T_R^{par}(t,z_c)
+                &= T_{\lambda_0}^{par}(t,z) \: T_{\lambda_R}^{par}(t,z)\\
+                &= \bigl( T_0\bigr) ^{f_{\lambda}} \\
+            \Delta T_R^{par}(t,z_c)
+                &= f_{\lambda} \: T_R^{par}(t,z_c) \:
+                    \frac{\Delta T_0^{par}(t,z_c)}
+                         {T_0^{par}(t,z_c)} \\
+
+        * The wavelength factor :math:`f_{\lambda}` is
+
+        .. math::
+            f_{\lambda} &=
+                \frac{1 + \Bigl( \frac{\lambda_0}{\lambda_R} \Bigr ) ^{\ae}}
+                     {2}\\
+
+        * finally, the lidar constant and its uncertainty is derived as
+
+        .. math::
+            C_{\lambda_R}(t) &= \frac{\widetilde{P_{\lambda_R}}(t,z_c)}
+                                    {\beta_{\lambda_R}(t,z_c) \:
+                                    T_R^{par}(t,z_c)}\\
+            \Delta C_{\lambda_R}(t) &= C_{\lambda_R}(t) \:
+                                        \sqrt{\Biggl( \frac
+                                            {\Delta \widetilde{P_{\lambda_R}}(t,z_c)}
+                                            {\widetilde{P_{\lambda_R}}(t,z_c)}
+                                            \Biggr)^2 +
+                                            \Biggl( \frac
+                                            {\Delta T_R^{par}(t,z_c)}
+                                            {T_R^{par}(t,z_c)}
+                                            \Biggr)^2
+                                            }\\
+
 
         Returns:
-            time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
+            `.LidarConstants`: :math:`C_{\lambda_R}(t)`: time series of lidar constants of the Raman signal
 
         """
 
