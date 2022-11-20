@@ -347,7 +347,7 @@ class LidarConstantFactoryDefault(BaseOperation):
 
 class CalcLidarConstant(BaseOperationFactory):
     """
-    creates a Class for the calculation of a lidar constant
+    creates a calculator for the calculation of a lidar constant
 
     Keyword Args:
         bsc (`.Backscatters`): profiles of particle backscatter coefficient
@@ -367,6 +367,7 @@ class CalcLidarConstant(BaseOperationFactory):
             Returns an instance of `.BaseOperation` which calculates the
             lidar constant. In this case,
             it will always return an instance of `.CalcLidarConstantDefault`.
+            The keyword parameters are passed on to the created instance.
 
     """
 
@@ -426,22 +427,22 @@ class CalcLidarConstantDefault(BaseOperation):
             \widetilde{P_{\lambda_0}}(t,z)
                 &= C_{\lambda_0}(t)\:
                    \beta_{\lambda_0}(t,z) \:
-                   T_{\lambda_0}^{par}(t,z)\\
+                   T_0^{par}(t,z)\\
         * The volume backscatter profile at calibration height is
 
         .. math::
             \beta_{\lambda_0}(t,z_c) &= \beta_{\lambda_0}^{par}(t,z_c) +
                       \beta_{\lambda_0}^{mol}(t,z_c)\\
-        * atmospheric transmission due to scattering at particles below :math:`z_c` is
+        * 2-way atmospheric transmission due to scattering at particles below :math:`z_c` is
 
         .. math::
-            T_{\lambda_0}^{par}(t,z_c) &=
+            T_0^{par}(t,z_c) &=
                     T_{\lambda_{up}}^{par}(t,z) \:
                     T_{\lambda_{down}}^{par}(t,z)\\
                                        &= \Bigl( 2\: \exp
                                        \bigl( \tau_{\lambda_0}^{par}(t,z_0)
                                        \bigr)\Bigr)^{-1} \\
-            \Delta T_{\lambda_0}^{par}(t,z_c) &= 2 \: T_{\lambda_0}^{par}(t,z_c) \:
+            \Delta T_0^{par}(t,z_c) &= 2 \: T_0^{par}(t,z_c) \:
                                                     \Delta \tau_{\lambda_0}^{par}(t,z_c)\\
 
         * The optical depth and its uncertainty are
@@ -467,10 +468,10 @@ class CalcLidarConstantDefault(BaseOperation):
         * finally, the lidar constant and its uncertainty is derived as
 
         .. math::
-            C_{\lambda_0}(t) &= \frac{\widetilde{P_{\lambda_0}}(t,z_c)}
+            C_0(t) &= \frac{\widetilde{P_{\lambda_0}}(t,z_c)}
                                     {\beta_{\lambda_0}(t,z_c) \:
                                     T_{\lambda_0}^{par}(t,z_c)}\\
-            \Delta C_{\lambda_0}(t) &= C_{\lambda_0}(t) \:
+            \Delta C_0(t) &= C_{\lambda_0}(t) \:
                                         \sqrt{\Biggl( \frac
                                             {\Delta \widetilde{P_{\lambda_0}}(t,z_c)}
                                             {\widetilde{P_{\lambda_0}}(t,z_c)}
@@ -487,7 +488,7 @@ class CalcLidarConstantDefault(BaseOperation):
 
 
         Returns:
-            `.LidarConstants`: :math:`C_{\lambda_0}(t)`: time series of lidar constants of the elastic total signal
+            `.LidarConstants`: :math:`C_0(t)`: time series of lidar constants of the elastic total signal
 
         """
 
@@ -574,26 +575,16 @@ class CalcLidarConstantDefault(BaseOperation):
 
 class CalcRamanLidarConstant(BaseOperationFactory):
     """
-    creates a Class for the calculation of a lidar constant of a Raman signal
-
-    Keyword Args:
-        signal(:class:`ELDAmwl.signals.Signals`): total signal
-        empty_lc (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
-                instance of LidarConstants which has all meta data but data are empty arrays
-        elast_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
-                lidar constant of the elastic signal
-        lc_params (Dict): dictionary with mandatory keys
-                    ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+    creates a calculator for a lidar constant of a Raman signal
 
     Keyword Args:
         signal(`.Signals`): :math:`P_{\lambda_R}(t,z)`: Raman signal
-                           (total signal or combined from depolarizaion components).
                            The signal must be directly from the ELPP file
                            without any modifications.
         empty_lc (`.LidarConstants`): \
                 instance of LidarConstants which has all meta data but data are empty arrays
-        empty_lc (`.LidarConstants`): \
-                the lidar constant of the elastic signal arrays
+        elast_lc (`.LidarConstants`): \
+                the lidar constant of the elastic signal
         lc_params (addict.Dict): dictionary with mandatory keys
 
                 * 'angstroem' (used for estimation of atmospheric transmission below calibr_height)
@@ -604,6 +595,7 @@ class CalcRamanLidarConstant(BaseOperationFactory):
             Returns an instance of `.BaseOperation` which calculates the
             lidar constant of the Raman signal. In this case,
             it will always return an instance of `.CalcRamanLidarConstantDefault`.
+            The keyword parameters are passed on to the created instance.
 
     """
 
@@ -632,7 +624,7 @@ class CalcRamanLidarConstantDefault(BaseOperation):
     the lidar constant of the elastic signal.
 
     The result is a copy of empty_lc, but its dataset is filled with the calculated values.
-    Input signal and bsc are not modified.
+    Input signal, elast_lc, and lc_params are not modified.
 
     Keyword Args:
         ~: the same as for `.CalcRamanLidarConst`
@@ -666,9 +658,9 @@ class CalcRamanLidarConstantDefault(BaseOperation):
 
         .. math::
             \widetilde{P_{\lambda_R}}(t,z)
-                &= C_{\lambda_R}(t)\:
+                &= C_R(t)\:
                    \beta_{\lambda_R}^{mol}(t,z) \:
-                   T_{\lambda_0}^{par}(t,z)\\
+                   T_R^{par}(t,z)\\
 
         * :math:`\beta_{\lambda_R}^{mol}(t,z)` is the Rayleigh backscatter coefficient.
 
@@ -695,10 +687,10 @@ class CalcRamanLidarConstantDefault(BaseOperation):
         * finally, the lidar constant and its uncertainty is derived as
 
         .. math::
-            C_{\lambda_R}(t) &= \frac{\widetilde{P_{\lambda_R}}(t,z_c)}
+            C_R(t) &= \frac{\widetilde{P_{\lambda_R}}(t,z_c)}
                                     {\beta_{\lambda_R}(t,z_c) \:
                                     T_R^{par}(t,z_c)}\\
-            \Delta C_{\lambda_R}(t) &= C_{\lambda_R}(t) \:
+            \Delta C_R(t) &= C_R(t) \:
                                         \sqrt{\Biggl( \frac
                                             {\Delta \widetilde{P_{\lambda_R}}(t,z_c)}
                                             {\widetilde{P_{\lambda_R}}(t,z_c)}
@@ -711,7 +703,7 @@ class CalcRamanLidarConstantDefault(BaseOperation):
 
 
         Returns:
-            `.LidarConstants`: :math:`C_{\lambda_R}(t)`: time series of lidar constants of the Raman signal
+            `.LidarConstants`: :math:`C_R(t)`: time series of lidar constants of the Raman signal
 
         """
 
@@ -754,25 +746,30 @@ class CalcRamanLidarConstantDefault(BaseOperation):
 
 class SplitDepolLidarConstant(BaseOperationFactory):
     """
-    creates a Class for the calculation of a lidar constant of a Raman signal
-
-    Returns an instance of BaseOperation which calculates the lidar constant.
-    In this case, it will be always an instance of CalcLidarConstantDefault().
+    creates a calculator for the lidar constant of the reflected and transmitted signals
 
     Keyword Args:
-        refl_signal(:class:`ELDAmwl.signals.Signals`): Raman signal
-        transm_signal(:class:`ELDAmwl.signals.Signals`): Raman signal
-        empty_lc_refl (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
+        refl_signal(`.Signals`): :math:`P_r(t,z)`: reflected signal
+                           The signal must be directly from the ELPP file
+                           without any modifications.
+        transm_signal(`.Signals`): :math:`P_t(t,z)`: transmitted signal
+                           The signal must be directly from the ELPP file
+                           without any modifications.
+        empty_lc_refl (`.LidarConstants`): \
                 instance of LidarConstants which has all meta data but data are empty arrays
-        empty_lc_transm (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
+        empty_lc_transm (`.LidarConstants`): :math:`C_0(t)`\
                 instance of LidarConstants which has all meta data but data are empty arrays
-        total_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
-                lidar constant of the total elastic signal
-        lc_params (Dict): dictionary with mandatory keys
-                      ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+        total_lc (`.LidarConstants`): \
+                the lidar constant of the combined (total) elastic signal
+        lc_params (addict.Dict): dictionary with mandatory keys
+
+                * 'calibr_height' (height of full overlap of the signals)
 
     Returns:
-        time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
+            Returns an instance of `.BaseOperation` which calculates the
+            lidar constant of the transmitted and reflected signals. In this case,
+            it will always return an instance of `.SplitDepolLidarConstantDefault`.
+            The keyword parameters are passed on to the created instance.
 
     """
 
@@ -798,27 +795,16 @@ class SplitDepolLidarConstant(BaseOperationFactory):
 
 
 class SplitDepolLidarConstantDefault(BaseOperation):
-    """Calculates lidar constants of a transmitted and a reflected signal.
+    """
+    Calculates the lidar constant of a transmitted and areflected signal from the
+    both signals and the lidar constant of the combined elastic (total) signal.
 
-    the lidar constant is retrieved from the reflected and transmitted signal
-    and the lidar constant of the total elastic signal.
     The result is a copy of empty_lc, but its dataset is filled with the calculated values.
-    Input signals and total_lc are not modified.
+    Input data refl_signal, transm_signal, total_lc, and lc_params are not modified.
 
     Keyword Args:
-        refl_signal(:class:`ELDAmwl.signals.Signals`): Raman signal
-        transm_signal(:class:`ELDAmwl.signals.Signals`): Raman signal
-        empty_lc_refl (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
-                instance of LidarConstants which has all meta data but data are empty arrays
-        empty_lc_transm (:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
-                instance of LidarConstants which has all meta data but data are empty arrays
-        total_lc(:class:`ELDAmwl.lidar_constant.product.LidarConstants`): \
-                lidar constant of the total elastic signal
-        lc_params (Dict): dictionary with mandatory keys
-                        ('angstroem', 'lidar_ratio', 'lidar_ratio_err', 'calibr_height')
+        ~: the same as for `.CalcRamanLidarConst`
 
-    Returns:
-        time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
     """
 
     name = 'SplitDepolLidarConstantDefault'
@@ -842,11 +828,44 @@ class SplitDepolLidarConstantDefault(BaseOperation):
                             })
 
     def run(self):
-        """
+        r"""
         run the lidar constant calculation
 
+        * The height at which the lidar constant is calculated is :math:`z_c` = self.lc_params.calibr_height
+        * The data of both signals are normalized for the number of laser shots (see `.Signals.normalize_by_shots()`) and corrected for molecular transmission (see `.Signals.correct_for_mol_transmission()`) .
+
+        .. math::
+            \widetilde{P_r}(t,z)
+                &= C_r(t) \:
+                    \beta_r(t,z) \: T_r^{par}(t,z) \\
+            \widetilde{P_t}(t,z)
+                &= C_t(t)\:
+                   \beta_t(t,z) \: T_t^{par}(t,z)\\
+
+        * The signal ratio is
+
+        .. math::
+            R(t,z) &= \frac{\widetilde{P_r}(t,z)}{\widetilde{P_t}(t,z)}\\
+
+        * The factor :math:`f` is
+
+        .. math::
+            f &= \frac{\eta^*}{K  H_r}\\
+            \text{with } \eta^* &= \text{gain factor} \\
+                            K &= \text{gain factor correction, and}\\
+                            H_r, H_t &= H\text{parameters of }\widetilde{P_r} \text{ and } \widetilde{P_t}\\
+
+        * The lidar constants are calculated with
+
+        .. math::
+            C_r(t) &= \frac{C_0(t)}
+                           {\frac{f}{R(t,z_c)} - H_t}\\
+            C_t(t) &= \frac{C_0(t)}
+                           {f - H_t \: R(t,z_c)}\\
+
         Returns:
-            time series if lidar constants (:class:`ELDAmwl.lidar_constant.product.LidarConstants`)
+            addict.Dict with the keys 'refl' and 'transm' which contain
+            the time series of corresponding lidar constants (`.LidarConstants`)
 
         """
         # bin numbers of calibration height in signal profile
@@ -856,6 +875,9 @@ class SplitDepolLidarConstantDefault(BaseOperation):
         self.refl_signal.normalize_by_shots()
         self.transm_signal.correct_for_mol_transmission()
         self.transm_signal.correct_for_mol_transmission()
+
+        c_total = float(self.total_lc.ds.lidar_constant)
+        c_total_err = float(self.total_lc.ds.lidar_constant_err)
 
         sigratio = Signals.as_sig_ratio(self.refl_signal, self.transm_signal)
         h_refl = float(self.refl_signal.h.data)
@@ -874,10 +896,11 @@ class SplitDepolLidarConstantDefault(BaseOperation):
         factor_err = factor * sqrt(sqr(gain_factor_err) + sqr(gain_factor_correction_err))
         # todo: error propagation
 
-        lc_refl = self.total_lc / (factor / sigratio - h_transm)
-        lc_refl_err = None
+        lc_refl = c_total / (factor / sigratio - h_transm)
+        lc_refl_err = lc_refl * np.sqrt(np.sqr(c_total_err / c_total) +
+                                        np.sqr())
 
-        lc_transm = self.total_lc / (factor - h_transm * sigratio)
+        lc_transm = c_total / (factor - h_transm * sigratio)
         lc_transm_err = None
 
         for t in range(sigratio.ds.dims['time']):
