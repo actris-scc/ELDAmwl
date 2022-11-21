@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR, \
+    REPEATED_ATTEMPT_TO_NORMALZE_BY_SHOTS, REPEATED_ATTEMPT_TO_CORRECT_MOL_TRANSM
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -100,6 +101,36 @@ class OnlyOneOverrideAllowed(ELDAmwlException):
         return('attempt to add more than one override to '
                'class registry for BaseOperationFactory {0}'
                .format(self.factory_name))
+
+
+class RepeatedNormalizeByshots(ELDAmwlException):
+    """
+    Raised on attempt to normalize a signal by number of laser shots if it was already normalized before
+    """
+    return_value = REPEATED_ATTEMPT_TO_NORMALZE_BY_SHOTS
+
+    def __init__(self, channel_id):
+        self.signal = channel_id
+
+    def __str__(self):
+        return('attempt to normalize signal {0} by number of laser shots.'
+               'But it was already normalized before'
+               .format(self.channel_id))
+
+
+class RepeatedCorrectMolTransm(ELDAmwlException):
+    """
+    Raised on attempt to correct a signal for molecular transmission it was already corrected before
+    """
+    return_value = REPEATED_ATTEMPT_TO_CORRECT_MOL_TRANSM
+
+    def __init__(self, channel_id):
+        self.signal = channel_id
+
+    def __str__(self):
+        return('attempt to correct signal {0} for molecular transmission.'
+               'But it was already corrected before'
+               .format(self.channel_id))
 
 
 class NotFoundInStorage(ELDAmwlException):

@@ -54,3 +54,7 @@ DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR = 49
 DATA_NOT_IN_STORAGE = 100
 # Raised on attempt to add more than one override to class registry
 CLASS_REGISTRY_TOO_MAY_OVERRIDES = 101
+# Raised on attempt to normalize a signal by number of laser shots several times
+REPEATED_ATTEMPT_TO_NORMALZE_BY_SHOTS = 102
+# Raised on attempt to correct a signal for molecular transmission several times
+REPEATED_ATTEMPT_TO_CORRECT_MOL_TRANSM = 103

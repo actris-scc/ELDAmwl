@@ -9,7 +9,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import ICfg
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import CannotOpenELLPFile
+from ELDAmwl.errors.exceptions import CannotOpenELLPFile, RepeatedNormalizeByshots, RepeatedCorrectMolTransm
 from ELDAmwl.errors.exceptions import ELPPFileNotFound
 from ELDAmwl.header import Header
 from ELDAmwl.rayleigh import RayleighLidarRatio
@@ -171,6 +171,7 @@ class Signals(Columns):
     pol_calibr = None
     raw_heightres = None
     station_altitude = None
+    is_from_depol_components = None
 
     calc_eff_bin_res_routine = None
     calc_used_bin_res_routine = None
@@ -178,6 +179,11 @@ class Signals(Columns):
     h = None
     g = None
     pol_channel_geometry = None
+
+    def __init__(self):
+        self.normalized_by_shots = False
+        self.corrected_for_mol_transmission = False
+        self.is_from_depol_components = False
 
     @property
     def name(self):
@@ -384,6 +390,8 @@ class Signals(Columns):
         result.pol_channel_conf.values = TOTAL
         result.pol_channel_geometry.values = TRANSMITTED + REFLECTED  # ToDo Ina debug
 
+        result.is_from_depol_components = True
+
         return result
 
     def heightres_to_bins(self, heightres):
@@ -516,13 +524,19 @@ class Signals(Columns):
 
         :math:`n_{shots}(t)` the number of laser shots accumulated in the time slice.
 
+        Raises:
+            RepeatedNormalizeByshots: on attempt to normalize a signal by number of laser shots if it was already normalized before
+
         .. note::
             This procedure affects only signals which were detected in
-            photon-counting mode or glued signals. analog signals remain unchanged.
+            photon-counting mode or glued signals. Analog signals remain unchanged.
 
         """
+        if self.normalized_by_shots:
+            raise RepeatedNormalizeByshots(self.channel_id)
         self.ds['err'] = self.ds['err'] * self.scale_factor_shots
         self.ds['data'] = self.ds['data'] * self.scale_factor_shots
+        self.normalized_by_shots = True
 
     def set_valid_height_range(self, v_range):
         """ set data levels below and above v_range as invalid
@@ -577,12 +591,13 @@ class Signals(Columns):
         :math:`\widetilde{P_{\lambda}(t,z)}` and :math:`\Delta \widetilde{P_{\lambda}(t,z)}`
         being the corrected signal and its statistical uncertainty.
 
-        .. warning::
-            This procedure does not check whether the correction has been done before.
-            The developer has to ensure that the correction is not applied multiple
-            times to the same data.
+        Raises:
+            RepeatedCorrectMolTransm: on attempt to correct a signal for molecular transmission if it was already corrected before
 
         """
+        if self.corrected_for_mol_transmission:
+            raise RepeatedCorrectMolTransm
+
         self.ds['data'] = self.ds['data'] / \
             self.ds.mol_trasm_at_emission_wl /\
             self.ds.mol_trasm_at_detection_wl
@@ -590,6 +605,8 @@ class Signals(Columns):
         self.ds['err'] = self.ds['err'] / \
             self.ds.mol_trasm_at_emission_wl / \
             self.ds.mol_trasm_at_detection_wl
+
+        self.corrected_for_mol_transmission = True
 
     def prepare_for_extinction(self):
         r"""

@@ -25,6 +25,7 @@ class LidarConstants(object):
     channel_id = None
     wavelength = None
     calibr_height = None
+    is_from_combined_signal = None
 
     @classmethod
     def init(cls, bsc, sig):
@@ -39,10 +40,14 @@ class LidarConstants(object):
         # global measurement params
         meas_params = component.queryUtility(IParams).measurement_params
 
+        result.is_from_combined_signal = sig.is_from_depol_components
         result.measurement_id = meas_params.meas_id
         result.system_id = meas_params.system_id
         result.product_id = bsc.params.prod_id
-        result.channel_id = int(sig.channel_id.values)
+        if not sig.is_from_depol_components:
+            result.channel_id = int(sig.channel_id.values)
+        else:
+            result.channel_id = sig.channel_id.values
         result.wavelength = float(sig.detection_wavelength.values)
 
         result.ds = xr.Dataset(data_vars=dict(
@@ -70,6 +75,9 @@ class LidarConstants(object):
 
     def write_to_database(self):
         db_func = component.queryUtility(IDBFunc)
+        if self.is_from_combined_signal:
+            return
+
         for t in range(self.ds.dims['time']):
             db_func.write_lidar_constant_in_db(self.measurement_id,
                                                self.product_id,

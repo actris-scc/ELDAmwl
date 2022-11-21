@@ -94,7 +94,7 @@ class DataPoint(object):
 
     @property
     def sys_error(self):
-        return float(self.data.systematic_error_error)
+        return float(self.data.systematic_error)
 
 
 class ELDABase:
