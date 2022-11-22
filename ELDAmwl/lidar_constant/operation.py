@@ -318,7 +318,7 @@ class LidarConstantFactoryDefault(BaseOperation):
         )
 
         self.lidar_constants.refl, self.lidar_constants.transm = \
-            depol_calc_routine.run()
+            depol_calc_routine.run().values()
 
     def write_lc_to_db(self):
         for lc in self.lidar_constants.values():

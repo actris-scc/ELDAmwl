@@ -113,7 +113,7 @@ class DataStorage:
         """
         self.__data.lidar_constants[wl] = new_lidar_constant
         for lc in new_lidar_constant.values():
-            channel_id = lc.channel_id
+            channel_id = str(lc.channel_id)
             self.__data.lidar_constants[channel_id] = lc
 
     def set_final_product_matrix(self, prod_type, res, new_dataset):
