@@ -2,7 +2,6 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.registry import registry
-from ELDAmwl.utils.constants import NC_FILL_STR
 from zope import component
 
 import numpy as np

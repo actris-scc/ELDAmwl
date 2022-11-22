@@ -14,8 +14,6 @@ from ELDAmwl.extinction.tools.operation import SlopeToExtinction
 from ELDAmwl.utils.constants import ABOVE_MAX_ALT
 from ELDAmwl.utils.constants import BELOW_OVL
 from ELDAmwl.utils.constants import MC
-from ELDAmwl.utils.constants import NC_FILL_INT
-from ELDAmwl.utils.constants import NC_FILL_STR
 
 import numpy as np
 import zope

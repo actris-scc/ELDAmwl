@@ -3,7 +3,6 @@ from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.utils.constants import NC_FILL_STR
 from ELDAmwl.utils.constants import RANGE_BOUNDARY
 from math import sqrt
 

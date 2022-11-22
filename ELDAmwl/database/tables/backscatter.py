@@ -10,6 +10,7 @@ from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy import text
 
+
 class BscCalibrLowestHeight(Base):
     """content of the db table _bsc_calibration_lowestheight
 

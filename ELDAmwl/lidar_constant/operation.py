@@ -128,23 +128,19 @@ class LidarConstantFactoryDefault(BaseOperation):
             * 'raman' (in case of Raman backscatter)
         """
         self.signals = Dict({
-            # 'total': self.data_storage.elpp_signal(
             'total': self.data_storage.prepared_signal(
-            self.bsc_param.prod_id_str,
+                self.bsc_param.prod_id_str,
                 self.bsc_param.total_sig_id_str)})
 
         if self.bsc_param.is_bsc_from_depol_components():
-            # self.signals['refl'] = self.data_storage.elpp_signal(
             self.signals['refl'] = self.data_storage.prepared_signal(
                 self.bsc_param.prod_id_str,
                 self.bsc_param.refl_sig_id_str)
-            # self.signals['transm'] = self.data_storage.elpp_signal(
             self.signals['transm'] = self.data_storage.prepared_signal(
                 self.bsc_param.prod_id_str,
                 self.bsc_param.transm_sig_id_str)
 
         if self.bsc_param.bsc_method == RAMAN:
-            # self.signals['raman'] = self.data_storage.elpp_signal(
             self.signals['raman'] = self.data_storage.prepared_signal(
                 self.bsc_param.prod_id_str,
                 self.bsc_param.raman_sig_id_str)
@@ -358,10 +354,10 @@ class CalcLidarConstant(BaseOperationFactory):
 
     Keyword Args:
         bsc (`.Backscatters`): profiles of particle backscatter coefficient
-        signal(`.Signals`): :math:`P_{\lambda_0}(t,z)`: elastically backscattered signal
-                           (total signal or combined from depolarizaion components).
-                           The signal must be directly from the ELPP file
-                           without any modifications.
+        signal(`.Signals`): :math:`P_{\lambda_0}(t,z)`: elastically backscattered signal  # noqa W605
+                           (total signal or combined from depolarization components).
+                           The signal must be prepared by `.PrepareBscSignals` before.
+                           It can be taken from the global data storage with `.DataStorage.prepared_signal()`.
         empty_lc (`.LidarConstants`): \
                 instance of LidarConstants which has all meta data but data are empty arrays
         lc_params (addict.Dict): dictionary with mandatory keys
@@ -415,7 +411,6 @@ class CalcLidarConstantDefault(BaseOperation):
     result = None
     signal = None
     lc_params = None
-    result = None
 
     def __init__(self, **kwargs):
         super(CalcLidarConstantDefault, self).__init__(**kwargs)
@@ -428,7 +423,8 @@ class CalcLidarConstantDefault(BaseOperation):
         r"""run the lidar constant calculation.
 
         * The height at which the lidar constant is calculated is :math:`z_c` = self.lc_params.calibr_height
-        * The signal data are normalized for the number of laser shots (see `.Signals.normalize_by_shots()`) and corrected for molecular transmission (see `.Signals.correct_for_mol_transmission()`) .
+        * | If not yet done so, the signal data are corrected for molecular transmission
+            (see `.Signals.correct_for_mol_transmission()`) .
 
         .. math::
             \widetilde{P_{\lambda_0}}(t,z)
@@ -444,11 +440,11 @@ class CalcLidarConstantDefault(BaseOperation):
 
         .. math::
             T_0^{par}(t,z_c) &=
-                    T_{\lambda_{up}}^{par}(t,z) \:
-                    T_{\lambda_{down}}^{par}(t,z)\\
-                                       &= \Bigl( 2\: \exp
-                                       \bigl( \tau_{\lambda_0}^{par}(t,z_0)
-                                       \bigr)\Bigr)^{-1} \\
+                    T_{\lambda_{up}}^{par}(t,z_c) \:
+                    T_{\lambda_{down}}^{par}(t,z_c)\\
+                                       &= \exp
+                                       \bigl( -2 \: \tau_{\lambda_0}^{par}(t,z_c)
+                                       \bigr) \\
             \Delta T_0^{par}(t,z_c) &= 2 \: T_0^{par}(t,z_c) \:
                                                     \Delta \tau_{\lambda_0}^{par}(t,z_c)\\
 
@@ -470,7 +466,7 @@ class CalcLidarConstantDefault(BaseOperation):
         with :math:`S^{par}` and :math:`\Delta S^{par}` = self.lc_params.lidar_ratio and self.lc_params.lidar_ratio_err.
 
         The integral is calculated with `.ELDAmwl.utils.numerical.integral_profile` which includes an extrapolation
-        of the data to the ground and an estimation of the uncertrainty.
+        of the data to the ground and an estimation of the uncertainty.
 
         * finally, the lidar constant and its uncertainty is derived as
 
@@ -512,10 +508,8 @@ class CalcLidarConstantDefault(BaseOperation):
                                          'lidar constant calculation',
                                          '?'))
 
-        # self.signal.normalize_by_shots()
-        # self.signal.correct_for_mol_transmission()
         if not self.signal.corrected_for_mol_transmission:
-            self.signal.correct_for_mol_transmission
+            self.signal.correct_for_mol_transmission()
 
         # calculation of calibration constant (has to be done for each time slice)
         for t in range(self.bsc.num_times):
@@ -571,8 +565,8 @@ class CalcLidarConstantDefault(BaseOperation):
             # lc = signal / ((mol bsc + part bsc) * total transmission)
             lc = sig / vol_bsc / transm
             lc_err = lc * sqrt(sqr(sig_err / sig)
-                               + sqr(vol_bsc_err / vol_bsc) +
-                               sqr(transm_err / transm))
+                               + sqr(vol_bsc_err / vol_bsc)
+                               + sqr(transm_err / transm))
 
             self.result.ds.data_vars['lidar_constant'][t] = lc
             self.result.ds.data_vars['lidar_constant_err'][t] = lc_err
@@ -587,9 +581,9 @@ class CalcRamanLidarConstant(BaseOperationFactory):
     creates a calculator for a lidar constant of a Raman signal
 
     Keyword Args:
-        signal(`.Signals`): :math:`P_{\lambda_R}(t,z)`: Raman signal
-                           The signal must be directly from the ELPP file
-                           without any modifications.
+        signal(`.Signals`): :math:`P_{\lambda_R}(t,z)`: Raman signal  # noqa W605
+                           The signal must be prepared by `.PrepareBscSignals` before.
+                           It can be taken from the global data storage with `.DataStorage.prepared_signal()`.
         empty_lc (`.LidarConstants`): \
                 instance of LidarConstants which has all meta data but data are empty arrays
         elast_lc (`.LidarConstants`): \
@@ -663,7 +657,6 @@ class CalcRamanLidarConstantDefault(BaseOperation):
         profile and is more useful for further applications than the attenuated Raman backscatter would be.
 
         * The height at which the lidar constant is calculated is :math:`z_c` = self.lc_params.calibr_height
-        * The Raman signal data are normalized for the number of laser shots (see `.Signals.normalize_by_shots()`) and corrected for molecular transmission (see `.Signals.correct_for_mol_transmission()`) .
 
         .. math::
             \widetilde{P_{\lambda_R}}(t,z)
@@ -673,7 +666,9 @@ class CalcRamanLidarConstantDefault(BaseOperation):
 
         * :math:`\beta_{\lambda_R}^{mol}(t,z)` is the Rayleigh backscatter coefficient.
 
-        * :math:`T_0^{par}(t,z_c)` is the 2-way atmospheric transmission at emission wavelength due to scattering at particles below :math:`z_c`. It is included in the data of keyword argument elast_lc
+        * | :math:`T_0^{par}(t,z_c)` is the 2-way atmospheric transmission at
+            emission wavelength due to scattering at particles below
+            :math:`z_c`. It is included in the data of keyword argument elast_lc
         * The Ångström exponent :math:`\ae` is included in the keyword parameter lc_params
         * The 2-way atmospheric transmission of the Raman signal and its uncertainty are
 
@@ -719,9 +714,6 @@ class CalcRamanLidarConstantDefault(BaseOperation):
         # bin numbers of calibration height in signal profile
         sig_calibr_bins = self.signal.height_to_levels(self.lc_params.calibr_height).values
 
-        # self.signal.normalize_by_shots()
-        # self.signal.correct_for_mol_transmission()
-
         raman_wl = float(self.signal.detection_wavelength)
         elast_wl = float(self.signal.emission_wavelength)
 
@@ -745,8 +737,8 @@ class CalcRamanLidarConstantDefault(BaseOperation):
             rayl_bsc = self.signal.ds.mol_backscatter[t, sig_calibr_bins[t]]
 
             lc = (sig / rayl_bsc / transm[t])
-            lc_err = lc * sqrt(sqr(sig_err / sig) +
-                               sqr(transm_err[t] / transm[t]))
+            lc_err = lc * sqrt(sqr(sig_err / sig)
+                               + sqr(transm_err[t] / transm[t]))
             self.result.ds.data_vars['lidar_constant'][t] = lc
             self.result.ds.data_vars['lidar_constant_err'][t] = lc_err
 
@@ -759,11 +751,11 @@ class SplitDepolLidarConstant(BaseOperationFactory):
 
     Keyword Args:
         refl_signal(`.Signals`): :math:`P_r(t,z)`: reflected signal
-                           The signal must be directly from the ELPP file
-                           without any modifications.
+                           The signal must be prepared by `.PrepareBscSignals` before.
+                           It can be taken from the global data storage with `.DataStorage.prepared_signal()`.
         transm_signal(`.Signals`): :math:`P_t(t,z)`: transmitted signal
-                           The signal must be directly from the ELPP file
-                           without any modifications.
+                           The signal must be prepared by `.PrepareBscSignals` before.
+                           It can be taken from the global data storage with `.DataStorage.prepared_signal()`.
         empty_lc_refl (`.LidarConstants`): \
                 instance of LidarConstants which has all meta data but data are empty arrays
         empty_lc_transm (`.LidarConstants`): :math:`C_0(t)`\
@@ -824,7 +816,6 @@ class SplitDepolLidarConstantDefault(BaseOperation):
     transm_signal = None
     lc_params = None
     total_lc = None
-    result = None
 
     def __init__(self, **kwargs):
         super(SplitDepolLidarConstantDefault, self).__init__(**kwargs)
@@ -840,7 +831,8 @@ class SplitDepolLidarConstantDefault(BaseOperation):
         r"""run the lidar constant calculation
 
         * The height at which the lidar constant is calculated is :math:`z_c` = self.lc_params.calibr_height
-        * The data of both signals are normalized for the number of laser shots (see `.Signals.normalize_by_shots()`) and corrected for molecular transmission (see `.Signals.correct_for_mol_transmission()`) .
+        * | If not yet done so, the data of both signals are corrected for molecular transmission
+            (see `.Signals.correct_for_mol_transmission()`).
 
         .. math::
             \widetilde{P_r}(t,z)
@@ -862,20 +854,40 @@ class SplitDepolLidarConstantDefault(BaseOperation):
             \text{with } \eta^* &= \text{gain factor} \\
                             K &= \text{gain factor correction, and}\\
                             H_r, H_t &= H\text{parameters of }\widetilde{P_r} \text{ and } \widetilde{P_t}\\
-            \Delta f &= f \: \sqrt{\bigl(\frac{ \Delta \eta^* }{\eta^*}\bigr) ^2 +
-                                   \bigl(\frac{ \Delta K }{K}\bigr) ^2 +
-                                   \bigl(\frac{ \Delta H_r }{H_r}\bigr) ^2}\\
+            \Delta f &= f \: \sqrt{\Biggl(\frac{ \Delta \eta^* }{\eta^*}\Biggr) ^2 +
+                                   \Biggl(\frac{ \Delta K }{K}\Biggr) ^2 +
+                                   \Biggl(\frac{ \Delta H_r }{H_r}\Biggr) ^2}\\
 
         * The lidar constants are calculated with
 
         .. math::
+            d_r &= \frac{f}{R(t,z_c)} - H_t \\
             C_r(t) &= \frac{C_0(t)}
-                           {\frac{f}{R(t,z_c)} - H_t}\\
-            \Delta C_r(t) &= \sqrt{} \\
+                           {d_r}\\
+            \Delta C_r(t) &= \sqrt{\Biggl( \frac{\Delta C_0(t) \: d_r}{C_0(t)} \Biggr)^2 +
+                                   \Biggl( \Delta H_t \Biggr)^2 +
+                                   \Biggl( \frac{\Delta f}{R(t,z_c)} \Biggr)^2 +
+                                   \Biggl( \frac{\Delta R(t,z_c) \: f}{R^2(t,z_c)} \Biggr)^2
+                                   } \\
 
+            d_t &= f - H_t \: R(t,z_c) \\
             C_t(t) &= \frac{C_0(t)}
-                           {f - H_t \: R(t,z_c)}\\
-            \Delta C_t(t) &= \sqrt{} \\
+                           {d_t}\\
+            \Delta C_t(t) &= \sqrt{\Biggl( \frac{\Delta C_0(t) \: d_t}{C_0(t)}\Biggr)^2 +
+                                   \Biggl( \Delta f \Biggr)^2 +
+                                   \Biggl( \Delta H_t \: R(t,z_c) \Biggr) ^2 +
+                                   \Biggl( \Delta R(t,z_c) \: R(t,z_c) \Biggr) ^2
+                                   } \\
+
+        * | The lidar constants :math:`C_t` and :math:`C_r` are defined in a way, that the average
+            of both calibrated signals is equal to the calibrated total signal, see `.signals.from_depol_components`.
+
+        .. math::
+            \frac{1}{2}\Biggl (\frac{\widetilde{P_r}}{C_r}  +
+                               \frac{\widetilde{P_t}}{C_t}
+                       \Biggr)
+                &= \frac{f \: \widetilde{P_t} - H_T \: \widetilde{P_r}}{C_0}
+                = \frac{\widetilde{P_0}}{C_0}\\
 
         Returns:
             addict.Dict with the keys 'refl' and 'transm' which contain
@@ -885,8 +897,6 @@ class SplitDepolLidarConstantDefault(BaseOperation):
         # bin numbers of calibration height in signal profile
         sig_calibr_bins = self.refl_signal.height_to_levels(self.lc_params.calibr_height).values
 
-        # self.refl_signal.normalize_by_shots()
-        # self.refl_signal.normalize_by_shots()
         if not self.transm_signal.corrected_for_mol_transmission:
             self.transm_signal.correct_for_mol_transmission()
         if not self.refl_signal.corrected_for_mol_transmission:
@@ -915,25 +925,35 @@ class SplitDepolLidarConstantDefault(BaseOperation):
 
         factor = gain_factor / gain_factor_correction * h_refl
         if h_refl != 0.0:
-            factor_err = factor * sqrt(sqr(gain_factor_err / gain_factor) +
-                                       sqr(gain_factor_correction_err / gain_factor_correction) +
-                                       sqr(h_refl_err / h_refl))
+            factor_err = factor * sqrt(sqr(gain_factor_err / gain_factor)
+                                       + sqr(gain_factor_correction_err / gain_factor_correction)
+                                       + sqr(h_refl_err / h_refl))
         else:
-            factor_err = factor * sqrt(sqr(gain_factor_err / gain_factor) +
-                                       sqr(gain_factor_correction_err / gain_factor_correction) )
-
-        # todo: error propagation
+            factor_err = factor * sqrt(sqr(gain_factor_err / gain_factor)
+                                       + sqr(gain_factor_correction_err / gain_factor_correction))
 
         for t in range(sigratio.ds.dims['time']):
             c_total = float(self.total_lc.ds.lidar_constant[t])
             c_total_err = float(self.total_lc.ds.lidar_constant_err[t])
 
-            lc_refl = c_total / (factor / sigratio.data[t,sig_calibr_bins[t]] - h_transm)
-            lc_refl_err = lc_refl * np.sqrt(np.sqr(c_total_err / c_total) +
-                                            np.sqr())
+            ratio = float(sigratio.data[t, sig_calibr_bins[t]])
+            ratio_err = float(sigratio.err[t][sig_calibr_bins[t]])
 
-            lc_transm = c_total / (factor - h_transm * sigratio.data[t,sig_calibr_bins[t]])
-            lc_transm_err = None
+            # dr = denominator of lc_refl equations
+            dr = (factor / ratio - h_transm)
+            lc_refl = c_total / dr
+            lc_refl_err = lc_refl / dr * np.sqrt(sqr(c_total_err / c_total * dr)
+                                                 + sqr(h_transm_err)
+                                                 + sqr(factor_err / ratio)
+                                                 + sqr(ratio_err * factor / sqr(ratio)))
+
+            # dt = denominator of lc_transm equations
+            dt = factor - h_transm * ratio
+            lc_transm = c_total / dt
+            lc_transm_err = lc_transm / dt * sqrt(sqr(c_total_err / c_total * dt)
+                                                  + sqr(factor_err)
+                                                  + sqr(h_transm_err * ratio)
+                                                  + sqr(ratio_err * h_transm))
 
             self.result.refl.ds.data_vars['lidar_constant'][t] = float(lc_refl)
             self.result.transm.ds.data_vars['lidar_constant'][t] = float(lc_transm)

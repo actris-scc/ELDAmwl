@@ -3,21 +3,26 @@
 from addict import Dict
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.database.db import DBUtils
-from ELDAmwl.database.tables.backscatter import BscCalibrLowestHeight, BscCalibrUpperHeight, \
-    BscCalibrWindow, BscCalibrValue, BscCalibrRangeSearchMethod
+from ELDAmwl.database.tables.backscatter import BscCalibrLowestHeight
+from ELDAmwl.database.tables.backscatter import BscCalibrRangeSearchMethod
+from ELDAmwl.database.tables.backscatter import BscCalibrUpperHeight
+from ELDAmwl.database.tables.backscatter import BscCalibrValue
+from ELDAmwl.database.tables.backscatter import BscCalibrWindow
 from ELDAmwl.database.tables.backscatter import ElastBackscatterOption
 from ELDAmwl.database.tables.backscatter import ElastBscMethod
 from ELDAmwl.database.tables.backscatter import IterBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBackscatterOption
 from ELDAmwl.database.tables.backscatter import RamanBscMethod
-from ELDAmwl.database.tables.channels import Channels, Telescopes
+from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
+from ELDAmwl.database.tables.channels import Telescopes
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
 from ELDAmwl.database.tables.general import ELDAmwlLogs
+from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import ErrorThresholds
@@ -30,7 +35,6 @@ from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SmoothMethod
 from ELDAmwl.database.tables.system_product import SmoothOptions
 from ELDAmwl.database.tables.system_product import SystemProduct
-from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.errors.exceptions import NoBscCalOptions
 from ELDAmwl.errors.exceptions import NOMCOptions
 from ELDAmwl.utils.constants import EBSC
@@ -540,13 +544,12 @@ class DBFunc(DBUtils):
         else:
             self.logger.error('no individual products for mwl product')
 
-    def get_derived_products_query(self, mwl_prod_id, measurement_id):
+    def get_derived_products_query(self, mwl_prod_id):
         """ read from db which of the products correlated to
             this system is the mwl product.
 
             Args:
                 mwl_prod_id (int): product id of mwl product
-                measurement_id(str): id of measurement
 
             Returns:
                 list of individual product IDs corresponding to this mwl product
@@ -1007,4 +1010,3 @@ class DBFunc(DBUtils):
             self.logger.error('wrong number ({0}) of lidar constants in db '.format(lidar_const.count()))
 
         self.session.commit()
-

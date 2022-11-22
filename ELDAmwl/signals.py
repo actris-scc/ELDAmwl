@@ -9,8 +9,10 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import ICfg
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import CannotOpenELLPFile, RepeatedNormalizeByshots, RepeatedCorrectMolTransm
+from ELDAmwl.errors.exceptions import CannotOpenELLPFile
 from ELDAmwl.errors.exceptions import ELPPFileNotFound
+from ELDAmwl.errors.exceptions import RepeatedCorrectMolTransm
+from ELDAmwl.errors.exceptions import RepeatedNormalizeByshots
 from ELDAmwl.header import Header
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.utils.constants import ABOVE_MAX_ALT
@@ -777,7 +779,7 @@ class CombineDepolComponentsDefault(BaseOperation):
         """
         is created from the combination of
         a reflected and a transmitted signal component using the equation
-        Sig_total = etaS/K*HR*sig_transm - HT*Sig_refl/(HR*GT - HT*GR)
+        Sig_total = (etaS/K*HR*sig_transm - HT*Sig_refl)/(HR*GT - HT*GR)
         """
         transm_sig = self.kwargs['transm_sig']
         refl_sig = self.kwargs['refl_sig']

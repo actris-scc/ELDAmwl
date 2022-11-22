@@ -1,16 +1,13 @@
-from addict import Dict
-from ELDAmwl.component.interface import IDataStorage
+from datetime import datetime
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IParams
+from ELDAmwl.utils.constants import ELDA_MWL_VERSION
+from ELDAmwl.utils.numerical import np_datetime64_to_datetime
 from zope import component
-from datetime import datetime
 
 import numpy as np
 import xarray as xr
-
-from ELDAmwl.utils.constants import ELDA_MWL_VERSION
-from ELDAmwl.utils.numerical import np_datetime64_to_datetime
 
 
 class LidarConstants(object):
@@ -87,8 +84,8 @@ class LidarConstants(object):
                                                'unknown ELDAmwl file',
                                                ELDA_MWL_VERSION,
                                                datetime.now(),
-                                               np_datetime64_to_datetime(self.ds.time_bounds[t,0].values),
-                                               np_datetime64_to_datetime(self.ds.time_bounds[t,1].values),
+                                               np_datetime64_to_datetime(self.ds.time_bounds[t, 0].values),
+                                               np_datetime64_to_datetime(self.ds.time_bounds[t, 1].values),
                                                float(self.ds.lidar_constant[t]),
                                                None,  # systematic error
                                                float(self.ds.lidar_constant_err[t]),

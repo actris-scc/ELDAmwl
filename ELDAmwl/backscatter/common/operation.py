@@ -2,7 +2,6 @@
 """Classes for backscatter calculation"""
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.utils.constants import NC_FILL_STR
 
 
 class BackscatterFactoryDefault(BaseOperation):

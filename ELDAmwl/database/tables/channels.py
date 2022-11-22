@@ -4,7 +4,8 @@
 from ELDAmwl.database.tables.db_base import Base
 from sqlalchemy import Column
 from sqlalchemy import DECIMAL
-from sqlalchemy import INTEGER, FLOAT, DateTime
+from sqlalchemy import FLOAT
+from sqlalchemy import INTEGER
 from sqlalchemy import String
 from sqlalchemy import text
 
@@ -134,6 +135,7 @@ class Channels(Base):
         server_default=text("'0'"),
     )
 
+
 class Telescopes(Base):
     __tablename__ = 'hoi_telescopes'
 
@@ -221,5 +223,5 @@ class Telescopes(Base):
     locked = Column(
         INTEGER,
         nullable=False,
-        server_default=text("'0'")
+        server_default=text("'0'"),
     )

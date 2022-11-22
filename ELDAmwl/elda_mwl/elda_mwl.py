@@ -20,13 +20,14 @@ from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams
 from ELDAmwl.products import SmoothParams
 from ELDAmwl.signals import ElppData
-from ELDAmwl.utils.constants import EBSC, VLDR
+from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import HIGHRES
 from ELDAmwl.utils.constants import LOWRES
 from ELDAmwl.utils.constants import LR
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR
+from ELDAmwl.utils.constants import VLDR
 from zope import component
 
 import numpy as np
@@ -278,9 +279,7 @@ class MeasurementParams(Params):
                 self.logger.error('product type {} not yet implemented'.format(prod_type))
 
         # next, read derived products
-        p_query = self.db_func.get_derived_products_query(
-            self.mwl_product_id,
-            self.measurement_params.meas_id)
+        p_query = self.db_func.get_derived_products_query(self.mwl_product_id)
         for q in p_query:
             general_params = GeneralProductParams.from_short_query(q)
             prod_type = general_params.product_type

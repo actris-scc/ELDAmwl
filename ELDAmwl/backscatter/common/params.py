@@ -4,7 +4,6 @@ from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.errors.exceptions import CalRangeHigherThanValid
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
-from ELDAmwl.utils.constants import NC_FILL_INT
 from zope import component
 
 import numpy as np

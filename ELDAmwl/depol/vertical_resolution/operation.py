@@ -1,10 +1,7 @@
-from ELDAmwl.backscatter.common.vertical_resolution.operation import SavGolayUsedBinRes, SavGolayEffBinRes
-from ELDAmwl.bases.factory import BaseOperation
+from ELDAmwl.backscatter.common.vertical_resolution.operation import SavGolayEffBinRes
+from ELDAmwl.backscatter.common.vertical_resolution.operation import SavGolayUsedBinRes
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.utils.constants import NC_FILL_STR
-
-import numpy as np
 
 
 class VLDREffBinRes(BaseOperationFactory):
@@ -58,6 +55,7 @@ class VLDRUsedBinRes(BaseOperationFactory):
         """
         return self.db_func.read_vldr_usedbin_algorithm(self.prod_id)
 
+
 # todo: check whether it needs a db access here
 registry.register_class(VLDRUsedBinRes,
                         SavGolayUsedBinRes.__name__,
@@ -66,4 +64,3 @@ registry.register_class(VLDRUsedBinRes,
 registry.register_class(VLDREffBinRes,
                         SavGolayEffBinRes.__name__,
                         SavGolayEffBinRes)
-

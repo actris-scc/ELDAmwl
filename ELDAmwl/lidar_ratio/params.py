@@ -1,10 +1,6 @@
-from ELDAmwl.backscatter.raman.params import RamanBscParams
-from ELDAmwl.errors.exceptions import DifferentWlForLR
-from ELDAmwl.extinction.params import ExtinctionParams
+from ELDAmwl.component.interface import IParams
 from ELDAmwl.products import ProductParams
 from ELDAmwl.utils.constants import ERROR_METHODS
-from ELDAmwl.component.interface import IParams
-
 from zope import component
 
 
@@ -45,7 +41,6 @@ class LidarRatioParams(ProductParams):
         self.harmonize_resolution_settings(basic_params)
         self.ensure_same_wavelength(basic_params)
         self.get_valid_alt_range(basic_params)
-
 
     def assign_to_product_list(self, global_product_list):
         super(LidarRatioParams, self).assign_to_product_list(

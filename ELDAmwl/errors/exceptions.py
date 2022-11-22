@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR, \
-    REPEATED_ATTEMPT_TO_NORMALZE_BY_SHOTS, REPEATED_ATTEMPT_TO_CORRECT_MOL_TRANSM
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -9,6 +8,7 @@ from ELDAmwl.errors.error_codes import DB_ERROR
 from ELDAmwl.errors.error_codes import DIFFERENT_BSC_OPTIONS_IN_MEASUREMENT
 from ELDAmwl.errors.error_codes import DIFFERENT_CLOUD_MASK_EXISTS
 from ELDAmwl.errors.error_codes import DIFFERENT_HEADER_EXISTS
+from ELDAmwl.errors.error_codes import DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR
 from ELDAmwl.errors.error_codes import ERR_INVALID_NB_OF_MC_ITERATIONS
 from ELDAmwl.errors.error_codes import ERROR_LOG_DIR_NOT_EXISTS
 from ELDAmwl.errors.error_codes import ERROR_SIG_FILE_NOT_EXISTS
@@ -16,6 +16,8 @@ from ELDAmwl.errors.error_codes import NC_OPEN_ERROR
 from ELDAmwl.errors.error_codes import NO_BSC_CAL_OPTIONS_IN_DB
 from ELDAmwl.errors.error_codes import NO_MC_OPTIONS_IN_DB
 from ELDAmwl.errors.error_codes import NO_VALID_POINTS_FOR_CAL
+from ELDAmwl.errors.error_codes import REPEATED_ATTEMPT_TO_CORRECT_MOL_TRANSM
+from ELDAmwl.errors.error_codes import REPEATED_ATTEMPT_TO_NORMALZE_BY_SHOTS
 from ELDAmwl.errors.error_codes import USE_CASE_NOT_IMPLEMENTED
 from ELDAmwl.errors.error_codes import WRONG_COMMAND_LINE_PARAM
 from ELDAmwl.errors.error_codes import ZERO_DETECTION_LIMIT

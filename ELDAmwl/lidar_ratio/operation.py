@@ -8,8 +8,6 @@ from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
 from ELDAmwl.lidar_ratio.product import LidarRatios
 from ELDAmwl.utils.constants import MC
-from ELDAmwl.utils.constants import NC_FILL_INT
-from ELDAmwl.utils.constants import NC_FILL_STR
 
 import numpy as np
 import zope

@@ -11,5 +11,3 @@ class VLRDFactory(BaseOperationFactory):
     def get_classname_from_db(self):
         pass
         # return RamanBackscatterFactoryDefault.__name__
-
-

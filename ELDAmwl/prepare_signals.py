@@ -2,7 +2,6 @@
 """Classes for preparation of signals
 (combining depol component, temporal integration, .."""
 from copy import deepcopy
-
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry

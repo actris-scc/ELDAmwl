@@ -1,5 +1,4 @@
 from ELDAmwl.database.tables.db_base import Base
-from sqlalchemy import BIGINT
 from sqlalchemy import CHAR
 from sqlalchemy import Column
 from sqlalchemy import DateTime

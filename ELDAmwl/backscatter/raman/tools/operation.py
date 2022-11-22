@@ -1,11 +1,10 @@
+from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
-from ELDAmwl.utils.constants import NC_FILL_STR
 from ELDAmwl.utils.constants import RAYL_LR
 
-from copy import deepcopy
 import numpy as np
 import xarray as xr
 

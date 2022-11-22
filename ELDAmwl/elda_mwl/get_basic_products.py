@@ -12,18 +12,20 @@ from ELDAmwl.backscatter.raman.operation import RamanBackscatterFactory
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.depol.vertical_resolution.operation import VLDRUsedBinRes, VLDREffBinRes
+from ELDAmwl.depol.vertical_resolution.operation import VLDREffBinRes
+from ELDAmwl.depol.vertical_resolution.operation import VLDRUsedBinRes
 from ELDAmwl.errors.exceptions import NoCalibrWindowFound
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.extinction.operation import ExtinctionFactory
 from ELDAmwl.extinction.vertical_resolution.operation import ExtEffBinRes
 from ELDAmwl.extinction.vertical_resolution.operation import ExtUsedBinRes
-from ELDAmwl.utils.constants import AUTO, VLDR
+from ELDAmwl.utils.constants import AUTO
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import FIXED
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTIONS
+from ELDAmwl.utils.constants import VLDR
 
 
 # classes to convert effective bin resolution into bin resolution to use in retrievals

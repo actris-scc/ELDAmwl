@@ -5,15 +5,13 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.lidar_constant.operation import LidarConstantFactory
-from ELDAmwl.lidar_ratio.operation import LidarRatioFactory
-from ELDAmwl.utils.constants import RESOLUTIONS
 
 
 class GetLidarConstantsDefault(BaseOperation):
     """
     """
 
-    product_params = None
+    mwl_product_params = None
 
     def run(self):
         self.mwl_product_params = self.kwargs['product_params']

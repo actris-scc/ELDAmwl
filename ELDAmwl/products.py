@@ -7,7 +7,8 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import DetectionLimitZero, DifferentWlForLR
+from ELDAmwl.errors.exceptions import DetectionLimitZero
+from ELDAmwl.errors.exceptions import DifferentWlForLR
 from ELDAmwl.errors.exceptions import NotEnoughMCIterations
 from ELDAmwl.errors.exceptions import SizeMismatch
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
@@ -223,7 +224,6 @@ class ProductParams(Params):
         self.general_params.valid_alt_range.min_height = max(min_heights)
         self.general_params.valid_alt_range.max_height = min(max_heights)
 
-
     @property
     def prod_id_str(self):
         return str(self.general_params.prod_id)
@@ -406,7 +406,6 @@ class GeneralProductParams(Params):
 
         result.is_basic_product = query.ProductTypes.is_basic_product == 1
         result.is_derived_product = not result.is_basic_product
-
 
         # the MWLproducProduct and PreparedSignalFile tables
         # are not available if query is

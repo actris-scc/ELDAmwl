@@ -5,7 +5,6 @@ from addict import Dict
 from ELDAmwl.bases.base import ELDABase
 from ELDAmwl.errors.exceptions import DifferentHeaderExists
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import NC_FILL_STR
 from os.path import basename
 
 import pandas as pd
@@ -67,7 +66,7 @@ class Header(ELDABase):
     def __init__(self):
         super(Header, self).__init__()
         self.class_attrs = Dict({'pi': 'PI',
-                            'data_originator': 'Data_Originator'})
+                                 'data_originator': 'Data_Originator'})
 
         self.attrs = Dict()
         self.vars = Dict()

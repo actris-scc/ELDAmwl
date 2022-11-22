@@ -4,7 +4,6 @@ from ELDAmwl.database.tables.db_base import Base
 from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import INTEGER
-from sqlalchemy import String
 from sqlalchemy import VARCHAR
 
 

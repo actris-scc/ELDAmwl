@@ -181,17 +181,6 @@ class DataStorage:
                                     'product {0}'.format(prod_id_str))
 
     def lidar_constant(self, channel_id):
-        """copies the lidar constants of a given channel id
-
-        """
-        try:
-            result = deepcopy(self.__data.lidar_constants[channel_id])
-            return result
-        except AttributeError:
-            raise NotFoundInStorage('lidar constant',
-                                    'channel id {0}'.format(channel_id))
-
-    def lidar_constant(self, channel_id):
         """copies the lidar constant of a given channel id
 
         Args:
