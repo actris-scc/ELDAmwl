@@ -78,7 +78,11 @@ class MonteCarlo:
                 # sample = self.op.run(data=self.sample_inputs[n])
                 self.logger.debug('calc sample {}'.format(n))
                 sample = self.run(self.sample_inputs[n])
-                results.append(sample.data.values)
+                if isinstance(sample, Products):
+                    results.append(sample.data.values)
+                else:
+                    self.logger.error('{} terminated due to errors'.format(sample))
+                    # sys.exit(1)
             self.sample_results = results
 
     def calc_mc_error(self):
@@ -209,9 +213,7 @@ class CreateMCCopiesDefault(BaseOperation):
                                num_samples)) * np.nan
 
         for t in range(original.num_times):
-            fvb = original.first_valid_bin(t)
-            lvb = original.last_valid_bin(t)
-            for idx in range(fvb, lvb):
+            for idx in np.where(~np.isnan(original.data[t]))[0]:
                 sample_data[t, idx, :] = np.random.normal(
                     loc=data[t, idx],
                     scale=err[t, idx],
