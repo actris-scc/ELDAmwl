@@ -1,4 +1,5 @@
 from copy import deepcopy
+from ELDAmwl.errors.exceptions import IntegrationFailed
 from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
 from scipy.integrate import cumulative_trapezoid
 from scipy.stats import sem
@@ -76,12 +77,15 @@ def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=No
 
     """
 
+    result = None
+
     if first_bin is None:
         first_bin = 0
     if last_bin is None:
         last_bin = data.size
 
     _data = data[first_bin:last_bin]
+    _error = error[first_bin:last_bin]
 
     if search_value is not None:
         _search_value = search_value
@@ -89,17 +93,32 @@ def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=No
         _search_value = np.nanmean(_data)
 
     diff = np.absolute(_data - _search_value)
-    min_idx = np.argmin(diff)
+
+    # if all points in search interval are further from search value than their errors
+    if error is not None:
+        if np.all(abs(_data[:] - search_value) > _error):
+            return None
+
+        success = False
+        trials = 0
+        while (not success) and trials < diff.size:
+            min_idx = np.argmin(diff)
+            if diff[min_idx] < _error[min_idx]:
+                success = True
+            else:
+                diff[min_idx] = np.nanmax(diff)
+                trials += 1
+    else:
+        min_idx = np.argmin(diff)
 
     if first_bin is not None:
         result = first_bin + min_idx
     else:
         result = min_idx
 
-    if error is not None:
-        if abs(data[result] - search_value) > error[result]:
-            result = None
-
+    # if error is not None:
+    #     if abs(data[result] - search_value) > error[result]:
+    #         result = None
     return result
 
 
@@ -183,7 +202,10 @@ def integral_profile(data,
             ydata = np.append(ydata, np.array(ydata[-1]) * extrapolate_ovl_factor)
 
     # calculate cumulative integral
-    result = cumulative_trapezoid(ydata, x=xdata, initial=0)
+    if ydata.size > 0:
+        result = cumulative_trapezoid(ydata, x=xdata, initial=0)
+    else:
+        raise IntegrationFailed(None)
 
     # add half first bin (covers the integral between x=0 and x[0])
     if ydata.size > 1:
