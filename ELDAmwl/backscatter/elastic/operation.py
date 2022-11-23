@@ -10,6 +10,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IElastBscOp
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.utils.constants import MC
 
 import zope
@@ -185,12 +186,19 @@ class CalcElastBackscatterDefault(BaseOperation):
         # copy wavelength into data.ds, because only data.ds is provided to the calculation routine
         data.ds['emission_wavelength'] = data.emission_wavelength
 
-        self.result.ds = self.calc_routine.run(
-            elast_sig=data.ds,
-            range_axis=data.range,
-            error_params=error_params,
-            calibration=cal_params,
-        )
+        try:
+            self.result.ds = self.calc_routine.run(
+                elast_sig=data.ds,
+                range_axis=data.range,
+                error_params=error_params,
+                calibration=cal_params,
+            )
+            if self.result.ds is None:
+                return None
+        except ELDAmwlException as e:
+            self.logger.error('retrieval of elastic backscatter failed')
+            raise e
+
         self.result.ds['assumed_particle_lidar_ratio'] = deepcopy(data.ds.assumed_particle_lidar_ratio)
         self.result.ds['assumed_particle_lidar_ratio_error'] = deepcopy(data.ds.assumed_particle_lidar_ratio_error)
         self.result.ds['time_bounds'] = deepcopy(data.ds.time_bounds)

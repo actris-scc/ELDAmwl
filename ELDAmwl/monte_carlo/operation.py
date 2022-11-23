@@ -7,8 +7,9 @@ from ELDAmwl.component.interface import IExtOp
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import NotEnoughMCSamples
 from ELDAmwl.products import Products
-from ELDAmwl.utils.constants import FIXED
+from ELDAmwl.utils.constants import FIXED, MIN_NUMBER_OF_SAMPLES, MIN_PERCENTAGE_OF_SAMPLES
 from multiprocessing.pool import Pool
 from zope import component
 
@@ -77,17 +78,24 @@ class MonteCarlo:
             for n in range(self.mc_params.nb_of_iterations):
                 # sample = self.op.run(data=self.sample_inputs[n])
                 self.logger.debug('calc sample {}'.format(n))
-                sample = self.run(self.sample_inputs[n])
-                if isinstance(sample, Products):
-                    results.append(sample.data.values)
-                else:
-                    self.logger.error('{} terminated due to errors'.format(sample))
-                    # sys.exit(1)
+                try:
+                    sample = self.run(self.sample_inputs[n])
+                    if isinstance(sample, Products):
+                        results.append(sample.data.values)
+                    else:
+                        self.logger.error('{} terminated due to errors'.format(sample))
+                        # sys.exit(1)
+                except:
+                    self.logger.error('error in retrieving MC sample')
             self.sample_results = results
 
     def calc_mc_error(self):
-        all = np.array(self.sample_results)
-        return np.nanstd(all, axis=0)
+        if (len(self.sample_results) > self.mc_params.nb_of_iterations * MIN_PERCENTAGE_OF_SAMPLES) \
+            and (len(self.sample_results) > MIN_NUMBER_OF_SAMPLES):
+            all = np.array(self.sample_results)
+            return np.nanstd(all, axis=0)
+        else:
+            raise NotEnoughMCSamples(None)
 
     def __call__(self, mc_params):
         self.mc_params = mc_params

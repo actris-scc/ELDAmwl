@@ -3,7 +3,7 @@
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration
+from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration, IntegrationFailed
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.utils.numerical import closest_bin
@@ -120,43 +120,46 @@ class CalcBscProfileKF(BaseOperation):
                     np.sqrt(np.square(rel_sem_sig) + np.square(calibration.calibr_value.rel_error))
 
         # 2) find signal bin which has the value closest to the mean of the calibration window
-            calibr_bin[t] = closest_bin(
+            cb = closest_bin(
                 elast_sig.data[t].values,
                 elast_sig.err[t].values,
                 first_bin=calibration['cal_first_lev'][t],
                 last_bin=calibration['cal_last_lev'][t],
                 search_value=mean_sig)
-
-            if calibr_bin[t] is None:
+            if cb is None:
                 self.logger.error('cannot find altitude bin close enough to mean signal within calibration window')
-                raise NoValidDataPointsForCalibration
+                raise NoValidDataPointsForCalibration(None)
+            else:
+                calibr_bin[t] = cb
 
         # 3) calculate M, A, A_int, B, and B_err
-
-            M[t, calibr_bin[t]:] = integral_profile(rayl_bsc[t].values,
-                                                    range_axis=range_axis[t].values,
-                                                    first_bin=calibr_bin[t])
-            M[t, :calibr_bin[t] + 1] = integral_profile(rayl_bsc[t].values,
-                                                        range_axis=range_axis[t].values,
-                                                        first_bin=calibr_bin[t],
-                                                        last_bin=0)
-
-            M[t, calibr_bin[t]] = 0
-
-            A[t] = elast_sig.data[t] * np.exp(-2 * lr_diff[t] * M[t])
-            A_int[t, calibr_bin[t]:] = integral_profile(A[t],
+            try:
+                M[t, calibr_bin[t]:] = integral_profile(rayl_bsc[t].values,
                                                         range_axis=range_axis[t].values,
                                                         first_bin=calibr_bin[t])
-            A_int[t, :calibr_bin[t] + 1] = integral_profile(A[t],
+                M[t, :calibr_bin[t] + 1] = integral_profile(rayl_bsc[t].values,
                                                             range_axis=range_axis[t].values,
-                                                            extrapolate_ovl_factor=1,
                                                             first_bin=calibr_bin[t],
                                                             last_bin=0)
 
-            A_int[t, calibr_bin[t]] = 0
+                M[t, calibr_bin[t]] = 0
 
-            B[t, :] = calibr_factor[t]
-            B_err[t, :] = calibr_factor_err[t]
+                A[t] = elast_sig.data[t] * np.exp(-2 * lr_diff[t] * M[t])
+                A_int[t, calibr_bin[t]:] = integral_profile(A[t],
+                                                            range_axis=range_axis[t].values,
+                                                            first_bin=calibr_bin[t])
+                A_int[t, :calibr_bin[t] + 1] = integral_profile(A[t],
+                                                                range_axis=range_axis[t].values,
+                                                                extrapolate_ovl_factor=1,
+                                                                first_bin=calibr_bin[t],
+                                                                last_bin=0)
+
+                A_int[t, calibr_bin[t]] = 0
+
+                B[t, :] = calibr_factor[t]
+                B_err[t, :] = calibr_factor_err[t]
+            except IntegrationFailed:
+                return None
 
         # 4) calculate backscatter coefficient
         denominator = B - 2 * lidar_ratio * A_int

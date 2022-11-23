@@ -164,3 +164,9 @@ ASSUMED_LR_ERROR_DEFAULT = 10
 LOWEST_HEIGHT_RANGE = 100  # [m]
 OVL_FACTOR = 1.0
 OVL_FACTOR_ERR = 0.2
+
+# =========================================
+# settings for MC error retrievals
+# =========================================
+MIN_NUMBER_OF_SAMPLES = 5
+MIN_PERCENTAGE_OF_SAMPLES = 0.5  # percentage

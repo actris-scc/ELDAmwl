@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, INTEGRATION_FAILED, NO_STABLE_SOLUTION_FOR_KLETT
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, INTEGRATION_FAILED, NO_STABLE_SOLUTION_FOR_KLETT, \
+    NOT_ENOUGH_MC_SAMPLES
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -271,6 +272,16 @@ class NoValidDataPointsForCalibration(ELDAmwlException):
     def __str__(self):
         return('error of calibration factor larger than '
                'maximum allowable backscatter uncertainty')
+
+
+class NotEnoughMCSamples(ELDAmwlException):
+    """
+    Raised if a Monte-Carlo error retrieval could not collect enough samples
+    """
+    return_value = NOT_ENOUGH_MC_SAMPLES
+
+    def __str__(self):
+        return('the MC error retrieval could not obtain enogh samples')
 
 
 class NoCalibrWindowFound(ELDAmwlException):
