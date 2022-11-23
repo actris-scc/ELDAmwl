@@ -575,7 +575,7 @@ class DBFunc(DBUtils):
         if products.count() > 0:
             return products
         else:
-            self.logger.error('no individual products for mwl product')
+            self.logger.warning('no derived products for mwl product')
 
     def get_extended_general_params_query(self, prod_id):
         """ read general params of a product from db
