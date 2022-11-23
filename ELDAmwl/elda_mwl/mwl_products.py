@@ -52,7 +52,7 @@ class GetProductMatrixDefault(BaseOperation):
 
         for param in params:
             # todo: remove limit to EXT when other prod types are included
-            if (alt_axis is None) and (param.product_type in [EXT, RBSC, LR]):
+            if (alt_axis is None) and (param.product_type in [EXT, RBSC, EBSC, LR]):
                 product = self.data_storage.product_common_smooth(param.prod_id_str, res)
                 alt_axis = product.altitude
             else:
