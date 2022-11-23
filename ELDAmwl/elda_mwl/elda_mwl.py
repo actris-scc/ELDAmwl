@@ -280,15 +280,16 @@ class MeasurementParams(Params):
 
         # next, read derived products
         p_query = self.db_func.get_derived_products_query(self.mwl_product_id)
-        for q in p_query:
-            general_params = GeneralProductParams.from_short_query(q)
-            prod_type = general_params.product_type
-            if prod_type in PARAM_CLASSES:
-                prod_params = PARAM_CLASSES[prod_type]()
-                prod_params.from_db(general_params)
-                prod_params.assign_to_product_list(self.measurement_params)
-            else:
-                self.logger.error('product type {} not yet implemented'.format(prod_type))
+        if p_query is not None:
+            for q in p_query:
+                general_params = GeneralProductParams.from_short_query(q)
+                prod_type = general_params.product_type
+                if prod_type in PARAM_CLASSES:
+                    prod_params = PARAM_CLASSES[prod_type]()
+                    prod_params.from_db(general_params)
+                    prod_params.assign_to_product_list(self.measurement_params)
+                else:
+                    self.logger.error('product type {} not yet implemented'.format(prod_type))
 
     def prod_params(self, prod_type, wl):
         """ returns a list with params of all products of type prod_type and wavelength wl
