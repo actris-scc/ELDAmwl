@@ -406,7 +406,7 @@ class Signals(Columns):
     def get_raw_heightres(self):
         diff = np.diff(self.height, axis=1)
 
-        d0 = diff[:, 0].reshape(2, 1)
+        d0 = diff[:, 0].reshape(self.num_times, 1)
         # reshape is needed to allow broadcasting of the 2 arrays
 
         if np.all(abs(diff[:] - d0) < 1e-10):
