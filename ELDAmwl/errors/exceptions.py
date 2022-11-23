@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, INTEGRATION_FAILED, NO_STABLE_SOLUTION_FOR_KLETT
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -237,6 +237,28 @@ class CalRangeHigherThanValid(ELDAmwlException):
         return('the upper end of the height interval for searching '
                'the calibration window is higher than the upper end '
                'of the valid vertical range of product {0}'.format(self.product_id))
+
+
+class IntegrationFailed(ELDAmwlException):
+    """raised when integration failed"""
+    return_value = INTEGRATION_FAILED
+
+    def __init__(self, product_id):
+        self.product_id = product_id
+
+    def __str__(self):
+        return('integration during retrieval of product {0} failed'.format(self.product_id))
+
+
+class NoKlettSolution(ELDAmwlException):
+    """raised when no stable solution for Klett retrieval can be found"""
+    return_value = NO_STABLE_SOLUTION_FOR_KLETT
+
+    def __init__(self, product_id):
+        self.product_id = product_id
+
+    def __str__(self):
+        return('Klett retrieval of product {0} failed'.format(self.product_id))
 
 
 class NoValidDataPointsForCalibration(ELDAmwlException):
