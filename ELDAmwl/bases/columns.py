@@ -138,7 +138,10 @@ class Columns(object):
     @property
     def height(self):
         """xarray.DataArray(dimensions=time,level): height axis in m a.g."""
-        return self.altitude - self.station_altitude
+        if 'height' in self.ds.data_vars:
+            return self.ds.height
+        else:
+            return self.altitude - self.station_altitude
 
     @property
     def num_times(self):
