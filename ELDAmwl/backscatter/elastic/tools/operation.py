@@ -128,7 +128,7 @@ class CalcBscProfileKF(BaseOperation):
                 search_value=mean_sig)
             if cb is None:
                 self.logger.error('cannot find altitude bin close enough to mean signal within calibration window')
-                raise NoValidDataPointsForCalibration(None)
+                return None
             else:
                 calibr_bin[t] = cb
 

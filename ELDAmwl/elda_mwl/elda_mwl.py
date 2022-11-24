@@ -83,6 +83,7 @@ class MeasurementParams(Params):
              'type': [],
              'basic': [],
              'derived': [],
+             'failed': [],
              RESOLUTION_STR[HIGHRES]: [],
              RESOLUTION_STR[LOWRES]: [],
              'elpp_file': []})\
@@ -91,6 +92,7 @@ class MeasurementParams(Params):
                      'type': 'int',
                      'basic': 'bool',
                      'derived': 'bool',
+                     'failed': 'bool',
                      RESOLUTION_STR[HIGHRES]: 'bool',
                      RESOLUTION_STR[LOWRES]: 'bool',
                      'elpp_file': 'str'})
@@ -105,6 +107,7 @@ class MeasurementParams(Params):
             list of float: unique, sorted list of wavelengths of all products with resolution = res
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
 
         if res is not None:
             all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()  # noqa E712
@@ -123,6 +126,7 @@ class MeasurementParams(Params):
             list of float: unique, sorted list of all product types with resolution = res
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
 
         if res is not None:
             all_ptypes = prod_df['type'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()   # noqa E712
@@ -140,6 +144,7 @@ class MeasurementParams(Params):
             list of parameters of all basic products
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][prod_df.basic]
         return self.filtered_list(ids)
 
@@ -151,6 +156,7 @@ class MeasurementParams(Params):
             list of parameters of all products with resolution res
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][prod_df[RESOLUTION_STR[res]]]
         return self.filtered_list(ids)
 
@@ -162,6 +168,7 @@ class MeasurementParams(Params):
             list of parameters of all basic products with wavelength wl
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.basic)]
         return self.filtered_list(ids)
 
@@ -173,6 +180,7 @@ class MeasurementParams(Params):
             list of parameters of all extinction products
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][prod_df.type == EXT]
         return self.filtered_list(ids)
 
@@ -184,6 +192,7 @@ class MeasurementParams(Params):
             list of parameters of all Raman backscatter products
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][prod_df.type == RBSC]
         return self.filtered_list(ids)
 
@@ -195,6 +204,7 @@ class MeasurementParams(Params):
             list of parameters of all elastic backscatter products
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][prod_df.type == EBSC]
         return self.filtered_list(ids)
 
@@ -206,6 +216,7 @@ class MeasurementParams(Params):
             list of parameters of all vldr products
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][prod_df.type == VLDR]
         return self.filtered_list(ids)
 
@@ -226,6 +237,7 @@ class MeasurementParams(Params):
             list of parameters of all lidar ratio products
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][prod_df.type == LR]
         return self.filtered_list(ids)
 
@@ -295,6 +307,7 @@ class MeasurementParams(Params):
         """ returns a list with params of all products of type prod_type and wavelength wl
          """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.type == prod_type)]
 
         if ids.size > 0:
@@ -329,6 +342,7 @@ class MeasurementParams(Params):
             None: if no product exists for wl and product_type
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.type == prod_type)]
 
         if ids.size == 1:

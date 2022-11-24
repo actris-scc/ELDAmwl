@@ -177,6 +177,7 @@ class Main:
 
             sys.exit(NO_ERROR)
 
+        # todo: exit codes corresponding to needs of deamon
         except ELDAmwlException as e:
             if not self.logger:
                 print('exception raised {0} {1}'.format(e.return_value, e))  # noqa T001

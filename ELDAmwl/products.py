@@ -287,6 +287,10 @@ class ProductParams(Params):
         else:
             return False
 
+    def mark_as_failed(self, measurement_params):
+        params_table = measurement_params.product_table
+        params_table.loc[params_table.id == self.prod_id_str, 'failed'] = True
+
     def assign_to_product_list(self, measurement_params):
         gen_params = self.general_params
         params_list = measurement_params.product_list
@@ -300,6 +304,7 @@ class ProductParams(Params):
                  'type': gen_params.product_type,
                  'basic': gen_params.is_basic_product,
                  'derived': gen_params.is_derived_product,
+                 'failed': False,
                  RESOLUTION_STR[HIGHRES]: gen_params.calc_with_hr,
                  RESOLUTION_STR[LOWRES]: gen_params.calc_with_lr,
                  'elpp_file': gen_params.elpp_file}

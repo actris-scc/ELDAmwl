@@ -168,5 +168,5 @@ OVL_FACTOR_ERR = 0.2
 # =========================================
 # settings for MC error retrievals
 # =========================================
-MIN_NUMBER_OF_SAMPLES = 5
-MIN_PERCENTAGE_OF_SAMPLES = 0.5  # percentage
+# how many samples shall be tried for MC error retrievals (factor)
+MC_TRIALS_FACTOR = 1

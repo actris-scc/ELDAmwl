@@ -9,7 +9,7 @@ from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NotEnoughMCSamples
 from ELDAmwl.products import Products
-from ELDAmwl.utils.constants import FIXED, MIN_NUMBER_OF_SAMPLES, MIN_PERCENTAGE_OF_SAMPLES
+from ELDAmwl.utils.constants import FIXED, MC_TRIALS_FACTOR
 from multiprocessing.pool import Pool
 from zope import component
 
@@ -42,21 +42,22 @@ class MonteCarlo:
 
         # self.sample_inputs is a list of dictionaries with one set of signals for each iteration
         self.sample_inputs = []
+        num_samples = self.mc_params.nb_of_iterations * MC_TRIALS_FACTOR
 
         for sig in orig.keys():
             mc_generator = CreateMCCopies()(original=orig[sig],
-                                            n=self.mc_params.nb_of_iterations,
+                                            n=num_samples,
                                             )
             samples = mc_generator.run()
 
             # if the list of samples is empty: create a dictionary for each iteration
             if len(self.sample_inputs) == 0:
-                for n in range(self.mc_params.nb_of_iterations):
+                for n in range(num_samples):
                     self.sample_inputs.append({sig: samples[n]})
 
             # if the list already exists: add a new key with the new sample for each iteration
             else:
-                for n in range(self.mc_params.nb_of_iterations):
+                for n in range(num_samples):
                     self.sample_inputs[n][sig] = samples[n]
 
     def get_sample_results(self):
@@ -68,34 +69,36 @@ class MonteCarlo:
                 if isinstance(result, Products):
                     self.sample_results.append(result.data.values)
                 else:
-                    self.logger.error('{} terminated due to errors'.format(result))
-                    sys.exit(1)
+                    self.logger.warning('{} terminated due to errors'.format(result))
+                    # sys.exit(1)
             pool.close()
             pool.join()
 
         else:
             results = []
-            for n in range(self.mc_params.nb_of_iterations):
-                # sample = self.op.run(data=self.sample_inputs[n])
+            n = 0
+            nb_of_iter = self.mc_params.nb_of_iterations
+            while (len(results) < nb_of_iter) and (n <= MC_TRIALS_FACTOR * nb_of_iter):
                 self.logger.debug('calc sample {}'.format(n))
                 try:
                     sample = self.run(self.sample_inputs[n])
                     if isinstance(sample, Products):
                         results.append(sample.data.values)
                     else:
-                        self.logger.error('{} terminated due to errors'.format(sample))
-                        # sys.exit(1)
+                        self.logger.warning('error in retrieving MC sample {}'.format(n))
                 except:
-                    self.logger.error('error in retrieving MC sample')
-            self.sample_results = results
+                    self.logger.warning('error in retrieving MC sample {}'.format(n))
+                n += 1
+
+            if len(results) >= nb_of_iter:
+                self.sample_results = results
+            else:
+                raise NotEnoughMCSamples(None)
+
 
     def calc_mc_error(self):
-        if (len(self.sample_results) > self.mc_params.nb_of_iterations * MIN_PERCENTAGE_OF_SAMPLES) \
-            and (len(self.sample_results) > MIN_NUMBER_OF_SAMPLES):
-            all = np.array(self.sample_results)
-            return np.nanstd(all, axis=0)
-        else:
-            raise NotEnoughMCSamples(None)
+        all = np.array(self.sample_results)
+        return np.nanstd(all, axis=0)
 
     def __call__(self, mc_params):
         self.mc_params = mc_params

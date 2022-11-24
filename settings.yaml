@@ -56,6 +56,5 @@ default:
   WRITE_EXTENDED_OUTPUT : True
   APPEND_LOG_FILE : False
 
-
 testing:
   SIGNAL_PATH : 'data/ELPP_files'

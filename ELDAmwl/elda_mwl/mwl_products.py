@@ -5,6 +5,7 @@ from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import NoProductsGenerated
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
@@ -67,6 +68,9 @@ class GetProductMatrixDefault(BaseOperation):
 
     def run(self):
         self.product_params = self.kwargs['product_params']
+        if len(self.product_params.basic_products()) == 0:
+            self.logger.error('no products were derived -> cannot get common matrix')
+            raise NoProductsGenerated(self.product_params.measurement_params.mwl_product_id)
 
         for res in RESOLUTIONS:
             wavelengths = self.product_params.wavelengths(res=res)

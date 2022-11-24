@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
 from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, INTEGRATION_FAILED, NO_STABLE_SOLUTION_FOR_KLETT, \
-    NOT_ENOUGH_MC_SAMPLES
+    NOT_ENOUGH_MC_SAMPLES, NO_PRODUCTS_GENERATED
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -380,6 +380,17 @@ class NoBscCalOptions(ELDAmwlException):
     def __str__(self):
         return('no backscatter calibration options are '
                'provided in SCC db for product {0}'
+               .format(self.prod_id))
+
+
+class NoProductsGenerated(ELDAmwlException):
+    """raised when no products were generated
+    """
+
+    return_value = NO_PRODUCTS_GENERATED
+
+    def __str__(self):
+        return('no individual products were generated'
                .format(self.prod_id))
 
 

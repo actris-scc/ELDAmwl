@@ -47,6 +47,7 @@ COULD_NOT_FIND_CALIBR_WINDOW = 48
 DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR = 49
 INTEGRATION_FAILED = 50
 NOT_ENOUGH_MC_SAMPLES = 51
+NO_PRODUCTS_GENERATED = 52
 # ===============================================
 # error codes which occur only during development
 # ===============================================

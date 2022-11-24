@@ -14,7 +14,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.depol.vertical_resolution.operation import VLDREffBinRes
 from ELDAmwl.depol.vertical_resolution.operation import VLDRUsedBinRes
-from ELDAmwl.errors.exceptions import NoCalibrWindowFound
+from ELDAmwl.errors.exceptions import NoCalibrWindowFound, ELDAmwlException
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.extinction.operation import ExtinctionFactory
 from ELDAmwl.extinction.vertical_resolution.operation import ExtEffBinRes
@@ -127,7 +127,8 @@ class GetBasicProductsDefault(BaseOperation):
         self.get_extinctions_fixed_smooth()
         self.get_raman_bsc_fixed_smooth()
         self.get_elast_bsc_fixed_smooth()
-        # self.get_vldr_fixed_smooth()
+
+    # self.get_vldr_fixed_smooth()
 
     def get_extinctions_auto_smooth(self):
         """get extinction products with automatic smoothing
@@ -222,22 +223,26 @@ class GetBasicProductsDefault(BaseOperation):
             else:
                 raise NoCalibrWindowFound(prod_id)
 
-            # calc preliminary bsc
-            bsc = ElastBackscatterFactory()(
-                data_storage=self.data_storage,
-                bsc_param=bsc_param,
-                calibr_window=cal_win,
-                autosmooth=False,
-            ).get_product()
+            try:
+                # calc preliminary bsc
+                bsc = ElastBackscatterFactory()(
+                    data_storage=self.data_storage,
+                    bsc_param=bsc_param,
+                    calibr_window=cal_win,
+                    autosmooth=False,
+                ).get_product()
 
-            for res in RESOLUTIONS:
-                # if resolution res is required: make a copy of bsc and smooth it
-                if bsc_param in self.product_params.all_products_of_res(res):
-                    smooth_bsc = deepcopy(bsc)
-                    smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
-                    self.data_storage.set_basic_product_common_smooth(
-                        prod_id, res, smooth_bsc)
-            del bsc
+                for res in RESOLUTIONS:
+                    # if resolution res is required: make a copy of bsc and smooth it
+                    if bsc_param in self.product_params.all_products_of_res(res):
+                        smooth_bsc = deepcopy(bsc)
+                        smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
+                        self.data_storage.set_basic_product_common_smooth(
+                            prod_id, res, smooth_bsc)
+                del bsc
+            except ELDAmwlException as e:
+                self.logger.error('cannot get backscatter product {}'.format(bsc_param.prod_id_str))
+                bsc_param.mark_as_failed(self.product_params)
 
     def get_vldr_fixed_smooth(self):
         for depol_param in self.product_params.vldr_products():
