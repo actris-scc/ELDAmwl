@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """functions for db handling"""
 from addict import Dict
+from sqlalchemy import func
+
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.backscatter import BscCalibrLowestHeight
@@ -24,6 +26,7 @@ from ELDAmwl.database.tables.extinction import OverlapFile
 from ELDAmwl.database.tables.general import ELDAmwlLogs
 from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
+from ELDAmwl.database.tables.angstroem import AngstroemExpOption
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import ErrorThresholds
 from ELDAmwl.database.tables.system_product import MCOption
@@ -35,6 +38,7 @@ from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SmoothMethod
 from ELDAmwl.database.tables.system_product import SmoothOptions
 from ELDAmwl.database.tables.system_product import SystemProduct
+from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.errors.exceptions import NoBscCalOptions
 from ELDAmwl.errors.exceptions import NOMCOptions
 from ELDAmwl.utils.constants import EBSC
@@ -434,6 +438,19 @@ class DBFunc(DBUtils):
                 'wrong number of lidar ratio options ({0})'.format(options.count()),
             )
 
+    def read_angstroem_exp_params(self, product_id):
+        """ function to read options of an lidar ratio product from db.
+        """
+        options = self.session.query(AngstroemExpOption) \
+            .filter(AngstroemExpOption.product_id == product_id)
+
+        if options.count() >= 1:
+            return options
+        else:
+            self.logger.error(
+                'wrong number of angstroem exponent options ({0})'.format(options.count())
+            )
+
     def read_extinction_params(self, product_id):
         """ function to read options of an extinction product from db.
 
@@ -686,6 +703,59 @@ class DBFunc(DBUtils):
                 'wrong number of product options ({0})'.format(options.count()),
             )
 
+    def get_products_resolution_query(self, mwl_prod_id):
+        """ function to read the vertical and temporal resolution of the products from db.
+
+            This function reads from the db table preproc_options
+            which are the vertical and temporal resolution of the products.
+
+            Args:
+                mwl_prod_id (int): product id of mwl product
+
+            Returns:
+                list of individual product IDs corresponding to this mwl product
+
+        """
+        products_resolution = self.session.query(
+            MWLproductProduct.mwl_product_id,
+            func.min(PreProcOptions.preprocessing_integration_time).label('min_preprocessing_integration_time'),
+            func.max(PreProcOptions.preprocessing_integration_time).label('max_preprocessing_integration_time'),
+            func.min(PreProcOptions.preprocessing_vertical_resolution).label('min_preprocessing_vertical_resolution'),
+            func.max(PreProcOptions.preprocessing_vertical_resolution).label('max_preprocessing_vertical_resolution'),
+        ).filter(
+            MWLproductProduct.mwl_product_id == mwl_prod_id,
+        ).filter(
+            MWLproductProduct.product_id == Products.ID,
+        ).filter(
+            PreProcOptions.product_id == Products.ID
+        ).group_by(MWLproductProduct.mwl_product_id)
+
+        if products_resolution.count() == 1:
+            sametemporalresolution = products_resolution[0].min_preprocessing_integration_time == products_resolution[0].max_preprocessing_integration_time
+            sameverticalresolution = products_resolution[0].min_preprocessing_vertical_resolution == products_resolution[0].max_preprocessing_vertical_resolution
+
+            if sametemporalresolution:
+                if sameverticalresolution:
+                    # self.logger.info('all products have the same temporal and vertical resolution')
+                    return True
+                else:
+                    self.logger.error('there are different vertical resolutions configured')
+                    return False
+            else:
+                if sameverticalresolution:
+                    self.logger.error('there are different temporal resolutions configured')
+                    return False
+                else:
+                    self.logger.error('there are different temporal and vertical resolutions configured')
+                    return False
+        elif products_resolution.count() == 0:
+            self.logger.error('there are no vertical and temporal resolutions available for this measurement')
+            return None
+        else:
+            self.logger.warning('can there be more than one mwl_product_ID each time?')
+            return None
+
+
     def read_elast_bsc_params(self, product_id):
         """ function to read options of an elast bsc product from db.
 
@@ -832,14 +902,14 @@ class DBFunc(DBUtils):
             BackscatterOption.bsc_calibration_window_id == BscCalibrWindow.ID
         ).filter(
             BackscatterOption.bsc_calibration_value_id == BscCalibrValue.ID
-        ). filter(
+        ).filter(
             BackscatterOption.bsc_calibration_range_search_method_id == BscCalibrRangeSearchMethod.ID
         ).filter(BackscatterOption.product_id == bsc_prod_id)
 
         if cal_params.count() > 0:
             return cal_params[0]
         else:
-            raise(NoBscCalOptions(bsc_prod_id))
+            raise (NoBscCalOptions(bsc_prod_id))
 
     def read_mwl_product_id(self, system_id):
         """ read from db which of the products correlated
@@ -878,7 +948,7 @@ class DBFunc(DBUtils):
                 list: List of product ids (int)
 
             """
-        sys_id = self.session.query(Measurements)\
+        sys_id = self.session.query(Measurements) \
             .filter(Measurements.ID == measurement_id)
 
         if sys_id.count() == 1:
