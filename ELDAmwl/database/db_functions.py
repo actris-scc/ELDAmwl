@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """functions for db handling"""
 from addict import Dict
+from sqlalchemy import func
+
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.backscatter import BscCalibrLowestHeight, BscCalibrUpperHeight, \
@@ -19,6 +21,7 @@ from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
 from ELDAmwl.database.tables.general import ELDAmwlLogs
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
+from ELDAmwl.database.tables.angstroem import AngstroemExpOption
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import ErrorThresholds
 from ELDAmwl.database.tables.system_product import MCOption
@@ -73,7 +76,7 @@ class DBFunc(DBUtils):
             Returns:
                 str: name of the BaseOperation class to be used
          """
-        classes = self.session.query(EldamwlClassNames)\
+        classes = self.session.query(EldamwlClassNames) \
             .filter(EldamwlClassNames.method == method)
 
         if classes.count() == 1:
@@ -93,7 +96,7 @@ class DBFunc(DBUtils):
                 str: name of the BaseOperation class to be used
 
             """
-        methods = self.session.query(method_table)\
+        methods = self.session.query(method_table) \
             .filter(method_table.ID == method_id)
 
         if methods.count() == 1:
@@ -117,7 +120,7 @@ class DBFunc(DBUtils):
                 str: name of the BaseOperation class to be used
 
             """
-        methods = self.session.query(method_table)\
+        methods = self.session.query(method_table) \
             .filter(method_table.ID == method_id)
 
         if methods.count() == 1:
@@ -140,7 +143,7 @@ class DBFunc(DBUtils):
                 str: name of the BaseOperation class to be used
 
             """
-        methods = self.session.query(method_table)\
+        methods = self.session.query(method_table) \
             .filter(method_table.ID == method_id)
 
         if methods.count() == 1:
@@ -180,7 +183,7 @@ class DBFunc(DBUtils):
                 int: id of the algorithm in table _extinction_methods
 
         """
-        options = self.session.query(ExtinctionOption)\
+        options = self.session.query(ExtinctionOption) \
             .filter(ExtinctionOption.product_id == product_id)
 
         if options.count() == 1:
@@ -245,7 +248,7 @@ class DBFunc(DBUtils):
                 int: id of the algorithm in table _ram_bsc_methods
 
         """
-        options = self.session.query(RamanBackscatterOption)\
+        options = self.session.query(RamanBackscatterOption) \
             .filter(RamanBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
@@ -266,7 +269,7 @@ class DBFunc(DBUtils):
                 int: id of the algorithm in table _ram_bsc_methods
 
         """
-        options = self.session.query(RamanBackscatterOption)\
+        options = self.session.query(RamanBackscatterOption) \
             .filter(RamanBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
@@ -331,7 +334,7 @@ class DBFunc(DBUtils):
                 int: id of the algorithm in table _elast_bsc_methods
 
         """
-        options = self.session.query(ElastBackscatterOption)\
+        options = self.session.query(ElastBackscatterOption) \
             .filter(ElastBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
@@ -352,7 +355,7 @@ class DBFunc(DBUtils):
                 int: id of the algorithm in table _elast_bsc_methods
 
         """
-        options = self.session.query(ElastBackscatterOption)\
+        options = self.session.query(ElastBackscatterOption) \
             .filter(ElastBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
@@ -420,7 +423,7 @@ class DBFunc(DBUtils):
                 ??: options
 
             """
-        options = self.session.query(ExtBscOption)\
+        options = self.session.query(ExtBscOption) \
             .filter(ExtBscOption.product_id == product_id)
 
         if options.count() == 1:
@@ -428,6 +431,19 @@ class DBFunc(DBUtils):
         else:
             self.logger.error(
                 'wrong number of lidar ratio options ({0})'.format(options.count()),
+            )
+
+    def read_angstroem_exp_params(self, product_id):
+        """ function to read options of an lidar ratio product from db.
+        """
+        options = self.session.query(AngstroemExpOption) \
+            .filter(AngstroemExpOption.product_id == product_id)
+
+        if options.count() >= 1:
+            return options
+        else:
+            self.logger.error(
+                'wrong number of angstroem exponent options ({0})'.format(options.count())
             )
 
     def read_extinction_params(self, product_id):
@@ -521,10 +537,10 @@ class DBFunc(DBUtils):
             SmoothOptions.product_id == Products.ID,
         ).filter(
             PreProcOptions.product_id == Products.ID,
-        # ).filter(
-        #     SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
-        # ).filter(
-        #     SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
+            # ).filter(
+            #     SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
+            # ).filter(
+            #     SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
         ).filter(
             ProductChannels.prod_id == Products.ID,
         ).filter(
@@ -607,10 +623,10 @@ class DBFunc(DBUtils):
             Products.prod_type_id == ProductTypes.ID,
         ).filter(
             ProductTypes.is_in_mwl_products == 1,
-        # ).filter(
-        #     SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
-        # ).filter(
-        #     SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
+            # ).filter(
+            #     SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
+            # ).filter(
+            #     SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
         ).filter(
             ProductChannels.prod_id == Products.ID,
         ).filter(
@@ -683,6 +699,59 @@ class DBFunc(DBUtils):
                 'wrong number of product options ({0})'.format(options.count()),
             )
 
+    def get_products_resolution_query(self, mwl_prod_id):
+        """ function to read the vertical and temporal resolution of the products from db.
+
+            This function reads from the db table preproc_options
+            which are the vertical and temporal resolution of the products.
+
+            Args:
+                mwl_prod_id (int): product id of mwl product
+
+            Returns:
+                list of individual product IDs corresponding to this mwl product
+
+        """
+        products_resolution = self.session.query(
+            MWLproductProduct.mwl_product_id,
+            func.min(PreProcOptions.preprocessing_integration_time).label('min_preprocessing_integration_time'),
+            func.max(PreProcOptions.preprocessing_integration_time).label('max_preprocessing_integration_time'),
+            func.min(PreProcOptions.preprocessing_vertical_resolution).label('min_preprocessing_vertical_resolution'),
+            func.max(PreProcOptions.preprocessing_vertical_resolution).label('max_preprocessing_vertical_resolution'),
+        ).filter(
+            MWLproductProduct.mwl_product_id == mwl_prod_id,
+        ).filter(
+            MWLproductProduct.product_id == Products.ID,
+        ).filter(
+            PreProcOptions.product_id == Products.ID
+        ).group_by(MWLproductProduct.mwl_product_id)
+
+        if products_resolution.count() == 1:
+            sametemporalresolution = products_resolution[0].min_preprocessing_integration_time == products_resolution[0].max_preprocessing_integration_time
+            sameverticalresolution = products_resolution[0].min_preprocessing_vertical_resolution == products_resolution[0].max_preprocessing_vertical_resolution
+
+            if sametemporalresolution:
+                if sameverticalresolution:
+                    # self.logger.info('all products have the same temporal and vertical resolution')
+                    return True
+                else:
+                    self.logger.error('there are different vertical resolutions configured')
+                    return False
+            else:
+                if sameverticalresolution:
+                    self.logger.error('there are different temporal resolutions configured')
+                    return False
+                else:
+                    self.logger.error('there are different temporal and vertical resolutions configured')
+                    return False
+        elif products_resolution.count() == 0:
+            self.logger.error('there are no vertical and temporal resolutions available for this measurement')
+            return None
+        else:
+            self.logger.warning('can there be more than one mwl_product_ID each time?')
+            return None
+
+
     def read_elast_bsc_params(self, product_id):
         """ function to read options of an elast bsc product from db.
 
@@ -696,7 +765,7 @@ class DBFunc(DBUtils):
                 options : {'elast_bsc_method', 'lr_input_method'}
 
             """
-        options = self.session.query(ElastBackscatterOption)\
+        options = self.session.query(ElastBackscatterOption) \
             .filter(ElastBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
@@ -766,7 +835,7 @@ class DBFunc(DBUtils):
                 options : {'ram_bsc_method'}
 
             """
-        options = self.session.query(RamanBackscatterOption)\
+        options = self.session.query(RamanBackscatterOption) \
             .filter(RamanBackscatterOption.product_id == product_id)
 
         if options.count() == 1:
@@ -792,7 +861,7 @@ class DBFunc(DBUtils):
         if mc_params.count() == 1:
             return mc_params[0]
         else:
-            raise(NOMCOptions, prod_id)
+            raise (NOMCOptions, prod_id)
 
     def get_bsc_cal_params_query(self, bsc_prod_id, bsc_type):
         """ read from db which params shall be used to get the calibration of a sc product.
@@ -829,14 +898,14 @@ class DBFunc(DBUtils):
             BackscatterOption.bsc_calibration_window_id == BscCalibrWindow.ID
         ).filter(
             BackscatterOption.bsc_calibration_value_id == BscCalibrValue.ID
-        ). filter(
+        ).filter(
             BackscatterOption.bsc_calibration_range_search_method_id == BscCalibrRangeSearchMethod.ID
         ).filter(BackscatterOption.product_id == bsc_prod_id)
 
         if cal_params.count() > 0:
             return cal_params[0]
         else:
-            raise(NoBscCalOptions(bsc_prod_id))
+            raise (NoBscCalOptions(bsc_prod_id))
 
     def read_mwl_product_id(self, system_id):
         """ read from db which of the products correlated
@@ -875,7 +944,7 @@ class DBFunc(DBUtils):
                 list: List of product ids (int)
 
             """
-        sys_id = self.session.query(Measurements)\
+        sys_id = self.session.query(Measurements) \
             .filter(Measurements.ID == measurement_id)
 
         if sys_id.count() == 1:
@@ -889,23 +958,23 @@ class DBFunc(DBUtils):
     #        sypro = self.Base.classes.system_product
     #        psf = self.Base.classes.prepared_signal_files
 
-        # products_query = self.session.query(measurements, sypro).\
-        #     filter(measurements.ID == measurement_id).\
-        #     filter(sypro._system_ID == measurements._hoi_system_ID).all()
-        #
-        # for products in products_query:
-        #     product_id = products.system_product._Product_ID
-        #
-        #     psf_query = self.session.query(psf).\
-        #         filter(psf._Meas_ID == measurement_id).\
-        #         filter(psf._Product_ID == product_id).all()
-        #
-        #     if psf_query == []:
-        #         logger.notice('no file for product {p_id}'.
-        #                       format(p_id=product_id))
-        #     else:
-        #         for filenames in psf_query:
-        #             logger.notice(product_id, filenames.filename)
+    # products_query = self.session.query(measurements, sypro).\
+    #     filter(measurements.ID == measurement_id).\
+    #     filter(sypro._system_ID == measurements._hoi_system_ID).all()
+    #
+    # for products in products_query:
+    #     product_id = products.system_product._Product_ID
+    #
+    #     psf_query = self.session.query(psf).\
+    #         filter(psf._Meas_ID == measurement_id).\
+    #         filter(psf._Product_ID == product_id).all()
+    #
+    #     if psf_query == []:
+    #         logger.notice('no file for product {p_id}'.
+    #                       format(p_id=product_id))
+    #     else:
+    #         for filenames in psf_query:
+    #             logger.notice(product_id, filenames.filename)
 
     def read_smooth_routine(self, method_id):
         """ read from db which routine shall be used for smoothing
@@ -943,7 +1012,7 @@ class DBFunc(DBUtils):
                                      channel_id))
 
     def register_mwl_file_to_db(self, meas_id, prod_id, scc_version_id, nowtime, filename):
-        mwl_file = self.session.query(EldamwlProducts)\
+        mwl_file = self.session.query(EldamwlProducts) \
             .filter(EldamwlProducts.filename == filename)
 
         db_entry = EldamwlProducts(
@@ -971,11 +1040,11 @@ class DBFunc(DBUtils):
                                    new_lc, new_lc_sys_err, new_lc_stat_err,
                                    calibr_window_bottom, calibr_window_top,
                                    processor_version):
-        lidar_const = self.session.query(LidarConstants)\
-            .filter(LidarConstants.measurements_id == meas_id)\
-            .filter(LidarConstants.product_id == prod_id)\
-            .filter(LidarConstants.channel_id == chan_id)\
-            .filter(LidarConstants.profile_start_time == profile_start)\
+        lidar_const = self.session.query(LidarConstants) \
+            .filter(LidarConstants.measurements_id == meas_id) \
+            .filter(LidarConstants.product_id == prod_id) \
+            .filter(LidarConstants.channel_id == chan_id) \
+            .filter(LidarConstants.profile_start_time == profile_start) \
             .filter(LidarConstants.profile_end_time == profile_end)
 
         new_db_entry = LidarConstants(
@@ -1006,4 +1075,3 @@ class DBFunc(DBUtils):
             self.logger.error('wrong number ({0}) of lidar constants in db '.format(lidar_const.count()))
 
         self.session.commit()
-

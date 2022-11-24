@@ -45,6 +45,8 @@ NO_BSC_CAL_OPTIONS_IN_DB = 46
 NO_OVL_FILE_IN_DB = 47
 COULD_NOT_FIND_CALIBR_WINDOW = 48
 DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR = 49
+DIFFERENT_PRODS_RESOLUTION = 50
+COULD_NOT_FIND_PRODS_RESOLUTION = 51
 
 # ===============================================
 # error codes which occur only during development

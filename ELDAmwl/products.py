@@ -380,6 +380,7 @@ class GeneralProductParams(Params):
 
         self.signals = []
 
+
     @classmethod
     def from_extended_query(cls, query):
         result = cls.from_short_query(query)
