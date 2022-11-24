@@ -49,13 +49,12 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
     data_storage = None
     bsc_params = None
 
-    def create_calibration_window_datarray(self, ds, height_axis, win_first_idx, win_last_idx):
+    def create_calibration_window_datarray(self, ds, win_first_idx, win_last_idx):
         """
         Create a backscatter calibration window
 
         Args:
             ds : the dataset of the signal (contains the time and time_bounds variables)
-            height_axis : The height axis of the elastic signal
             win_first_idx : The first indexes of the window
             win_last_idx : The last indexes of the window
 
@@ -71,8 +70,8 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
                                  'calibration was calculated',
                     'units': 'm'}
         for t in range(ds.dims['time']):
-            da[t, 0] = height_axis[t, win_first_idx[t]].values
-            da[t, 1] = height_axis[t, win_last_idx[t]].values
+            da[t, 0] = ds.height[t, win_first_idx[t]].values
+            da[t, 1] = ds.height[t, win_last_idx[t]].values
 
         return da
 
@@ -108,12 +107,12 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         # because those operations use slices [n:n+window_width]
         w_width = np.around(bsc_param.calibration_params.window_width / el_sig.raw_heightres).astype(int) + 1
 
-        return ds, w_width, el_sig.height, error_threshold
+        return ds, w_width, error_threshold
 
     def find_calibration_window(self, bsc_param):
 
         # get the parameters for the rolling mean calculation
-        data_set, w_width, height, error_threshold = self.get_rolling_window_properties(bsc_param)
+        data_set, w_width, error_threshold = self.get_rolling_window_properties(bsc_param)
 
         # calculate the rolling means and standard errors of the means (sems) with the given window properties
         means, sems = calc_rolling_means_sems(data_set, w_width)
@@ -122,7 +121,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         win_first_idx, win_last_idx = find_minimum_window(means, sems, w_width, error_threshold)
 
         # Create a calibration window from win_first_idx, win_last_idx
-        calibration_window = self.create_calibration_window_datarray(data_set, height, win_first_idx, win_last_idx)
+        calibration_window = self.create_calibration_window_datarray(data_set, win_first_idx, win_last_idx)
 
         # Store the calibration window
         bsc_param.calibr_window = calibration_window

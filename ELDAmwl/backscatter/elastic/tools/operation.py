@@ -122,10 +122,11 @@ class CalcBscProfileKF(BaseOperation):
         # 2) find signal bin which has the value closest to the mean of the calibration window
             cb = closest_bin(
                 elast_sig.data[t].values,
-                elast_sig.err[t].values,
+#                error=elast_sig.err[t].values,
                 first_bin=calibration['cal_first_lev'][t],
-                last_bin=calibration['cal_last_lev'][t],
-                search_value=mean_sig)
+                last_bin=calibration['cal_last_lev'][t] + 1,
+                # search_value=mean_sig,
+                )
             if cb is None:
                 self.logger.error('cannot find altitude bin close enough to mean signal within calibration window')
                 return None

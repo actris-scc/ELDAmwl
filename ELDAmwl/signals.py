@@ -275,6 +275,7 @@ class Signals(Columns):
         result.station_altitude.load()
 
         result.ds['altitude'] = nc_ds.altitude
+        result.ds['height'] = nc_ds.altitude - nc_ds.station_altitude
 
         result.ds['time_bounds'] = nc_ds.time_bounds
 
@@ -471,10 +472,7 @@ class Signals(Columns):
         max_h = v_range.max_height
 
         if boundaries is None:
-            min_alt = min_h + self.station_altitude.values
-            max_alt = max_h + self.station_altitude.values
-
-            return self.ds.where((self.ds.altitude > min_alt) & (self.ds.altitude < max_alt), drop=True)
+            result = self.ds.where((self.height > min_h) & (self.height < max_h), drop=True)
         else:
             # first valid level
             fvl = self.height_to_levels(min_h)
@@ -488,7 +486,9 @@ class Signals(Columns):
                 fvl = max(fvl + self.ds.binres[fvl] // 2, 0)
                 lvl = min(lvl - self.ds.binres[lvl] // 2, self.ds.dims.level)
 
-            return self.ds.isel({'level': range(fvl, lvl)})
+            result = self.ds.isel({'level': range(fvl, lvl)})
+
+        return result
 
     @property
     def channel_id_str(self):

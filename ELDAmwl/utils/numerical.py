@@ -1,5 +1,6 @@
 from copy import deepcopy
 from ELDAmwl.errors.exceptions import IntegrationFailed
+from ELDAmwl.utils.constants import NEG_TEST_STD_FACTOR
 from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
 from scipy.integrate import cumulative_trapezoid
 from scipy.stats import sem
@@ -52,7 +53,7 @@ def find_minimum_window(means, sems, w_width, error_threshold):
     # rel_sem.where(rel_sem.data < error_threshold) / rel_sem
     #           => ones and nans
     # valid_means = means and nans
-    valid_means = (rel_sem.where(rel_sem.data < error_threshold) / rel_sem * means)
+    valid_means = (rel_sem.where((rel_sem.data < error_threshold) & (means.data > 0)) / rel_sem * means)
 
     # min_idx is the last bin of rolling window with smallest mean
     win_last_idx = np.nanargmin(valid_means.data, axis=1)
@@ -85,7 +86,8 @@ def closest_bin(data, error=None, first_bin=None, last_bin=None, search_value=No
         last_bin = data.size
 
     _data = data[first_bin:last_bin]
-    _error = error[first_bin:last_bin]
+    if error is not None:
+        _error = error[first_bin:last_bin] * NEG_TEST_STD_FACTOR
 
     if search_value is not None:
         _search_value = search_value
