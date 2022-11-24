@@ -4,6 +4,7 @@
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.lidar_constant.operation import LidarConstantFactory
 
 
@@ -20,11 +21,14 @@ class GetLidarConstantsDefault(BaseOperation):
     def get_lidar_constants(self):
         wavelengths = self.mwl_product_params.wavelengths()
         for wl in wavelengths:
-            lc = LidarConstantFactory()(
-                wavelength=wl,
-                mwl_product_params=self.mwl_product_params).run()
+            try:
+                lc = LidarConstantFactory()(
+                    wavelength=wl,
+                    mwl_product_params=self.mwl_product_params).run()
 
-            self.data_storage.set_lidar_constant(wl, lc)
+                self.data_storage.set_lidar_constant(wl, lc)
+            except ELDAmwlException as e:
+                self.logger.error('could not derive lidar constant')
 
 
 class GetLidarConstants(BaseOperationFactory):

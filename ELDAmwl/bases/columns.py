@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
 from ELDAmwl.component.interface import ILogger
-from ELDAmwl.utils.constants import NC_FILL_BYTE
+from ELDAmwl.utils.constants import NC_FILL_BYTE, NEG_TEST_STD_FACTOR
 from ELDAmwl.utils.constants import NC_FILL_INT
 from zope import component
 
@@ -88,6 +88,9 @@ class Columns(object):
     def _relative_error(self):
         return self.err[:] / self.data[:]
 
+    def _is_negative(self):
+        return (self.data[:] + NEG_TEST_STD_FACTOR * self.err[:]) < 0
+
     @property
     def data(self):
         return self.ds.data
@@ -113,6 +116,10 @@ class Columns(object):
     @property
     def rel_err(self):
         return self._relative_error()
+
+    @property
+    def is_negative(self):
+        return self._is_negative()
 
     @property
     def qf(self):

@@ -5,7 +5,7 @@ from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import UseCaseNotImplemented
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented, NegBscForLidarconst
 from ELDAmwl.lidar_constant.product import LidarConstants
 from ELDAmwl.signals import Signals
 from ELDAmwl.utils.constants import ANGSTROEM_DEFAULT
@@ -523,6 +523,10 @@ class CalcLidarConstantDefault(BaseOperation):
             # backscatter profile data (might have values below calibration height)
             part_bsc = self.bsc.data[t].values
             part_bsc_err = self.bsc.err[t].values
+
+            if self.bsc.is_negative[t, bsc_calibr_bins[t]]:
+                self.logger.error('cannot calculate lidar constant from negative backscatter profile')
+                raise NegBscForLidarconst(self.bsc.params.prod_id_str)
 
             # volume bsc
             vol_bsc = (part_bsc + mol_bsc)[bsc_calibr_bins[t]]

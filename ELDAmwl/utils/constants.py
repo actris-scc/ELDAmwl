@@ -169,4 +169,11 @@ OVL_FACTOR_ERR = 0.2
 # settings for MC error retrievals
 # =========================================
 # how many samples shall be tried for MC error retrievals (factor)
-MC_TRIALS_FACTOR = 1
+MC_TRIALS_FACTOR = 2
+
+# =========================================
+# settings for quality control
+# =========================================
+# number of standard deviations used in testing for negative values
+# if (value + NEG_TEST_STD_FACTOR * err) < 0 => value is negative
+NEG_TEST_STD_FACTOR = 2

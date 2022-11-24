@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
 from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, INTEGRATION_FAILED, NO_STABLE_SOLUTION_FOR_KLETT, \
-    NOT_ENOUGH_MC_SAMPLES, NO_PRODUCTS_GENERATED
+    NOT_ENOUGH_MC_SAMPLES, NO_PRODUCTS_GENERATED, NEG_BSC_FOR_LIDAR_CONSTANT
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -391,6 +391,17 @@ class NoProductsGenerated(ELDAmwlException):
 
     def __str__(self):
         return('no individual products were generated'
+               .format(self.prod_id))
+
+
+class NegBscForLidarconst(ELDAmwlException):
+    """raised when a negative backscatter profile shall be used for retrieval of lidar constant
+    """
+
+    return_value = NEG_BSC_FOR_LIDAR_CONSTANT
+
+    def __str__(self):
+        return('cannot calculate lidar constant from negative backscatter value'
                .format(self.prod_id))
 
 
