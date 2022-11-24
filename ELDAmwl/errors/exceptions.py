@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
 from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, INTEGRATION_FAILED, NO_STABLE_SOLUTION_FOR_KLETT, \
-    NOT_ENOUGH_MC_SAMPLES, NO_PRODUCTS_GENERATED, NEG_BSC_FOR_LIDAR_CONSTANT
+    NOT_ENOUGH_MC_SAMPLES, NO_PRODUCTS_GENERATED, NEG_BSC_FOR_LIDAR_CONSTANT, DIFFERENT_PRODS_RESOLUTION, COULD_NOT_FIND_PRODS_RESOLUTION
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -411,3 +411,28 @@ class SciPyWrapperAxisError(ELDAmwlException):
 
     def __init__(self):
         pass
+
+class DifferentProductsResolution(ELDAmwlException):
+    """raised when the temporal and/or vertical resolutions are not the same for all the products of a mwl_product_id"""
+    return_value = DIFFERENT_PRODS_RESOLUTION
+
+    def __init__(self, mwl_product_id):
+        self.mwl_product_id = mwl_product_id
+
+    def __str__(self):
+        return('the temporal and/or vertical resolutions are '
+               'not consistent for all the products configured (mwl_product_id={0})'
+               .format(self.mwl_product_id))
+
+class CouldNotFindProductsResolution(ELDAmwlException):
+    """raised when the temporal and vertical resolutions are not defined for a mwl_product_id"""
+    return_value = COULD_NOT_FIND_PRODS_RESOLUTION
+
+    def __init__(self, mwl_product_id):
+        self.mwl_product_id = mwl_product_id
+
+    def __str__(self):
+        return('the temporal and vertical resolutions are '
+               'not available for mwl_product_id={0}'
+               .format(self.mwl_product_id))
+

@@ -49,6 +49,8 @@ INTEGRATION_FAILED = 50
 NOT_ENOUGH_MC_SAMPLES = 51
 NO_PRODUCTS_GENERATED = 52
 NEG_BSC_FOR_LIDAR_CONSTANT = 53
+DIFFERENT_PRODS_RESOLUTION = 54
+COULD_NOT_FIND_PRODS_RESOLUTION = 55
 # ===============================================
 # error codes which occur only during development
 # ===============================================
