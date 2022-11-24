@@ -19,10 +19,10 @@ class AngstroemExpFactory(BaseOperationFactory):
     """
     """
 
-    name = 'LidarRatioFactory'
+    name = 'AngstroemExpFactory'
 
     def __call__(self, **kwargs):
-        assert 'lr_param' in kwargs
+        assert 'ae_param' in kwargs
         assert 'resolution' in kwargs
         res = super(AngstroemExpFactory, self).__call__(**kwargs)
         return res
@@ -46,7 +46,7 @@ class AngstroemExpFactoryDefault(BaseOperation):
     resolution = None
     ext = None
     bsc = None
-    empty_lr = None
+    empty_ae = None
     result = None
     prod_id = NC_FILL_STR
     resolution = NC_FILL_INT
@@ -57,22 +57,22 @@ class AngstroemExpFactoryDefault(BaseOperation):
         self.prod_id = self.param.prod_id_str
 
         # ext and bsc are deepcopies from the data storage
-        self.ext = self.data_storage.basic_product_common_smooth(self.param.lwvl_prod_id, self.resolution)
-        self.bsc = self.data_storage.basic_product_common_smooth(self.param.hwvl_prod_id, self.resolution)
+        self.lambda1 = self.data_storage.basic_product_common_smooth(self.param.lambda1_prod_id, self.resolution)
+        self.lambda2 = self.data_storage.basic_product_common_smooth(self.param.lambda2_prod_id, self.resolution)
 
-        self.empty_ae = AngstroemExps.init(self.lwvl, self.hwvl, self.param)
+        self.empty_ae = AngstroemExps.init(self.lambda1, self.lambda2, self.param)
 
     def get_non_merge_product(self):
         # create Dict with all params which are needed for the calculation
         ae_params = Dict({
             'error_method': self.param.error_method,
-            # 'min_bsc_ratio': self.param.min_BscRatio_for_LR,
+            'min_bsc_ratio': self.param.min_BscRatio_for_AE,
         })
 
         ae_routine = CalcAngstroemExp()(
             prod_id=self.prod_id,
-            lwvl=self.lwvl,
-            hwvl=self.hvwl,
+            lambda1=self.lambda1,
+            lambda2=self.lambda2,
             ae_params=ae_params,
             empty_ae=self.empty_ae)
 
@@ -84,8 +84,8 @@ class AngstroemExpFactoryDefault(BaseOperation):
         else:
             ae = ae
 
-        del self.lwvl
-        del self.hwvl
+        del self.lambda1
+        del self.lambda2
 
         return ae
 
@@ -93,11 +93,11 @@ class AngstroemExpFactoryDefault(BaseOperation):
         self.prepare()
 
         if not self.param.includes_product_merging():
-            lr = self.get_non_merge_product()
+            ae = self.get_non_merge_product()
         else:
-            lr = None
+            ae = None
 
-        return lr
+        return ae
 
 
 class CalcAngstroemExp(BaseOperationFactory):
@@ -111,8 +111,8 @@ class CalcAngstroemExp(BaseOperationFactory):
     Keyword Args:
         ae_params (:class:`ELDAmwl.angstroem_exponent.params.AngstroemExpParams`): \
                 retrieval parameter of the angstroem exponent product
-        lwvl (:class:`ELDAmwl.extinction.product.Extinctions`): particle extinction profiles
-        hwvl (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters`): particle backscatter (Raman) profiles
+        lambda1 (:class:):     # ToDo complete
+        lambda2 (:class:):     # ToDo complete
         empty_ae (:class:`ELDAmwl.angstroem_exponent.product.AngstroemExps`): \
                 instance of AngstroemExps which has all meta data but profile data are empty arrays
 
@@ -125,8 +125,8 @@ class CalcAngstroemExp(BaseOperationFactory):
 
     def __call__(self, **kwargs):
         assert 'ae_params' in kwargs
-        assert 'lwvl' in kwargs
-        assert 'hwvl' in kwargs
+        assert 'lambda1' in kwargs
+        assert 'lambda2' in kwargs
         assert 'empty_ae' in kwargs
 
         res = super(CalcAngstroemExp, self).__call__(**kwargs)
@@ -149,52 +149,52 @@ class CalcAngstroemExpDefault(BaseOperation):
     Keyword Args:
         ae_params (:class:`ELDAmwl.angstroem_exponent.params.AngstroemExpParams`): \
                 retrieval parameter of the angstroem exponent product
-        lwvl (:class:`ELDAmwl.extinction.product.Extinctions`): particle extinction profiles    # ToDo change
-        hwvl (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters`): particle backscatter (Raman) profiles  # ToDo change
+        lambda1 (:class:``):  # ToDo complete
+        lambda2 (:class:``): # ToDo change
         empty_ae (:class:`ELDAmwl.angstroem_exponents.product.AngstroemExps`): \
                 instance of AngstroemExp which has all meta data but profile data are empty arrays
 
     Returns:
-        particle lidar ratio profiles (:class:`ELDAmwl.lidar_ratio.product.LidarRatios`)
+        angstroem exponent profiles (:class:`ELDAmwl.angstroem_exponent.product.AngstroemExps`)
 
     """
 
     name = 'CalcAngstroemExpDefault'
 
-    lwvl = None
-    hwvl = None
+    lambda1 = None
+    lambda2 = None
     result = None
 
     def __init__(self, **kwargs):
-        self.lwvl = kwargs['lwvl']
-        self.hwvl = kwargs['hwvl']
+        self.lambda1 = kwargs['lambda1']
+        self.lambda2 = kwargs['lambda2']
         self.result = deepcopy(kwargs['empty_ae'])
 
-    def run(self, lwvl=None, hwvl=None):
+    def run(self, lambda1=None, lambda2=None):
         """
         run the angstrom exponent calculation
 
-        The optional keyword args 'lwvl' and 'hwvl' allow to feed new input data into
+        The optional keyword args 'lambda1' and 'lambda2' allow to feed new input data into
         an existing instance of CalcAngstroemExtDefault and run a new calculation.
         This feature is used e.g., for Monte-Carlo error retrievals # ToDo needed?
 
         Keyword Args:
-            lwvl (:class:`ELDAmwl.extinction.product.Extinctions`): extinction profiles, default=None   # ToDo change
-            hwvl (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters`): Raman backscatter profiles, default=None   # ToDo change
+            lambda1 (:class:``):    # ToDo complete
+            lambda2 (:class:``):    # ToDo complete
 
         Returns:
             profiles of angstroem exponents (:class:`ELDAmwl.angstroem_exponent.product.AngstroemExps`)
 
         """
-        if lwvl is None:
-            lwvl = self.lwvl
-        if hwvl is None:
-            hwvl = self.hwvl
+        if lambda1 is None:
+            lambda1 = self.lambda1
+        if lambda2 is None:
+            lambda2 = self.lambda2
 
-        self.result.ds['data'] = hwvl.data / lwvl.data
+        self.result.ds['data'] = lambda2.data / lambda1.data
         self.result.ds['err'] = self.result.data * np.sqrt(
-            np.power(hwvl.err / hwvl.err, 2) + np.power(lwvl.err / lwvl.err, 2))
-        self.result.ds['qf'] = hwvl.qf | lwvl.qf
+            np.power(lambda1.err / lambda1.err, 2) + np.power(lambda2.err / lambda2.err, 2))
+        self.result.ds['qf'] = lambda2.qf | lambda1.qf
 
         return self.result
 
