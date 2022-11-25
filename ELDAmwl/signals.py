@@ -446,20 +446,22 @@ class Signals(Columns):
         """ returns subset of data within vertical range
 
         Args:
-            v_range(addict.Dict): with keys 'min_height' and \
-                    'max_height' which are heights in m)
-            boundaries (str): 'extend_with_binres' or
-            'clip_with_binres' or None. default = None
+            v_range(addict.Dict): with keys 'min_height' and 'max_height' (which are heights in m)
+            boundaries (str): 'extend_with_binres' or 'clip_with_binres' or None. default = None
+
         Returns:
             subset of the dataset in the vertical range.
-            *   if boundaries == None (default) => returns range between
+
+            *   if boundaries == None (default)
+                    =>returns range between
                     (begin of vertical range) and (end of vertical range)
-            *   if boundaries == 'extend_with_binres' => returns range \
-                    between \
-                    (begin of vertical range - half binres at this height) \
-                    and \
+            *   if boundaries == 'extend_with_binres'
+                    => returns range between
+                    (begin of vertical range - half binres at this height)
+                    and
                     (end of vertical range + half binres at this height)
-            *   if boundaries == 'clip_with_binres' => returns range between \
+            *   if boundaries == 'clip_with_binres'
+                    => returns range between
                     (begin of vertical range + half binres at this height)
                     and
                     (end of vertical range - half binres at this height)
@@ -585,6 +587,7 @@ class Signals(Columns):
             \Delta \widetilde{P_{\lambda}(t,z)}
                 &= \frac {\Delta P_{\lambda}(t,z)}
                          {T_{\lambda_{up}}^{mol}(t,z)\: T_{\lambda_{down}}^{mol}(t,z)}
+
         With
 
         :math:`P_{\lambda}(t,z)` and :math:`\Delta P_{\lambda}(t,z)`
@@ -824,10 +827,7 @@ class CombineDepolComponents(BaseOperationFactory):
     always an instance of GetCombinedSignal().
 
     Args:
-        refl_sig (xarray.DataSet,
-                    (dimensions=time,level),
-                    variables=data,err,):
-            data of the reflected signal
+        refl_sig (xarray.DataSet, (dimensions=time,level), variables=data,err,):  data of the reflected signal
         transm_sig (xarray.DataSet, (dimensions=time,level)):
             data of the transmitted signal
         depol_params (Dict): all parameters needed for the

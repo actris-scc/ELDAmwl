@@ -187,7 +187,7 @@ class DataStorage:
             channel_id (int):  channel_id id
 
         Returns:
-            :class:`ELDAmwl.lidar_constant.product.LidarConstants`: the lidar constant of the requested channel
+            :class:`ELDAmwl.lidar_constant.product.LidarConstantData`: the lidar constant of the requested channel
 
         Raises:
              NotFoundInStorage: if no lidar constant for the given channel id

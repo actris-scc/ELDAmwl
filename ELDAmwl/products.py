@@ -172,12 +172,13 @@ class ProductParams(Params):
 
     def get_error_params(self, db_options):
         """reads error params
+
         Args:
-            db_options (Dict): product params, read from
-                    SCC db with read_elast_bsc_params(),
-                    read_extinction_params(), or
-                    read_raman_bsc_params
-            """
+            db_options (Dict): product params, read from SCC db with read_elast_bsc_params(),
+                    read_extinction_params(), or read_raman_bsc_params
+
+        """
+
         self.general_params.error_method = db_options['error_method']
         if self.error_method == MC:
             self.mc_params = MCParams.from_db(self.prod_id)
@@ -341,8 +342,8 @@ class ProductParams(Params):
         pass
 
     def to_meta_ds_dict(self, dct):
-        """
-        writes parameter content into Dict for further export in mwl file
+        """ writes parameter content into Dict for further export in mwl file
+
         Args:
             dct (addict.Dict): is a dict which will be converted into dataset.
                             has the keys 'attrs' and 'data_vars'
@@ -581,15 +582,13 @@ class SmoothSavGolay(BaseOperation):
     name = 'SmoothSavGolay'
 
     def run(self, **kwargs):
-        """
-        starts the calculation.
+        """starts the calculation.
 
         in scipy.signal.savgol_filter
         (https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html),
         the filtering is done as
         convolution (scipy.ndimage.convolve1d ) of the data and SG coefficients:
-         result=convolve1d(data,sgc).
-         Here, the filtering can be done as simple sum (which is supposedly faster)
+        result=convolve1d(data,sgc). Here, the filtering can be done as simple sum (which is supposedly faster)
 
         Keyword Args:
             window(integer): total length (diameter) of the smooth window. must be an odd number
@@ -600,6 +599,7 @@ class SmoothSavGolay(BaseOperation):
             addict.Dict with keys 'data' and 'err' which contains the smoothed data and its error
 
         """
+
         assert 'window' in kwargs
         assert 'data' in kwargs
         assert 'err' in kwargs

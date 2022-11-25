@@ -30,11 +30,9 @@ class RamanBscParams(BackscatterParams):
     def to_meta_ds_dict(self, dct):
         """
         writes parameter content into Dict for further export in mwl file
-        Args:
-            dct (addict.Dict): is a dict which will be converted into dataset.
-                            has the keys 'attrs' and 'data_vars'
 
-        Returns:
+        Args:
+            dct (addict.Dict): is a dict which will be converted into dataset. It has the keys 'attrs' and 'data_vars'
 
         """
         super(RamanBscParams, self).to_meta_ds_dict(dct)

@@ -10,7 +10,7 @@ import numpy as np
 import xarray as xr
 
 
-class LidarConstants(object):
+class LidarConstantData(object):
     """
     time series of lidar constants
     """

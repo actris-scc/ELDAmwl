@@ -6,7 +6,7 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented, NegBscForLidarconst
-from ELDAmwl.lidar_constant.product import LidarConstants
+from ELDAmwl.lidar_constant.product import LidarConstantData
 from ELDAmwl.signals import Signals
 from ELDAmwl.utils.constants import ANGSTROEM_DEFAULT
 from ELDAmwl.utils.constants import ASSUMED_LR_DEFAULT
@@ -48,8 +48,8 @@ class LidarConstantFactory(BaseOperationFactory):
 
 
 class LidarConstantFactoryDefault(BaseOperation):
-    """
-    derives a single instance of :class:`LidarConstants` from all products of the same wavelength.
+    """ derives a single instance of :class:`LidarConstantData` from all products of the same wavelength.
+
     Params:
         wl (float): wavelength for which the lidar constant shall be derived
         mwl_product_params (MeasurementParams): parameter of the mwl product
@@ -114,7 +114,7 @@ class LidarConstantFactoryDefault(BaseOperation):
 
         # create empty lidar constants (with all meta data) for each involved signals
         for sig in self.signals.keys():
-            self.lidar_constants[sig] = LidarConstants.init(self.bsc, self.signals[sig])
+            self.lidar_constants[sig] = LidarConstantData.init(self.bsc, self.signals[sig])
             self.lidar_constants[sig].calibr_height = self.calibr_height
 
     def find_signals(self):
@@ -122,10 +122,12 @@ class LidarConstantFactoryDefault(BaseOperation):
 
         Lidar constants are derived for those channels.
         The signals are collected in self.signals which is an addict.dict with the following keys:
+
             * 'total' (always)
-            * 'refl' and 'transm' (in case the backscatter was calculated from a
-               combination of reflected and transmitted signal)
+            * | 'refl' and 'transm' (in case the backscatter was calculated from
+                a combination of reflected and transmitted signal)
             * 'raman' (in case of Raman backscatter)
+
         """
         self.signals = Dict({
             'total': self.data_storage.prepared_signal(
@@ -358,8 +360,8 @@ class CalcLidarConstant(BaseOperationFactory):
                            (total signal or combined from depolarization components).
                            The signal must be prepared by `.PrepareBscSignals` before.
                            It can be taken from the global data storage with `.DataStorage.prepared_signal()`.
-        empty_lc (`.LidarConstants`): \
-                instance of LidarConstants which has all meta data but data are empty arrays
+        empty_lc (`.LidarConstantData`): \
+                instance of LidarConstantData which has all meta data but data are empty arrays
         lc_params (addict.Dict): dictionary with mandatory keys
 
                 * 'lidar_ratio' and 'lidar_ratio_err' (used for estimation of atmospheric transmission below calibr_height)
@@ -431,11 +433,13 @@ class CalcLidarConstantDefault(BaseOperation):
                 &= C_{\lambda_0}(t)\:
                    \beta_{\lambda_0}(t,z) \:
                    T_0^{par}(t,z)\\
+
         * The volume backscatter profile at calibration height is
 
         .. math::
             \beta_{\lambda_0}(t,z_c) &= \beta_{\lambda_0}^{par}(t,z_c) +
                       \beta_{\lambda_0}^{mol}(t,z_c)\\
+
         * 2-way atmospheric transmission due to scattering at particles below :math:`z_c` is
 
         .. math::
@@ -489,9 +493,8 @@ class CalcLidarConstantDefault(BaseOperation):
                                             \Biggr)^2
                                             }\\
 
-
         Returns:
-            `.LidarConstants`: :math:`C_0(t)`: time series of lidar constants of the elastic total signal
+            `.LidarConstantData`: :math:`C_0(t)`: time series of lidar constants of the elastic total signal
 
         """
 
@@ -588,9 +591,9 @@ class CalcRamanLidarConstant(BaseOperationFactory):
         signal(`.Signals`): :math:`P_{\lambda_R}(t,z)`: Raman signal  # noqa W605
                            The signal must be prepared by `.PrepareBscSignals` before.
                            It can be taken from the global data storage with `.DataStorage.prepared_signal()`.
-        empty_lc (`.LidarConstants`): \
-                instance of LidarConstants which has all meta data but data are empty arrays
-        elast_lc (`.LidarConstants`): \
+        empty_lc (`.LidarConstantData`): \
+                instance of LidarConstantData which has all meta data but data are empty arrays
+        elast_lc (`.LidarConstantData`): \
                 the lidar constant of the elastic signal
         lc_params (addict.Dict): dictionary with mandatory keys
 
@@ -711,7 +714,7 @@ class CalcRamanLidarConstantDefault(BaseOperation):
 
 
         Returns:
-            `.LidarConstants`: :math:`C_R(t)`: time series of lidar constants of the Raman signal
+            `.LidarConstantData`: :math:`C_R(t)`: time series of lidar constants of the Raman signal
 
         """
 
@@ -723,7 +726,7 @@ class CalcRamanLidarConstantDefault(BaseOperation):
 
         # transmission at Raman wavelength at calibration height is calculated
         # from transmission at elastic wavelength (which is included in corresponding
-        # LidarConstants instance
+        # LidarConstantData instance
         wl_dep = (1 + np.power(elast_wl / raman_wl, self.lc_params.angstroem)) / 2
         elast_transm = self.elast_lc.ds.particle_transmission
         elast_transm_err = self.elast_lc.ds.particle_transmission_err
@@ -760,11 +763,11 @@ class SplitDepolLidarConstant(BaseOperationFactory):
         transm_signal(`.Signals`): :math:`P_t(t,z)`: transmitted signal
                            The signal must be prepared by `.PrepareBscSignals` before.
                            It can be taken from the global data storage with `.DataStorage.prepared_signal()`.
-        empty_lc_refl (`.LidarConstants`): \
-                instance of LidarConstants which has all meta data but data are empty arrays
-        empty_lc_transm (`.LidarConstants`): :math:`C_0(t)`\
-                instance of LidarConstants which has all meta data but data are empty arrays
-        total_lc (`.LidarConstants`): \
+        empty_lc_refl (`.LidarConstantData`): \
+                instance of LidarConstantData which has all meta data but data are empty arrays
+        empty_lc_transm (`.LidarConstantData`): :math:`C_0(t)`\
+                instance of LidarConstantData which has all meta data but data are empty arrays
+        total_lc (`.LidarConstantData`): \
                 the lidar constant of the combined (total) elastic signal
         lc_params (addict.Dict): dictionary with mandatory keys
 
@@ -895,7 +898,7 @@ class SplitDepolLidarConstantDefault(BaseOperation):
 
         Returns:
             addict.Dict with the keys 'refl' and 'transm' which contain
-            the time series of corresponding lidar constants (`.LidarConstants`)
+            the time series of corresponding lidar constants (`.LidarConstantData`)
 
         """
         # bin numbers of calibration height in signal profile
