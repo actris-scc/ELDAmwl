@@ -24,7 +24,6 @@ from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
 from ELDAmwl.database.tables.general import ELDAmwlLogs
-from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.angstroem import AngstroemExpOption
 from ELDAmwl.database.tables.measurements import Measurements
@@ -731,18 +730,20 @@ class DBFunc(DBUtils):
         ).group_by(MWLproductProduct.mwl_product_id)
 
         if products_resolution.count() == 1:
-            sametemporalresolution = products_resolution[0].min_preprocessing_integration_time == products_resolution[0].max_preprocessing_integration_time
-            sameverticalresolution = products_resolution[0].min_preprocessing_vertical_resolution == products_resolution[0].max_preprocessing_vertical_resolution
+            same_temporal_resolution = products_resolution[0].min_preprocessing_integration_time \
+                                     == products_resolution[0].max_preprocessing_integration_time
+            same_vertical_resolution = products_resolution[0].min_preprocessing_vertical_resolution \
+                                     == products_resolution[0].max_preprocessing_vertical_resolution
 
-            if sametemporalresolution:
-                if sameverticalresolution:
+            if same_temporal_resolution:
+                if same_vertical_resolution:
                     # self.logger.info('all products have the same temporal and vertical resolution')
                     return True
                 else:
                     self.logger.error('there are different vertical resolutions configured')
                     return False
             else:
-                if sameverticalresolution:
+                if same_vertical_resolution:
                     self.logger.error('there are different temporal resolutions configured')
                     return False
                 else:

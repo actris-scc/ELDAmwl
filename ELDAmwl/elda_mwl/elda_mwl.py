@@ -14,6 +14,7 @@ from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IParams
 from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
+from ELDAmwl.elda_mwl.get_lidar_constants import GetLidarConstants
 from ELDAmwl.elda_mwl.mwl_products import GetProductMatrix
 from ELDAmwl.elda_mwl.mwl_products import QualityControl
 from ELDAmwl.errors.exceptions import ProductNotUnique, DifferentProductsResolution, CouldNotFindProductsResolution
@@ -114,7 +115,7 @@ class MeasurementParams(Params):
             list of float: unique, sorted list of wavelengths of all products with resolution = res
         """
         prod_df = self.measurement_params.product_table
-        prod_df = prod_df[prod_df['failed'] == False]
+        prod_df = prod_df[(prod_df['failed'] == False) & (prod_df['basic'] == 1)]
 
         if res is not None:
             all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()  # noqa E712
