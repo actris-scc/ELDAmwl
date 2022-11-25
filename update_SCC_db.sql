@@ -495,11 +495,10 @@ INSERT INTO `_vldr_methods` (`ID`, `method`) VALUES
 /*
 * ===================================================================================
 * create a table for VLDR options (vldr_options)
-* fill vldr_options with data of this example (for system 192)
-* 1) add new entry to table polarization_options
-* 2) add new entry to table vldr_options
-* 3) add preproc options for new product
-* 4) add smooth options for new product
+* fill vldr_options with data of this example (for system 182)
+* 1) add new vldr product to table products
+* 2) add new entry to table polarization_options
+* 3) add new entry to table vldr_options
 * ===================================================================================
 */
 
@@ -512,8 +511,13 @@ CREATE TABLE IF NOT EXISTS `vldr_options` (
   PRIMARY KEY (`ID`)
 );
 
+INSERT INTO `products` (`_usecase_ID`, `_prod_type_ID`, `__hoi_stations__ID`, `_hirelpp_product_option_ID`, `_ltool_product_option_ID`) VALUES
+	(0, 15, 'hpb', NULL, NULL);
+select max(ID) into @vldr_id from products;
+
 INSERT INTO `vldr_options` (`_product_ID`, `_vldr_method_ID`, `_error_method_ID`, `_smooth_method_ID`) VALUES
 	(637, 0, 0, 0);
+
 
 INSERT INTO `polarization_options` (
     `_product_ID`,
@@ -551,6 +555,11 @@ CREATE TABLE IF NOT EXISTS `pldr_options` (
   PRIMARY KEY (`ID`)
 );
 
+INSERT INTO `products` (`_usecase_ID`, `_prod_type_ID`, `__hoi_stations__ID`, `_hirelpp_product_option_ID`, `_ltool_product_option_ID`) VALUES
+	(NULL, 16, 'hpb', NULL, NULL),
+	(NULL, 16, 'hpb', NULL, NULL);
+select max(ID) into @pldr_id from products;
+
 INSERT INTO `pldr_options` (
     `_product_ID`,
     `_vldr_product_ID`,
@@ -573,6 +582,10 @@ INSERT INTO `mwlproduct_product` (`ID`, `_mwl_product_ID`, `_Product_ID`, `creat
 	(NULL, 627, 380, 0, 1),
 	(NULL, 627, 381, 0, 1),
 	(NULL, 627, 330, 1, 1);
+
+INSERT INTO `prepared_signal_files` (`ID`, `__measurements__ID`, `_Product_ID`, `creation_date`, `_scc_version_ID`, `filename`) VALUES
+	(NULL, '20181017oh00', 324, '2021-11-10', 17, 'hpb_007_0000328_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc'),
+	(NULL, '20181017oh00', 377, '2021-11-10', 17, 'hpb_002_0000381_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc');
 
 /*
 * ===================================================================================

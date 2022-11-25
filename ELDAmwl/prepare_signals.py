@@ -6,7 +6,7 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.signals import Signals
-from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EBSC, VLDR
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import KF
 from ELDAmwl.utils.constants import RBSC
@@ -130,14 +130,65 @@ class PrepareExtSignals(BaseOperationFactory):
     def get_classname_from_db(self):
         """
 
-        return: always 'DoPrepareExtSignals' .
+        return: always 'PrepareExtSignalsDefault' .
         """
         return PrepareExtSignalsDefault.__name__
+
+
+class PrepareDepolSignals(BaseOperationFactory):
+    """
+    Args:
+        prod_param (`.ProductParams`):
+                            params of the product
+    """
+
+    name = 'PrepareDepolSignals'
+
+    def __call__(self, **kwargs):
+        assert 'data_storage' in kwargs
+        assert 'prod_param' in kwargs
+        res = super(PrepareDepolSignals, self).__call__(**kwargs)
+        return res
+
+    def get_classname_from_db(self):
+        """
+
+        return: always 'PrepareDepolSignalsDefault' .
+        """
+        return PrepareDepolSignalsDefault.__name__
+
+
+class PrepareDepolSignalsDefault(BaseOperation):
+    """prepare ELPP signals for retrieval of VLDR with the steps:
+    1) set data points outside valid altitude range as invalid
+    2) normalization by number of shots
+    3) correction of atmospheric transmission due to molecular scattering
+    4) divide by Rayleigh scattering and calculate logarithm
+
+    """
+    data_storage = None
+    depol_param = None
+
+    def run(self):
+        self.depol_param = self.kwargs['prod_param']
+
+        pid = self.depol_param.prod_id_str
+        # # sig is deepcopy from data storage
+        # for sig in self.data_storage.elpp_signals(pid):
+        #     if sig.is_Raman_sig:
+        #         prep_sig = deepcopy(sig)
+        #         prep_sig.set_valid_height_range(self.depol_param.valid_alt_range)
+        #         prep_sig.normalize_by_shots()
+        #         prep_sig.correct_for_mol_transmission()
+        #         prep_sig.prepare_for_extinction()
+        #
+        #         self.data_storage.set_prepared_signal(pid, prep_sig)
 
 
 PREP_SIG_CLASSES = {EXT: PrepareExtSignals,
                     RBSC: PrepareBscSignals,
                     EBSC: PrepareBscSignals,
+                    VLDR: PrepareDepolSignals,
                     }
 
 
@@ -192,3 +243,7 @@ registry.register_class(PrepareExtSignals,
 registry.register_class(PrepareBscSignals,
                         PrepareBscSignalsDefault.__name__,
                         PrepareBscSignalsDefault)
+
+registry.register_class(PrepareDepolSignals,
+                        PrepareDepolSignalsDefault.__name__,
+                        PrepareDepolSignalsDefault)
