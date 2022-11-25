@@ -540,3 +540,4 @@ INSERT INTO `prepared_signal_files` (`ID`, `__measurements__ID`, `_Product_ID`, 
 
 INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
 	(49, 'backscatter and extinction products for a lidar ratio retrieval have different wavelengths');
+

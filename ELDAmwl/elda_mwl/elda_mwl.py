@@ -7,6 +7,7 @@ from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IParams
+from ELDAmwl.depol.params import VLDRParams
 from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
 from ELDAmwl.elda_mwl.get_lidar_constants import GetLidarConstants
@@ -38,7 +39,8 @@ import zope
 PARAM_CLASSES = {RBSC: RamanBscParams,
                  EBSC: ElastBscParams,
                  EXT: ExtinctionParams,
-                 LR: LidarRatioParams}
+                 LR: LidarRatioParams,
+                 VLDR: VLDRParams}
 
 
 @zope.interface.implementer(IParams)
@@ -376,8 +378,7 @@ class RunELDAmwl(BaseOperation):
         """
         self.logger.info('read tasks from db')
         self.params.read_product_list()
-        # todo: check params (e.g. whether all
-        #  time and vert. resolutions are equal)
+
         # todo: check whether the products have at
         #  least one resolution with which they shall be derived
         #  (calc_with_lr or calc_with_hr)
