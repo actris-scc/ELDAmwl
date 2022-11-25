@@ -112,7 +112,7 @@ class MeasurementParams(Params):
             list of float: unique, sorted list of wavelengths of all products with resolution = res
         """
         prod_df = self.measurement_params.product_table
-        prod_df = prod_df[prod_df['failed'] == False]
+        prod_df = prod_df[(prod_df['failed'] == False) & (prod_df['basic'] == 1)]
 
         if res is not None:
             prod_df = prod_df[prod_df[RESOLUTION_STR[res]] == True]
