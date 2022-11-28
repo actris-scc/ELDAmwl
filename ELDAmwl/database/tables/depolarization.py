@@ -2,6 +2,27 @@ from ELDAmwl.database.tables.db_base import Base
 from sqlalchemy import Column
 from sqlalchemy import INTEGER
 from sqlalchemy import text
+from sqlalchemy import String
+
+
+class VLDRMethod(Base):
+    """content of the db table _vldr_methods
+
+    """
+
+    __tablename__ = '_vldr_methods'
+
+    ID = Column(
+        'id',
+        INTEGER,
+        primary_key=True,
+        server_default=text("'0'"),
+    )
+    method = Column(
+        String(100),
+        nullable=False,
+        server_default=text("''"),
+    )
 
 
 class VLDROption(Base):

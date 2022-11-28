@@ -311,6 +311,57 @@ class DBFunc(DBUtils):
         method_id = self.read_raman_bsc_smooth_method_id(product_id)
         return self.read_effbin_algorithm(method_id, SmoothMethod)
 
+    def read_vldr_smooth_method_id(self, product_id):
+        """
+        read from db which algorithm (id) shall be used for smoothing in the retrieval of this VLDR product
+            Args:
+                product_id (int): the id of the actual VLDR product
+
+            Returns:
+                int: id of the algorithm in table _vldr_methods
+
+        """
+        options = self.session.query(VLDROption)\
+            .filter(VLDROption.product_id == product_id)
+
+        if options.count() == 1:
+            result = options.first().smooth_method_id
+            return result
+        else:
+            self.logger.error(
+                'wrong number of Raman bsc options ({0})'.format(options.count()),
+            )
+
+    def read_vldr_usedbin_algorithm(self, product_id):
+        """ read from db which algorithm shall be used to calculate how
+        many bins have to be used in VLDR retrievals
+        in order to achieve a given effective resolution.
+
+            Args:
+                product_id (int): the id of the actual VLDR bsc product
+
+            Returns:
+                str: name of the BaseOperation class to be used
+
+            """
+        method_id = self.read_vldr_smooth_method_id(product_id)
+        return self.read_usedbin_algorithm(method_id, SmoothMethod)
+
+    def read_vldr_effbin_algorithm(self, product_id):
+        """ read from db which algorithm shall be used for the
+        calculation of the effective bin resolution from the number of
+        bins used in VLDR retrievals.
+
+            Args:
+                product_id (int): the id of the actual VLDR product
+
+            Returns:
+                str: name of the BaseOperation class to be used
+
+            """
+        method_id = self.read_vldr_smooth_method_id(product_id)
+        return self.read_effbin_algorithm(method_id, SmoothMethod)
+
     def read_raman_bsc_usedbin_algorithm(self, product_id):
         """ read from db which algorithm shall be used to calculate how
         many bins have to be used in Raman backscatter retrievals
@@ -794,7 +845,7 @@ class DBFunc(DBUtils):
                 product_id (str): the id of the actual Raman bsc product
 
             Returns:
-                options : {'ram_bsc_method'}
+                options : {'vldr_method': None, 'error_method': None, 'smooth_method': None}
 
             """
         options = self.session.query(VLDROption)\

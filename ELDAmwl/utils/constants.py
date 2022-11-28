@@ -119,6 +119,12 @@ BR = 1  # via backscatter ratio
 
 RAMAN_BSC_ALGORITHMS = [ANSM, BR]
 
+# ====== VLDR algorithms ======
+# todo: write method ids in db and read from there
+VF22 = 0  # V Freudenthaler 2022
+
+VLDR_ALGORITHMS = [VF22]
+
 # ====== fill values ======
 NC_FILL_BYTE = -127
 NC_FILL_INT = -2147483647
