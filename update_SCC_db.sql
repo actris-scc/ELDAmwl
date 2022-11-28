@@ -543,4 +543,7 @@ INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
 	(50, 'integration during retrieval of product failed'),
 	(51, 'the MC error retrieval could not obtain enough samples'),
 	(52, 'no individual products were generated for mwl product'),
-	(53, 'cannot calculate lidar constant from negative backscatter value -> check backscatter calibration settings and telescope overlap settings');
+	(53, 'cannot calculate lidar constant from negative backscatter value -> check backscatter calibration settings and telescope overlap settings'),
+	(54, 'the temporal and/or vertical resolutions are '
+               'not consistent for all the products attributed to one mwl product'),
+	(55, 'No temporal and/or vertical resolutions are available for mwl_product');
