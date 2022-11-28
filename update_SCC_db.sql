@@ -492,11 +492,12 @@ CREATE TABLE IF NOT EXISTS `vldr_options` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `_product_ID` int(11) NOT NULL DEFAULT '-1',
   `_error_method_ID` int(11) NOT NULL DEFAULT '-1',
+  `_smooth_method_ID` int(11) NOT NULL DEFAULT '-1' COMMENT 'link to _smooth_methods.ID',
   PRIMARY KEY (`ID`)
 );
 
-INSERT INTO `vldr_options` (`_product_ID`, `_error_method_ID`) VALUES
-	(637, 0);
+INSERT INTO `vldr_options` (`_product_ID`, `_error_method_ID`, `_smooth_method_ID`) VALUES
+	(637, 0, 0);
 
 INSERT INTO `polarization_options` (
     `_product_ID`,
