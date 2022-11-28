@@ -481,9 +481,10 @@ UPDATE `measurements` SET `_hoi_system_ID` = 193 where `ID` = '20181017oh00';
 * ===================================================================================
 * create a table for VLDR options (vldr_options)
 * fill vldr_options with data of this example (for system 192)
-* 1) add new vldr product to table products
-* 2) add new entry to table polarization_options
-* 3) add new entry to table vldr_options
+* 1) add new entry to table polarization_options
+* 2) add new entry to table vldr_options
+* 3) add preproc options for new product
+* 4) add smooth options for new product
 * ===================================================================================
 */
 
@@ -504,6 +505,15 @@ INSERT INTO `polarization_options` (
     `_correction_factor_method_ID`) VALUES
 	(637, 2, 2, 3);
 
+INSERT INTO `preproc_options` (`_product_ID`, `min_height`, `max_height`, `preprocessing_integration_time`, `preprocessing_vertical_resolution`, `interpolation_id`) VALUES
+	(637, 100, 15000, 3600, 15, 1);
+
+INSERT INTO `smooth_options` (`_product_ID`,
+                              `_lowrange_error_threshold_ID`,
+                              `_highrange_error_threshold_ID`,
+                              `detection_limit`,
+                               `_smooth_type`) VALUES
+	(637, 5, 7, 0.001, 0);
 
 /*
 * ===================================================================================
@@ -533,11 +543,32 @@ INSERT INTO `pldr_options` (
 	(638, 637, 324, 0, 1.01),
 	(639, 637, 332, 0, 1.01);
 
-INSERT INTO `prepared_signal_files` (`ID`, `__measurements__ID`, `_Product_ID`, `creation_date`, `_scc_version_ID`, `filename`) VALUES
-	(NULL, '20181017oh00', 637, '2021-11-10', 17, 'hpb_007_0000328_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc');
---	(NULL, '20181017oh00', 324, '2021-11-10', 17, 'hpb_007_0000328_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc'),
---	(NULL, '20181017oh00', 377, '2021-11-10', 17, 'hpb_002_0000381_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc');
+/*
+* ===================================================================================
+* insert single products into mwlproduct_product (interface does not work yet)
+* ===================================================================================
+*/
 
+INSERT INTO `mwlproduct_product` (`ID`, `_mwl_product_ID`, `_Product_ID`, `create_with_hr`, `create_with_lr`) VALUES
+	(NULL, 627, 378, 1, 1),
+	(NULL, 627, 377, 0, 1),
+	(NULL, 627, 324, 1, 1),
+	(NULL, 627, 380, 0, 1),
+	(NULL, 627, 381, 0, 1),
+	(NULL, 627, 330, 1, 1);
+
+/*
+* ===================================================================================
+* insert prepared signal files into prepared_signal_files (interface / ELPP do not work yet)
+* ===================================================================================
+*/
+UPDATE prepared_signal_files SET `_Product_ID` = 380 where (`_Product_ID` = 381) and (`__measurements__ID` = '20181017oh00');
+
+/*
+* ===================================================================================
+* add new error codes
+* ===================================================================================
+*/
 INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
 	(49, 'backscatter and extinction products for a lidar ratio retrieval have different wavelengths'),
 	(50, 'integration during retrieval of product failed'),
