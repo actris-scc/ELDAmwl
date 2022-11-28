@@ -6,7 +6,6 @@ class VLDRParams(ProductParams):
 
     def __init__(self):
         super(VLDRParams, self).__init__()
-        # self.sub_params += ['calibration_params']
         self.total_sig_id_str = None
         self.total_sig_id = None
         self.transm_sig_id_str = None
@@ -21,6 +20,10 @@ class VLDRParams(ProductParams):
 
     def from_db(self, general_params):
         super(VLDRParams, self).from_db(general_params)
+        vdp = self.db_func.read_vldr_params(general_params.prod_id)
+        self.vldr_algorithm = vdp['vldr_method']
+        self.get_error_params(vdp)
+        self.smooth_params.smooth_method = vdp['smooth_method']
 
     def add_signal_role(self, signal):
         super(VLDRParams, self)
