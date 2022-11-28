@@ -595,3 +595,22 @@ INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
 	(54, 'the temporal and/or vertical resolutions are '
                'not consistent for all the products attributed to one mwl product'),
 	(55, 'No temporal and/or vertical resolutions are available for mwl_product');
+
+--/*
+--* ===================================================================================
+--* todo: clean up table polarization_calibration_correction_factors
+--* 1) copy column correction into a_K
+--* 2) drop columns that are not needed
+--* ===================================================================================
+--*/
+-- critically review this command!
+--update polarization_calibration_correction_factors set a_K = correction where
+--(not correction is Null) and (a_K = 0)
+--
+-- ALTER TABLE polarization_calibration_correction_factors
+--DROP COLUMN correction,
+--DROP COLUMN correction_statistical_error,
+--DROP COLUMN correction_systematic_error,
+--DROP COLUMN K_calculation_time,
+--DROP COLUMN lowerbound_calculation_time,
+--DROP COLUMN upperbound_calculation_time;
