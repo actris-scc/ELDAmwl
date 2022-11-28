@@ -6,8 +6,6 @@ class VLDRParams(ProductParams):
 
     def __init__(self):
         super(VLDRParams, self).__init__()
-        self.total_sig_id_str = None
-        self.total_sig_id = None
         self.transm_sig_id_str = None
         self.transm_sig_id = None
         self.refl_sig_id_str = None
@@ -28,9 +26,6 @@ class VLDRParams(ProductParams):
     def add_signal_role(self, signal):
         super(VLDRParams, self)
         if signal.is_elast_sig:
-            if signal.is_total_sig:
-                self.total_sig_id_str = signal.channel_id_str
-                self.total_sig_id = signal.channel_id.values
             if signal.is_cross_sig:
                 self.cross_sig_id_str = signal.channel_id_str
                 self.cross_sig_id = signal.channel_id.values

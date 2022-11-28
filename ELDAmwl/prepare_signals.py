@@ -46,6 +46,7 @@ class PrepareBscSignalsDefault(BaseOperation):
         self.bsc_param = self.kwargs['prod_param']
 
         pid = self.bsc_param.prod_id_str
+        # todo: prepare only the signals that are actually needed for the usecase
         # sig is a deepcopy from the data storage
         for sig in self.data_storage.elpp_signals(pid):
             prep_sig = deepcopy(sig)
@@ -100,6 +101,7 @@ class PrepareExtSignalsDefault(BaseOperation):
         self.ext_param = self.kwargs['prod_param']
 
         pid = self.ext_param.prod_id_str
+        # todo: prepare only the signals that are actually needed for the usecase
         # sig is deepcopy from data storage
         for sig in self.data_storage.elpp_signals(pid):
             if sig.is_Raman_sig:
@@ -163,7 +165,6 @@ class PrepareDepolSignalsDefault(BaseOperation):
     1) set data points outside valid altitude range as invalid
     2) normalization by number of shots
     3) correction of atmospheric transmission due to molecular scattering
-    4) divide by Rayleigh scattering and calculate logarithm
 
     """
     data_storage = None
@@ -173,16 +174,14 @@ class PrepareDepolSignalsDefault(BaseOperation):
         self.depol_param = self.kwargs['prod_param']
 
         pid = self.depol_param.prod_id_str
-        # # sig is deepcopy from data storage
-        # for sig in self.data_storage.elpp_signals(pid):
-        #     if sig.is_Raman_sig:
-        #         prep_sig = deepcopy(sig)
-        #         prep_sig.set_valid_height_range(self.depol_param.valid_alt_range)
-        #         prep_sig.normalize_by_shots()
-        #         prep_sig.correct_for_mol_transmission()
-        #         prep_sig.prepare_for_extinction()
-        #
-        #         self.data_storage.set_prepared_signal(pid, prep_sig)
+        # todo: prepare only the signals that are actually needed for the usecase
+        # sig is deepcopy from data storage
+        for sig in self.data_storage.elpp_signals(pid):
+            sig.set_valid_height_range(self.depol_param.valid_alt_range)
+            sig.normalize_by_shots()
+            sig.correct_for_mol_transmission()
+
+            self.data_storage.set_prepared_signal(pid, sig)
 
 
 PREP_SIG_CLASSES = {EXT: PrepareExtSignals,

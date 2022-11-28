@@ -99,6 +99,7 @@ class GetBasicProductsDefault(BaseOperation):
             if prod_param.product_type in [EXT, RBSC, EBSC, VLDR]:  # todo remove this limit
                 used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
                 for res in RESOLUTIONS:
+                    # todo: get binres for all signals involved in the product and then store the max of them
                     # dummy_sig is a deepcopy from data storage
                     dummy_sig = self.data_storage.prepared_signals(pid)[0]
                     if prod_param in self.product_params.all_products_of_res(res):
@@ -127,8 +128,7 @@ class GetBasicProductsDefault(BaseOperation):
         self.get_extinctions_fixed_smooth()
         self.get_raman_bsc_fixed_smooth()
         self.get_elast_bsc_fixed_smooth()
-
-    # self.get_vldr_fixed_smooth()
+        self.get_vldr_fixed_smooth()
 
     def get_extinctions_auto_smooth(self):
         """get extinction products with automatic smoothing
