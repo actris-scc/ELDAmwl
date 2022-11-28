@@ -16,6 +16,7 @@ from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.channels import Telescopes
+from ELDAmwl.database.tables.depolarization import VLDROption
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
@@ -781,6 +782,33 @@ class DBFunc(DBUtils):
         else:
             self.logger.error(
                 'wrong number of Raman bsc options ({0})'.format(options.count()),
+            )
+
+    def read_vldr_params(self, product_id):
+        """ function to read options of a VLDR product from db.
+
+            This function reads from db with which parameters a
+            VLDR product shall be derived.
+
+            Args:
+                product_id (str): the id of the actual Raman bsc product
+
+            Returns:
+                options : {'ram_bsc_method'}
+
+            """
+        options = self.session.query(VLDROption)\
+            .filter(VLDROption.product_id == product_id)
+
+        if options.count() == 1:
+            result = {'vldr_method': options.first().vldr_method_id,
+                      'error_method': options.first().error_method_id,
+                      'smooth_method': options.first().smooth_method_id,
+                      }
+            return result
+        else:
+            self.logger.error(
+                'wrong number of VLDR options ({0})'.format(options.count()),
             )
 
     def get_mc_params_query(self, prod_id):
