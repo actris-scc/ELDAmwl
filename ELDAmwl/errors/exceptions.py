@@ -281,7 +281,7 @@ class NotEnoughMCSamples(ELDAmwlException):
     return_value = NOT_ENOUGH_MC_SAMPLES
 
     def __str__(self):
-        return('the MC error retrieval could not obtain enogh samples')
+        return('the MC error retrieval could not obtain enough samples')
 
 
 class NoCalibrWindowFound(ELDAmwlException):
