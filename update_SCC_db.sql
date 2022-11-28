@@ -479,6 +479,21 @@ UPDATE `measurements` SET `_hoi_system_ID` = 193 where `ID` = '20181017oh00';
 
 /*
 * ===================================================================================
+* create a table for VLDR algorithms
+* ===================================================================================
+*/
+
+CREATE TABLE `_vldr_methods` (
+  `ID` int(11) NOT NULL,
+  `method` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`ID`) COMMENT 'different algorithms to calculate VLDR profiles'
+);
+
+INSERT INTO `_vldr_methods` (`ID`, `method`) VALUES
+    (0, 'V Freudenthaler 2022');
+
+/*
+* ===================================================================================
 * create a table for VLDR options (vldr_options)
 * fill vldr_options with data of this example (for system 192)
 * 1) add new entry to table polarization_options
@@ -491,13 +506,14 @@ UPDATE `measurements` SET `_hoi_system_ID` = 193 where `ID` = '20181017oh00';
 CREATE TABLE IF NOT EXISTS `vldr_options` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `_product_ID` int(11) NOT NULL DEFAULT '-1',
+  `_vldr_method_ID` int(11) NOT NULL DEFAULT '-1',
   `_error_method_ID` int(11) NOT NULL DEFAULT '-1',
   `_smooth_method_ID` int(11) NOT NULL DEFAULT '-1' COMMENT 'link to _smooth_methods.ID',
   PRIMARY KEY (`ID`)
 );
 
-INSERT INTO `vldr_options` (`_product_ID`, `_error_method_ID`, `_smooth_method_ID`) VALUES
-	(637, 0, 0);
+INSERT INTO `vldr_options` (`_product_ID`, `_vldr_method_ID`, `_error_method_ID`, `_smooth_method_ID`) VALUES
+	(637, 0, 0, 0);
 
 INSERT INTO `polarization_options` (
     `_product_ID`,
