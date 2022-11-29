@@ -16,7 +16,7 @@ from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.channels import Telescopes
-from ELDAmwl.database.tables.depolarization import VLDROption
+from ELDAmwl.database.tables.depolarization import VLDROption, PolarizationCalibrationCorrectionFactors
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
@@ -36,7 +36,7 @@ from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SmoothMethod
 from ELDAmwl.database.tables.system_product import SmoothOptions
 from ELDAmwl.database.tables.system_product import SystemProduct
-from ELDAmwl.errors.exceptions import NoBscCalOptions
+from ELDAmwl.errors.exceptions import NoBscCalOptions, NoParamsForDepolUncertainty
 from ELDAmwl.errors.exceptions import NOMCOptions
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import MWL
@@ -919,6 +919,29 @@ class DBFunc(DBUtils):
             return cal_params[0]
         else:
             raise(NoBscCalOptions(bsc_prod_id))
+
+    def get_depol_uncertainties_query(self, prod_id, measurement_date):
+        """read from db the parameters for calculation depolarization uncertainties
+            Args:
+                prod_id (int): the id of the VLDR product
+                measurement_data (datetime): the time of the measurement
+
+            Returns:
+                query with uncertainty parameters
+        """
+        params = self.session.query(PolarizationCalibrationCorrectionFactors)\
+            .filter(PolarizationCalibrationCorrectionFactors.product_id == prod_id)\
+            .filter(PolarizationCalibrationCorrectionFactors.correction_date <= measurement_date)\
+            .order_by(PolarizationCalibrationCorrectionFactors.correction_date.desc())\
+            .order_by(PolarizationCalibrationCorrectionFactors.correction_submission_date.desc())
+
+        if params.count() > 0:
+            return params.first()
+        else:
+            self.logger.error('no matching parameter for depolarization uncertainty for product {0} '
+                              'and measurement time{1} in database'.format(prod_id, measurement_date))
+            raise NoParamsForDepolUncertainty(prod_id, measurement_date)
+
 
     def read_mwl_product_id(self, system_id):
         """ read from db which of the products correlated

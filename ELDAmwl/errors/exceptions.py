@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
 from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, INTEGRATION_FAILED, NO_STABLE_SOLUTION_FOR_KLETT, \
-    NOT_ENOUGH_MC_SAMPLES, NO_PRODUCTS_GENERATED, NEG_BSC_FOR_LIDAR_CONSTANT
+    NOT_ENOUGH_MC_SAMPLES, NO_PRODUCTS_GENERATED, NEG_BSC_FOR_LIDAR_CONSTANT, NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -404,10 +404,26 @@ class NegBscForLidarconst(ELDAmwlException):
         return('cannot calculate lidar constant from negative backscatter value'
                .format(self.prod_id))
 
-
 class SciPyWrapperAxisError(ELDAmwlException):
     """Raised when the scipy axis wrapper detects more than one dimension
     """
 
     def __init__(self):
         pass
+
+
+class NoParamsForDepolUncertainty(ELDAmwlException):
+    """raised when no parameters for depolarization uncertainty for a product and time are in the database
+    """
+
+    return_value = NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB
+
+    def __init__(self, prod_id, measurement_date):
+        super(NoParamsForDepolUncertainty, self).__init__(prod_id)
+        self.measurement_date = measurement_date
+
+    def __str__(self):
+        return ('no matching parameter for depolarization uncertainty for product {0} '
+                'and measurement time{1} in database'.format(self.prod_id, self.measurement_date))
+
+
