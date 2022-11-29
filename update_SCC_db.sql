@@ -583,6 +583,8 @@ INSERT INTO `mwlproduct_product` (`ID`, `_mwl_product_ID`, `_Product_ID`, `creat
 	(NULL, 627, 381, 0, 1),
 	(NULL, 627, 330, 1, 1);
 
+INSERT INTO `eldamwl_class_names` (`method`, `classname`) values ('V Freudenthaler 2022','CalcVldrVFreudenthaler22');
+
 INSERT INTO `prepared_signal_files` (`ID`, `__measurements__ID`, `_Product_ID`, `creation_date`, `_scc_version_ID`, `filename`) VALUES
 	(NULL, '20181017oh00', 324, '2021-11-10', 17, 'hpb_007_0000328_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc'),
 	(NULL, '20181017oh00', 377, '2021-11-10', 17, 'hpb_002_0000381_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc');
@@ -600,6 +602,8 @@ UPDATE prepared_signal_files SET `_Product_ID` = 380 where (`_Product_ID` = 381)
 * ===================================================================================
 */
 INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
+	(49, 'backscatter and extinction products for a lidar ratio retrieval have different wavelengths'),
+	(60, 'no matching parameter for depolarization uncertainty for product and measurement time in database'');
 	(49, 'backscatter and extinction products for a lidar ratio retrieval have different wavelengths'),
 	(50, 'integration during retrieval of product failed'),
 	(51, 'the MC error retrieval could not obtain enough samples'),
