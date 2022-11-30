@@ -77,3 +77,9 @@ class IElastBscOp(interface.Interface):
     """
     Marker Interface for elast backscatter operation
     """
+
+
+class IVLDROp(interface.Interface):
+    """
+    Marker Interface for VLDR operation
+    """
