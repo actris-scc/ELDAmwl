@@ -7,7 +7,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoProductsGenerated
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EBSC, VLDR
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import LR
 from ELDAmwl.utils.constants import RBSC
@@ -53,7 +53,7 @@ class GetProductMatrixDefault(BaseOperation):
 
         for param in params:
             # todo: remove limit to EXT when other prod types are included
-            if (alt_axis is None) and (param.product_type in [EXT, RBSC, EBSC, LR]):
+            if (alt_axis is None) and (param.product_type in [EXT, RBSC, EBSC, LR, VLDR]):
                 product = self.data_storage.product_common_smooth(param.prod_id_str, res)
                 alt_axis = product.altitude
             else:
@@ -78,7 +78,7 @@ class GetProductMatrixDefault(BaseOperation):
 
             # todo: remove limit to EXT when other prod types are included
             for pt in p_types:
-                if pt not in [EXT, RBSC, LR, EBSC]:
+                if pt not in [EXT, RBSC, LR, EBSC, VLDR]:
                     p_types.remove(pt)
 
             self.shape = self.get_common_shape(res)
@@ -99,7 +99,7 @@ class GetProductMatrixDefault(BaseOperation):
                     'absolute_statistical_uncertainty': (
                         ['wavelength', 'time', 'level'],
                         deepcopy(array),
-                        MWLFileStructure.err_attrs(MWLFileStructure, ptype),
+                        MWLFileStructure.stat_err_attrs(MWLFileStructure, ptype),
                     ),
                     'meta_data': (
                         ['wavelength'],
@@ -107,6 +107,19 @@ class GetProductMatrixDefault(BaseOperation):
                         {'long_name': 'path to meta data'},
                     ),
                 })
+
+                if MWLFileStructure.is_product_with_sys_error(MWLFileStructure, ptype):
+                    ds['absolute_systematic_uncertainty_negative'] = xr.DataArray(
+                        deepcopy(array),
+                        dims=['wavelength', 'time', 'level'],
+                        attrs=MWLFileStructure.sys_err_neg_attrs(MWLFileStructure, ptype),
+                    )
+                    ds['absolute_systematic_uncertainty_positive'] = xr.DataArray(
+                        deepcopy(array),
+                        dims=['wavelength', 'time', 'level'],
+                        attrs=MWLFileStructure.sys_err_pos_attrs(MWLFileStructure, ptype),
+                    )
+
                 ds.load()
 
                 for wl in wavelengths:

@@ -14,6 +14,8 @@ class Columns(object):
     base column class (2 dimensional: (time, level))
     """
 
+    has_sys_err = None
+
     def __init__(self):
         self.ds = xr.Dataset(
             {'data': (['time', 'level'], np.empty((0, 0))),
