@@ -172,13 +172,13 @@ class CalcVLDRDefault(BaseOperation):
     name = 'CalcVLDRDefault'
 
     vldr_params = None
-    # data = None
+    sig_ratio = None
     calc_routine = None
     result = None
 
     def __init__(self, **kwargs):
         super(CalcVLDRDefault, self).__init__(**kwargs)
-        self.sigratio = self.kwargs['signal_ratio']
+        self.sig_ratio = self.kwargs['signal_ratio']
         self.calc_routine = self.kwargs['calc_routine']
         self.vldr_params = self.kwargs['vldr_params']
         self.result = deepcopy(self.kwargs['empty_vldr'])
@@ -212,7 +212,7 @@ class CalcVLDRDefault(BaseOperation):
 
         """
         if data is None:
-            data = self.sigratio
+            data = self.sig_ratio
 
         # extract relevant parameter for calculation of VLDR into Dict
 
