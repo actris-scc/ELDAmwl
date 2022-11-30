@@ -16,7 +16,7 @@ from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.channels import Telescopes
-from ELDAmwl.database.tables.depolarization import VLDROption, PolarizationCalibrationCorrectionFactors
+from ELDAmwl.database.tables.depolarization import VLDROption, PolarizationCalibrationCorrectionFactors, VLDRMethod
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
@@ -44,6 +44,8 @@ from ELDAmwl.utils.constants import RBSC
 from sqlalchemy.orm import aliased
 from zope import component
 from zope import interface
+
+from ELDAmwl.utils.numerical import np_datetime64_to_datetime
 
 
 def register_db_func(connect_string=None):
@@ -361,6 +363,20 @@ class DBFunc(DBUtils):
             """
         method_id = self.read_vldr_smooth_method_id(product_id)
         return self.read_effbin_algorithm(method_id, SmoothMethod)
+
+    def read_vldr_algorithm(self, product_id):
+        """ read from db which algorithm shall be used for
+            calculation in VLDR retrievals.
+
+            Args:
+                product_id (int): the id of the actual VLDR product
+
+            Returns:
+                str: name of the BaseOperation class to be used
+
+            """
+        method_id = self.read_vldr_smooth_method_id(product_id)
+        return self.read_algorithm(method_id, VLDRMethod)
 
     def read_raman_bsc_usedbin_algorithm(self, product_id):
         """ read from db which algorithm shall be used to calculate how
@@ -929,9 +945,11 @@ class DBFunc(DBUtils):
             Returns:
                 query with uncertainty parameters
         """
+        dt = np_datetime64_to_datetime(measurement_date)
+
         params = self.session.query(PolarizationCalibrationCorrectionFactors)\
             .filter(PolarizationCalibrationCorrectionFactors.product_id == prod_id)\
-            .filter(PolarizationCalibrationCorrectionFactors.correction_date <= measurement_date)\
+            .filter(PolarizationCalibrationCorrectionFactors.correction_date <= dt)\
             .order_by(PolarizationCalibrationCorrectionFactors.correction_date.desc())\
             .order_by(PolarizationCalibrationCorrectionFactors.correction_submission_date.desc())
 

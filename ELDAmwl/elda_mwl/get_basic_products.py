@@ -12,6 +12,7 @@ from ELDAmwl.backscatter.raman.operation import RamanBackscatterFactory
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
+from ELDAmwl.depol.operation import VLRDFactory
 from ELDAmwl.depol.vertical_resolution.operation import VLDREffBinRes
 from ELDAmwl.depol.vertical_resolution.operation import VLDRUsedBinRes
 from ELDAmwl.errors.exceptions import NoCalibrWindowFound, ELDAmwlException
@@ -96,19 +97,18 @@ class GetBasicProductsDefault(BaseOperation):
 
         for prod_param in self.product_params.basic_products():
             pid = prod_param.prod_id_str
-            if prod_param.product_type in [EXT, RBSC, EBSC, VLDR]:  # todo remove this limit
-                used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
-                for res in RESOLUTIONS:
-                    # todo: get binres for all signals involved in the product and then store the max of them
-                    # dummy_sig is a deepcopy from data storage
-                    dummy_sig = self.data_storage.prepared_signals(pid)[0]
-                    if prod_param in self.product_params.all_products_of_res(res):
-                        binres = dummy_sig.get_binres_from_fixed_smooth(
-                            sp,
-                            res,
-                            used_binres_routine=used_binres_routine,
-                        )
-                        self.data_storage.set_binres_common_smooth(pid, res, binres)
+            used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
+            for res in RESOLUTIONS:
+                # todo: get binres for all signals involved in the product and then store the max of them
+                # dummy_sig is a deepcopy from data storage
+                dummy_sig = self.data_storage.prepared_signals(pid)[0]
+                if prod_param in self.product_params.all_products_of_res(res):
+                    binres = dummy_sig.get_binres_from_fixed_smooth(
+                        sp,
+                        res,
+                        used_binres_routine=used_binres_routine,
+                    )
+                    self.data_storage.set_binres_common_smooth(pid, res, binres)
 
     def get_auto_smooth_products(self):
         """get all basic products with automatic smoothing
@@ -251,7 +251,7 @@ class GetBasicProductsDefault(BaseOperation):
             # calc preliminary vlrd
             vldr = VLRDFactory()(
                 data_storage=self.data_storage,
-                depol_param=depol_param,
+                vldr_param=depol_param,
                 autosmooth=False,
             ).get_product()
 

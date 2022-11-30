@@ -11,6 +11,10 @@ LIGHT_SPEED = 3.E8  # m / s
 T0 = datetime(1904, 1, 1)
 RAYL_LR = 8. * pi / 3
 
+# maximum volume linear depolarization ratio that is allowed for depol calibration measurements.
+# this value is used to calculate the K parameter.
+MAX_CALIBR_DPEOL = 0.015
+
 # ====== product types ======
 RBSC = 0
 EXT = 1
