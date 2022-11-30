@@ -27,10 +27,10 @@ default:
 # :::::::::::::::::::
 # database connection
 # :::::::::::::::::::
-#  DB_SERVER : ''
-#  DB_USER : ''
-#  DB_PASS : ''
-#  DB_DB : ''
+  DB_SERVER : 'localhost'
+  DB_USER : 'root'
+  DB_PASS : '4L3X4l3x!'
+  DB_DB : 'scc_development_new'
 # You have to supply a .secrets.yaml file beside this file with the database access secrets shown above!
 
 # :::::::::::::::::::

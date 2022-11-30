@@ -5,6 +5,7 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.lidar_ratio.operation import LidarRatioFactory
+from ELDAmwl.angstroem_exponent.operation import AngstroemExpFactory
 from ELDAmwl.utils.constants import RESOLUTIONS
 
 
@@ -22,6 +23,7 @@ class GetDerivedProductsDefault(BaseOperation):
 
     def get_derived_products(self):
         self.get_lidar_ratios()
+        # self.get_angstroem_exps() # ToDo
 
     def get_lidar_ratios(self):
         for lr_param in self.product_params.lidar_ratio_products():
@@ -35,6 +37,8 @@ class GetDerivedProductsDefault(BaseOperation):
 
                     self.data_storage.set_derived_products(
                         prod_id, res, lr)
+
+    # def get_angstroem_exps(self): ToDo Pilar
 
 
 class GetDerivedProducts(BaseOperationFactory):
