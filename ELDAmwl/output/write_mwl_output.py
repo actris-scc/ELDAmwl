@@ -7,7 +7,7 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EBSC, VLDR
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import HIGHRES
@@ -63,13 +63,14 @@ class WriteMWLOutputDefault(BaseOperation):
     def collect_meta_data(self):
         # read meta data of all products into meta_data
         for pid, param in self.product_params.product_list.items():
+            prod = None
             # todo: remove limit to EXT when other prod types are included
-            if param.calc_with_res(LOWRES) and param.product_type in [EXT, RBSC, EBSC]:
+            if param.calc_with_res(LOWRES) and param.product_type in [EXT, RBSC, EBSC, VLDR, LR]:
                 prod = self.data_storage.product_common_smooth(pid, LOWRES)
-            elif param.product_type in [EXT, RBSC, EBSC]:
+            elif param.product_type in [EXT, RBSC, EBSC, VLDR, LR]:
                 prod = self.data_storage.product_common_smooth(pid, HIGHRES)
             # Todo Ina fix error
-            if param.product_type in [EXT, RBSC, EBSC]:
+            if param.product_type in [EXT, RBSC, EBSC, VLDR, LR]:
                 prod.to_meta_ds_dict(self.meta_data)
 
     def write_groups(self):
@@ -126,11 +127,6 @@ class WriteMWLOutputDefault(BaseOperation):
             # all product types that are available for this resolution
             p_types = self.product_params.prod_types(res=res)
 
-            # todo: remove limit to EXT when other prod types are included
-            for pt in p_types:
-                if pt not in [EXT, RBSC, LR, EBSC]:
-                    p_types.remove(pt)
-
             # todo cloudmask shall have common altitude, time and timebounds variables
             group_data.data_vars.cloud_mask = self.data_storage.get_common_cloud_mask(res)
 
@@ -140,6 +136,11 @@ class WriteMWLOutputDefault(BaseOperation):
                 group_data.data_vars[var_name] = p_matrix.data
                 group_data.data_vars['error_{}'.format(var_name)] = p_matrix.absolute_statistical_uncertainty
                 group_data.data_vars['{}_meta_data'.format(var_name)] = p_matrix.meta_data
+                if ptype in MWLFileStructure.PRODUCTS_WITH_SYS_ERROR:
+                    group_data.data_vars['positive_systematic_error_{}'.format(var_name)] = \
+                        p_matrix.absolute_systematic_uncertainty_positive
+                    group_data.data_vars['negative_systematic_error_{}'.format(var_name)] = \
+                        p_matrix.absolute_systematic_uncertainty_negative
 
             self.data[MWLFileStructure.RES_GROUP[res]] = group_data
 

@@ -126,6 +126,14 @@ class MWLFileStructure:
     COO_ATTR = 'longitude latitude'
     ANC_VAR_ATT = 'error_{} vertical_resolution'  # noqa P103
 
+    PRODUCTS_WITH_SYS_ERROR = [VLDR]
+
+    def is_product_with_sys_error(self, p_type):
+        if p_type in self.PRODUCTS_WITH_SYS_ERROR:
+            return True
+        else:
+            return False
+
     def data_attrs(self, p_type):
         return {
             'long_name': self.LONG_NAMES[p_type],
@@ -134,9 +142,23 @@ class MWLFileStructure:
             # 'coordinates': COO_ATTR,
         }
 
-    def err_attrs(self, p_type):
+    def stat_err_attrs(self, p_type):
         return {
             'long_name': 'absolute statistical uncertainty of {}'.format(self.NC_VAR_NAMES[p_type]),
+            'units': self.UNITS[p_type],
+            'coordinates': self.COO_ATTR,
+        }
+
+    def sys_err_neg_attrs(self, p_type):
+        return {
+            'long_name': 'negative absolute systematic uncertainty of {}'.format(self.NC_VAR_NAMES[p_type]),
+            'units': self.UNITS[p_type],
+            'coordinates': self.COO_ATTR,
+        }
+
+    def sys_err_pos_attrs(self, p_type):
+        return {
+            'long_name': 'positive absolute systematic uncertainty of {}'.format(self.NC_VAR_NAMES[p_type]),
             'units': self.UNITS[p_type],
             'coordinates': self.COO_ATTR,
         }

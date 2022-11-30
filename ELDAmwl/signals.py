@@ -183,6 +183,7 @@ class Signals(Columns):
     pol_channel_geometry = None
 
     def __init__(self):
+        super(Signals, self).__init__()
         self.normalized_by_shots = False
         self.corrected_for_mol_transmission = False
         self.is_from_depol_components = False

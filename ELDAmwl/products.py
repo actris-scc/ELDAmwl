@@ -145,6 +145,10 @@ class Products(Signals):
             t_idx = 0
             idx = np.searchsorted(subset.altitude.values[t_idx], self.altitude.values[t_idx])
             subset.variables['data'][:, idx] = self.data[:, :]
+            subset.variables['absolute_statistical_uncertainty'][:, idx] = self.err[:, :]
+            if self.has_sys_err:
+                subset.variables['absolute_systematic_uncertainty_positive'][:, idx] = self.ds.sys_err_pos[:, :]
+                subset.variables['absolute_systematic_uncertainty_negative'][:, idx] = self.ds.sys_err_neg[:, :]
 
     def to_meta_ds_dict(self, meta_data):
         dct = Dict({'attrs': Dict(), 'data_vars': Dict()})
