@@ -1,7 +1,7 @@
 from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import ICfg, IVLDROp
 from ELDAmwl.component.interface import IElastBscOp
 from ELDAmwl.component.interface import IExtOp
 from ELDAmwl.component.interface import ILogger
@@ -168,6 +168,25 @@ class MonteCarloElastBscAdapter(MonteCarlo):
         # todo: variation in case of lr_input_method == PROFILE
 
 
+@zope.component.adapter(IVLDROp)
+@zope.interface.implementer(IMonteCarlo)
+class MonteCarloVLDRAdapter(MonteCarlo):
+
+    def get_data(self):
+        """
+        Returns the data monte carlo has to operate on.
+        Usually this is a dict with Columns
+        """
+        return {'sig_ratio': self.op.sig_ratio}
+
+    def run(self, data):
+        """
+        puts the mc copy of data into the operation and runs the operation
+        Returns the operation result
+        """
+        return self.op.run(data=data['sig_ratio'])
+
+
 class CreateMCCopies(BaseOperationFactory):
     """
     Returns an instance of BaseOperation which creates a copy of the original(Columns).
@@ -242,6 +261,7 @@ class CreateMCCopiesDefault(BaseOperation):
 
 def register_monte_carlo():
     gsm = zope.component.getGlobalSiteManager()
+    gsm.registerAdapter(MonteCarloVLDRAdapter, (IVLDROp,), IMonteCarlo)
     gsm.registerAdapter(MonteCarloExtAdapter, (IExtOp,), IMonteCarlo)
     gsm.registerAdapter(MonteCarloElastBscAdapter, (IElastBscOp,), IMonteCarlo)
 
