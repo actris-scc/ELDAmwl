@@ -101,7 +101,7 @@ class MeasurementParams(Params):
 
         self.smooth_params = SmoothParams.from_db(self.measurement_params.mwl_product_id)
 
-    def wavelengths(self, res=None):
+    def wavelengths(self, res=None, prod_types=None):
         """unique sorted list of wavelengths of all products with resolution = res
         Args:
             res (optional): ['lowres', 'highres']
@@ -112,9 +112,17 @@ class MeasurementParams(Params):
         prod_df = prod_df[prod_df['failed'] == False]
 
         if res is not None:
-            all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()  # noqa E712
-        else:
-            all_wls = prod_df.wl.to_numpy()
+            prod_df = prod_df[prod_df[RESOLUTION_STR[res]] == True]
+        if prod_types is not None:
+            for pt in prod_types:
+                prod_df = prod_df[prod_df['type'] == pt]
+
+        all_wls = prod_df.wl.to_numpy()
+
+        # if res is not None:
+        #     all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()  # noqa E712
+        # else:
+        #     all_wls = prod_df.wl.to_numpy()
 
         unique_wls = np.unique(all_wls)
         return unique_wls.tolist()

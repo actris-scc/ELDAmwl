@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, INTEGRATION_FAILED, NO_STABLE_SOLUTION_FOR_KLETT, \
-    NOT_ENOUGH_MC_SAMPLES, NO_PRODUCTS_GENERATED, NEG_BSC_FOR_LIDAR_CONSTANT, NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -13,10 +12,17 @@ from ELDAmwl.errors.error_codes import DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR
 from ELDAmwl.errors.error_codes import ERR_INVALID_NB_OF_MC_ITERATIONS
 from ELDAmwl.errors.error_codes import ERROR_LOG_DIR_NOT_EXISTS
 from ELDAmwl.errors.error_codes import ERROR_SIG_FILE_NOT_EXISTS
+from ELDAmwl.errors.error_codes import INTEGRATION_FAILED
 from ELDAmwl.errors.error_codes import NC_OPEN_ERROR
+from ELDAmwl.errors.error_codes import NEG_BSC_FOR_LIDAR_CONSTANT
 from ELDAmwl.errors.error_codes import NO_BSC_CAL_OPTIONS_IN_DB
+from ELDAmwl.errors.error_codes import NO_BSC_FOR_LIDAR_CONSTANT
 from ELDAmwl.errors.error_codes import NO_MC_OPTIONS_IN_DB
+from ELDAmwl.errors.error_codes import NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB
+from ELDAmwl.errors.error_codes import NO_PRODUCTS_GENERATED
+from ELDAmwl.errors.error_codes import NO_STABLE_SOLUTION_FOR_KLETT
 from ELDAmwl.errors.error_codes import NO_VALID_POINTS_FOR_CAL
+from ELDAmwl.errors.error_codes import NOT_ENOUGH_MC_SAMPLES
 from ELDAmwl.errors.error_codes import REPEATED_ATTEMPT_TO_CORRECT_MOL_TRANSM
 from ELDAmwl.errors.error_codes import REPEATED_ATTEMPT_TO_NORMALZE_BY_SHOTS
 from ELDAmwl.errors.error_codes import USE_CASE_NOT_IMPLEMENTED
@@ -402,6 +408,16 @@ class NegBscForLidarconst(ELDAmwlException):
 
     def __str__(self):
         return('cannot calculate lidar constant from negative backscatter value'
+               .format(self.prod_id))
+
+class NoBscForLidarconst(ELDAmwlException):
+    """raised when no bsc profile is available for retrieval of lidar constant
+    """
+
+    return_value = NO_BSC_FOR_LIDAR_CONSTANT
+
+    def __str__(self):
+        return('cannot calculate lidar constant without backscatter profile'
                .format(self.prod_id))
 
 class SciPyWrapperAxisError(ELDAmwlException):

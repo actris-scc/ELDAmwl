@@ -5,7 +5,7 @@ from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import UseCaseNotImplemented, NegBscForLidarconst
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented, NegBscForLidarconst, NoBscForLidarconst
 from ELDAmwl.lidar_constant.product import LidarConstantData
 from ELDAmwl.signals import Signals
 from ELDAmwl.utils.constants import ANGSTROEM_DEFAULT
@@ -166,7 +166,8 @@ class LidarConstantFactoryDefault(BaseOperation):
             self.bsc_param = self.mwl_product_params.prod_param(EBSC, self.wl)
 
         if self.bsc_param is None:
-            self.logger.warning('cannot calculate lidar constant without backscatter product')
+            self.logger.error('cannot calculate lidar constant without backscatter product')
+            raise NoBscForLidarconst(None)
 
     def find_calibration_height_and_res(self):
         """ find calibration height
