@@ -50,6 +50,7 @@ NOT_ENOUGH_MC_SAMPLES = 51
 NO_PRODUCTS_GENERATED = 52
 NEG_BSC_FOR_LIDAR_CONSTANT = 53
 NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB = 60
+NO_BSC_FOR_LIDAR_CONSTANT = 61
 # ===============================================
 # error codes which occur only during development
 # ===============================================

@@ -6,6 +6,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.lidar_constant.operation import LidarConstantFactory
+from ELDAmwl.utils.constants import EBSC, RBSC
 
 
 class GetLidarConstantsDefault(BaseOperation):
@@ -19,7 +20,7 @@ class GetLidarConstantsDefault(BaseOperation):
         self.get_lidar_constants()
 
     def get_lidar_constants(self):
-        wavelengths = self.mwl_product_params.wavelengths()
+        wavelengths = self.mwl_product_params.wavelengths(prod_types=[RBSC, EBSC])
         for wl in wavelengths:
             try:
                 lc = LidarConstantFactory()(
