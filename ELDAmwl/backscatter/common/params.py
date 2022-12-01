@@ -57,11 +57,10 @@ class BackscatterParams(ProductParams):
             self.logger.debug('channel {0} is no elast signal'.format(signal.channel_id_str))
 
     def to_meta_ds_dict(self, dct):
-        """
-        writes parameter content into Dict for further export in mwl file
+        """writes parameter content into Dict for further export in mwl file
+
         Args:
-            dct (addict.Dict): is a dict which will be converted into dataset.
-                            has the keys 'attrs' and 'data_vars'
+            dct (addict.Dict): is a dict which will be converted into dataset. has the keys 'attrs' and 'data_vars'
 
         Returns:
 
@@ -92,9 +91,9 @@ class IterBscParams(Params):
     def to_meta_ds_dict(self, dct):
         """
         writes parameter content into Dict for further export in mwl file
+
         Args:
-            dct (addict.Dict): is a dict which will be converted into dataset.
-                            has the keys 'attrs' and 'data_vars'
+            dct (addict.Dict): is a dict which will be converted into dataset. It has the keys 'attrs' and 'data_vars'.
 
         Returns:
 
