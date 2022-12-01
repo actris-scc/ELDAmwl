@@ -1,0 +1,2 @@
+ID,_product_ID,wavelength,_range_ID,correction_date,correction_submission_date,a_K,b_K,c_K,a_lowerbound,b_lowerbound,c_lowerbound,a_upperbound,b_upperbound,c_upperbound
+1,637,532,0,2018-01-01 00:00:00,2018-01-01 00:00:00,1.04499,0,0,0,0.00232,0,0.0004,0.00243,0.00029

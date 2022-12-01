@@ -1,14 +1,10 @@
 ID,product_type,description,nc_file_id,processor_ID,is_mwl_only_product,is_in_mwl_products,is_basic_product
+0,Raman backscatter,particle backscatter coefficient (Raman),b,1,0,1,1
 1,extinction only,particle extinction coefficient (Raman),e,1,0,1,1
 2,lidar ratio and extinction,parrticle lidar ratio (Raman),e,1,0,1,0
-0,Raman backscatter,particle backscatter coefficient (Raman),b,1,0,1,1
 3,elast. backscatter,particle backscatter coefficient (elast.),b,1,0,1,1
-9,High Resolution pre-processed data,,,0,0,0,0
-6,Linear polarization calibration,,,2,0,0,0
-7,Raman Backscatter and Linear Depolarization Ratio,,,1,0,0,0
-8,Elastic Backscatter and Linear Depolarization Ratio,,,1,0,0,0
-10,multi-wavelength product,multi-wavelength product,,1,0,0,0
-11,Angstroem exponent,Angstroem exponent,,1,1,1,0
-12,color ratio,color ratio,,1,1,1,0
-13,vol depol ratio,volume linear depolarization ratio,,1,1,1,1
-14,part depol ratio,particle linear depolarization ratio,,1,1,1,0
+12,multi-wavelength product,multi-wavelength product,,1,0,0,0
+13,Angstroem exponent,Angstroem exponent,,1,1,1,0
+14,color ratio,color ratio,,1,1,1,0
+15,vol depol ratio,volume linear depolarization ratio,,1,1,1,1
+16,part depol ratio,particle linear depolarization ratio,,1,1,1,0
