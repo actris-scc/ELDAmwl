@@ -76,11 +76,6 @@ class GetProductMatrixDefault(BaseOperation):
             wavelengths = self.product_params.wavelengths(res=res)
             p_types = self.product_params.prod_types(res=res)
 
-            # todo: remove limit to EXT when other prod types are included
-            for pt in p_types:
-                if pt not in [EXT, RBSC, LR, EBSC, VLDR]:
-                    p_types.remove(pt)
-
             self.shape = self.get_common_shape(res)
 
             for ptype in p_types:

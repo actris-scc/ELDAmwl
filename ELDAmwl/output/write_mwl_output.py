@@ -63,15 +63,14 @@ class WriteMWLOutputDefault(BaseOperation):
     def collect_meta_data(self):
         # read meta data of all products into meta_data
         for pid, param in self.product_params.product_list.items():
-            prod = None
-            # todo: remove limit to EXT when other prod types are included
-            if param.calc_with_res(LOWRES) and param.product_type in [EXT, RBSC, EBSC, VLDR, LR]:
+
+            if param.calc_with_res(LOWRES):
                 prod = self.data_storage.product_common_smooth(pid, LOWRES)
-            elif param.product_type in [EXT, RBSC, EBSC, VLDR, LR]:
+            else:
                 prod = self.data_storage.product_common_smooth(pid, HIGHRES)
+
             # Todo Ina fix error
-            if param.product_type in [EXT, RBSC, EBSC, VLDR, LR]:
-                prod.to_meta_ds_dict(self.meta_data)
+            prod.to_meta_ds_dict(self.meta_data)
 
     def write_groups(self):
         for group in MWLFileStructure.MAIN_GROUPS:

@@ -132,6 +132,6 @@ class VLDRParams(ProductParams):
         Returns:
 
         """
+        super(VLDRParams, self).to_meta_ds_dict(dct)
         mwl_vars = MWLFileVarsFromDB()
-        # dct.data_vars.retrieval_method = mwl_vars.bsc_method_var(self.bsc_method)
-        # self.calibration_params.to_meta_ds_dict(dct)
+        dct.data_vars.retrieval_method = mwl_vars.vldr_method_var(self.vldr_algorithm)

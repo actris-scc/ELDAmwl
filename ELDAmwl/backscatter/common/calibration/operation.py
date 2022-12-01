@@ -148,6 +148,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         """
         Returns: None (results are assigned to individual BackscatterParams)
         """
+        self.logger.debug('find backscatter calibration window as in ELDA')
         self.init()
 
         # check whether all calibration params are equal

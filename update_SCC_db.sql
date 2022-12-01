@@ -453,141 +453,118 @@
 --
 --
 --
-/*
-* ===================================================================================
-* repair duplicate entries in table `eldamwl_class_names`
-* ===================================================================================
-*/
-
-UPDATE `eldamwl_class_names` SET `method` = 'eff_bin_resolution_of_savitzky_golay_smoothing' WHERE `classname` = 'SavGolayEffBinRes';
-UPDATE `eldamwl_class_names` SET `method` = 'eff_bin_resolution_of_sliding_average' WHERE `classname` = 'SlidAvrgEffBinRes';
-
-/*
-* ===================================================================================
-* repair duplicate entries in table `_smooth_methods`
-* ===================================================================================
-*/
-UPDATE `_smooth_methods` set `method_for_getting_effective_binres` = 'eff_bin_resolution_of_savitzky_golay_smoothing' WHERE ID = 0;
-UPDATE `_smooth_methods` set `method_for_getting_effective_binres` = 'eff_bin_resolution_of_sliding_average' WHERE ID = 1;
-
-/*
-* ===================================================================================
-* change system of test measurement
-* ===================================================================================
-*/
-UPDATE `measurements` SET `_hoi_system_ID` = 193 where `ID` = '20181017oh00';
-
-/*
-* ===================================================================================
-* create a table for VLDR algorithms
-* ===================================================================================
-*/
-
-CREATE TABLE `_vldr_methods` (
-  `ID` int(11) NOT NULL,
-  `method` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`ID`) COMMENT 'different algorithms to calculate VLDR profiles'
-);
-
-INSERT INTO `_vldr_methods` (`ID`, `method`) VALUES
-    (0, 'V Freudenthaler 2022');
-
-/*
-* ===================================================================================
-* create a table for VLDR options (vldr_options)
-* fill vldr_options with data of this example (for system 182)
-* 1) add new vldr product to table products
-* 2) add new entry to table polarization_options
-* 3) add new entry to table vldr_options
-* ===================================================================================
-*/
-
-CREATE TABLE IF NOT EXISTS `vldr_options` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `_product_ID` int(11) NOT NULL DEFAULT '-1',
-  `_vldr_method_ID` int(11) NOT NULL DEFAULT '-1',
-  `_error_method_ID` int(11) NOT NULL DEFAULT '-1',
-  `_smooth_method_ID` int(11) NOT NULL DEFAULT '-1' COMMENT 'link to _smooth_methods.ID',
-  PRIMARY KEY (`ID`)
-);
-
-INSERT INTO `products` (`_usecase_ID`, `_prod_type_ID`, `__hoi_stations__ID`, `_hirelpp_product_option_ID`, `_ltool_product_option_ID`) VALUES
-	(0, 15, 'hpb', NULL, NULL);
-select max(ID) into @vldr_id from products;
-
-INSERT INTO `vldr_options` (`_product_ID`, `_vldr_method_ID`, `_error_method_ID`, `_smooth_method_ID`) VALUES
-	(637, 0, 0, 0);
-
-
-INSERT INTO `polarization_options` (
-    `_product_ID`,
-    `_pol_calibration_method_ID`,
-    `_crosstalk_parameter_method_ID`,
-    `_correction_factor_method_ID`) VALUES
-	(637, 2, 2, 3);
-
-INSERT INTO `preproc_options` (`_product_ID`, `min_height`, `max_height`, `preprocessing_integration_time`, `preprocessing_vertical_resolution`, `interpolation_id`) VALUES
-	(637, 100, 15000, 3600, 15, 1);
-
-INSERT INTO `smooth_options` (`_product_ID`,
-                              `_lowrange_error_threshold_ID`,
-                              `_highrange_error_threshold_ID`,
-                              `detection_limit`,
-                               `_smooth_type`) VALUES
-	(637, 5, 7, 0.001, 0);
-
-/*
-* ===================================================================================
-* create a table for PLDR options (pldr_options)
-* fill pldr_options with data of this example (for system 182)
-* 1) add 2 new pldr products to table products
-* 2) add 2 new entries to table pldr_options (1 for Raman bsc, 1 for elast bsc)
-* ===================================================================================
-*/
-
-CREATE TABLE IF NOT EXISTS `pldr_options` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `_product_ID` int(11) NOT NULL DEFAULT '-1',
-  `_vldr_product_ID` int(11) NOT NULL DEFAULT '-1',
-  `_bsc_product_ID` int(11) NOT NULL DEFAULT '-1',
-  `_error_method_ID` int(11) NOT NULL DEFAULT '-1',
-  `min_BscRatio_for_PLDR` decimal(10,4) NOT NULL DEFAULT '1.0000',
-  PRIMARY KEY (`ID`)
-);
-
-INSERT INTO `products` (`_usecase_ID`, `_prod_type_ID`, `__hoi_stations__ID`, `_hirelpp_product_option_ID`, `_ltool_product_option_ID`) VALUES
-	(NULL, 16, 'hpb', NULL, NULL),
-	(NULL, 16, 'hpb', NULL, NULL);
-select max(ID) into @pldr_id from products;
-
-INSERT INTO `pldr_options` (
-    `_product_ID`,
-    `_vldr_product_ID`,
-    `_bsc_product_ID`,
-    `_error_method_ID`,
-    `min_BscRatio_for_PLDR`) VALUES
-	(638, 637, 324, 0, 1.01),
-	(639, 637, 332, 0, 1.01);
-
-/*
-* ===================================================================================
-* insert single products into mwlproduct_product (interface does not work yet)
-* ===================================================================================
-*/
-
-INSERT INTO `mwlproduct_product` (`ID`, `_mwl_product_ID`, `_Product_ID`, `create_with_hr`, `create_with_lr`) VALUES
-	(NULL, 627, 378, 1, 1),
-	(NULL, 627, 377, 0, 1),
-	(NULL, 627, 324, 1, 1),
-	(NULL, 627, 380, 0, 1),
-	(NULL, 627, 381, 0, 1),
-	(NULL, 627, 330, 1, 1);
+--* ===================================================================================
+--* repair duplicate entries in table `eldamwl_class_names`
+--* ===================================================================================
+--*/
+--
+--UPDATE `eldamwl_class_names` SET `method` = 'eff_bin_resolution_of_savitzky_golay_smoothing' WHERE `classname` = 'SavGolayEffBinRes';
+--UPDATE `eldamwl_class_names` SET `method` = 'eff_bin_resolution_of_sliding_average' WHERE `classname` = 'SlidAvrgEffBinRes';
+--
+--
+--* ===================================================================================
+--* repair duplicate entries in table `_smooth_methods`
+--* ===================================================================================
+--*/
+--UPDATE `_smooth_methods` set `method_for_getting_effective_binres` = 'eff_bin_resolution_of_savitzky_golay_smoothing' WHERE ID = 0;
+--UPDATE `_smooth_methods` set `method_for_getting_effective_binres` = 'eff_bin_resolution_of_sliding_average' WHERE ID = 1;
+--
+--/*
+--* ===================================================================================
+--* create a table for VLDR options (vldr_options)
+--* fill vldr_options with data of this example (for system 182)
+--* 1) add new vldr product to table products
+--* 2) add new entry to table polarization_options
+--* 3) add new entry to table vldr_options
+--* ===================================================================================
+--*/
+--
+--CREATE TABLE IF NOT EXISTS `vldr_options` (
+--  `ID` int(11) NOT NULL AUTO_INCREMENT,
+--  `_product_ID` int(11) NOT NULL DEFAULT '-1',
+--  `_error_method_ID` int(11) NOT NULL DEFAULT '-1',
+--  PRIMARY KEY (`ID`)
+--);
+--
+--INSERT INTO `products` (`_usecase_ID`, `_prod_type_ID`, `__hoi_stations__ID`, `_hirelpp_product_option_ID`, `_ltool_product_option_ID`) VALUES
+--	(0, 15, 'hpb', NULL, NULL);
+--select max(ID) into @vldr_id from products;
+--
+--INSERT INTO `vldr_options` (`_product_ID`, `_error_method_ID`) VALUES
+--	(@vldr_id, 0);
+--
+--INSERT INTO `polarization_options` (
+--    `_product_ID`,
+--    `_pol_calibration_method_ID`,
+--    `_crosstalk_parameter_method_ID`,
+--    `_correction_factor_method_ID`) VALUES
+--	(@vldr_id, 2, 2, 3);
+--
+--
+--/*
+--* ===================================================================================
+--* create a table for PLDR options (pldr_options)
+--* fill pldr_options with data of this example (for system 182)
+--* 1) add 2 new pldr products to table products
+--* 2) add 2 new entries to table pldr_options (1 for Raman bsc, 1 for elast bsc)
+--* ===================================================================================
+--*/
+--
+--CREATE TABLE IF NOT EXISTS `pldr_options` (
+--  `ID` int(11) NOT NULL AUTO_INCREMENT,
+--  `_product_ID` int(11) NOT NULL DEFAULT '-1',
+--  `_vldr_product_ID` int(11) NOT NULL DEFAULT '-1',
+--  `_bsc_product_ID` int(11) NOT NULL DEFAULT '-1',
+--  `_error_method_ID` int(11) NOT NULL DEFAULT '-1',
+--  `min_BscRatio_for_PLDR` decimal(10,4) NOT NULL DEFAULT '1.0000',
+--  PRIMARY KEY (`ID`)
+--);
+--
+--INSERT INTO `products` (`_usecase_ID`, `_prod_type_ID`, `__hoi_stations__ID`, `_hirelpp_product_option_ID`, `_ltool_product_option_ID`) VALUES
+--	(NULL, 16, 'hpb', NULL, NULL),
+--	(NULL, 16, 'hpb', NULL, NULL);
+--select max(ID) into @pldr_id from products;
+--
+--INSERT INTO `pldr_options` (
+--    `_product_ID`,
+--    `_vldr_product_ID`,
+--    `_bsc_product_ID`,
+--    `_error_method_ID`,
+--    `min_BscRatio_for_PLDR`) VALUES
+--	(@pldr_id -1, @vldr_id, 324, 0, 1.01),
+--	(@pldr_id, @vldr_id, 332, 0, 1.01);
 
 INSERT INTO `eldamwl_class_names` (`method`, `classname`) values ('V Freudenthaler 2022','CalcVldrVFreudenthaler22');
 
-INSERT INTO `prepared_signal_files` (`ID`, `__measurements__ID`, `_Product_ID`, `creation_date`, `_scc_version_ID`, `filename`) VALUES
-	(NULL, '20181017oh00', 324, '2021-11-10', 17, 'hpb_007_0000328_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc'),
-	(NULL, '20181017oh00', 377, '2021-11-10', 17, 'hpb_002_0000381_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc');
+--INSERT INTO `prepared_signal_files` (`ID`, `__measurements__ID`, `_Product_ID`, `creation_date`, `_scc_version_ID`, `filename`) VALUES
+--	(NULL, '20181017oh00', 324, '2021-11-10', 17, 'hpb_007_0000328_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc'),
+--	(NULL, '20181017oh00', 377, '2021-11-10', 17, 'hpb_002_0000381_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc');
+--
+
+--/*
+--* ===================================================================================
+--* insert several data for product 637
+--* ===================================================================================
+--*/
+INSERT INTO `mc_options` (`_product_ID`, `iteration_count`) VALUES (637, 5);
+
+INSERT INTO scc_dev_20221201_mwl.polarization_calibration_correction_factors
+(`_product_ID`, correction, correction_statistical_error, correction_systematic_error,
+wavelength, `_range_ID`, correction_date, correction_submission_date,
+a_K, b_K, c_K, a_lowerbound, b_lowerbound, c_lowerbound, a_upperbound, b_upperbound, c_upperbound )
+VALUES (637, -999, -999, -999,
+532.0, 0, '2018-01-01 00:00:00.000', '2018-01-01 00:00:00.000',
+1.05, 0, 0, 0, 0.00232, 0, 0.0004, 0.00243, 0.00029);
+
+--/*
+--* ===================================================================================
+--* remove columns from table create a table polarization_calibration_correction_factors which are no longer needed
+--* ===================================================================================
+--*/
+ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DROP COLUMN lowerbound_calculation_time;
+ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DROP COLUMN upperbound_calculation_time;
+ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DROP COLUMN K_calculation_time;
+
 
 /*
 * ===================================================================================
@@ -602,7 +579,7 @@ UPDATE prepared_signal_files SET `_Product_ID` = 380 where (`_Product_ID` = 381)
 * ===================================================================================
 */
 INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
-	(49, 'backscatter and extinction products for a lidar ratio retrieval have different wavelengths'),
+    (49, 'backscatter and extinction products for a lidar ratio retrieval have different wavelengths'),
 	(60, 'no matching parameter for depolarization uncertainty for product and measurement time in database'');
 	(49, 'backscatter and extinction products for a lidar ratio retrieval have different wavelengths'),
 	(50, 'integration during retrieval of product failed'),
@@ -612,6 +589,8 @@ INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
 	(54, 'the temporal and/or vertical resolutions are '
                'not consistent for all the products attributed to one mwl product'),
 	(55, 'No temporal and/or vertical resolutions are available for mwl_product');
+	(60, 'no matching parameter for depolarization uncertainty for product and measurement time in database'),
+	(61, 'cannot calculate lidar constant without backscatter profile');
 
 --/*
 --* ===================================================================================

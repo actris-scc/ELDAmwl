@@ -206,8 +206,10 @@ class Signals(Columns):
         result = deepcopy(enumerator)
 
         result.ds['data'] = enumerator.ds.data / denominator.ds.data
-        result.ds['err'] = result.ds.data * \
-            np.sqrt(np.square(enumerator.rel_err) + np.square(denominator.rel_err))
+        result.ds['err'] = np.absolute(
+            result.ds.data
+            * np.sqrt(np.square(enumerator.rel_err)
+                      + np.square(denominator.rel_err)))
         result.ds['qf'] = enumerator.ds.qf | denominator.ds.qf
 
         result.channel_id = xr.concat([enumerator.channel_id,

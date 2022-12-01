@@ -35,5 +35,5 @@ class VLDRs(Products):
         # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
         # and attributes it with key self.mwl_meta_id to meta_data
         super(VLDRs, self).to_meta_ds_dict(meta_data)
-        # dct = meta_data[self.mwl_meta_id]
-        # self.params.to_meta_ds_dict(dct)
+        dct = meta_data[self.mwl_meta_id]
+        self.params.to_meta_ds_dict(dct)
