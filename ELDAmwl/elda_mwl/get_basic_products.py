@@ -150,12 +150,11 @@ class GetBasicProductsDefault(BaseOperation):
         if len(self.product_params.extinction_products()) == 0:
             self.logger.warning('no extinction products will be calculated')
         for ext_param in self.product_params.extinction_products():
+            self.logger.info('get extinction at {0} nm '.format(
+                ext_param.general_params.emission_wavelength))
 
             for res in RESOLUTIONS:
                 if ext_param.calc_with_res(res):
-                    self.logger.info('get extinction at {0} nm with {} resolution'.format(
-                        ext_param.general_params.emission_wavelength, RESOLUTION_STR[res]
-                    ))
                     extinction = ExtinctionFactory()(
                         data_storage=self.data_storage,
                         ext_param=ext_param,

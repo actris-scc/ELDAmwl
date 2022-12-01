@@ -18,19 +18,22 @@ class Columns(object):
 
     def __init__(self):
         self.ds = xr.Dataset(
-            {'data': (['time', 'level'], np.empty((0, 0))),
-             'err': (['time', 'level'], np.empty((0, 0))),  # statistical error
-             'sys_err_neg': (['time', 'level'], np.empty((0, 0))),
-             'sys_err_pos': (['time', 'level'], np.empty((0, 0))),
-             'qf': (['time', 'level'], np.empty((0, 0), dtype=np.int8)),
-             'binres': (['time', 'level'], np.empty((0, 0), dtype=np.int64)),
-             'time_bounds': (['time', 'nv'],
-                             np.empty((0, 0), dtype=np.datetime64)),
-             },
-            coords={'time': (['time'], np.empty((0,), dtype=np.datetime64)),
-                    'level': (['level'], np.empty((0,), dtype=np.int64)),
-                    'altitude': (['time', 'level'], np.empty((0, 0))),
-                    })
+            data_vars=dict(
+                data=(['time', 'level'], np.empty((0,0))),
+                err=(['time', 'level'], np.empty((0,0))),
+                sys_err_neg=(['time', 'level'], np.empty((0, 0))),
+                sys_err_pos=(['time', 'level'], np.empty((0, 0))),
+                qf=(['time', 'level'], np.empty((0, 0), dtype=np.int8)),
+                binres=(['time', 'level'], np.empty((0, 0), dtype=np.int64)),
+                time_bounds=(['time', 'nv'], np.empty((0, 0), dtype='datetime64[ns]')),
+            ),
+            coords=dict(
+                time=(['time'], np.empty((0,))),
+                level=(['level'], np.empty((0,))),
+                altitude=(['time', 'level'], np.empty((0, 0))),
+                ),
+            )
+
         self.ds.load()
         self.station_altitude = None
 

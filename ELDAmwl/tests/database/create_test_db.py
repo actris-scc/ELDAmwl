@@ -18,6 +18,7 @@ from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.channels import Telescopes
+from ELDAmwl.database.tables.depolarization import VLDROption, PolarizationCalibrationCorrectionFactors, VLDRMethod
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
@@ -79,6 +80,7 @@ ALL_DB_TABLES = [
     Measurements,
     MWLproductProduct,
     OverlapFile,
+    PolarizationCalibrationCorrectionFactors,
     PreparedSignalFile,
     PreProcOptions,
     ProductChannels,
@@ -91,6 +93,8 @@ ALL_DB_TABLES = [
     SmoothTypes,
     SystemProduct,
     Telescopes,
+    VLDROption,
+    VLDRMethod,
 ]
 
 # Where does the test-DB live
