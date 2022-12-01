@@ -6,6 +6,7 @@ from ELDAmwl.database.tables.backscatter import BscCalibrMethod
 from ELDAmwl.database.tables.backscatter import BscMethod
 from ELDAmwl.database.tables.backscatter import ElastBscMethod
 from ELDAmwl.database.tables.backscatter import RamanBscMethod
+from ELDAmwl.database.tables.depolarization import VLDRMethod
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.utils.constants import AE
 from ELDAmwl.utils.constants import ASS
@@ -278,6 +279,15 @@ class MWLFileVarsFromDB:
             BscMethod,
             'backscatter_retrieval_method',
             'method used for the backscatter retrieval')
+
+        return result
+
+    def vldr_method_var(self, value):
+        result = self.method_var_from_db(
+            value,
+            VLDRMethod,
+            'backscatter_retrieval_method',
+            'method used for the retrieval of volume linear depolarization ratio')
 
         return result
 

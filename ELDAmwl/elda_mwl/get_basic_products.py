@@ -20,7 +20,7 @@ from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.extinction.operation import ExtinctionFactory
 from ELDAmwl.extinction.vertical_resolution.operation import ExtEffBinRes
 from ELDAmwl.extinction.vertical_resolution.operation import ExtUsedBinRes
-from ELDAmwl.utils.constants import AUTO
+from ELDAmwl.utils.constants import AUTO, RESOLUTION_STR
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import FIXED
@@ -147,9 +147,15 @@ class GetBasicProductsDefault(BaseOperation):
         """get extinction products with pre-defined smoothing
 
         """
+        if len(self.product_params.extinction_products()) == 0:
+            self.logger.warning('no extinction products will be calculated')
         for ext_param in self.product_params.extinction_products():
+
             for res in RESOLUTIONS:
                 if ext_param.calc_with_res(res):
+                    self.logger.info('get extinction at {0} nm with {} resolution'.format(
+                        ext_param.general_params.emission_wavelength, RESOLUTION_STR[res]
+                    ))
                     extinction = ExtinctionFactory()(
                         data_storage=self.data_storage,
                         ext_param=ext_param,
@@ -179,7 +185,13 @@ class GetBasicProductsDefault(BaseOperation):
                 prod_id, smooth_bsc)
 
     def get_raman_bsc_fixed_smooth(self):
+        if len(self.product_params.raman_bsc_products()) == 0:
+            self.logger.warning('no Raman backscatter products will be calculated')
+
         for bsc_param in self.product_params.raman_bsc_products():
+            self.logger.info('get Raman backscatter at {0} nm '.format(
+                bsc_param.general_params.emission_wavelength
+            ))
             prod_id = bsc_param.prod_id_str
 
             # if no common calibration window for all bsc has been found
@@ -209,8 +221,13 @@ class GetBasicProductsDefault(BaseOperation):
             del bsc
 
     def get_elast_bsc_fixed_smooth(self):
-        self.logger.debug('get_elast_bsc_fixed_smooth')
+        if len(self.product_params.elast_bsc_products()) == 0:
+            self.logger.warning('no elastic backscatter products will be calculated')
+
         for bsc_param in self.product_params.elast_bsc_products():
+            self.logger.info('get elastic backscatter at {0} nm '.format(
+                bsc_param.general_params.emission_wavelength
+            ))
             prod_id = bsc_param.prod_id_str
             self.logger.debug('product {}'.format(prod_id))
 
@@ -245,7 +262,13 @@ class GetBasicProductsDefault(BaseOperation):
                 bsc_param.mark_as_failed(self.product_params)
 
     def get_vldr_fixed_smooth(self):
+        if len(self.product_params.vldr_products()) == 0:
+            self.logger.warning('no VLDR products will be calculated')
+
         for depol_param in self.product_params.vldr_products():
+            self.logger.info('get VLDR at {0} nm '.format(
+                depol_param.general_params.emission_wavelength
+            ))
             prod_id = depol_param.prod_id_str
 
             # calc preliminary vlrd
