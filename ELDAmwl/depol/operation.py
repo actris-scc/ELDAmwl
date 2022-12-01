@@ -118,12 +118,10 @@ class CalcVLDR(BaseOperationFactory):
     In this case, it will be always return an instance of `.CalcVLDRDefault`.
 
     Keyword Args:
-        vldr_params (`.VLDRParams`): \
-                retrieval parameter of the VLDR product
+        vldr_params (`.VLDRParams`): retrieval parameter of the VLDR product
         calc_routine (`.BaseOperation`): result of `.CalcVLDRProfile`
         signal_ratio (`.Signals`): signal ratio
-        empty_vldr (`.VLDRs`): \
-                instance of VLDRs which has all meta data but profile data are empty arrays
+        empty_vldr (`.VLDRs`): instance of VLDRs which has all meta data but profile data are empty arrays
 
     Returns:
         instance of `.BaseOperation`
@@ -196,13 +194,11 @@ class CalcVLDRDefault(BaseOperation):
 
         * :math:`\eta^*`: the gain ratio is taken from the ELPP file
 
-        * :math:`\K`: the gain ratio correction parameter is taken from the database table polarization_calibration_correction_factors
+        * :math:`K`: the gain ratio correction parameter is taken from the database table polarization_calibration_correction_factors
 
-        * | :math: `H_r` and :math: `H_t` are the :math:`H` parameters of the reflected and transmitted signal,
-        respectively. they are taken from the ELPP file.
+        * | :math: `H_r` and :math: `H_t` are the :math:`H` parameters of the reflected and transmitted signal, respectively. they are taken from the ELPP file.
 
-        * | :math: `G_r` and :math: `G_t` are the :math:`G` parameters of the reflected and transmitted signal,
-        respectively. they are taken from the ELPP file.
+        * | :math: `G_r` and :math: `G_t` are the :math:`G` parameters of the reflected and transmitted signal, respectively. they are taken from the ELPP file.
 
         Keyword Args:
             data (`.Signals`): signal ratios, default=None

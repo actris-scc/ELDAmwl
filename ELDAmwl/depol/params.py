@@ -126,8 +126,7 @@ class VLDRParams(ProductParams):
         """
         writes parameter content into Dict for further export in mwl file
         Args:
-            dct (addict.Dict): is a dict which will be converted into dataset.
-                            has the keys 'attrs' and 'data_vars'
+            dct (addict.Dict): is a dict which will be converted into dataset. It has the keys 'attrs' and 'data_vars'
 
         Returns:
 
