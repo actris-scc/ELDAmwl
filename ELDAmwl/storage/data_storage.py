@@ -6,7 +6,7 @@ from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.errors.exceptions import DifferentCloudMaskExists
 from ELDAmwl.errors.exceptions import NotFoundInStorage
 from ELDAmwl.products import Products
-from ELDAmwl.utils.constants import HIGHRES
+from ELDAmwl.utils.constants import HIGHRES, RESOLUTIONS
 from ELDAmwl.utils.constants import LOWRES
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import RESOLUTION_STR
@@ -42,7 +42,7 @@ class DataStorage:
                 'basic_products_auto_smooth': Dict(),
                 'binres_auto_smooth': Dict(),
                 'lidar_constants': Dict(),
-
+                'common_vertical_resolution': Dict(),
                 'binres_common_smooth': Dict(
                     {
                         LOWRES: Dict(),
@@ -128,11 +128,21 @@ class DataStorage:
 
         Args:
             prod_id_str:
-            resolution:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
             new_res_array: xarray.DataArray
 
         """
         self.__data.binres_common_smooth[resolution][prod_id_str] = new_res_array
+
+    def set_common_vertical_resolution(self, resolution, new_res_array):
+        """writes an array with common vertical resolution into storage
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+            new_res_array: xarray.DataArray
+
+        """
+        self.__data.common_vertical_resolution[resolution] = new_res_array
 
     def elpp_signals(self, prod_id_str):
         """copies of all ELPP signals of one product
@@ -380,6 +390,30 @@ class DataStorage:
             'binres_auto_smooth',
             'automatically derived bin resolution profile',
             'product {0}'.format(prod_id_str))
+
+    def common_vertical_resolution(self, resolution):
+        """copy of the profile of common vertical resolution of all products
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`xarray.DataArray`: deepcopy of the requested resolution profile
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and resolution was found in storage
+        """
+        if resolution in RESOLUTIONS:
+            result = self.__data.common_vertical_resolution[resolution]
+        else:
+            result = None
+
+        if isinstance(result, xr.DataArray):
+            return deepcopy(result)
+        else:
+            raise NotFoundInStorage('{0} {1}'.format(RESOLUTION_STR[resolution], ''),
+                                    '{0} {1}'.format('vertical resolution', RESOLUTION_STR[resolution]))
 
     def binres_common_smooth(self, prod_id_str, resolution):
         """ copy of a bin resolution profile of a product

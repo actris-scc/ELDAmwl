@@ -15,18 +15,23 @@ from ELDAmwl.component.registry import registry
 from ELDAmwl.depol.operation import VLRDFactory
 from ELDAmwl.depol.vertical_resolution.operation import VLDREffBinRes
 from ELDAmwl.depol.vertical_resolution.operation import VLDRUsedBinRes
-from ELDAmwl.errors.exceptions import NoCalibrWindowFound, ELDAmwlException
+from ELDAmwl.errors.exceptions import ELDAmwlException
+from ELDAmwl.errors.exceptions import NoCalibrWindowFound
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.extinction.operation import ExtinctionFactory
 from ELDAmwl.extinction.vertical_resolution.operation import ExtEffBinRes
 from ELDAmwl.extinction.vertical_resolution.operation import ExtUsedBinRes
-from ELDAmwl.utils.constants import AUTO, RESOLUTION_STR
+from ELDAmwl.utils.constants import AUTO
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import FIXED
 from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.utils.constants import RESOLUTION_STR
 from ELDAmwl.utils.constants import RESOLUTIONS
 from ELDAmwl.utils.constants import VLDR
+
+import numpy as np
+import xarray as xr
 
 
 # classes to convert effective bin resolution into bin resolution to use in retrievals
@@ -69,6 +74,7 @@ class GetBasicProductsDefault(BaseOperation):
             self.find_common_smooth()
 
         elif self.smooth_type == FIXED:
+            self.calc_common_vertical_resolution()
             self.get_binres_common_smooth()
 
         else:
@@ -85,6 +91,54 @@ class GetBasicProductsDefault(BaseOperation):
 
         """
         pass
+
+    def calc_common_vertical_resolution(self):
+        """calculates an array of height resolution (for lowres and highres) according to the
+        fixed vertical resolution of the mwl product
+
+        """
+        self.logger.debug('calculate profile of common height resolution')
+        sp = self.product_params.smooth_params
+        station_height = float(self.data_storage.header.vars.station_altitude)
+
+        for res in RESOLUTIONS:
+            # use dimensions and axes of cloud_mask
+            cm = self.data_storage.cloud_mask
+
+            # create empty array
+            vres = xr.DataArray(np.ones(cm.shape)*np.nan,
+                                dims=cm.dims,
+                                name='vertical_resolution',
+                                coords=cm.coords,
+                                attrs={
+                                    'long_name': 'effective vertical resolution of the products',
+                                    '_FillValue': np.nan,
+                                    'units': 'm',
+                                    })
+
+            # resolutions below and above transition zone
+            vert_res_low = sp.vert_res[RESOLUTION_STR[res]]['lowrange']
+            vert_res_high = sp.vert_res[RESOLUTION_STR[res]]['highrange']
+
+            for t in range(cm.time.shape[0]):
+                # first and last bin of transition zone
+                tz_bottom_bin = np.where(cm.altitude[t].values > (sp.transition_zone.bottom + station_height))[0][0]
+                tz_top_bin = np.where(cm.altitude[t].values > (sp.transition_zone.top + station_height))[0][0]
+
+                # gradient within transition zone
+                delta_res = (vert_res_high - vert_res_low) / (tz_top_bin - tz_bottom_bin)
+
+                # ! reversed logic! because
+                # where(condition, fillvalue where condition is not true)
+                vres[t] = vres[t].where(vres.level > tz_bottom_bin, vert_res_low)
+                vres[t] = vres[t].where(vres.level < tz_top_bin, vert_res_high)
+
+                # fill data in transition zone
+                for idx in range(int(tz_bottom_bin), int(tz_top_bin)):
+                    vres[t, idx] = float(vert_res_low + delta_res * (idx - tz_bottom_bin))
+
+            # write vres in data storage
+            self.data_storage.set_common_vertical_resolution(res, vres)
 
     def get_binres_common_smooth(self):
         """
