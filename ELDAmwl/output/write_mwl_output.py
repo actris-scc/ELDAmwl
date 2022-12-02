@@ -128,6 +128,7 @@ class WriteMWLOutputDefault(BaseOperation):
 
             # todo cloudmask shall have common altitude, time and timebounds variables
             group_data.data_vars.cloud_mask = self.data_storage.get_common_cloud_mask(res)
+            group_data.data_vars.vertical_res = self.data_storage.common_vertical_resolution(res)
 
             for ptype in p_types:
                 p_matrix = self.data_storage.final_product_matrix(ptype, res)
