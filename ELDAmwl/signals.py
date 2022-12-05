@@ -274,6 +274,7 @@ class Signals(Columns):
             '_FillValue': NC_FILL_BYTE,
         }
 
+        # todo: make station_altitude a function of time (moving systems)
         result.station_altitude = nc_ds.station_altitude
         result.station_altitude.load()
 
