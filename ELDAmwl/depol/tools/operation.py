@@ -9,30 +9,55 @@ from numpy import square as sqr
 
 
 class CalcVldrVFreudenthaler22(BaseOperation):
-    """calculates VLDR profiles with the algorithm described by Volker Freudenthaler 2022"""
+    """class for numerical calculations of VLDR profiles with the algorithm described by Volker Freudenthaler 2022
+
+    Keyword Args:
+        ~: the same as for `.CalcVLDRProfile`
+
+    """
 
     name = 'CalcVldrVFreudenthaler22'
     sigratio = None
     depol_params = None
 
     def run(self, **kwargs):
-        """calculates VLDR profile from reflected and transmitted signals.
+        r"""calculates VLDR profile from reflected and transmitted signals.
 
-            Keyword Args:
-                sigratio (xarray.DataSet):
-                    already smoothed signal ratio with \
-                    variables 'data', 'error', 'qf',
-                    'binres', 'molecular_depolarization_ratio', and others
-                depol_params (addict.Dict):
-                    with keys 'gain_ratio', 'gain_ratio_correction', 'HT', 'HR', 'GT', 'GR',
-                        'sys_err_lower_bound_a', 'sys_err_lower_bound_b', 'sys_err_lower_bound_c',
-                        'sys_err_upper_bound_a', 'sys_err_upper_bound_b', 'sys_err_upper_bound_c'
+        Keyword Args:
+            sigratio (xarray.DataSet): already smoothed signal ratio with data_vars:
 
+                * 'data' :math:`R = \frac{P_r}{P_t}` = ratio of reflected to transmitted signals
+
+                * 'error' :math:`\Delta R` = statistical absolute uncertainty of :math:`R`
+
+                * 'qf', 'binres' = quality flag and bin resolution of :math:`R` (not used here)
+
+                * 'molecular_depolarization_ratio' (not used here)
+
+                * and others (not used here)
+
+            depol_params (addict.Dict): dictionary with mandatory keys
+
+                * 'gain_ratio' :math:`\delta^*`
+
+                * 'gain_ratio_correction' :math:`K`
+
+                * 'HR', 'HT', 'GR', 'GT' = H and G parameters of the reflected and transmitted signals (:math:`H_r`, :math:`H_t`, :math:`G_r`, :math:`G_t`)
+
+                * 'sys_err_lower_bound_a', 'sys_err_lower_bound_b', 'sys_err_lower_bound_c'
+
+                * 'sys_err_upper_bound_a', 'sys_err_upper_bound_b', 'sys_err_upper_bound_c'
 
             Returns:
-                VLDR profile (xarray.DataSet) with calculated variables
-                'data' and 'error', 'sys_err_neg', 'sys_err_pos'.
-                all other variables and attibutes are copied from from sigratio
+                VLDR profile (xarray.DataSet) with calculated data_vars:
+
+                * 'data'
+
+                * 'error'
+
+                * 'sys_err_neg', 'sys_err_pos'
+
+                * all other variables and attributes are copied from sigratio
         """
         assert 'sigratio' in kwargs
         assert 'depol_params' in kwargs
@@ -75,11 +100,19 @@ class CalcVldrVFreudenthaler22(BaseOperation):
         return vldr
 
 class CalcVLDRProfile(BaseOperationFactory):
-    """calculates volume linear depolarization ratio profile
-    from reflected and transmitted signal
+    """creates a class for numerical calculations of volume linear depolarization ratio profiles
+    from reflected and transmitted signal.
 
-        Keyword Args:
-            prod_id (str): id of the product
+    Returns an instance of `.BaseOperation` which calculates the volume linear depolarization ratio
+    from a transmitted and a reflected  signal. The keyword parameter are transferred to this instance.
+    In this case, it will be always return an instance of `.CalcVldrVFreudenthaler22`.
+
+    Keyword Args:
+        prod_id (str): id of the product
+
+    Returns:
+        instance of `.BaseOperation`
+
     """
 
     name = 'CalcVLDRProfile'
@@ -92,9 +125,10 @@ class CalcVLDRProfile(BaseOperationFactory):
         return res
 
     def get_classname_from_db(self):
-        """ reads from SCC db which algorithm to use for Raman bsc calculation
+        """ reads from SCC db which algorithm to use for the numerical VLDR calculations
 
-        Returns: name of the class for the bsc calculation
+        Returns:
+            str: name of the class for the VLDR calculation. In this case, it always returns 'CalcVldrVFreudenthaler22'
         """
         return self.db_func.read_vldr_algorithm(self.prod_id)
 

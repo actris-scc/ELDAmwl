@@ -20,7 +20,7 @@ import zope
 
 class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
     """
-    derives a single instance of :class:`RamanBackscatters`.
+    derives a single instance of `.RamanBackscatters`.
 
     This factory class handles the different use cases.
     """

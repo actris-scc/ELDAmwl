@@ -5,8 +5,8 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 
 
 class BackscatterFactoryDefault(BaseOperation):
-    """
-    derives a single instance of :class:`Backscatters`.
+    """ derives a single instance of :class:`Backscatters`.
+
     """
 
     name = 'BackscatterFactoryDefault'
@@ -32,6 +32,11 @@ class BackscatterFactoryDefault(BaseOperation):
         pass
 
     def get_product(self):
+        """get the products
+
+        Returns: `.Backscatters`
+
+        """
         self.prepare()
 
         if not self.param.includes_product_merging():
