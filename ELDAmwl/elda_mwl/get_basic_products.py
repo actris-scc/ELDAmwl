@@ -62,6 +62,7 @@ class GetBasicProductsDefault(BaseOperation):
     bsc_calibr_window = None
 
     def run(self):
+        # todo: write status of retrieval in database table eldamwl_product_status
         self.product_params = self.kwargs['product_params']
         self.smooth_type = self.product_params.smooth_params.smooth_type
 

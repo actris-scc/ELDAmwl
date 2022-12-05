@@ -187,3 +187,10 @@ MC_TRIALS_FACTOR = 2
 # number of standard deviations used in testing for negative values
 # if (value + NEG_TEST_STD_FACTOR * err) < 0 => value is negative
 NEG_TEST_STD_FACTOR = 2
+
+# =========================================
+# EXIT_CODES
+# =========================================
+EXIT_CODE_OK = 0
+EXIT_CODE_SOME = 1
+EXIT_CODE_NONE = 2

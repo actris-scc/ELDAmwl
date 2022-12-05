@@ -35,6 +35,7 @@ class DataStorage:
     def __init__(self):
         self.__data = Dict(
             {
+                'number_of_scheduled_products': None,
                 'elpp_signals': Dict(),
                 'prepared_signals': Dict(),
 
@@ -67,6 +68,9 @@ class DataStorage:
                 'header': None,
                 'cloud_mask': None,
             })
+
+    def set_number_of_scheduled_products(self, number):
+        self.__data.number_of_scheduled_products = number
 
     def set_elpp_signal(self, prod_id_str, new_signal):
         """write new ELPP signal to storage"""
@@ -529,6 +533,18 @@ class DataStorage:
 
         """
         return deepcopy(self.__data.final_product_matrix[res][prod_type])
+
+    def number_of_derived_products(self):
+        count = 0
+        for res, res_data in self._DataStorage__data.final_product_matrix.items():
+            for prod_type in res_data.keys():
+                product_data = res_data[prod_type]
+                for wl in range(product_data.dims['wavelength']):
+                    if not np.all(np.isnan(product_data['data'][wl])):
+                        count += 1
+
+    def number_of_scheduled_products(self):
+        return self.__data.number_of_scheduled_products
 
     @property
     def cloud_mask(self):
