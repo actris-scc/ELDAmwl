@@ -22,6 +22,9 @@ from ELDAmwl.products import GeneralProductParams
 from ELDAmwl.products import SmoothParams
 from ELDAmwl.signals import ElppData
 from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EXIT_CODE_NONE
+from ELDAmwl.utils.constants import EXIT_CODE_OK
+from ELDAmwl.utils.constants import EXIT_CODE_SOME
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import HIGHRES
 from ELDAmwl.utils.constants import LOWRES
@@ -271,6 +274,18 @@ class MeasurementParams(Params):
         else:
             return []
 
+    def count_scheduled_products(self):
+        """counts the number of scheduled products.
+
+        Each wavelength and resolution is counted as an extra product.
+
+        Returns: (integer): number of products
+
+        """
+        prod_df = self.measurement_params.product_table
+        result = prod_df[prod_df['lowres']].id.count() \
+                 + prod_df[prod_df['highres']].id.count()
+
     def read_product_list(self):
         """Reads the parameter of all products of this measurement from database.
 
@@ -312,6 +327,7 @@ class MeasurementParams(Params):
                     prod_params.assign_to_product_list(self.measurement_params)
                 else:
                     self.logger.error('product type {} not yet implemented'.format(prod_type))
+
 
     def prod_params(self, prod_type, wl):
         """ returns a list with params of all products of type prod_type and wavelength wl
@@ -386,6 +402,8 @@ class RunELDAmwl(BaseOperation):
         """
         self.logger.info('read tasks from db')
         self.params.read_product_list()
+        pc = self.params.count_scheduled_products()
+        self.data_storage.set_number_of_scheduled_products(pc)
 
         # todo: check whether the products have at
         #  least one resolution with which they shall be derived
@@ -440,6 +458,28 @@ class RunELDAmwl(BaseOperation):
         """
         self.logger.info('synergistic quality control of all products ')
         QualityControl()(product_params=self.params).run()
+
+    def get_return_value(self):
+        """determines the return code
+
+        Returns: 0 in case that all scheduled products have been derived,
+        1 in case only some of them are derived,
+        2 if no products were derived
+
+        """
+        self.logger.debug('determine return code')
+        num_products = self.data_storage.number_of_derived_products()
+
+        if num_products == self.data_storage.number_of_scheduled_products():
+            self.logger.info('all scheduled products have been calculated')
+            return EXIT_CODE_OK
+        elif num_products > 0:
+            self.logger.warning('only some of the scheduled products have been calculated')
+            return EXIT_CODE_SOME
+        else:
+            self.logger.error('none of the scheduled products have been calculated')
+            return EXIT_CODE_NONE
+
 
     def write_single_output(self):
         """write products in single nc files (old style)  - not yet implemented

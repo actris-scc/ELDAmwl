@@ -67,22 +67,6 @@ class GetProductMatrixDefault(BaseOperation):
                      })
 
     def run(self):
-        # todo: add quality flag for complete profile (e.g. this profile causes bad angströms,
-        #                                               aod / integral of this profile too large, )
-        #                                               additionally to flag profile
-        # todo: 1) screen for negative values
-        # todo: 1a) if bsc profile has negative area in the middle -> skip complete profile
-        # todo: 2) screen for too large error
-        # todo: 3) screen derived products for layers with no aerosol (bsc ratio < threshold)
-        # todo: 4) if there are more than 1 bsc at the same wavelegnth
-        #           -> decide which one to use (use the one with best test results on angstroem and lidar ratio)
-        # todo: 5) test data in aerosol layers for thresholds in lidar ratio and angström exp
-        # todo: 5a) based on lidar ratio and angström profiles: select if one profile is bad
-        #           (remove the profile in a way that NUMBER of remaining good profiles is max
-        # todo: 6) profiles which has more than 10% bad points in 5) -> skip completely
-        # todo: do not allow empty matrix (1 variable with no data a t all
-        # todo: 2 file versions: one with quality controlled and screened data (for user),
-        #                       one with full profiles and qc flag (only for CARS internal use)
         self.product_params = self.kwargs['product_params']
         if len(self.product_params.basic_products()) == 0:
             self.logger.error('no products were derived -> cannot get common matrix')
@@ -195,6 +179,25 @@ class QualityControlDefault(BaseOperation):
         self.product_params = self.kwargs['product_params']
 
         # todo: implement quality control
+        # todo: add quality flag for complete profile (e.g. this profile causes bad angströms,
+        #                                               aod / integral of this profile too large, )
+        #                                               additionally to flag profile
+        # todo: 1) screen for negative values
+        # todo: 1a) if bsc profile has negative area in the middle -> skip complete profile
+        # todo: 2) screen for too large error
+        # todo: 3) screen derived products for layers with no aerosol (bsc ratio < threshold)
+        # todo: 4) if there are more than 1 bsc at the same wavelegnth
+        #           -> decide which one to use (use the one with best test results on angstroem and lidar ratio)
+        # todo: 5) test data in aerosol layers for thresholds in lidar ratio and angström exp
+        # todo: 5a) based on lidar ratio and angström profiles: select if one profile is bad
+        #           (remove the profile in a way that NUMBER of remaining good profiles is max
+        # todo: 6) profiles which has more than 10% bad points in 5) -> skip completely
+        # todo: do not allow empty matrix (1 variable with no data a t all
+        # todo: 2 file versions: one with quality controlled and screened data (for user),
+        #                       one with full profiles and qc flag (only for CARS internal use)
+        #         maybe the full output is written only if a certain command line parameter is set
+        # todo: write quality flags in regular output files (in expert user section)
+
 
 
 class QualityControl(BaseOperationFactory):

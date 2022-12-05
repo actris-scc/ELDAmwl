@@ -166,16 +166,19 @@ class Main:
         elda_mwl.get_product_matrix()
         elda_mwl.quality_control()
         elda_mwl.write_mwl_output()
+        return_code = elda_mwl.get_return_value()
 
         self.logger.info('the happy end')
+
+        return return_code
 
     def run(self):
 
         try:
             args = self.elda_cmdline()
-            self.elda(args)
+            return_code = self.elda(args)
 
-            sys.exit(NO_ERROR)
+            sys.exit(return_code)
 
         # todo: exit codes corresponding to needs of deamon
         except ELDAmwlException as e:

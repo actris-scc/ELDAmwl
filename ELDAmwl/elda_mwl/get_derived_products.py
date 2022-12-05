@@ -16,6 +16,8 @@ class GetDerivedProductsDefault(BaseOperation):
     product_params = None
 
     def run(self):
+        # todo: write status of retrieval in database table eldamwl_product_status
+
         self.product_params = self.kwargs['product_params']
 
         self.get_derived_products()
