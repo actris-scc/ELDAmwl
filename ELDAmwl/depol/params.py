@@ -25,10 +25,22 @@ class DepolUncertaintyParams(Params):
 
     @classmethod
     def from_db(cls, general_params, measurement_date):
+        """reads the parameters to derive systematic uncertainty and gain factor correction for a given
+        measurement time from database table `.PolarizationCalibrationCorrectionFactors`.
+        The parameters of the latest calibration measurement prior the measurement are used. If the parameter set of
+        this calibration measurement was submitted several times (e.g. after an improved analysis),
+        the data of the latest submission are used.
+
+        Args:
+            general_params (`.GeneralProductParams`): general parameter of the VLDR product
+            measurement_date (`numpy.datetime64`): date and time of the measurement that is to be analyzed
+
+        Returns:
+
+        """
         result = cls()
         db_func = queryUtility(IDBFunc)
         query = db_func.get_depol_uncertainties_query(general_params.prod_id, measurement_date)
-        # query = db_func.get_depol_uncertainties_query(365, datetime(2017,7,1))
 
         result.a_K = query.a_K
         result.b_K = query.b_K
@@ -70,6 +82,14 @@ class VLDRParams(ProductParams):
         self.crosstalk_h_transm = None
 
     def from_db(self, general_params):
+        """reads the retrieval parameter from database table `.VLDROption`
+
+        Args:
+            general_params (`.GeneralProductParams`): general parameter of the VLDR product
+
+        Returns:
+
+        """
         super(VLDRParams, self).from_db(general_params)
 
         # the measurement time is not yet known when this parameters are created

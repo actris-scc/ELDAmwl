@@ -12,9 +12,8 @@ class VLDRs(Products):
         The signals were previously prepared by `.PrepareDepolSignals` .
 
         Args:
-            sigratio (`.Signals`): time series of signal ratio profiles
-            p_params (`.VLDRParams`):
-                                    calculation params
+            sigratio (`.Signals`): time series of signal ratio profiles (enumerator = reflected, denominator = transmitted signal)
+            p_params (`.VLDRParams`): retrieval params
                                     of the VLRD product
         """
 
@@ -23,13 +22,6 @@ class VLDRs(Products):
         result.has_sys_err = True
 
         return result
-
-    # @property
-    # def bsc_ratio(self):
-    #     """xarray.DataArray(imensions = time, level): bckscatter ratio (dimensionless)
-    #     """
-    #     result = self.data / self.mol_backscatter + 1
-    #     return result
 
     def to_meta_ds_dict(self, meta_data):
         # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})

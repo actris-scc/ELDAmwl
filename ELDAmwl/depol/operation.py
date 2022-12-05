@@ -24,8 +24,7 @@ class VLRDFactory(BaseOperationFactory):
     name = 'VLRDFactory'
 
     def __call__(self, **kwargs):
-        # assert 'wavelength' in kwargs
-        # assert 'mwl_product_params' in kwargs
+        assert 'vldr_param' in kwargs
         res = super(VLRDFactory, self).__call__(**kwargs)
         return res
 
@@ -39,11 +38,12 @@ class VLRDFactory(BaseOperationFactory):
 
 
 class VLRDFactoryDefault(BaseOperation):
-    """ derives a single instance of `.VLDRs` .
+    """ a factory class that derives a single instance of `.VLDRs` .
 
-    Params:
-        # wl (float): wavelength for which the lidar constant shall be derived
-        # mwl_product_params (MeasurementParams): parameter of the mwl product
+    This factory class handles the different use cases.
+
+    Keyword Args:
+        vldr_param (`.VLDRParams`): parameters for the retrieval of the VLDR
     """
 
     name = 'VLRDFactoryDefault'
@@ -99,6 +99,11 @@ class VLRDFactoryDefault(BaseOperation):
         return vldr
 
     def get_product(self):
+        """ organizes the usecases and retrieves the products
+
+        Returns: `.VLDRs`: a time series of volume linear depolarization ratio profiles
+
+        """
         self.prepare()
 
         if not self.param.includes_product_merging():
@@ -111,16 +116,16 @@ class VLRDFactoryDefault(BaseOperation):
 
 class CalcVLDR(BaseOperationFactory):
     """
-    creates a Class for the calculation of an instance of VLDRs
+    creates a Class for the calculation of an instance of `.VLDRs`.
 
-    Returns an instance of BaseOperation which calculates the volume linear depolarization ratio
-    from a transmitted and a reflected  signal. the keyword parameter are transferred to this instance.
+    Returns an instance of `.BaseOperation` which calculates the volume linear depolarization ratio
+    from a transmitted and a reflected  signal. The keyword parameter are transferred to this instance.
     In this case, it will be always return an instance of `.CalcVLDRDefault`.
 
     Keyword Args:
         vldr_params (`.VLDRParams`): retrieval parameter of the VLDR product
         calc_routine (`.BaseOperation`): result of `.CalcVLDRProfile`
-        signal_ratio (`.Signals`): signal ratio
+        signal_ratio (`.Signals`): ratio between the reflected and the transmitted signals
         empty_vldr (`.VLDRs`): instance of VLDRs which has all meta data but profile data are empty arrays
 
     Returns:
@@ -149,21 +154,20 @@ class CalcVLDR(BaseOperationFactory):
 
 @zope.interface.implementer(IVLDROp)
 class CalcVLDRDefault(BaseOperation):
-    """
-    Calculates vldr from the ratio of a reflected and a transmitted signal.
+    """Calculates VLDRs from the ratio of a reflected and a transmitted signal.
 
     The result is a copy of empty_vldr, but its dataset (data, err, qf) is filled with the calculated values
 
     Keyword Args:
-        vldr_params (`.VLDRBscParams`): \
+        vldr_params (`.VLDRParams`): \
                 retrieval parameter of the VLDR product
-        calc_routine (:class:`ELDAmwl.bases.factory.BaseOperation`): result of :class:`ELDAmwl.backscatter.raman.tools.operation.CalcRamanBscProfile`
+        calc_routine (`.BaseOperation`): result of `.CalcVLDRProfile`
         signal_ratio (`.Signals`): signal ratio
         empty_vldr (`.VLDRs`): \
                 instance of VLDRs which has all meta data but profile data are empty arrays
 
     Returns:
-        profiles of volume linear depolarization ratios (`.VLDRs`)
+        `.VLDRs`: profiles of volume linear depolarization ratios
 
     """
 
@@ -182,7 +186,7 @@ class CalcVLDRDefault(BaseOperation):
         self.result = deepcopy(self.kwargs['empty_vldr'])
 
     def run(self, data=None):
-        r""" collects all parameters for VLDR calculation and run the calculator class.
+        r""" collects all parameters for VLDR calculation and run the calculator class `.CalcVLDRProfile`.
 
         The the optional keyword arg 'data' allows to feed new signal ratios into
         an existing instance of CalcVLDRDefault and run a new calculation.
@@ -192,19 +196,19 @@ class CalcVLDRDefault(BaseOperation):
 
         The following parameters are collected for the retrieval
 
-        * :math:`\eta^*`: the gain ratio is taken from the ELPP file
+        * :math:`\eta^*` : the gain ratio is taken from the ELPP file
 
         * :math:`K`: the gain ratio correction parameter is taken from the database table polarization_calibration_correction_factors
 
-        * | :math: `H_r` and :math: `H_t` are the :math:`H` parameters of the reflected and transmitted signal, respectively. they are taken from the ELPP file.
+        * | :math:`H_r` and :math:`H_t` are the :math:`H` parameters of the reflected and transmitted signal, respectively. They are taken from the ELPP file.
 
-        * | :math: `G_r` and :math: `G_t` are the :math:`G` parameters of the reflected and transmitted signal, respectively. they are taken from the ELPP file.
+        * | :math:`G_r` and :math:`G_t` are the :math:`G` parameters of the reflected and transmitted signal, respectively. They are taken from the ELPP file.
 
         Keyword Args:
             data (`.Signals`): signal ratios, default=None
 
         Returns:
-            profiles of volume linear depolarization ratios (`.VLDRs`)
+            `.VLDRs`: profiles of volume linear depolarization ratios
 
         """
         if data is None:
