@@ -118,6 +118,7 @@ class Header(ELDABase):
         result.vars.scc_product_type.load()
         result.vars.molecular_calculation_source = nc_ds.molecular_calculation_source
         result.vars.molecular_calculation_source.load()
+        # todo: make longitude and latitude functions of time (moving systems)
         result.vars.station_latitude = nc_ds.latitude
         result.vars.station_latitude.load()
         result.vars.station_longitude = nc_ds.longitude
