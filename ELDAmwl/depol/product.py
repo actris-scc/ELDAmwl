@@ -12,9 +12,9 @@ class VLDRs(Products):
         The signals were previously prepared by `.PrepareDepolSignals` .
 
         Args:
-            sigratio (`.Signals`): time series of signal ratio profiles (enumerator = reflected, denominator = transmitted signal)
+            sigratio (`.Signals`): time series of signal ratio profiles (enumerator = reflected, denominator = transmitted signal)  # noqa E501
             p_params (`.VLDRParams`): retrieval params
-                                    of the VLRD product
+                                    of the VLDR product
         """
 
         result = super(VLDRs, cls).from_signal(sigratio, p_params)

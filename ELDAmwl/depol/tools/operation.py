@@ -9,7 +9,9 @@ from numpy import square as sqr
 
 
 class CalcVldrVFreudenthaler22(BaseOperation):
-    """class for numerical calculations of VLDR profiles with the algorithm described by Volker Freudenthaler 2022
+    """class for numerical calculations of VLDR profiles according to the method described in
+        `Freudenthaler 2016 <https://amt.copernicus.org/articles/9/4181/2016>`_ and
+        `Freudenthaler 2021 <https://repositories.imaa.cnr.it/public/atmospheric_lidar_ghk>`_.
 
     Keyword Args:
         ~: the same as for `.CalcVLDRProfile`
@@ -21,7 +23,41 @@ class CalcVldrVFreudenthaler22(BaseOperation):
     depol_params = None
 
     def run(self, **kwargs):
-        r"""calculates VLDR profile from reflected and transmitted signals.
+        r"""calculates VLDR profile :math:`\delta (z)`
+
+        from reflected and transmitted signals :math:`\widetilde{P_r}(t,z)` and :math:`\widetilde{P_t}(t,z)`
+
+        The incoming signal ratio must be calculated from signals prepared with `.PrepareDepolSignals` before.
+
+        The retrieval has the following steps:
+
+        * the calibrated signal ratio :math:`\delta^*(z)` is derived from the signal ratio :math:`R(z)`
+
+        .. math::
+            \delta^*(z) &= R(z) \: \frac{K}{\eta^*}
+                         = \frac{\widetilde{P_r}(z)}{\widetilde{P_t}(z)} \: \frac{K}{\eta^*} \\
+            \Delta\delta^*(z) &= \Delta R(z) \: \frac{K}{\eta^*}\\
+
+        * the VLDR :math:`\delta(z)` is
+
+        .. math::
+            \delta(z) &= \frac{\delta^*(z) \bigl( G_t + H_t \bigr) - \bigl( G_r + H_r \bigr) }
+                              {\bigl( G_r - H_r \bigr) - \delta^*(z) \bigl( G_t - H_t \bigr)} \\
+                      &= \frac{\delta^*(z) a - b }
+                              {c - \delta^*(z) d} \\
+
+        * the statistical uncertainty is:
+
+        .. math::
+            \Delta\delta(z) &= \Biggl\lvert\frac{\delta^*(z) a (1 - d) - b d + a c}
+                                     { \bigl( c - \delta^*(z)d\bigr)^2} \:
+                                     \Delta\delta^*(z) \Biggr\rvert\\
+
+        * while the lower and upper bound of the systematic uncertainty are:
+
+        .. math::
+            \Delta\delta_{low}(z) &= a_{low} + b_{low}\delta(z) + c_{low}\delta^2(z) \\
+            \Delta\delta_{up}(z) &= a_{up} + b_{up}\delta(z) + c_{up}\delta^2(z) \\
 
         Keyword Args:
             sigratio (xarray.DataSet): already smoothed signal ratio with data_vars:
@@ -38,24 +74,24 @@ class CalcVldrVFreudenthaler22(BaseOperation):
 
             depol_params (addict.Dict): dictionary with mandatory keys
 
-                * 'gain_ratio' :math:`\delta^*`
+                * 'gain_ratio' :math:`\eta^*`
 
                 * 'gain_ratio_correction' :math:`K`
 
-                * 'HR', 'HT', 'GR', 'GT' = H and G parameters of the reflected and transmitted signals (:math:`H_r`, :math:`H_t`, :math:`G_r`, :math:`G_t`)
+                * 'HR', 'HT', 'GR', 'GT' = H and G parameters of the reflected and transmitted signals (:math:`H_r`, :math:`H_t`, :math:`G_r`, :math:`G_t`)  # noqa E501
 
-                * 'sys_err_lower_bound_a', 'sys_err_lower_bound_b', 'sys_err_lower_bound_c'
+                * 'sys_err_lower_bound_a', 'sys_err_lower_bound_b', 'sys_err_lower_bound_c' = Parameters to calculate the lower bound of the systematic error (:math:`a_{low}`, :math:`b_{low}`, :math:`c_{low}`)  # noqa E501
 
-                * 'sys_err_upper_bound_a', 'sys_err_upper_bound_b', 'sys_err_upper_bound_c'
+                * 'sys_err_upper_bound_a', 'sys_err_upper_bound_b', 'sys_err_upper_bound_c' = Parameters to calculate the upper bound of the systematic error (:math:`a_{up}`, :math:`b_{up}`, :math:`c_{up}`)  # noqa E501
 
             Returns:
                 VLDR profile (xarray.DataSet) with calculated data_vars:
 
-                * 'data'
+                * 'data' = :math:`\delta(z)`
 
-                * 'error'
+                * 'error' = :math:`\Delta\delta(z)`
 
-                * 'sys_err_neg', 'sys_err_pos'
+                * 'sys_err_neg', 'sys_err_pos' = :math:`\Delta\delta_{low}(z)`, :math:`\Delta\delta_{up}(z)`
 
                 * all other variables and attributes are copied from sigratio
         """
@@ -91,13 +127,15 @@ class CalcVldrVFreudenthaler22(BaseOperation):
 
         # 3) calculate systematic errors
         vldr['sys_err_neg'] = depol_params.sys_err_lower_bound_a \
-                              + depol_params.sys_err_lower_bound_b * vldr_data \
-                              + depol_params.sys_err_lower_bound_c * vldr_data_sqr
+            + depol_params.sys_err_lower_bound_b * vldr_data \
+            + depol_params.sys_err_lower_bound_c * vldr_data_sqr
+
         vldr['sys_err_pos'] = depol_params.sys_err_upper_bound_a \
-                              + depol_params.sys_err_upper_bound_b * vldr_data \
-                              + depol_params.sys_err_upper_bound_c * vldr_data_sqr
+            + depol_params.sys_err_upper_bound_b * vldr_data \
+            + depol_params.sys_err_upper_bound_c * vldr_data_sqr
 
         return vldr
+
 
 class CalcVLDRProfile(BaseOperationFactory):
     """creates a class for numerical calculations of volume linear depolarization ratio profiles
@@ -108,7 +146,7 @@ class CalcVLDRProfile(BaseOperationFactory):
     In this case, it will be always return an instance of `.CalcVldrVFreudenthaler22`.
 
     Keyword Args:
-        prod_id (str): id of the product
+        prod_id (str): id of the product  # nopep8
 
     Returns:
         instance of `.BaseOperation`

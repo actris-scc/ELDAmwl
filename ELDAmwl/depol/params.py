@@ -4,7 +4,6 @@ from ELDAmwl.bases.base import Params
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.output.mwl_file_structure import MWLFileVarsFromDB
 from ELDAmwl.products import ProductParams
-from datetime import datetime
 from numpy import square as sqr
 
 from ELDAmwl.utils.constants import MAX_CALIBR_DPEOL
@@ -53,8 +52,8 @@ class DepolUncertaintyParams(Params):
         result.c_lower = query.c_lowerbound
 
         result.gain_factor_correction = result.a_K \
-                                        + result.b_K * MAX_CALIBR_DPEOL \
-                                        + result.c_K * sqr(MAX_CALIBR_DPEOL)
+            + result.b_K * MAX_CALIBR_DPEOL \
+            + result.c_K * sqr(MAX_CALIBR_DPEOL)
 
         return result
 
@@ -64,6 +63,7 @@ class VLDRParams(ProductParams):
     def __init__(self):
         super(VLDRParams, self).__init__()
         self.sub_params += ['depol_uncertainty_params']
+        self.depol_uncertainty_params = None
 
         self.transm_sig_id_str = None
         self.transm_sig_id = None
@@ -93,7 +93,7 @@ class VLDRParams(ProductParams):
         super(VLDRParams, self).from_db(general_params)
 
         # the measurement time is not yet known when this parameters are created
-        self.depol_uncertainty_params = None
+        # therefore the depol_uncertainty_params cannot (yet) be read from db
 
         vdp = self.db_func.read_vldr_params(general_params.prod_id)
         self.vldr_algorithm = vdp['vldr_method']
@@ -122,7 +122,6 @@ class VLDRParams(ProductParams):
         else:
             self.logger.error('signal {} is neither reflected nor transmitted one '
                               '(as it should be)'.format(signal.channel_id))
-
 
     def add_signal_role(self, signal):
         super(VLDRParams, self)

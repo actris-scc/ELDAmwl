@@ -5,7 +5,6 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.interface import IVLDROp
 from ELDAmwl.component.registry import registry
-from ELDAmwl.depol.params import DepolUncertaintyParams
 from ELDAmwl.depol.product import VLDRs
 from ELDAmwl.depol.tools.operation import CalcVLDRProfile
 from ELDAmwl.signals import Signals
@@ -198,11 +197,11 @@ class CalcVLDRDefault(BaseOperation):
 
         * :math:`\eta^*` : the gain ratio is taken from the ELPP file
 
-        * :math:`K`: the gain ratio correction parameter is taken from the database table polarization_calibration_correction_factors
+        * :math:`K`: the gain ratio correction parameter is taken from the database table `.PolarizationCalibrationCorrectionFactors`  # noqa E
 
-        * | :math:`H_r` and :math:`H_t` are the :math:`H` parameters of the reflected and transmitted signal, respectively. They are taken from the ELPP file.
+        * :math:`H_r` and :math:`H_t` are the :math:`H` parameters of the reflected and transmitted signal, respectively. They are taken from the ELPP file.
 
-        * | :math:`G_r` and :math:`G_t` are the :math:`G` parameters of the reflected and transmitted signal, respectively. They are taken from the ELPP file.
+        * :math:`G_r` and :math:`G_t` are the :math:`G` parameters of the reflected and transmitted signal, respectively. They are taken from the ELPP file.
 
         Keyword Args:
             data (`.Signals`): signal ratios, default=None
@@ -222,12 +221,12 @@ class CalcVLDRDefault(BaseOperation):
                        'HR': self.vldr_params.crosstalk_h_refl,
                        'GT': self.vldr_params.crosstalk_g_transm,
                        'GR': self.vldr_params.crosstalk_g_refl,
-                       'sys_err_lower_bound_a':self.vldr_params.depol_uncertainty_params.a_lower,
-                       'sys_err_lower_bound_b':self.vldr_params.depol_uncertainty_params.b_lower,
-                       'sys_err_lower_bound_c':self.vldr_params.depol_uncertainty_params.c_lower,
-                       'sys_err_upper_bound_a':self.vldr_params.depol_uncertainty_params.a_upper,
-                       'sys_err_upper_bound_b':self.vldr_params.depol_uncertainty_params.b_upper,
-                       'sys_err_upper_bound_c':self.vldr_params.depol_uncertainty_params.c_upper,
+                       'sys_err_lower_bound_a': self.vldr_params.depol_uncertainty_params.a_lower,
+                       'sys_err_lower_bound_b': self.vldr_params.depol_uncertainty_params.b_lower,
+                       'sys_err_lower_bound_c': self.vldr_params.depol_uncertainty_params.c_lower,
+                       'sys_err_upper_bound_a': self.vldr_params.depol_uncertainty_params.a_upper,
+                       'sys_err_upper_bound_b': self.vldr_params.depol_uncertainty_params.b_upper,
+                       'sys_err_upper_bound_c': self.vldr_params.depol_uncertainty_params.c_upper,
                        })
 
         # todo: propagate systematic errors through all operations, smoothing etc.
