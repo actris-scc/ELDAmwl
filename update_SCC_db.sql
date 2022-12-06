@@ -534,7 +534,7 @@
 --	(@pldr_id -1, @vldr_id, 324, 0, 1.01),
 --	(@pldr_id, @vldr_id, 332, 0, 1.01);
 
-INSERT INTO `eldamwl_class_names` (`method`, `classname`) values ('V Freudenthaler 2022','CalcVldrVFreudenthaler22');
+--INSERT INTO `eldamwl_class_names` (`method`, `classname`) values ('V Freudenthaler 2022','CalcVldrVFreudenthaler22');
 
 --INSERT INTO `prepared_signal_files` (`ID`, `__measurements__ID`, `_Product_ID`, `creation_date`, `_scc_version_ID`, `filename`) VALUES
 --	(NULL, '20181017oh00', 324, '2021-11-10', 17, 'hpb_007_0000328_201810172100_201810172300_20181017oh00_elpp_v5.3.0.nc'),
@@ -546,15 +546,15 @@ INSERT INTO `eldamwl_class_names` (`method`, `classname`) values ('V Freudenthal
 --* insert several data for product 637
 --* ===================================================================================
 --*/
-INSERT INTO `mc_options` (`_product_ID`, `iteration_count`) VALUES (637, 5);
+--INSERT INTO `mc_options` (`_product_ID`, `iteration_count`) VALUES (637, 5);
 
-INSERT INTO scc_dev_20221201_mwl.polarization_calibration_correction_factors
-(`_product_ID`, correction, correction_statistical_error, correction_systematic_error,
-wavelength, `_range_ID`, correction_date, correction_submission_date,
-a_K, b_K, c_K, a_lowerbound, b_lowerbound, c_lowerbound, a_upperbound, b_upperbound, c_upperbound )
-VALUES (637, -999, -999, -999,
-532.0, 0, '2018-01-01 00:00:00.000', '2018-01-01 00:00:00.000',
-1.05, 0, 0, 0, 0.00232, 0, 0.0004, 0.00243, 0.00029);
+--INSERT INTO polarization_calibration_correction_factors
+--(`_product_ID`, correction, correction_statistical_error, correction_systematic_error,
+--wavelength, `_range_ID`, correction_date, correction_submission_date,
+--a_K, b_K, c_K, a_lowerbound, b_lowerbound, c_lowerbound, a_upperbound, b_upperbound, c_upperbound )
+--VALUES (637, -999, -999, -999,
+--532.0, 0, '2018-01-01 00:00:00.000', '2018-01-01 00:00:00.000',
+--1.05, 0, 0, 0, 0.00232, 0, 0.0004, 0.00243, 0.00029);
 
 --/*
 --* ===================================================================================
@@ -566,47 +566,7 @@ ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DRO
 ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DROP COLUMN K_calculation_time;
 
 
-/*
-* ===================================================================================
-* insert prepared signal files into prepared_signal_files (interface / ELPP do not work yet)
-* ===================================================================================
-*/
-UPDATE prepared_signal_files SET `_Product_ID` = 380 where (`_Product_ID` = 381) and (`__measurements__ID` = '20181017oh00');
+--INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
+--	(60, 'no matching parameter for depolarization uncertainty for product and measurement time in database'),
+--	(61, 'cannot calculate lidar constant without backscatter profile');
 
-/*
-* ===================================================================================
-* add new error codes
-* ===================================================================================
-*/
-INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
-    (49, 'backscatter and extinction products for a lidar ratio retrieval have different wavelengths'),
-	(60, 'no matching parameter for depolarization uncertainty for product and measurement time in database'');
-	(49, 'backscatter and extinction products for a lidar ratio retrieval have different wavelengths'),
-	(50, 'integration during retrieval of product failed'),
-	(51, 'the MC error retrieval could not obtain enough samples'),
-	(52, 'no individual products were generated for mwl product'),
-	(53, 'cannot calculate lidar constant from negative backscatter value -> check backscatter calibration settings and telescope overlap settings'),
-	(54, 'the temporal and/or vertical resolutions are '
-               'not consistent for all the products attributed to one mwl product'),
-	(55, 'No temporal and/or vertical resolutions are available for mwl_product');
-	(60, 'no matching parameter for depolarization uncertainty for product and measurement time in database'),
-	(61, 'cannot calculate lidar constant without backscatter profile');
-
---/*
---* ===================================================================================
---* todo: clean up table polarization_calibration_correction_factors
---* 1) copy column correction into a_K
---* 2) drop columns that are not needed
---* ===================================================================================
---*/
--- critically review this command!
---update polarization_calibration_correction_factors set a_K = correction where
---(not correction is Null) and (a_K = 0)
---
--- ALTER TABLE polarization_calibration_correction_factors
---DROP COLUMN correction,
---DROP COLUMN correction_statistical_error,
---DROP COLUMN correction_systematic_error,
---DROP COLUMN K_calculation_time,
---DROP COLUMN lowerbound_calculation_time,
---DROP COLUMN upperbound_calculation_time;
