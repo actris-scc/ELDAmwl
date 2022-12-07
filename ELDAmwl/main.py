@@ -14,7 +14,7 @@ from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.monte_carlo.operation import register_monte_carlo
 from ELDAmwl.storage.data_storage import register_datastorage
-from ELDAmwl.utils.constants import ELDA_MWL_VERSION
+from ELDAmwl.utils.constants import ELDA_MWL_VERSION, EXIT_CODE_NONE
 from zope import component
 
 import argparse
@@ -153,22 +153,24 @@ class Main:
         Todo Ina Missing doc
         """
 
-        self.logger.meas_id = arg_dict.meas_id
-        elda_mwl = RunELDAmwl(arg_dict.meas_id)
-        elda_mwl.read_tasks()
-        elda_mwl.read_elpp_data()
-        elda_mwl.prepare_signals()
-        elda_mwl.get_basic_products()
-        elda_mwl.get_derived_products()
-        elda_mwl.get_lidar_constants()
+        try:
+            self.logger.meas_id = arg_dict.meas_id
+            elda_mwl = RunELDAmwl(arg_dict.meas_id)
+            elda_mwl.read_tasks()
+            elda_mwl.read_elpp_data()
+            elda_mwl.prepare_signals()
+            elda_mwl.get_basic_products()
+            elda_mwl.get_derived_products()
+            elda_mwl.get_lidar_constants()
+            elda_mwl.get_product_matrix()
+            elda_mwl.quality_control()
+            elda_mwl.write_mwl_output()
+            return_code = elda_mwl.get_return_value()
 
-        #        elda_mwl.write_single_output()
-        elda_mwl.get_product_matrix()
-        elda_mwl.quality_control()
-        elda_mwl.write_mwl_output()
-        return_code = elda_mwl.get_return_value()
+            self.logger.info('the happy end')
 
-        self.logger.info('the happy end')
+        except ELDAmwlException as e:
+            return_code = EXIT_CODE_NONE
 
         return return_code
 

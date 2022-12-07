@@ -397,10 +397,7 @@ class RunELDAmwl(BaseOperation):
     def __init__(self, meas_id):
         super(RunELDAmwl, self).__init__()
         # todo: read current scc version
-        try:
-            self.params.load_from_db(meas_id)
-        except ELDAmwlException as e:
-            return EXIT_CODE_NONE
+        self.params.load_from_db(meas_id)
 
     def read_tasks(self):
         """read from db which products shall be calculated
