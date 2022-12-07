@@ -141,8 +141,8 @@ class Main:
             else:
                 self.logger.setLevel(args.ll_file)
 
-        self.logger.info('welcome to the EARLINET Lidar Data Analyzer for \
-                           multi-wavelengths measurements (ELDAmwl)')
+        self.logger.info('welcome to the EARLINET Lidar Data Analyzer for '
+                         'multi-wavelengths measurements (ELDAmwl)')
         self.logger.info('ELDAmwl version: {0}'.format(ELDA_MWL_VERSION))
         self.logger.info('analyze measurement number: ' + meas_id)
 
