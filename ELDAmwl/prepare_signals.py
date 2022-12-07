@@ -44,8 +44,9 @@ class PrepareBscSignalsDefault(BaseOperation):
 
     def run(self):
         self.bsc_param = self.kwargs['prod_param']
-
         pid = self.bsc_param.prod_id_str
+        self.logger.debug('prepare signals for backscatter product {}'.format(pid))
+
         # todo: prepare only the signals that are actually needed for the usecase
         # sig is a deepcopy from the data storage
         for sig in self.data_storage.elpp_signals(pid):
@@ -99,8 +100,9 @@ class PrepareExtSignalsDefault(BaseOperation):
 
     def run(self):
         self.ext_param = self.kwargs['prod_param']
-
         pid = self.ext_param.prod_id_str
+        self.logger.debug('prepare signals for extinction product {}'.format(pid))
+
         # todo: prepare only the signals that are actually needed for the usecase
         # sig is deepcopy from data storage
         for sig in self.data_storage.elpp_signals(pid):
@@ -172,8 +174,9 @@ class PrepareDepolSignalsDefault(BaseOperation):
 
     def run(self):
         self.depol_param = self.kwargs['prod_param']
-
         pid = self.depol_param.prod_id_str
+        self.logger.debug('prepare signals for VLDR product {}'.format(pid))
+
         # todo: prepare only the signals that are actually needed for the usecase
         # sig is deepcopy from data storage
         for sig in self.data_storage.elpp_signals(pid):

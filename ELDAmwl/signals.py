@@ -6,7 +6,7 @@ from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.bases.columns import Columns
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import ICfg, ILogger
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import CannotOpenELLPFile
@@ -92,6 +92,7 @@ class ElppData(object):
         self.cloud_mask = None
         self.header = None
         self.data_storage = component.queryUtility(IDataStorage)
+        self.logger = component.queryUtility(ILogger)
 
     def read_nc_file(self, p_param):
         """ reading an ELPP file
@@ -105,13 +106,17 @@ class ElppData(object):
         """
         # todo: check if scc version in query = current version
 
-        elpp_file = abs_file_path(self.cfg.SIGNAL_PATH, p_param.general_params.elpp_file)
-        if not os.path.exists(elpp_file):
-            raise(ELPPFileNotFound(elpp_file))
+        filename = p_param.general_params.elpp_file
+        elpp_file = abs_file_path(self.cfg.SIGNAL_PATH, filename)
+        self.logger.debug('read file {0}'.format(filename))
 
+        if not os.path.exists(elpp_file):
+            self.logger.error('ELPP file {0} does not exist.'.format(elpp_file))
+            raise(ELPPFileNotFound(elpp_file))
         try:
             nc_ds = xr.open_dataset(elpp_file)
         except Exception as e:   # ToDo Ina : which exception exactly?
+            self.logger.error('cannot read ELPP file {0}.'.format(elpp_file))
             print(e)  # noqa T001
             raise(CannotOpenELLPFile(elpp_file))
 

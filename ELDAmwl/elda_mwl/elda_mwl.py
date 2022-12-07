@@ -285,6 +285,7 @@ class MeasurementParams(Params):
         prod_df = self.measurement_params.product_table
         result = prod_df[prod_df['lowres']].id.count() \
                  + prod_df[prod_df['highres']].id.count()
+        return result
 
     def read_product_list(self):
         """Reads the parameter of all products of this measurement from database.
@@ -404,6 +405,8 @@ class RunELDAmwl(BaseOperation):
         self.params.read_product_list()
         pc = self.params.count_scheduled_products()
         self.data_storage.set_number_of_scheduled_products(pc)
+
+        self.logger.debug('{0} products are scheduled.'.format(pc))
 
         # todo: check whether the products have at
         #  least one resolution with which they shall be derived

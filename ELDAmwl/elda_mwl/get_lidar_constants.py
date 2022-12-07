@@ -22,6 +22,7 @@ class GetLidarConstantsDefault(BaseOperation):
     def get_lidar_constants(self):
         wavelengths = self.mwl_product_params.wavelengths(prod_types=[RBSC, EBSC])
         for wl in wavelengths:
+            self.logger.info('get lidar constant at {0} nm'.format(wl))
             try:
                 lc = LidarConstantFactory()(
                     wavelength=wl,

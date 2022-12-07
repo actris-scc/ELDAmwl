@@ -26,8 +26,15 @@ class GetDerivedProductsDefault(BaseOperation):
         self.get_lidar_ratios()
 
     def get_lidar_ratios(self):
+        if len(self.product_params.lidar_ratio_products()) == 0:
+            self.logger.warning('no lidar ratio product will be calculated')
+
         for lr_param in self.product_params.lidar_ratio_products():
             prod_id = lr_param.prod_id_str
+            self.logger.info('get lidar ratio at {0} nm (product id {1})'.format(
+                lr_param.general_params.emission_wavelength,
+                prod_id
+            ))
 
             for res in RESOLUTIONS:
                 if lr_param in self.product_params.all_products_of_res(res):

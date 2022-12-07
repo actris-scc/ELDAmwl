@@ -168,6 +168,8 @@ class LidarConstantFactoryDefault(BaseOperation):
         if self.bsc_param is None:
             self.logger.error('cannot calculate lidar constant without backscatter product')
             raise NoBscForLidarconst(None)
+        else:
+            self.logger.debug('use backscatter product {}'.format(self.bsc_param.prod_id_str))
 
     def find_calibration_height_and_res(self):
         """ find calibration height
@@ -204,6 +206,8 @@ class LidarConstantFactoryDefault(BaseOperation):
                 if self.calibr_height == calibr_height:
                     self.used_resolution = res
 
+        self.logger.debug('calibration height = {0} m'.format(self.calibr_height))
+
     def find_lidar_ratio(self):
         """ find best assumption for lidar ratio
 
@@ -236,6 +240,11 @@ class LidarConstantFactoryDefault(BaseOperation):
                 # option c)
                 self.assumed_lr = ASSUMED_LR_DEFAULT
                 self.assumed_lr_err = ASSUMED_LR_ERROR_DEFAULT
+
+        self.logger.debug('lidar ratio for atmospheric transmission = {0} +/- {1} sr'.format(
+            self.assumed_lr,
+            self.assumed_lr_err,
+        ))
 
     def calc_mean_lr(self, data_type, var_name, error_var_name):
         """calculates the mean lidar ratio in the height range (defined in `.constants`) above calibr_height

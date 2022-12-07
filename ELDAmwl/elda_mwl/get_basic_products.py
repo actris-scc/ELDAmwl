@@ -205,8 +205,8 @@ class GetBasicProductsDefault(BaseOperation):
         if len(self.product_params.extinction_products()) == 0:
             self.logger.warning('no extinction products will be calculated')
         for ext_param in self.product_params.extinction_products():
-            self.logger.info('get extinction at {0} nm '.format(
-                ext_param.general_params.emission_wavelength))
+            self.logger.info('get extinction at {0} nm (product id {1})'.format(
+                ext_param.general_params.emission_wavelength, ext_param.prod_id_str))
 
             for res in RESOLUTIONS:
                 if ext_param.calc_with_res(res):
@@ -243,10 +243,11 @@ class GetBasicProductsDefault(BaseOperation):
             self.logger.warning('no Raman backscatter products will be calculated')
 
         for bsc_param in self.product_params.raman_bsc_products():
-            self.logger.info('get Raman backscatter at {0} nm '.format(
-                bsc_param.general_params.emission_wavelength
-            ))
             prod_id = bsc_param.prod_id_str
+            self.logger.info('get Raman backscatter at {0} nm (product id {1})'.format(
+                bsc_param.general_params.emission_wavelength,
+                prod_id
+            ))
 
             # if no common calibration window for all bsc has been found
             # -> use calibration window of the individual bsc product
@@ -279,11 +280,11 @@ class GetBasicProductsDefault(BaseOperation):
             self.logger.warning('no elastic backscatter products will be calculated')
 
         for bsc_param in self.product_params.elast_bsc_products():
-            self.logger.info('get elastic backscatter at {0} nm '.format(
-                bsc_param.general_params.emission_wavelength
+            self.logger.info('get elastic backscatter at {0} nm  (product id {1})'.format(
+                bsc_param.general_params.emission_wavelength,
+                bsc_param.prod_id_str
             ))
             prod_id = bsc_param.prod_id_str
-            self.logger.debug('product {}'.format(prod_id))
 
             # if no common calibration window for all bsc has been found
             # -> use calibration window of the individual bsc product
@@ -320,10 +321,11 @@ class GetBasicProductsDefault(BaseOperation):
             self.logger.warning('no VLDR products will be calculated')
 
         for depol_param in self.product_params.vldr_products():
-            self.logger.info('get VLDR at {0} nm '.format(
-                depol_param.general_params.emission_wavelength
-            ))
             prod_id = depol_param.prod_id_str
+            self.logger.info('get VLDR at {0} nm (product id {1})'.format(
+                depol_param.general_params.emission_wavelength,
+                prod_id
+            ))
 
             # calc preliminary vlrd
             vldr = VLRDFactory()(
