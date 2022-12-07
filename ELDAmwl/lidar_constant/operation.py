@@ -283,19 +283,20 @@ class LidarConstantFactoryDefault(BaseOperation):
                     avrg_error_data = profile.ds[error_var_name].where(
                         (profile.height >= avrg_height_bottom) & (profile.height <= avrg_height_top), drop=True)
 
-                    # calculate average of data, average of error, stddev of data
-                    avrg = np.nanmean(avrg_data)
-                    avrg_err = np.nanmean(avrg_error_data)
-                    stddev = np.nanstd(avrg_data)
+                    if not np.all(np.isnan(avrg_data)):
+                        # calculate average of data, average of error, stddev of data
+                        avrg = np.nanmean(avrg_data)
+                        avrg_err = np.nanmean(avrg_error_data)
+                        stddev = np.nanstd(avrg_data)
 
-                    # the uncertainty of the mean is the maximum of the stddev (atmospheric variability)
-                    # and average error (calculation uncertainty)
-                    err = np.nanmax([avrg_err, stddev])
+                        # the uncertainty of the mean is the maximum of the stddev (atmospheric variability)
+                        # and average error (calculation uncertainty)
+                        err = np.nanmax([avrg_err, stddev])
 
-                    # the average with smallest error is final result
-                    if np.nanmin([result_err, err]) == err:
-                        result_avrg = avrg
-                        result_err = err
+                        # the average with smallest error is final result
+                        if np.nanmin([result_err, err]) == err:
+                            result_avrg = avrg
+                            result_err = err
 
         return result_avrg, result_err
 
