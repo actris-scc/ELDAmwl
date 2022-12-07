@@ -543,6 +543,8 @@ class DataStorage:
                     if not np.all(np.isnan(product_data['data'][wl])):
                         count += 1
 
+        return count
+
     def number_of_scheduled_products(self):
         return self.__data.number_of_scheduled_products
 

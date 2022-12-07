@@ -21,6 +21,9 @@ class GetLidarConstantsDefault(BaseOperation):
 
     def get_lidar_constants(self):
         wavelengths = self.mwl_product_params.wavelengths(prod_types=[RBSC, EBSC])
+        if len(wavelengths) == 0:
+            self.logger.warning('no lidar constants can be derived because no backscatter profiles are available')
+
         for wl in wavelengths:
             self.logger.info('get lidar constant at {0} nm'.format(wl))
             try:

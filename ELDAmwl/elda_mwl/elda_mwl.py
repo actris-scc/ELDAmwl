@@ -117,15 +117,17 @@ class MeasurementParams(Params):
         if res is not None:
             prod_df = prod_df[prod_df[RESOLUTION_STR[res]] == True]
         if prod_types is not None:
-            for pt in prod_types:
-                prod_df = prod_df[prod_df['type'] == pt]
+            if (len(prod_types) == 1) or isinstance(prod_types, int):
+                prod_df = prod_df[prod_df['type'] == prod_types]
+            elif len(prod_types) > 1:
+                type_df = prod_df[prod_df['type'] == prod_types[0]]
+                for pt in prod_types[1:]:
+                    type_df = pd.concat([type_df, prod_df[prod_df['type'] == pt]])
+                prod_df = type_df
+            else:
+                self.logger.error('empty list of product types')
 
         all_wls = prod_df.wl.to_numpy()
-
-        # if res is not None:
-        #     all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()  # noqa E712
-        # else:
-        #     all_wls = prod_df.wl.to_numpy()
 
         unique_wls = np.unique(all_wls)
         return unique_wls.tolist()
