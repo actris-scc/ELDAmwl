@@ -33,10 +33,11 @@ class Logger:
     logger = None
     db_log_func = None
     db_log_level = None
+    meas_id = None
 
-    def __init__(self):
+    def __init__(self, measurement_id):
         self.module_version = '4711'
-        self.meas_id = '20181017oh00'
+        self.meas_id = measurement_id
         self.setup_logger()
 
     @property
@@ -152,6 +153,7 @@ class Logger:
         self.logger.setLevel(self.cfg.log_level)
 
         self.setup_console_logger(formatter)
+        self.setup_file_logger(formatter)
 
     def db_log(self, level, prod_id, msg):
         if self.db_log_func is None:
@@ -166,13 +168,13 @@ class Logger:
             msg)
 
 
-def register_logger():
+def register_logger(measurement_id):
     # prohibit more than one logger instance
     logger = component.queryUtility(ILogger)
     if logger is not None:
         return logger
 
-    logger = Logger()  # ToDo Ina Where to get the module_version for logging ?
+    logger = Logger(measurement_id)  # ToDo Ina Where to get the module_version for logging ?
     component.provideUtility(logger, ILogger)
     return logger
 

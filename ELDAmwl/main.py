@@ -45,7 +45,7 @@ def elda_setup_components(args=None, env='Production'):
     register_config(args, env=env)
 
     # Setup the logging facility for this measurement ID
-    register_logger()
+    register_logger(args.meas_id)
     # register_plugins()
 
     # Bring up the global db_access
