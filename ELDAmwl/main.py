@@ -14,7 +14,7 @@ from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.monte_carlo.operation import register_monte_carlo
 from ELDAmwl.storage.data_storage import register_datastorage
-from ELDAmwl.utils.constants import ELDA_MWL_VERSION, EXIT_CODE_NONE
+from ELDAmwl.utils.constants import ELDA_MWL_VERSION, EXIT_CODE_NONE, MWL_PROD_ID_DEFAULT
 from zope import component
 
 import argparse
@@ -171,7 +171,7 @@ class Main:
 
         except ELDAmwlException as e:
             dbfunc = component.queryUtility(IDBFunc)
-            dbfunc.write_product_status_in_db(arg_dict.meas_id, None, None, e.return_value, str(e))
+            dbfunc.write_product_status_in_db(arg_dict.meas_id, MWL_PROD_ID_DEFAULT, None, e.return_value, str(e))
             return_code = EXIT_CODE_NONE
 
         return return_code

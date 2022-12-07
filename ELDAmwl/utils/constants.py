@@ -134,6 +134,8 @@ NC_FILL_BYTE = -127
 NC_FILL_INT = -2147483647
 NC_FILL_STR = ''
 
+MWL_PROD_ID_DEFAULT = 0
+
 # ====== quality flags ======
 ALL_OK = 0
 NEG_DATA = 1
