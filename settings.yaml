@@ -43,7 +43,7 @@ default:
   # The desired log_level for console output
   log_level_console : DEBUG
   # The desired log_level for the logfile
-  log_level_file : CRITICAL
+  log_level_file : QUIET
   # Colors for the log console output (Options see color_log-package)
   log_colors : {
       'DEBUG': 'cyan',

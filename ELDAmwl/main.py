@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ELDAmwl.component.interface import ICfg
+from ELDAmwl.component.interface import ICfg, IDBFunc
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IParams
 from ELDAmwl.config import register_config
@@ -170,6 +170,8 @@ class Main:
             self.logger.info('the happy end')
 
         except ELDAmwlException as e:
+            dbfunc = component.queryUtility(IDBFunc)
+            dbfunc.write_product_status_in_db(arg_dict.meas_id, None, None, e.return_value, str(e))
             return_code = EXIT_CODE_NONE
 
         return return_code

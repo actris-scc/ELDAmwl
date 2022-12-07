@@ -556,6 +556,10 @@
 --532.0, 0, '2018-01-01 00:00:00.000', '2018-01-01 00:00:00.000',
 --1.05, 0, 0, 0, 0.00232, 0, 0.0004, 0.00243, 0.00029);
 
+--INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
+--	(60, 'no matching parameter for depolarization uncertainty for product and measurement time in database'),
+--	(61, 'cannot calculate lidar constant without backscatter profile');
+
 --/*
 --* ===================================================================================
 --* todo:
@@ -566,8 +570,10 @@ ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DRO
 ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DROP COLUMN upperbound_calculation_time;
 ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DROP COLUMN K_calculation_time;
 
-
---INSERT INTO `eldamwl_exitcodes` (`exit_code`, `description`) VALUES
---	(60, 'no matching parameter for depolarization uncertainty for product and measurement time in database'),
---	(61, 'cannot calculate lidar constant without backscatter profile');
+/*
+* ===================================================================================
+* add new column to eldamwl_product_status
+* ===================================================================================
+*/
+ALTER TABLE eldamwl_product_status ADD COLUMN `_mwl_product_ID` int(11)  DEFAULT '-1' after `__measurements__ID`;
 

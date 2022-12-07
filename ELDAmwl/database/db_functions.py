@@ -22,7 +22,7 @@ from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
-from ELDAmwl.database.tables.general import ELDAmwlLogs
+from ELDAmwl.database.tables.general import ELDAmwlLogs, EldaMwlProductStatus
 from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
@@ -1129,5 +1129,32 @@ class DBFunc(DBUtils):
                                synchronize_session=False)
         else:
             self.logger.error('wrong number ({0}) of lidar constants in db '.format(lidar_const.count()))
+
+        self.session.commit()
+
+    def write_product_status_in_db(self, meas_id, mwl_prod_id, prod_id,
+                                   new_status, description,
+                                   ):
+        prod_status = self.session.query(EldaMwlProductStatus)\
+            .filter(EldaMwlProductStatus.measurement_id == meas_id)\
+            .filter(EldaMwlProductStatus.mwl_product_id == mwl_prod_id)\
+            .filter(EldaMwlProductStatus.product_id == prod_id)
+
+        new_db_entry = EldaMwlProductStatus(
+            measurement_id=meas_id,
+            mwl_product_id=mwl_prod_id,
+            product_id=prod_id,
+            status_code=new_status,
+            description=description,
+        )
+        if prod_status.count() == 0:
+            self.session.add(new_db_entry)
+        elif prod_status.count() == 1:
+            prod_status.update({'status_code': new_status,
+                                'description': description,
+                                },
+                               synchronize_session=False)
+        else:
+            self.logger.error('wrong number ({0}) of product status entries in db '.format(prod_status.count()))
 
         self.session.commit()

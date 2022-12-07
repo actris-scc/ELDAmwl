@@ -121,20 +121,21 @@ class Logger:
         File logger
         Has to be setup when the output filename is known
         """
-        if not os.path.exists(self.cfg.LOG_PATH):
-            self.error(ERROR, """Log file directory "{path}" does not exists""".format(path=self.cfg.LOG_PATH))
-            dir_not_found_hint(self.cfg.LOG_PATH)
-            raise LogPathNotExists
+        if self.cfg.log_level_file != 'QUIET':
+            if not os.path.exists(self.cfg.LOG_PATH):
+                self.error(ERROR, """Log file directory "{path}" does not exists""".format(path=self.cfg.LOG_PATH))
+                dir_not_found_hint(self.cfg.LOG_PATH)
+                raise LogPathNotExists
 
-        log_file_path = os.path.join(
-            self.cfg.LOG_PATH,
-            '{id}.log'.format(id=self.meas_id),
-        )
-        file_handler = FileHandler(log_file_path)
-        file_handler_formatter = formatter
-        file_handler.setFormatter(file_handler_formatter)
-        file_handler.setLevel(self.cfg.log_level_file)
-        self.logger.addHandler(file_handler)
+            log_file_path = os.path.join(
+                self.cfg.LOG_PATH,
+                '{id}.log'.format(id=self.meas_id),
+            )
+            file_handler = FileHandler(log_file_path)
+            file_handler_formatter = formatter
+            file_handler.setFormatter(file_handler_formatter)
+            file_handler.setLevel(self.cfg.log_level_file)
+            self.logger.addHandler(file_handler)
 
     def setup_db_logger(self):
         """

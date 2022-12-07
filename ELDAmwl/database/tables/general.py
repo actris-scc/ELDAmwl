@@ -52,7 +52,7 @@ class ELDAmwlLogs(Base):
 
 class ELDAmwlExitCodes(Base):
     """
-    Stable with description of exit codes
+    table with description of exit codes
     """
 
     __tablename__ = 'eldamwl_exitcodes'
@@ -64,5 +64,41 @@ class ELDAmwlExitCodes(Base):
     description = Column(
         String(100),
         nullable=False,
+        server_default=text("''"),
+    )
+
+
+class EldaMwlProductStatus(Base):
+    """
+    table with description of status of ELDAmwl products
+    """
+
+    __tablename__ = 'eldamwl_product_status'
+
+    ID = Column(
+        INTEGER,
+        primary_key=True,
+    )
+    measurement_id = Column(
+        '__measurements__ID',
+        VARCHAR(15),
+        nullable=False,
+    )
+    mwl_product_id = Column(
+        '_mwl_product_id',
+        INTEGER,
+        nullable=True,
+    )
+    product_id = Column(
+        '_product_id',
+        INTEGER,
+        nullable=True,
+    )
+    status_code = Column(
+        INTEGER,
+        nullable=True,
+    )
+    description = Column(
+        String(500),
         server_default=text("''"),
     )
