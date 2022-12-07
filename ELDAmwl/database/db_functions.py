@@ -36,7 +36,7 @@ from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SmoothMethod
 from ELDAmwl.database.tables.system_product import SmoothOptions
 from ELDAmwl.database.tables.system_product import SystemProduct
-from ELDAmwl.errors.exceptions import NoBscCalOptions, NoParamsForDepolUncertainty
+from ELDAmwl.errors.exceptions import NoBscCalOptions, NoParamsForDepolUncertainty, NoMwlProductDefined
 from ELDAmwl.errors.exceptions import NOMCOptions
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import MWL
@@ -983,6 +983,7 @@ class DBFunc(DBUtils):
             self.logger.error(
                 'wrong number of mwl products ({0})'.format(products.count()),
             )
+            raise NoMwlProductDefined(system_id)
 
     def read_system_id(self, measurement_id):
         """ function to read from db which products shall be derived .

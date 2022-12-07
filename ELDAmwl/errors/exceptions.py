@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, NO_MWL_PRODUCT_DEFINED
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -442,4 +442,16 @@ class NoParamsForDepolUncertainty(ELDAmwlException):
         return ('no matching parameter for depolarization uncertainty for product {0} '
                 'and measurement time{1} in database'.format(self.prod_id, self.measurement_date))
 
+class NoMwlProductDefined(ELDAmwlException):
+    """raised when no multi-wavelength product is defined for the measurement
+    """
+
+    return_value = NO_MWL_PRODUCT_DEFINED
+
+    def __init__(self, system_id):
+        super(NoMwlProductDefined, self).__init__(None)
+        self.system_id = system_id
+
+    def __str__(self):
+        return ('no multi-wavelength product is defined for the system_id {0}'.format(self.system_id))
 

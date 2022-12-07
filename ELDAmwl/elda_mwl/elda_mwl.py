@@ -13,7 +13,7 @@ from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
 from ELDAmwl.elda_mwl.get_lidar_constants import GetLidarConstants
 from ELDAmwl.elda_mwl.mwl_products import GetProductMatrix
 from ELDAmwl.elda_mwl.mwl_products import QualityControl
-from ELDAmwl.errors.exceptions import ProductNotUnique
+from ELDAmwl.errors.exceptions import ProductNotUnique, ELDAmwlException
 from ELDAmwl.extinction.params import ExtinctionParams
 from ELDAmwl.lidar_ratio.params import LidarRatioParams
 from ELDAmwl.output.write_mwl_output import WriteMWLOutput
@@ -397,7 +397,10 @@ class RunELDAmwl(BaseOperation):
     def __init__(self, meas_id):
         super(RunELDAmwl, self).__init__()
         # todo: read current scc version
-        self.params.load_from_db(meas_id)
+        try:
+            self.params.load_from_db(meas_id)
+        except ELDAmwlException as e:
+            return EXIT_CODE_NONE
 
     def read_tasks(self):
         """read from db which products shall be calculated
