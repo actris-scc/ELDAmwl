@@ -31,6 +31,35 @@ class FindCommonBscCalibrWindow(BaseOperationFactory):
         return FindBscCalibrWindowAsInELDA.__name__
 
 
+class FindBscCalibrWindowWithRaylFit(BaseOperation):
+    """find bsc calibration windows with Rayleigh fit
+
+    """
+
+    name = 'FindBscCalibrWindowWithRaylFit'
+
+    data_storage = None
+    bsc_params = None
+
+    def run(self):
+        """
+        Returns: None (results are assigned to individual BackscatterParams)
+        """
+        self.logger.debug('find backscatter calibration window with Rayleigh fit')
+        # self.init()
+
+        # # check whether all calibration params are equal
+        # for bp in self.bsc_params[1:]:
+        #     if not self.bsc_params[0].calibration_params.equal(
+        #             bp.calibration_params):
+        #         raise BscCalParamsNotEqual(self.bsc_params[0].prod_id,
+        #                                    bp.prod_id)
+        # for bp in self.bsc_params:
+        #     self.find_calibration_window(bp)
+
+        return None
+
+
 class FindBscCalibrWindowAsInELDA(BaseOperation):
     """find bsc calibration windows as in ELDA
 
@@ -166,3 +195,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
 registry.register_class(FindCommonBscCalibrWindow,
                         FindBscCalibrWindowAsInELDA.__name__,
                         FindBscCalibrWindowAsInELDA)
+
+registry.register_class(FindCommonBscCalibrWindow,
+                        FindBscCalibrWindowWithRaylFit.__name__,
+                        FindBscCalibrWindowWithRaylFit)
