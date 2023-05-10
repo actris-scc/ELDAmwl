@@ -11,7 +11,7 @@ class BscCalibrationParams(Params):
     def __init__(self):
         super(BscCalibrationParams, self).__init__()
         self.cal_range_search_algorithm = None
-        self.WindowWidth = None
+        self.window_width = None
         self.cal_value = None
         self.cal_interval = Dict({'min_height': None,
                                  'max_height': None})

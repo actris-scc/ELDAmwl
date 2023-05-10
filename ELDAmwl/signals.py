@@ -250,7 +250,7 @@ class Signals(Columns):
         # initiate bin resolution with value 1
         result.ds['binres'] = xr.DataArray(
             np.ones((nc_ds.dims['time'],
-            nc_ds.dims['level'])).astype(np.int),  # noqa E501
+            nc_ds.dims['level'])).astype(np.int64),  # noqa E501
             coords=[nc_ds.time, nc_ds.level],
             dims=['time', 'level'])
         result.ds['binres'].attrs = {'long_name': 'vertical resolution',

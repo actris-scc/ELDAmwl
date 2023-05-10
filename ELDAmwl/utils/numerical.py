@@ -246,3 +246,11 @@ def integral_profile(data,
     del ydata
 
     return result
+
+
+def m_to_km(height):
+    return height * 0.001
+
+
+def km_to_m(height):
+    return height * 1000

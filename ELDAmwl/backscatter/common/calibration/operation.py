@@ -1,14 +1,19 @@
+from addict import Dict
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
+from ELDAmwl.database.tables.backscatter import BscCalibrMethod
 from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
 from ELDAmwl.signals import Signals
 from ELDAmwl.tests.pickle_data import write_test_data
 from ELDAmwl.utils.constants import RBSC
-from ELDAmwl.utils.numerical import calc_rolling_means_sems
+from ELDAmwl.utils.numerical import calc_rolling_means_sems, m_to_km, km_to_m
 from ELDAmwl.utils.numerical import find_minimum_window
 
+from rayleigh_fit.rfit_SCC import r_fit
+
 import numpy as np
+import pandas as pd
 import xarray as xr
 
 
@@ -20,65 +25,53 @@ class FindCommonBscCalibrWindow(BaseOperationFactory):
                 list of params of all backscatter products
     """
     name = 'FindCommonBscCalibrWindow'
+    method_id = None
 
     def __call__(self, **kwargs):
         assert 'data_storage' in kwargs
         assert 'bsc_params' in kwargs
+        self.method_id = kwargs['bsc_params'][0].calibration_params.cal_range_search_algorithm
+
         res = super(FindCommonBscCalibrWindow, self).__call__(**kwargs)
         return res
 
     def get_classname_from_db(self):
-        return FindBscCalibrWindowAsInELDA.__name__
+        """ reads from SCC db which algorithm to use for finding the bsc calibration window
+
+        Returns: name of the class for determining the calibration window
+        """
+        return self.db_func.read_algorithm(self.method_id, BscCalibrMethod)
+        # return FindBscCalibrWindowAsInELDA.__name__
 
 
-class FindBscCalibrWindowWithRaylFit(BaseOperation):
-    """find bsc calibration windows with Rayleigh fit
-
-    """
-
-    name = 'FindBscCalibrWindowWithRaylFit'
+class FindBscCalibrWindow(BaseOperation):
+    """base class for finding calibration windows for all bsc products"""
 
     data_storage = None
     bsc_params = None
+    calibration_params = None
+    name = None
 
-    def run(self):
-        """
-        Returns: None (results are assigned to individual BackscatterParams)
-        """
-        self.logger.debug('find backscatter calibration window with Rayleigh fit')
-        # self.init()
+    def init(self):
+        self.bsc_params = self.kwargs['bsc_params']
+        self.calibration_params = self.bsc_params[0].calibration_params
+        self.check_calibr_params()
 
-        # # check whether all calibration params are equal
-        # for bp in self.bsc_params[1:]:
-        #     if not self.bsc_params[0].calibration_params.equal(
-        #             bp.calibration_params):
-        #         raise BscCalParamsNotEqual(self.bsc_params[0].prod_id,
-        #                                    bp.prod_id)
-        # for bp in self.bsc_params:
-        #     self.find_calibration_window(bp)
+        write_test_data(
+            self.name,
+            cls=self.__class__,
+            data_storage=self.data_storage,
+            bsc_params=self.bsc_params,
+        )
 
-        return None
+    def check_calibr_params(self):
+        # check whether all calibration params are equal
+        for bp in self.bsc_params[1:]:
+            if not self.calibration_params.equal(bp.calibration_params):
+                raise BscCalParamsNotEqual(self.bsc_params[0].prod_id,
+                                           bp.prod_id)
 
-
-class FindBscCalibrWindowAsInELDA(BaseOperation):
-    """find bsc calibration windows as in ELDA
-
-    * for all bsc products and time slices independently
-    * the calibration window is the minimum interval for which \
-      the relative standard error of the mean is smaller than the \
-      error threshold for altitudes above 2km.
-    * use signal ratio in case of Raman bsc, otherwise elastic signal only
-    * the results are xr.DataArrays (with variable \
-      'backscatter_calibration_range') which are assigned to the individual
-      BackscatterParams.calibr_window
-    """
-
-    name = 'FindBscCalibrWindowAsInELDA'
-
-    data_storage = None
-    bsc_params = None
-
-    def create_calibration_window_datarray(self, ds, win_first_idx, win_last_idx):
+    def create_calibration_window_dataarray(self, ds, win_first_idx, win_last_idx):
         """
         Create a backscatter calibration window
 
@@ -103,6 +96,106 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
             da[t, 1] = ds.height[t, win_last_idx[t]].values
 
         return da
+
+
+class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
+    """find bsc calibration windows with Rayleigh fit
+
+    """
+
+    name = 'FindBscCalibrWindowWithRaylFit'
+
+    def run_a_rayl_fit(self, results, sig):
+        channel_id = sig.channel_id_str
+
+        if channel_id not in results.keys():
+
+            # the Rayleigh fit routine expects as input:
+            #   * range axis in km
+            #   * background corrected signal (not range corrected)
+            #   * Rayleigh backscatter signal which is attenuated by molecular scattering and 1/r² dependency
+
+            range_axes = m_to_km(sig.range)
+            range_sqr = range_axes ** 2
+            range_res = (range_axes[:, 1] - range_axes[:, 0])
+
+            rayl_ext = sig.ds.mol_extinction
+            transm_up = sig.ds.mol_trasm_at_emission_wl
+            transm_down = sig.ds.mol_trasm_at_detection_wl
+            rayl_lr = sig.ds.mol_lidar_ratio
+            attn_rayl_bsc = rayl_ext * transm_up * transm_down / rayl_lr / range_sqr
+
+            signal = sig.data / range_sqr
+
+            for t in range(sig.ds.dims['time']):
+                input_data = Dict({'r': range_axes.values[t],
+                                   'raylSig': attn_rayl_bsc.values[t],
+                                   'Signal': signal.values[t],
+                                   'rangebin': range_res.values[t],
+                                   })
+
+                start_height = m_to_km(self.calibration_params.cal_interval.min_height)
+                top_height = m_to_km(self.calibration_params.cal_interval.max_height)
+                # window = m_to_km(self.calibration_params.window_width)
+                window = 1.
+
+                df = r_fit(input_data,
+                           lower_range_limit_r=start_height,
+                           upper_range_limit_r=top_height,
+                           windows=[window],
+                           rsem_min=0.1,
+                           extended_output=True).profiles[window]
+
+                results[channel_id][t] = df[df.ALL == 1]
+
+    def run(self):
+        """
+        Returns: None (results are assigned to individual BackscatterParams)
+        """
+        self.logger.debug('find backscatter calibration window with Rayleigh fit')
+        self.init()
+
+        results = Dict()
+
+        for bp in self.bsc_params:
+            sigs = self.data_storage.elpp_signals(bp.prod_id_str)
+            for sig in sigs:
+                if sig.is_elast_sig:
+                    time_dim = sig.ds.dims['time']
+                    self.run_a_rayl_fit(results, sig)
+
+        channels = list(results.keys())
+        for t in range(time_dim):
+            valid_heights = set(results[channels[0]][t].range)
+            for channel in channels[1:]:
+                valid_heights.intersection_update(set(results[channel][t].range))
+
+            if len(valid_heights) > 0:
+                valid_data = []
+                for channel in channels:
+                    df = results[channel][t]
+                    valid_data.append(df[df['range'].isin(list(valid_heights))]['rsem'])
+
+                best_idx = pd.concat(valid_data, axis=1, keys=channels).mean(axis=1).idxmin()
+                best_window_center = km_to_m(float(df[df.index == best_idx]['range']))
+
+        return None
+
+
+class FindBscCalibrWindowAsInELDA(FindBscCalibrWindow):
+    """find bsc calibration windows as in ELDA
+
+    * for all bsc products and time slices independently
+    * the calibration window is the minimum interval for which \
+      the relative standard error of the mean is smaller than the \
+      error threshold for altitudes above 2km.
+    * use signal ratio in case of Raman bsc, otherwise elastic signal only
+    * the results are xr.DataArrays (with variable \
+      'backscatter_calibration_range') which are assigned to the individual
+      BackscatterParams.calibr_window
+    """
+
+    name = 'FindBscCalibrWindowAsInELDA'
 
     def get_rolling_window_properties(self, bsc_param):
         """
@@ -150,7 +243,7 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
         win_first_idx, win_last_idx = find_minimum_window(means, sems, w_width, error_threshold)
 
         # Create a calibration window from win_first_idx, win_last_idx
-        calibration_window = self.create_calibration_window_datarray(data_set, win_first_idx, win_last_idx)
+        calibration_window = self.create_calibration_window_dataarray(data_set, win_first_idx, win_last_idx)
 
         # Store the calibration window
         bsc_param.calibr_window = calibration_window
@@ -163,29 +256,24 @@ class FindBscCalibrWindowAsInELDA(BaseOperation):
 
         return calibration_window
 
-    def init(self):
-        self.bsc_params = self.kwargs['bsc_params']
-
-        write_test_data(
-            'FindBscCalibrWindowAsInELDA',
-            cls=FindBscCalibrWindowAsInELDA,
-            data_storage=self.data_storage,
-            bsc_params=self.bsc_params,
-        )
+    # def init(self):
+    #     super(FindBscCalibrWindowAsInELDA, self).init()
+    #
+    #     write_test_data(
+    #         'FindBscCalibrWindowAsInELDA',
+    #         cls=FindBscCalibrWindowAsInELDA,
+    #         data_storage=self.data_storage,
+    #         bsc_params=self.bsc_params,
+    #     )
 
     def run(self):
         """
         Returns: None (results are assigned to individual BackscatterParams)
         """
         self.logger.debug('find backscatter calibration window as in ELDA')
+
         self.init()
 
-        # check whether all calibration params are equal
-        for bp in self.bsc_params[1:]:
-            if not self.bsc_params[0].calibration_params.equal(
-                    bp.calibration_params):
-                raise BscCalParamsNotEqual(self.bsc_params[0].prod_id,
-                                           bp.prod_id)
         for bp in self.bsc_params:
             self.find_calibration_window(bp)
 

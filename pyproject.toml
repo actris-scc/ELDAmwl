@@ -9,7 +9,7 @@ packages = [
     ]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4"
+python = ">=3.9,<3.12"
 addict = "2.4.0"
 colorlog = "^4.2.1"
 dynaconf = "^3.1.7"
@@ -42,6 +42,7 @@ sphinxcontrib-qthelp = "^1.0.3"
 sphinxcontrib-serializinghtml = "^1.1.4"
 sphinx-rtd-theme = "^1.1.1"
 coverage = "^6.5.0"
+rayleigh_fit = {path="../rayleigh_fit", develop=true}
 
 
 [build-system]
