@@ -71,133 +71,7 @@ class FindBscCalibrWindow(BaseOperation):
                 raise BscCalParamsNotEqual(self.bsc_params[0].prod_id,
                                            bp.prod_id)
 
-    def create_calibration_window_dataarray(self, ds, win_first_idx, win_last_idx):
-        """
-        Create a backscatter calibration window
-
-        Args:
-            ds : the dataset of the signal (contains the time and time_bounds variables)
-            win_first_idx : The first indexes of the window
-            win_last_idx : The last indexes of the window
-
-        Returns:
-            DataArray with bottom and top height [m a.g.] of the calibration window for each time slice.
-        """
-        da = xr.DataArray(
-            np.zeros((ds.dims['time'], ds.dims['nv'])),
-            coords=[ds.time, ds.nv],
-            dims=['time', 'nv'])
-        da.name = 'backscatter_calibration_range'
-        da.attrs = {'long_name': 'height_axis range where '
-                                 'calibration was calculated',
-                    'units': 'm'}
-        for t in range(ds.dims['time']):
-            da[t, 0] = ds.height[t, win_first_idx[t]].values
-            da[t, 1] = ds.height[t, win_last_idx[t]].values
-
-        return da
-
-
-class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
-    """find bsc calibration windows with Rayleigh fit
-
-    """
-
-    name = 'FindBscCalibrWindowWithRaylFit'
-
-    def run_a_rayl_fit(self, results, sig):
-        channel_id = sig.channel_id_str
-
-        if channel_id not in results.keys():
-
-            # the Rayleigh fit routine expects as input:
-            #   * range axis in km
-            #   * background corrected signal (not range corrected)
-            #   * Rayleigh backscatter signal which is attenuated by molecular scattering and 1/r² dependency
-
-            range_axes = m_to_km(sig.range)
-            range_sqr = range_axes ** 2
-            range_res = (range_axes[:, 1] - range_axes[:, 0])
-
-            rayl_ext = sig.ds.mol_extinction
-            transm_up = sig.ds.mol_trasm_at_emission_wl
-            transm_down = sig.ds.mol_trasm_at_detection_wl
-            rayl_lr = sig.ds.mol_lidar_ratio
-            attn_rayl_bsc = rayl_ext * transm_up * transm_down / rayl_lr / range_sqr
-
-            signal = sig.data / range_sqr
-
-            for t in range(sig.ds.dims['time']):
-                input_data = Dict({'r': range_axes.values[t],
-                                   'raylSig': attn_rayl_bsc.values[t],
-                                   'Signal': signal.values[t],
-                                   'rangebin': range_res.values[t],
-                                   })
-
-                start_height = m_to_km(self.calibration_params.cal_interval.min_height)
-                top_height = m_to_km(self.calibration_params.cal_interval.max_height)
-                # window = m_to_km(self.calibration_params.window_width)
-                window = 1.
-
-                df = r_fit(input_data,
-                           lower_range_limit_r=start_height,
-                           upper_range_limit_r=top_height,
-                           windows=[window],
-                           rsem_min=0.1,
-                           extended_output=True).profiles[window]
-
-                results[channel_id][t] = df[df.ALL == 1]
-
-    def run(self):
-        """
-        Returns: None (results are assigned to individual BackscatterParams)
-        """
-        self.logger.debug('find backscatter calibration window with Rayleigh fit')
-        self.init()
-
-        results = Dict()
-
-        for bp in self.bsc_params:
-            sigs = self.data_storage.elpp_signals(bp.prod_id_str)
-            for sig in sigs:
-                if sig.is_elast_sig:
-                    time_dim = sig.ds.dims['time']
-                    self.run_a_rayl_fit(results, sig)
-
-        channels = list(results.keys())
-        for t in range(time_dim):
-            valid_heights = set(results[channels[0]][t].range)
-            for channel in channels[1:]:
-                valid_heights.intersection_update(set(results[channel][t].range))
-
-            if len(valid_heights) > 0:
-                valid_data = []
-                for channel in channels:
-                    df = results[channel][t]
-                    valid_data.append(df[df['range'].isin(list(valid_heights))]['rsem'])
-
-                best_idx = pd.concat(valid_data, axis=1, keys=channels).mean(axis=1).idxmin()
-                best_window_center = km_to_m(float(df[df.index == best_idx]['range']))
-
-        return None
-
-
-class FindBscCalibrWindowAsInELDA(FindBscCalibrWindow):
-    """find bsc calibration windows as in ELDA
-
-    * for all bsc products and time slices independently
-    * the calibration window is the minimum interval for which \
-      the relative standard error of the mean is smaller than the \
-      error threshold for altitudes above 2km.
-    * use signal ratio in case of Raman bsc, otherwise elastic signal only
-    * the results are xr.DataArrays (with variable \
-      'backscatter_calibration_range') which are assigned to the individual
-      BackscatterParams.calibr_window
-    """
-
-    name = 'FindBscCalibrWindowAsInELDA'
-
-    def get_rolling_window_properties(self, bsc_param):
+    def get_calibr_window_properties(self, bsc_param):
         """
         Args:
             bsc_param (BackscatterParams): Backscatter params
@@ -231,10 +105,216 @@ class FindBscCalibrWindowAsInELDA(FindBscCalibrWindow):
 
         return ds, w_width, error_threshold
 
+    def create_calibration_window_dataarray(self, ds,
+                                            win_first_idx, win_last_idx,
+                                            win_bottom_height,
+                                            win_top_height):
+        """
+        Create a backscatter calibration window
+
+        Args:
+            ds : the dataset of the signal (contains the time and time_bounds variables)
+            win_first_idx : The first indexes of the window
+            win_last_idx : The last indexes of the window
+
+        Returns:
+            DataArray with bottom and top height [m a.g.] of the calibration window for each time slice.
+        """
+        da = xr.DataArray(
+            np.zeros((ds.dims['time'], ds.dims['nv'])),
+            coords=[ds.time, ds.nv],
+            dims=['time', 'nv'])
+        da.name = 'backscatter_calibration_range'
+        da.attrs = {'long_name': 'height_axis range where '
+                                 'calibration was calculated',
+                    'units': 'm'}
+        if (win_first_idx is not None) and (win_last_idx is not None):
+            for t in range(ds.dims['time']):
+                da[t, 0] = ds.height[t, win_first_idx[t]].values
+                da[t, 1] = ds.height[t, win_last_idx[t]].values
+        elif (win_bottom_height is not None and win_top_height is not None):
+            da[:, 0] = win_bottom_height[:]
+            da[:, 1] = win_top_height[:]
+
+
+        return da
+
+
+class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
+    """find bsc calibration windows with Rayleigh fit
+
+    """
+
+    name = 'FindBscCalibrWindowWithRaylFit'
+    all_results = None
+    channels = []
+    bad_channels = []
+    window_widths = []
+    window_width_default = None
+    time_dim = 0
+
+    def run_a_rayl_fit(self, sig):
+        channel_id = sig.channel_id_str
+
+        if channel_id not in self.all_results.keys():
+
+            # the Rayleigh fit routine expects as input:
+            #   * range axis in km
+            #   * background corrected signal (not range corrected)
+            #   * Rayleigh backscatter signal which is attenuated by molecular scattering and 1/r² dependency
+
+            range_axes = m_to_km(sig.range)
+            range_sqr = range_axes ** 2
+            range_res = (range_axes[:, 1] - range_axes[:, 0])
+
+            rayl_ext = sig.ds.mol_extinction
+            transm_up = sig.ds.mol_trasm_at_emission_wl
+            transm_down = sig.ds.mol_trasm_at_detection_wl
+            rayl_lr = sig.ds.mol_lidar_ratio
+            attn_rayl_bsc = rayl_ext * transm_up * transm_down / rayl_lr / range_sqr
+
+            signal = sig.data / range_sqr
+
+            for t in range(sig.ds.dims['time']):
+                input_data = Dict({'r': range_axes.values[t],
+                                   'raylSig': attn_rayl_bsc.values[t],
+                                   'Signal': signal.values[t],
+                                   'rangebin': range_res.values[t],
+                                   })
+
+                start_height = m_to_km(self.calibration_params.cal_interval.min_height)
+                top_height = m_to_km(self.calibration_params.cal_interval.max_height)
+                self.window_width_default = m_to_km(self.calibration_params.window_width)
+
+                # if the required window width is not in the predefined list -> add it
+                self.window_widths = self.cfg.window_widths
+                if not self.window_width_default in self.window_widths:
+                    self.window_widths = self.window_widths.append(self.window_width_default)
+
+                fit_results = r_fit(input_data,
+                                    lower_range_limit_r=start_height,
+                                    upper_range_limit_r=top_height,
+                                    windows=self.window_widths,
+                                    rsem_min=0.1,
+                                    extended_output=True).profiles
+
+                for w in self.window_widths:
+                    df = fit_results[w]
+                    self.all_results[w][channel_id][t] = df[df.ALL == 1]
+
+    def check_results_of_channel(self, channel):
+        w = 0
+        has_result = False
+        while (not has_result) and (w < len(self.window_widths)):
+            wwidth = self.window_widths[w]
+            for t in range(self.time_dim):
+                if self.all_results[wwidth][channel][t].shape[0] > 0:
+                    has_result = True
+            w += 1
+        if not has_result:
+            self.logger.warning(f'could not find any calibration for channel {channel}.')
+            self.bad_channels.append(channel)
+
+    def find_best_compromise(self):
+        win_bottom_heights = np.ones(self.time_dim) * np.nan
+        win_top_heights = np.ones(self.time_dim) * np.nan
+        win_widths = np.ones(self.time_dim) * np.nan
+
+        # check if one channel has no results at all
+        for channel in self.channels:
+            self.check_results_of_channel(channel)
+        use_channels = list(set(self.channels).difference(set(self.bad_channels)))
+
+        first_chan = use_channels[0]
+
+        for t in range(self.time_dim):
+            # 1) try to find a common calibration for default window width
+            wwidth = self.window_width_default
+            valid_heights = set(self.all_results[wwidth][first_chan][t].range)
+            for channel in use_channels[1:]:
+                valid_heights.intersection_update(set(self.all_results[wwidth][channel][t].range))
+
+            if len(valid_heights) == 0:
+                self.logger.warning(f'could not fine calibration for time slice {t} and window width {wwidth}')
+
+            # 2) if not successful, try all other window widths
+            w = 0
+            while (len(valid_heights) == 0) and w < len(self.window_widths):
+                wwidth = self.window_widths[w]
+                valid_heights = set(self.all_results[wwidth][first_chan][t].range)
+                for channel in use_channels[1:]:
+                    valid_heights.intersection_update(set(self.all_results[wwidth][channel][t].range))
+                w += 1
+
+            if len(valid_heights) == 0:
+                self.logger.warning(f'could not find any calibration for time slice {t}')
+            else:
+                # if overlapping calibration heights were found
+                # -> find the height bin with the lowest average value of rsem
+                valid_data = []
+                for channel in self.channels:
+                    df = self.all_results[channel][t]
+                    valid_data.append(df[df['range'].isin(list(valid_heights))]['rsem'])
+
+                best_idx = pd.concat(valid_data, axis=1, keys=self.channels).mean(axis=1).idxmin()
+                best_window_center = km_to_m(float(df[df.index == best_idx]['range']))
+
+                win_widths[t] = km_to_m(wwidth)
+                half_win = win_widths[t] / 2
+                win_bottom_heights[t] = best_window_center - half_win
+                win_top_heights[t] = best_window_center + half_win
+
+        return win_bottom_heights, win_top_heights, win_widths
+
+    def get_all_single_fits(self):
+        self.all_results = Dict()
+
+        for bp in self.bsc_params:
+            sigs = self.data_storage.elpp_signals(bp.prod_id_str)
+            for sig in sigs:
+                if sig.is_elast_sig:
+                    self.channels.append(sig.channel_id_str)
+                    self.time_dim = sig.ds.dims['time']
+                    self.run_a_rayl_fit(sig)
+
+    def run(self):
+        """
+        Returns: None (results are assigned to individual BackscatterParams)
+        """
+        self.logger.debug('find backscatter calibration window with Rayleigh fit')
+        self.init()
+
+        self.get_all_single_fits()
+        win_bottom_heights, win_top_heights = self.find_best_compromise()
+
+        for bp in self.bsc_params:
+            data_set, w_width, error_threshold = self.get_calibr_window_properties(bp)
+            calibration_window = self.create_calibration_window_dataarray(
+                data_set, None, None, win_bottom_heights, win_top_heights)
+            bp.calibr_window = calibration_window
+
+        return None
+
+
+class FindBscCalibrWindowAsInELDA(FindBscCalibrWindow):
+    """find bsc calibration windows as in ELDA
+
+    * for all bsc products and time slices independently
+    * the calibration window is the minimum interval for which \
+      the relative standard error of the mean is smaller than the \
+      error threshold for altitudes above 2km.
+    * use signal ratio in case of Raman bsc, otherwise elastic signal only
+    * the results are xr.DataArrays (with variable \
+      'backscatter_calibration_range') which are assigned to the individual
+      BackscatterParams.calibr_window
+    """
+
+    name = 'FindBscCalibrWindowAsInELDA'
+
     def find_calibration_window(self, bsc_param):
 
         # get the parameters for the rolling mean calculation
-        data_set, w_width, error_threshold = self.get_rolling_window_properties(bsc_param)
+        data_set, w_width, error_threshold = self.get_calibr_window_properties(bsc_param)
 
         # calculate the rolling means and standard errors of the means (sems) with the given window properties
         means, sems = calc_rolling_means_sems(data_set, w_width)
@@ -243,7 +323,7 @@ class FindBscCalibrWindowAsInELDA(FindBscCalibrWindow):
         win_first_idx, win_last_idx = find_minimum_window(means, sems, w_width, error_threshold)
 
         # Create a calibration window from win_first_idx, win_last_idx
-        calibration_window = self.create_calibration_window_dataarray(data_set, win_first_idx, win_last_idx)
+        calibration_window = self.create_calibration_window_dataarray(data_set, win_first_idx, win_last_idx, None, None)
 
         # Store the calibration window
         bsc_param.calibr_window = calibration_window
