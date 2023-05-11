@@ -285,13 +285,15 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
         self.init()
 
         self.get_all_single_fits()
-        win_bottom_heights, win_top_heights = self.find_best_compromise()
+        win_bottom_heights, win_top_heights, win_widths = self.find_best_compromise()
 
         for bp in self.bsc_params:
-            data_set, w_width, error_threshold = self.get_calibr_window_properties(bp)
+            data_set, dummy, dummy = self.get_calibr_window_properties(bp)
             calibration_window = self.create_calibration_window_dataarray(
                 data_set, None, None, win_bottom_heights, win_top_heights)
             bp.calibr_window = calibration_window
+            # todo when reporting calibration window in results, use actual difference between \
+            #  window bottom and top because it can be different from default width
 
         return None
 
