@@ -424,6 +424,19 @@ class Signals(Columns):
         else:
             self.logger.error('height axis is not equidistant')
 
+    def ranges_to_levels(self, ranges):
+        """converts a series of range value into a series of level (dim=time)
+        Args: ranges (xarray): a requested height for each time, in m
+        Returns: level (xarray) closest to the requested heights
+        """
+        times = self.ds.dims['time']
+        if ranges.shape[0] != times:
+            self.logger.error('dataset and ranges have different lenghts (time dimension)')
+            return None
+
+        closest_bin = (abs(self.range - ranges)).argmin(dim='level')
+        return closest_bin
+
     def heights_to_levels(self, heights):
         """converts a series of height value into a series of level (dim=time)
         Args: heights (xarray): a requested height for each time, in m
@@ -484,6 +497,7 @@ class Signals(Columns):
 
         if boundaries is None:
             result = self.ds.where((self.height > min_h) & (self.height < max_h), drop=True)
+            result['range'] = self.range.where((self.height > min_h) & (self.height < max_h), drop=True)
         else:
             # first valid level
             fvl = self.height_to_levels(min_h)
@@ -498,6 +512,7 @@ class Signals(Columns):
                 lvl = min(lvl - self.ds.binres[lvl] // 2, self.ds.dims.level)
 
             result = self.ds.isel({'level': range(fvl, lvl)})
+            result['range'] = self.range.isel({'level': range(fvl, lvl)})
 
         return result
 

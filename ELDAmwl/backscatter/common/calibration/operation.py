@@ -77,10 +77,10 @@ class FindBscCalibrWindow(BaseOperation):
             bsc_param (BackscatterParams): Backscatter params
 
         Returns:
-            ds : The dataset to operate on
+            ds : The dataset to operate on (= sig in search range for calibration window)
             w_width : The window widths [bins]
-            el_sig.height_axis : The height_axis axis to use
             error_threshold : The error threshold
+            el_sig.range_axis : The range_axis axis to use
         """
 
         el_sig = self.data_storage.prepared_signal(bsc_param.prod_id_str,
@@ -152,6 +152,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
     window_widths = []
     window_width_default = None
     time_dim = 0
+    elast_signals = None
 
     def run_a_rayl_fit(self, sig):
         channel_id = sig.channel_id_str
@@ -172,8 +173,11 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
             transm_down = sig.ds.mol_trasm_at_detection_wl
             rayl_lr = sig.ds.mol_lidar_ratio
             attn_rayl_bsc = rayl_ext * transm_up * transm_down / rayl_lr / range_sqr
-
             signal = sig.data / range_sqr
+
+            # ==== generate test output ====
+            # (rayl_ext * transm_up * transm_down / rayl_lr)[0].to_dataframe(name='rayl_bsc').to_csv('dummy.csv')
+            # sig.data[0].to_dataframe(name='signal').to_csv('dummy.csv')
 
             for t in range(sig.ds.dims['time']):
                 input_data = Dict({'r': range_axes.values[t],
@@ -198,9 +202,18 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
                                     rsem_min=0.1,
                                     extended_output=True).profiles
 
+                # ==== generate test output ====
+                # res = r_fit(input_data,
+                #               lower_range_limit_r=start_height, upper_range_limit_r=top_height,
+                #               windows=self.window_widths, rsem_min=0.1)
+                # output for origin indeces
+                # res.fit_rangebin, res.fit_window_rangebins, int(res.fit_rangebin - res.fit_window_rangebins/2)+2, int(res.fit_rangebin + res.fit_window_rangebins /2)+2
+
                 for w in self.window_widths:
                     df = fit_results[w]
                     self.all_results[w][channel_id][t] = df[df.ALL == 1]
+                    # ==== generate test output ====
+                    # df[df.ALL == 1].to_csv('flags.csv')
 
     def check_results_of_channel(self, channel):
         w = 0
@@ -216,8 +229,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
             self.bad_channels.append(channel)
 
     def find_best_compromise(self):
-        win_bottom_heights = np.ones(self.time_dim) * np.nan
-        win_top_heights = np.ones(self.time_dim) * np.nan
+        win_center_ranges = np.ones(self.time_dim) * np.nan
         win_widths = np.ones(self.time_dim) * np.nan
 
         # check if one channel has no results at all
@@ -237,14 +249,14 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
             if len(valid_heights) == 0:
                 self.logger.warning(f'could not fine calibration for time slice {t} and window width {wwidth}')
 
-            # 2) if not successful, try all other window widths
-            w = 0
-            while (len(valid_heights) == 0) and w < len(self.window_widths):
-                wwidth = self.window_widths[w]
-                valid_heights = set(self.all_results[wwidth][first_chan][t].range)
-                for channel in use_channels[1:]:
-                    valid_heights.intersection_update(set(self.all_results[wwidth][channel][t].range))
-                w += 1
+                # 2) if not successful, try all other window widths
+                w = 0
+                while (len(valid_heights) == 0) and w < len(self.window_widths):
+                    wwidth = self.window_widths[w]
+                    valid_heights = set(self.all_results[wwidth][first_chan][t].range)
+                    for channel in use_channels[1:]:
+                        valid_heights.intersection_update(set(self.all_results[wwidth][channel][t].range))
+                    w += 1
 
             if len(valid_heights) == 0:
                 self.logger.warning(f'could not find any calibration for time slice {t}')
@@ -253,29 +265,61 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
                 # -> find the height bin with the lowest average value of rsem
                 valid_data = []
                 for channel in self.channels:
-                    df = self.all_results[channel][t]
-                    valid_data.append(df[df['range'].isin(list(valid_heights))]['rsem'])
+                    df = self.all_results[wwidth][channel][t]
+                    valid_data.append(df[df['range'].isin(list(valid_heights))]['Comb'])
+                # ==== generate test output ====
+                # valid_data = {}
+                # for channel in self.channels:
+                #     df = self.all_results[wwidth][channel][t]
+                #     valid_data[channel] = df[df['range'].isin(list(valid_heights))]['Comb']
+                # valid_data['height'] = list(valid_heights)
+                # pd.DataFrame(valid_data).to_csv('/home/ina/workspace/temp/flags_comb.csv')
 
                 best_idx = pd.concat(valid_data, axis=1, keys=self.channels).mean(axis=1).idxmin()
-                best_window_center = km_to_m(float(df[df.index == best_idx]['range']))
-
+                win_center_ranges[t] = km_to_m(float(df[df.index == best_idx]['range']))
                 win_widths[t] = km_to_m(wwidth)
-                half_win = win_widths[t] / 2
-                win_bottom_heights[t] = best_window_center - half_win
-                win_top_heights[t] = best_window_center + half_win
 
-        return win_bottom_heights, win_top_heights, win_widths
+        return win_center_ranges, win_widths
 
     def get_all_single_fits(self):
         self.all_results = Dict()
+        self.elast_signals = Dict()
 
         for bp in self.bsc_params:
             sigs = self.data_storage.elpp_signals(bp.prod_id_str)
             for sig in sigs:
                 if sig.is_elast_sig:
+                    self.elast_signals[bp] = sig
                     self.channels.append(sig.channel_id_str)
                     self.time_dim = sig.ds.dims['time']
                     self.run_a_rayl_fit(sig)
+
+    def get_cal_height_windows(self, bp, win_center_ranges, win_widths):
+
+        sig = self.elast_signals[bp]
+
+        # the result of the Rayleigh fit routine is the range value of the center of the best fit window
+        # for further retrievals, we need the calibration window in height coordinates
+
+        # 1) convert list of win_center_ranges into DataArray
+        centers = xr.DataArray(np.array(win_center_ranges),
+                               coords=[sig.ds.time],
+                               dims=['time'])
+        # 2) find the idx of the center bin
+        center_idxs = sig.ranges_to_levels(centers)
+        # 3) get the height value of this bins
+        win_center_heights = sig.height[:, center_idxs].values
+
+        # 4) calculate height boundaries of the windows
+        half_win_widths = win_widths / 2
+        win_bottom_heights = win_center_heights - half_win_widths
+        win_top_heights = win_center_heights + half_win_widths
+
+        # 5) generate DataArray with correct time dimension
+        calibration_window = self.create_calibration_window_dataarray(
+            sig.ds, None, None, win_bottom_heights, win_top_heights)
+
+        return calibration_window
 
     def run(self):
         """
@@ -285,15 +329,11 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
         self.init()
 
         self.get_all_single_fits()
-        win_bottom_heights, win_top_heights, win_widths = self.find_best_compromise()
+        win_center_ranges, win_widths = self.find_best_compromise()
 
         for bp in self.bsc_params:
-            data_set, dummy, dummy = self.get_calibr_window_properties(bp)
-            calibration_window = self.create_calibration_window_dataarray(
-                data_set, None, None, win_bottom_heights, win_top_heights)
+            calibration_window = self.get_cal_height_windows(bp, win_center_ranges, win_widths)
             bp.calibr_window = calibration_window
-            # todo when reporting calibration window in results, use actual difference between \
-            #  window bottom and top because it can be different from default width
 
         return None
 
