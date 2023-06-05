@@ -566,22 +566,22 @@
 --* remove columns from table create a table polarization_calibration_correction_factors which are no longer needed
 --* ===================================================================================
 --*/
-ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DROP COLUMN lowerbound_calculation_time;
-ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DROP COLUMN upperbound_calculation_time;
-ALTER TABLE scc_dev_20221201_mwl.polarization_calibration_correction_factors DROP COLUMN K_calculation_time;
+ALTER TABLE polarization_calibration_correction_factors DROP COLUMN lowerbound_calculation_time;
+ALTER TABLE polarization_calibration_correction_factors DROP COLUMN upperbound_calculation_time;
+ALTER TABLE polarization_calibration_correction_factors DROP COLUMN K_calculation_time;
 
-/*
-* ===================================================================================
-* add new column to eldamwl_product_status
-* ===================================================================================
-*/
-ALTER TABLE eldamwl_product_status ADD COLUMN `_mwl_product_ID` int(11)  DEFAULT '-1' after `__measurements__ID`;
+--/*
+--* ===================================================================================
+--* add new column to eldamwl_product_status
+--* ===================================================================================
+--*/
+--	ALTER TABLE eldamwl_product_status ADD COLUMN `_mwl_product_id` int(11)  DEFAULT '-1' after `__measurements__ID`;
 
-/*
-* ===================================================================================
-* change eldamwl classname for finding a bsc calibration window
-* ===================================================================================
-*/
-update `eldamwl_class_names` set `method` = "rayleigh-fit", `classname` = "FindBscCalibrWindowWithRaylFit" where ID=14;
+--/*
+--* ===================================================================================
+--* change eldamwl classname for finding a bsc calibration window
+--* ===================================================================================
+--*/
+--	update `eldamwl_class_names` set `method` = "rayleigh-fit", `classname` = "FindBscCalibrWindowWithRaylFit" where ID=14;
 
 
