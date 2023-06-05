@@ -36,7 +36,8 @@ from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SmoothMethod
 from ELDAmwl.database.tables.system_product import SmoothOptions
 from ELDAmwl.database.tables.system_product import SystemProduct
-from ELDAmwl.errors.exceptions import NoBscCalOptions, NoParamsForDepolUncertainty, NoMwlProductDefined
+from ELDAmwl.errors.exceptions import NoBscCalOptions, NoParamsForDepolUncertainty, NoMwlProductDefined, NoELPPFileInDB, \
+    NoBasicProductsInDB
 from ELDAmwl.errors.exceptions import NOMCOptions
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import MWL
@@ -561,12 +562,6 @@ class DBFunc(DBUtils):
                 list of individual product IDs corresponding to this mwl product
 
             """
-        # todo: keep this ErrorThreshold tables in this query. we might need it when
-        #  we implement automatic smoothing later. but for the moment, keep the lines inactive
-        # ErrorThresholdsLow = aliased(ErrorThresholds,
-        #                              name='ErrorThresholdsLow')
-        # ErrorThresholdsHigh = aliased(ErrorThresholds,
-        #                               name='ErrorThresholdsHigh')
 
         products = self.session.query(
             MWLproductProduct,
@@ -574,8 +569,6 @@ class DBFunc(DBUtils):
             ProductTypes,
             SmoothOptions,
             PreProcOptions,
-            # ErrorThresholdsLow,
-            # ErrorThresholdsHigh,
             PreparedSignalFile,
             ProductChannels,
             Channels,
@@ -593,24 +586,31 @@ class DBFunc(DBUtils):
             SmoothOptions.product_id == Products.ID,
         ).filter(
             PreProcOptions.product_id == Products.ID,
-        # ).filter(
-        #     SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
-        # ).filter(
-        #     SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
         ).filter(
             ProductChannels.prod_id == Products.ID,
         ).filter(
             ProductChannels.channel_id == Channels.ID,
-        ).filter(
+        ).group_by(Products.ID)
+
+        product_count = products.count()
+        if product_count == 0:
+            self.logger.error('no individual basic products defined for mwl product')
+            raise NoBasicProductsInDB(mwl_prod_id)
+
+        products = products.filter(
             PreparedSignalFile.product_id == Products.ID,
         ).filter(
             PreparedSignalFile.measurements_id == measurement_id,
-        ).group_by(Products.ID)
+        )
 
-        if products.count() > 0:
+        if products.count() == 0:
+            self.logger.error(f'no ELPP signals available for measurement {measurement_id}')
+            raise NoELPPFileInDB(measurement_id)
+        elif products.count() < product_count:
+            self.logger.warning('some basic products have no ELPP file')
             return products
         else:
-            self.logger.error('no individual products for mwl product')
+            return products
 
     def get_derived_products_query(self, mwl_prod_id):
         """ read from db which of the products correlated to

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, NO_MWL_PRODUCT_DEFINED
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, NO_MWL_PRODUCT_DEFINED, NO_PRODUCT_OPTIONS_IN_DB
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -171,7 +171,7 @@ class ProductNotUnique(ELDAmwlException):
 
 
 class ELPPFileNotFound(ELDAmwlException):
-    """raised when the requested ELPP file is not found
+    """raised when the requested ELPP file is not found on disc
     """
 
     return_value = ERROR_SIG_FILE_NOT_EXISTS
@@ -184,7 +184,7 @@ class ELPPFileNotFound(ELDAmwlException):
 
 
 class CannotOpenELLPFile(ELDAmwlException):
-    """raised when an eLPP file cannot be opened"""
+    """raised when an ELPP file cannot be opened"""
 
     return_value = NC_OPEN_ERROR
 
@@ -193,6 +193,29 @@ class CannotOpenELLPFile(ELDAmwlException):
 
     def __str__(self):
         return 'cannot open ELPP file {0}'.format(self.filename)
+
+
+class NoELPPFileInDB(ELDAmwlException):
+    """raised when a measurement has no attributed ELPP files in database
+    """
+
+    return_value = ERROR_SIG_FILE_NOT_EXISTS
+
+    def __init__(self, meas_id):
+        self.meas_id = meas_id
+
+    def __str__(self):
+        return f'no ELPP file in database for measurement{self.meas_id}'
+
+
+class NoBasicProductsInDB(ELDAmwlException):
+    """raised when no basic products are attributed to a mwl product in database
+    """
+
+    return_value = NO_PRODUCT_OPTIONS_IN_DB
+
+    def __str__(self):
+        return f'no basic products are defined for mwl product{self.prod_id}'
 
 
 class LogPathNotExists(ELDAmwlException):
