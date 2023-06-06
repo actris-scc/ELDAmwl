@@ -552,6 +552,7 @@ class DataStorage:
     def number_of_scheduled_products(self):
         return self.__data.number_of_scheduled_products
 
+    @property
     def scc_version_id(self):
         return self.__data.scc_version_id
 
