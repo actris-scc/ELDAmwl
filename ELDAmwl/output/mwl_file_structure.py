@@ -207,7 +207,7 @@ class MWLFileStructure:
 
         """
         var = xr.DataArray(
-            np.float(value),  # todo ina: pep8 problem with np.float
+            float(value),  # todo ina: pep8 problem with np.float
             name='calibration_value',
             attrs={
                 'long_name': 'assumed backscatter-ratio value (unitless) in calibration range',
