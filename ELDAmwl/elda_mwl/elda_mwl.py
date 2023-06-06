@@ -396,7 +396,9 @@ class RunELDAmwl(BaseOperation):
 
     def __init__(self, meas_id):
         super(RunELDAmwl, self).__init__()
-        # todo: read current scc version
+
+        scc_version_id = self.db_func.get_scc_version_id()
+        self.data_storage.set_scc_version_id(scc_version_id)
         self.params.load_from_db(meas_id)
 
     def read_tasks(self):

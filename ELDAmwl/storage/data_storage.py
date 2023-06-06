@@ -36,6 +36,7 @@ class DataStorage:
         self.__data = Dict(
             {
                 'number_of_scheduled_products': None,
+                'scc_version_id': None,
                 'elpp_signals': Dict(),
                 'prepared_signals': Dict(),
 
@@ -71,6 +72,9 @@ class DataStorage:
 
     def set_number_of_scheduled_products(self, number):
         self.__data.number_of_scheduled_products = number
+
+    def set_scc_version_id(self, id):
+        self.__data.scc_version_id = id
 
     def set_elpp_signal(self, prod_id_str, new_signal):
         """write new ELPP signal to storage"""
@@ -547,6 +551,9 @@ class DataStorage:
 
     def number_of_scheduled_products(self):
         return self.__data.number_of_scheduled_products
+
+    def scc_version_id(self):
+        return self.__data.scc_version_id
 
     @property
     def cloud_mask(self):

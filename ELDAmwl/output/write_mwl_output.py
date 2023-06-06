@@ -102,13 +102,12 @@ class WriteMWLOutputDefault(BaseOperation):
             ds.close()
 
     def register_to_db(self):
-        # todo: write real data of  sccversion
         header = self.data_storage.header
 
         self.db_func.register_mwl_file_to_db(
             header.attrs.measurement_ID,
             self.product_params.mwl_product_id,
-            5,  # scc version_id
+            self.data_storage.scc_version_id,
             datetime.now(),
             self.mwl_filename(),
         )

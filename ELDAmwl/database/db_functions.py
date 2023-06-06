@@ -22,7 +22,7 @@ from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
-from ELDAmwl.database.tables.general import ELDAmwlLogs, EldaMwlProductStatus
+from ELDAmwl.database.tables.general import ELDAmwlLogs, EldaMwlProductStatus, SccVersion
 from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
@@ -549,6 +549,16 @@ class DBFunc(DBUtils):
             self.logger.error(
                 'wrong number of extinction options ({0})'.format(options.count()),
             )
+
+    def get_scc_version_id(self):
+        versions = self.session.query(SccVersion).filter(SccVersion.is_latest)
+        if versions.count() == 1:
+            version_id = versions.first().ID
+            self.logger.debug(f'SCC version id is {version_id}')
+            return version_id
+        else:
+            self.logger.error('wrong number of latest SCC versions ({versions.count()}) in DB')
+            return None
 
     def get_basic_products_query(self, mwl_prod_id, measurement_id):
         """ read from db which of the products correlated to

@@ -4,7 +4,7 @@ from ELDAmwl.database.tables.db_base import Base
 from sqlalchemy import BIGINT
 from sqlalchemy import Column
 from sqlalchemy import DateTime
-from sqlalchemy import INTEGER
+from sqlalchemy import INTEGER, BOOLEAN
 from sqlalchemy import String
 from sqlalchemy import text
 from sqlalchemy import VARCHAR
@@ -102,3 +102,56 @@ class EldaMwlProductStatus(Base):
         String(500),
         server_default=text("''"),
     )
+
+class SccVersion(Base):
+    __tablename__ = 'scc_version'
+
+    ID = Column(
+        INTEGER,
+        primary_key=True,
+    )
+    scc_version = Column(
+        String(10),
+    )
+    pre_process_version = Column(
+        String(10),
+    )
+    elda_version = Column(
+        String(10),
+    )
+    daemon_version = Column(
+        String(10),
+    )
+    scc_db_version = Column(
+        String(10),
+    )
+    web_interface_version = Column(
+        String(10),
+    )
+    scc_calibrator_version = Column(
+        String(10),
+    )
+    hirelpp_version = Column(
+        String(10),
+    )
+    cloudmask_version = Column(
+        String(10),
+    )
+    elquick_version = Column(
+        String(10),
+    )
+    elic_version = Column(
+        String(10),
+    )
+    release_date = Column(
+        DateTime,
+        nullable=False,
+        server_default=text("'1970-01-01 00:00:00'"),
+    )
+    is_latest = Column(
+        BOOLEAN,
+        nullable=False,
+        server_default=text("'0'"),
+    )
+
+
