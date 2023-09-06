@@ -75,7 +75,11 @@ class LidarConstantData(object):
         if self.is_from_combined_signal:
             return
 
-        for t in range(self.ds.dims['time']):
+        # find valid time slices
+        valid_ts = np.where(~self.ds.lidar_constant.isnull())[0]
+
+        # for t in range(self.ds.dims['time']):
+        for t in valid_ts:
             db_func.write_lidar_constant_in_db(self.measurement_id,
                                                self.product_id,
                                                self.channel_id,

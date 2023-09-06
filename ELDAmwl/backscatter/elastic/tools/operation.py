@@ -90,77 +90,82 @@ class CalcBscProfileKF(BaseOperation):
         B = np.full(rayl_bsc.shape, np.nan)
         B_err = np.full(rayl_bsc.shape, np.nan)
 
-        # 1) calculate calibration factor
         for t in range(num_times):
-            # convert elast_sig.ds (xr.Dataset) into pd.Dataframe for easier selection of calibration window
-            df_sig = elast_sig.data.isel(
-                {'level': range(calibration['cal_first_lev'][t],
-                                calibration['cal_last_lev'][t] + 1),
-                 'time': t})\
-                .to_dataframe()
-            mean_sig = df_sig.data.mean()
-            sem_sig = df_sig.data.sem()
-            rel_sem_sig = sem_sig / mean_sig
-
-            df_rayl = rayl_bsc.isel({'level':
-                                    range(calibration['cal_first_lev'][t],
-                                          calibration['cal_last_lev'][t] + 1),
-                                     'time': t})\
-                .to_dataframe()
-            mean_rayl_bsc = df_rayl.mol_backscatter.mean()
-            # assume that rayleigh backscatter has no uncertainty
-
-            if rel_sem_sig > error_params.err_threshold.highrange:
-                self.logger.error('relative error of signal in calibration window is larger than error threshold')
-                raise NoValidDataPointsForCalibration
-
+            # 1) calculate calibration factor
+            if calibration['cal_first_lev'][t] == NC_FILL_INT:
+                # if there is no valid calibration height -> fill with nan
+                B[t] = np.nan
+                A[t] = np.nan
             else:
-                calibr_factor[t] = mean_sig / mean_rayl_bsc / calibration.calibr_value.value
-                calibr_factor_err[t] = calibr_factor[t] * \
-                    np.sqrt(np.square(rel_sem_sig) + np.square(calibration.calibr_value.rel_error))
+                # convert elast_sig.ds (xr.Dataset) into pd.Dataframe for easier selection of calibration window
+                df_sig = elast_sig.data.isel(
+                    {'level': range(calibration['cal_first_lev'][t],
+                                    calibration['cal_last_lev'][t] + 1),
+                     'time': t})\
+                    .to_dataframe()
+                mean_sig = df_sig.data.mean()
+                sem_sig = df_sig.data.sem()
+                rel_sem_sig = sem_sig / mean_sig
 
-        # 2) find signal bin which has the value closest to the mean of the calibration window
-            cb = closest_bin(
-                elast_sig.data[t].values,
-#                error=elast_sig.err[t].values,
-                first_bin=calibration['cal_first_lev'][t],
-                last_bin=calibration['cal_last_lev'][t] + 1,
-                # search_value=mean_sig,
-                )
-            if cb is None:
-                self.logger.error('cannot find altitude bin close enough to mean signal within calibration window')
-                return None
-            else:
-                calibr_bin[t] = cb
+                df_rayl = rayl_bsc.isel({'level':
+                                        range(calibration['cal_first_lev'][t],
+                                              calibration['cal_last_lev'][t] + 1),
+                                         'time': t})\
+                    .to_dataframe()
+                mean_rayl_bsc = df_rayl.mol_backscatter.mean()
+                # assume that rayleigh backscatter has no uncertainty
 
-        # 3) calculate M, A, A_int, B, and B_err
-            try:
-                M[t, calibr_bin[t]:] = integral_profile(rayl_bsc[t].values,
-                                                        range_axis=range_axis[t].values,
-                                                        first_bin=calibr_bin[t])
-                M[t, :calibr_bin[t] + 1] = integral_profile(rayl_bsc[t].values,
-                                                            range_axis=range_axis[t].values,
-                                                            first_bin=calibr_bin[t],
-                                                            last_bin=0)
+                if rel_sem_sig > error_params.err_threshold.highrange:
+                    self.logger.error('relative error of signal in calibration window is larger than error threshold')
+                    raise NoValidDataPointsForCalibration
 
-                M[t, calibr_bin[t]] = 0
+                else:
+                    calibr_factor[t] = mean_sig / mean_rayl_bsc / calibration.calibr_value.value
+                    calibr_factor_err[t] = calibr_factor[t] * \
+                        np.sqrt(np.square(rel_sem_sig) + np.square(calibration.calibr_value.rel_error))
 
-                A[t] = elast_sig.data[t] * np.exp(-2 * lr_diff[t] * M[t])
-                A_int[t, calibr_bin[t]:] = integral_profile(A[t],
+                # 2) find signal bin which has the value closest to the mean of the calibration window
+                cb = closest_bin(
+                    elast_sig.data[t].values,
+                    # error=elast_sig.err[t].values,
+                    first_bin=calibration['cal_first_lev'][t],
+                    last_bin=calibration['cal_last_lev'][t] + 1,
+                    # search_value=mean_sig,
+                    )
+                if cb is None:
+                    self.logger.error('cannot find altitude bin close enough to mean signal within calibration window')
+                    return None
+                else:
+                    calibr_bin[t] = cb
+
+                # 3) calculate M, A, A_int, B, and B_err
+                try:
+                    M[t, calibr_bin[t]:] = integral_profile(rayl_bsc[t].values,
                                                             range_axis=range_axis[t].values,
                                                             first_bin=calibr_bin[t])
-                A_int[t, :calibr_bin[t] + 1] = integral_profile(A[t],
+                    M[t, :calibr_bin[t] + 1] = integral_profile(rayl_bsc[t].values,
                                                                 range_axis=range_axis[t].values,
-                                                                extrapolate_ovl_factor=1,
                                                                 first_bin=calibr_bin[t],
                                                                 last_bin=0)
 
-                A_int[t, calibr_bin[t]] = 0
+                    M[t, calibr_bin[t]] = 0
 
-                B[t, :] = calibr_factor[t]
-                B_err[t, :] = calibr_factor_err[t]
-            except IntegrationFailed:
-                return None
+                    A[t] = elast_sig.data[t] * np.exp(-2 * lr_diff[t] * M[t])
+                    A_int[t, calibr_bin[t]:] = integral_profile(A[t],
+                                                                range_axis=range_axis[t].values,
+                                                                first_bin=calibr_bin[t])
+                    A_int[t, :calibr_bin[t] + 1] = integral_profile(A[t],
+                                                                    range_axis=range_axis[t].values,
+                                                                    extrapolate_ovl_factor=1,
+                                                                    first_bin=calibr_bin[t],
+                                                                    last_bin=0)
+
+                    A_int[t, calibr_bin[t]] = 0
+
+                    B[t, :] = calibr_factor[t]
+                    B_err[t, :] = calibr_factor_err[t]
+                except IntegrationFailed:
+                    return None
 
         # 4) calculate backscatter coefficient
         denominator = B - 2 * lidar_ratio * A_int

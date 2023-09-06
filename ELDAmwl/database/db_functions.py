@@ -1131,15 +1131,14 @@ class DBFunc(DBUtils):
             detection_wavelength=detection_wl,
             is_latest_value=1
         )
-        if lidar_const.count() == 0:
-            self.session.add(new_db_entry)
-        elif lidar_const.count() == 1:
+        if lidar_const.count() == 1:
             lidar_const.update({'is_latest_value': 0,
                                 },
                                synchronize_session=False)
-        else:
+        elif lidar_const.count() > 1:
             self.logger.error('wrong number ({0}) of lidar constants in db '.format(lidar_const.count()))
 
+        self.session.add(new_db_entry)
         self.session.commit()
 
     def write_product_status_in_db(self, meas_id, mwl_prod_id, prod_id,

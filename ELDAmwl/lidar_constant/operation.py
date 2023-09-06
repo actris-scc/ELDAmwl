@@ -192,9 +192,14 @@ class LidarConstantFactoryDefault(BaseOperation):
             if self.bsc_param.calc_with_res(res):
                 profile = self.data_storage.product_common_smooth(self.bsc_param.prod_id_str, res)
 
+                # find valid time slices
+                valid_ts = np.where(~profile.data.isnull().all(dim='level'))[0]
+
                 # start with overlap height
                 calibr_height = ovl_height
-                for t in range(profile.ds.dims['time']):
+
+                # for t in range(profile.ds.dims['time']):
+                for t in valid_ts:
                     # use the maximum of all time_slices
                     calibr_idx = profile.first_valid_bin(t)
                     calibr_height = np.nanmax([calibr_height, profile.height[t, calibr_idx]])
@@ -525,8 +530,12 @@ class CalcLidarConstantDefault(BaseOperation):
         if not self.signal.corrected_for_mol_transmission:
             self.signal.correct_for_mol_transmission()
 
-        # calculation of calibration constant (has to be done for each time slice)
-        for t in range(self.bsc.num_times):
+        # find valid time slices
+        valid_ts = np.where(~self.bsc.data.isnull().all(dim='level'))[0]
+
+        # calculation of calibration constant (has to be done for each time slice separately)
+        # use only valid time slices
+        for t in valid_ts:
             # value of the molecular backscatter at calibration height
             mol_bsc = self.signal.ds.mol_backscatter[t, sig_calibr_bins[t]].values
 

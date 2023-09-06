@@ -6,7 +6,7 @@ from ELDAmwl.database.tables.backscatter import BscCalibrMethod
 from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
 from ELDAmwl.signals import Signals
 from ELDAmwl.tests.pickle_data import write_test_data
-from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.utils.constants import RBSC, NC_FILL_INT
 from ELDAmwl.utils.numerical import calc_rolling_means_sems, m_to_km, km_to_m
 from ELDAmwl.utils.numerical import find_minimum_window
 
@@ -200,7 +200,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
                                     upper_range_limit_r=top_height,
                                     windows=self.window_widths,
                                     rsem_min=0.1,
-                                    extended_output=True).profiles
+                                    extended_output=True)
 
                 # ==== generate test output ====
                 # res = r_fit(input_data,
@@ -210,7 +210,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
                 # res.fit_rangebin, res.fit_window_rangebins, int(res.fit_rangebin - res.fit_window_rangebins/2)+2, int(res.fit_rangebin + res.fit_window_rangebins /2)+2
 
                 for w in self.window_widths:
-                    df = fit_results[w]
+                    df = fit_results.profiles[w]
                     self.all_results[w][channel_id][t] = df[df.ALL == 1]
                     # ==== generate test output ====
                     # df[df.ALL == 1].to_csv('flags.csv')
@@ -305,17 +305,32 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
         centers = xr.DataArray(np.array(win_center_ranges),
                                coords=[sig.ds.time],
                                dims=['time'])
+
         # 2) find the idx of the center bin
         center_idxs = sig.ranges_to_levels(centers)
-        # 3) get the height value of this bins
-        win_center_heights = sig.height[:, center_idxs].values
 
-        # 4) calculate height boundaries of the windows
-        half_win_widths = win_widths / 2
-        win_bottom_heights = win_center_heights - half_win_widths
-        win_top_heights = win_center_heights + half_win_widths
+        # the following steps work only for centers which are not nan
+        # 3) initialize arrays with nan values
+        win_center_heights = xr.ones_like(centers) * np.nan
+        half_win_widths = xr.ones_like(centers) * np.nan
+        win_bottom_heights = xr.ones_like(centers) * np.nan
+        win_top_heights = xr.ones_like(centers) * np.nan
 
-        # 5) generate DataArray with correct time dimension
+        # 4) find valid time slices (Rayleigh fit successful -> center is not nan)
+        if centers.isnull().any():
+            valid_ts = np.where(~np.isnan(centers))[0]
+        else:
+            valid_ts = range(centers.size)
+
+        # 5) get the height value of this bins
+        win_center_heights[valid_ts] = sig.height[valid_ts, center_idxs[valid_ts]].values
+
+        # 6) calculate height boundaries of the windows
+        half_win_widths[valid_ts] = win_widths[valid_ts] / 2
+        win_bottom_heights[valid_ts] = win_center_heights[valid_ts] - half_win_widths[valid_ts]
+        win_top_heights[valid_ts] = win_center_heights[valid_ts] + half_win_widths[valid_ts]
+
+        # 7) generate DataArray with correct time dimension
         calibration_window = self.create_calibration_window_dataarray(
             sig.ds, None, None, win_bottom_heights, win_top_heights)
 

@@ -23,6 +23,7 @@ from ELDAmwl.utils.constants import BELOW_OVL
 from ELDAmwl.utils.constants import CROSS
 from ELDAmwl.utils.constants import FAR_RANGE
 from ELDAmwl.utils.constants import NC_FILL_BYTE
+from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.utils.constants import NEAR_RANGE
 from ELDAmwl.utils.constants import PARALLEL
 from ELDAmwl.utils.constants import PARTICLE
@@ -434,7 +435,15 @@ class Signals(Columns):
             self.logger.error('dataset and ranges have different lenghts (time dimension)')
             return None
 
-        closest_bin = (abs(self.range - ranges)).argmin(dim='level')
+        # closest_bin = (abs(self.range - ranges)).argmin(dim='level')
+
+        if not np.any(np.isnan(ranges)):
+            closest_bin = (abs(self.range - ranges)).argmin(dim='level')
+        else:
+            closest_bin = xr.ones_like(ranges, int) * NC_FILL_INT
+            for t in range(times):
+                if not np.isnan(ranges[t]):
+                    closest_bin[t] = (abs(self.range[t] - ranges[t])).argmin(dim='level')
         return closest_bin
 
     def heights_to_levels(self, heights):
@@ -447,13 +456,16 @@ class Signals(Columns):
             self.logger.error('dataset and heights have different lenghts (time dimension)')
             return None
 
-        closest_bin = (abs(self.height - heights)).argmin(dim='level')
+        # closest_bin = (abs(self.height - heights)).argmin(dim='level')
+        if not np.any(np.isnan(heights)):
+            closest_bin = (abs(self.height - heights)).argmin(dim='level')
+        else:
+            closest_bin = xr.ones_like(heights, int) * NC_FILL_INT
+            for t in range(times):
+                if not np.isnan(heights[t]):
+                    closest_bin[t] = (abs(self.height[t] - heights[t])).argmin(dim='level')
+
         return closest_bin
-#        result = []
-#        for t in range(times):
-#            result.append(np.where(self.height[t] > heights[t])[0][0])
-#        return np.array(result)
-#        return closest_bin
 
     def height_to_levels(self, height):
         """converts a height value into a series of level (dim=time)

@@ -96,7 +96,10 @@ class Products(Signals):
         # next bin after smooth window
         nb = binres.level + binres // 2 + 1
 
-        for t in range(num_times):
+        # find valid time slices (those which have not only nan values)
+        valid_ts = np.where(~self.data.isnull().all(dim='level'))[0]
+
+        for t in valid_ts:
             # first and last smoothable bins
             fsb = np.where(fb[:, t] >= self.first_valid_bin(t))[0][0]
             # actually, this is not the last smoothable bin, but the one after that
