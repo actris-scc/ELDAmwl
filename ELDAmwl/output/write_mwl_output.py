@@ -62,15 +62,16 @@ class WriteMWLOutputDefault(BaseOperation):
 
     def collect_meta_data(self):
         # read meta data of all products into meta_data
+        failed_products = self.product_params.failed_products()
         for pid, param in self.product_params.product_list.items():
+            if param not in failed_products:
+                if param.calc_with_res(LOWRES):
+                    prod = self.data_storage.product_common_smooth(pid, LOWRES)
+                else:
+                    prod = self.data_storage.product_common_smooth(pid, HIGHRES)
 
-            if param.calc_with_res(LOWRES):
-                prod = self.data_storage.product_common_smooth(pid, LOWRES)
-            else:
-                prod = self.data_storage.product_common_smooth(pid, HIGHRES)
-
-            # Todo Ina fix error
-            prod.to_meta_ds_dict(self.meta_data)
+                # Todo Ina fix error
+                prod.to_meta_ds_dict(self.meta_data)
 
     def write_groups(self):
         for group in MWLFileStructure.MAIN_GROUPS:

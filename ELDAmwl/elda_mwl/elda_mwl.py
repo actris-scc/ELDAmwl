@@ -163,6 +163,18 @@ class MeasurementParams(Params):
         ids = prod_df['id'][prod_df.basic]
         return self.filtered_list(ids)
 
+    def failed_products(self):
+        """list of parameters of all products which could not be derived
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all products which could not be derived
+        """
+        prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed']]
+        ids = prod_df['id']
+        return self.filtered_list(ids)
+
     def all_products_of_res(self, res):
         """list of parameters of all products with resolution res
 

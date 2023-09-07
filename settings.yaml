@@ -31,7 +31,7 @@ default:
 # :::::::::::::::::::
 # Directories
 # :::::::::::::::::::
-  LOG_PATH : '/home/ina/Downloads/eldamwl_logs'
+#  LOG_PATH : '/home/ina/Downloads/eldamwl_logs'
   SIGNAL_PATH : 'data/ELPP_files'
   PRODUCT_PATH : 'data/ELDAmwl_files'
   TEMP_PATH : ''
@@ -56,7 +56,7 @@ default:
   # The desired log_level for console output
   log_level_console : DEBUG
   # The desired log_level for the logfile
-  log_level_file : QUIET
+  log_level_file : DEBUG
   # Colors for the log console output (Options see color_log-package)
   log_colors : {
       'DEBUG': 'cyan',
