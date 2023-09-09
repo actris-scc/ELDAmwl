@@ -138,9 +138,25 @@ class GetProductMatrixDefault(BaseOperation):
                 self.data_storage.set_final_product_matrix(ptype, res, ds)
 
             if (RBSC in p_types) and (EBSC in p_types):
-                # todo: check input and make sure that not more than
-                #       1 bsc product is assigned per wavelength (Raman + elsat)
-                # todo: combine datasets of RBsc and EBsc using combine_first()
+                bsc_unique = True
+                for wl in wavelengths:
+                    if (self.product_params.prod_param(EBSC, wl) is not None) and \
+                        (self.product_params.prod_param(RBSC, wl) is not None):
+                        bsc_unique = False
+                        self.logger.warning(f'Raman bsc product {self.product_params.prod_param(RBSC, wl).prod_id_str} '
+                                            f'and elast bsc product {self.product_params.prod_param(EBSC, wl).prod_id_str} '
+                                            f'at the same wavelength {wl}')
+                    # todo: check input and make sure that not more than
+                    #       1 bsc product is assigned per wavelength (Raman + elsat)
+                if bsc_unique:
+                    rbsc_matrix = self.data_storage.final_product_matrix(RBSC, res)
+                    ebsc_matrix = self.data_storage.final_product_matrix(EBSC, res)
+                    combined = rbsc_matrix.combine_first(ebsc_matrix)
+                    # preliminray solution: write combined data in matrices of both bsc products
+                    # => the writing routine will overwrite the first with the second
+                    # todo: make writing routine intelligent that only 1 bsc matrix is needed
+                    for bsc_type in [RBSC, RBSC]:
+                        self.data_storage.set_final_product_matrix(bsc_type, res, combined)
                 pass
 
 
