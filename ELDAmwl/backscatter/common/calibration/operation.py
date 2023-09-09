@@ -338,7 +338,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
 
     def run(self):
         """
-        Returns: None (results are assigned to individual BackscatterParams)
+        Returns: common calibration window, but results are assigned to individual BackscatterParams, too
         """
         self.logger.debug('find backscatter calibration window with Rayleigh fit')
         self.init()
@@ -350,7 +350,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
             calibration_window = self.get_cal_height_windows(bp, win_center_ranges, win_widths)
             bp.calibr_window = calibration_window
 
-        return None
+        return calibration_window
 
 
 class FindBscCalibrWindowAsInELDA(FindBscCalibrWindow):
