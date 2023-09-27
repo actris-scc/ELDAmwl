@@ -143,6 +143,14 @@ class MWLFileStructure:
             # 'coordinates': COO_ATTR,
         }
 
+    def qf_attrs(self, p_type):
+        return {
+            'long_name': f'quality flag of {self.NC_VAR_NAMES[p_type]}',
+            'units': 1,
+            'ancillary_variables': self.ANC_VAR_ATT.format(self.NC_VAR_NAMES[p_type]),
+        }
+    # todo: correct description and attributes
+
     def stat_err_attrs(self, p_type):
         return {
             'long_name': 'absolute statistical uncertainty of {}'.format(self.NC_VAR_NAMES[p_type]),

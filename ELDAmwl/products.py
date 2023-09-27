@@ -148,6 +148,7 @@ class Products(Signals):
             t_idx = 0
             idx = np.searchsorted(subset.altitude.values[t_idx], self.altitude.values[t_idx])
             subset.variables['data'][:, idx] = self.data[:, :]
+            subset.variables['quality_flag'][:, idx] = self.ds.qf[:, :]
             subset.variables['absolute_statistical_uncertainty'][:, idx] = self.err[:, :]
             if self.has_sys_err:
                 subset.variables['absolute_systematic_uncertainty_positive'][:, idx] = self.ds.sys_err_pos[:, :]
