@@ -36,6 +36,7 @@ default:
   PRODUCT_PATH : 'data/ELDAmwl_files'
   TEMP_PATH : ''
   PLUGINS_DIR : ''
+  LOG_PATH : 'data/eldamwl_logs'
 
 # :::::::::::::::::::
 # database connection
