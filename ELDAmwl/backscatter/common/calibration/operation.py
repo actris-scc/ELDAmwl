@@ -342,6 +342,8 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
         """
         self.logger.debug('find backscatter calibration window with Rayleigh fit')
         self.init()
+        # todo: check if calibration window is below maximum height of product (maybe the test is already there?
+        # todo: in case that 1 signal (product) has a very low max height, -> go to different procedure for finding common cal window
 
         self.get_all_single_fits()
         win_center_ranges, win_widths = self.find_best_compromise()
