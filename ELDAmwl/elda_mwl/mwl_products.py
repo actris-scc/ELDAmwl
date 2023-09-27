@@ -155,9 +155,8 @@ class GetProductMatrixDefault(BaseOperation):
                     # preliminray solution: write combined data in matrices of both bsc products
                     # => the writing routine will overwrite the first with the second
                     # todo: make writing routine intelligent that only 1 bsc matrix is needed
-                    for bsc_type in [RBSC, RBSC]:
+                    for bsc_type in [RBSC, EBSC]:
                         self.data_storage.set_final_product_matrix(bsc_type, res, combined)
-                pass
 
 
 class GetProductMatrix(BaseOperationFactory):
