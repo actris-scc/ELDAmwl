@@ -4,7 +4,7 @@ from datetime import datetime
 from math import pi
 
 
-ELDA_MWL_VERSION = '0.0.1'
+ELDA_MWL_VERSION = '0.0.2'
 
 LIGHT_SPEED = 3.E8  # m / s
 
