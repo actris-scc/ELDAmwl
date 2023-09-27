@@ -159,6 +159,7 @@ class GetProductMatrixDefault(BaseOperation):
                         self.data_storage.set_final_product_matrix(bsc_type, res, combined)
 
 
+
 class GetProductMatrix(BaseOperationFactory):
     """
     Args:
