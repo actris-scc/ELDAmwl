@@ -7,7 +7,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoProductsGenerated
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import EBSC, VLDR
+from ELDAmwl.utils.constants import EBSC, VLDR, NEG_DATA
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import LR
 from ELDAmwl.utils.constants import RBSC
@@ -22,7 +22,7 @@ class GetProductMatrixDefault(BaseOperation):
     brings all products onto a common grid (wavelength, time, altitude)
     """
 
-    data_storage = None
+    # data_storage = None
     product_params = None
     shape = None
 
@@ -135,7 +135,7 @@ class GetProductMatrixDefault(BaseOperation):
                                 prod.mwl_meta_id,
                             )
 
-                self.data_storage.set_final_product_matrix(ptype, res, ds)
+                self.data_storage.set_product_matrix(ptype, res, ds)
 
             if (RBSC in p_types) and (EBSC in p_types):
                 bsc_unique = True
@@ -187,11 +187,46 @@ class QualityControlDefault(BaseOperation):
     synergetic quality control of all products
     """
 
-    data_storage = None
     product_params = None
+    qc_product_matrix = None
+
+    def prepare(self):
+        """
+        makes a local copy (self.qc_product_matrix) of the matrices of all resolutions and product types in data storage
+        this copy will then be modified by the class methods
+        Returns: None
+
+        """
+        self.product_params = self.kwargs['product_params']
+
+        self.qc_product_matrix = Dict()
+        for res in RESOLUTIONS:
+            p_types = self.product_params.prod_types(res=res)
+            for prod_type in p_types:
+                self.qc_product_matrix[res, prod_type] = self.data_storage.product_matrix(prod_type, res)
+
+    def screen_negative_values(self, a_matrix):
+        """
+
+        """
+        # maximum possible value = value + 2 * uncertainty
+        max_values = a_matrix.data + 2 * a_matrix.error
+        bad_idxs = np.where(max_values < 0)
+        a_matrix.data[bad_idxs] = np.nan
+        a_matrix.qflag[bad_idxs] = a_matrix.qflag[bad_idxs] | NEG_DATA
+
+    def run_single_product_tests(self):
+        for res in RESOLUTIONS:
+            p_types = self.product_params.prod_types(res=res)
+            for prod_type in p_types:
+                a_matrix = self.qc_product_matrix[res][prod_type]
+
+                self.screen_negative_values(a_matrix)
 
     def run(self):
-        self.product_params = self.kwargs['product_params']
+        self.prepare()
+
+        self.run_single_product_tests()
 
         # todo: implement quality control
         # todo: add quality flag for complete profile (e.g. this profile causes bad angströms,
@@ -207,7 +242,7 @@ class QualityControlDefault(BaseOperation):
         # todo: 5a) based on lidar ratio and angström profiles: select if one profile is bad
         #           (remove the profile in a way that NUMBER of remaining good profiles is max
         # todo: 6) profiles which has more than 10% bad points in 5) -> skip completely
-        # todo: do not allow empty matrix (1 variable with no data a t all
+        # todo: do not allow empty matrix (1 variable with no data at all
         # todo: 2 file versions: one with quality controlled and screened data (for user),
         #                       one with full profiles and qc flag (only for CARS internal use)
         #         maybe the full output is written only if a certain command line parameter is set

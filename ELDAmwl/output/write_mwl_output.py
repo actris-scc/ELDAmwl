@@ -131,7 +131,7 @@ class WriteMWLOutputDefault(BaseOperation):
             group_data.data_vars.vertical_res = self.data_storage.common_vertical_resolution(res)
 
             for ptype in p_types:
-                p_matrix = self.data_storage.final_product_matrix(ptype, res)
+                p_matrix = self.data_storage.product_matrix(ptype, res)
                 var_name = MWLFileStructure.NC_VAR_NAMES[ptype]
                 group_data.data_vars[var_name] = p_matrix.data
                 group_data.data_vars['error_{}'.format(var_name)] = p_matrix.absolute_statistical_uncertainty

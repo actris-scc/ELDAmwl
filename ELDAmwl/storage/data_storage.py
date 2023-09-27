@@ -60,7 +60,12 @@ class DataStorage:
                         LOWRES: Dict(),
                         HIGHRES: Dict(),
                     }),
-                'final_product_matrix': Dict(
+                'product_matrix': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
+                'qc_product_matrix': Dict(
                     {
                         LOWRES: Dict(),
                         HIGHRES: Dict(),
@@ -124,12 +129,19 @@ class DataStorage:
             channel_id = str(lc.channel_id)
             self.__data.lidar_constants[channel_id] = lc
 
-    def set_final_product_matrix(self, prod_type, res, new_dataset):
+    def set_product_matrix(self, prod_type, res, new_dataset):
         """write a dataset with common grid (wavelength, time, altitude) to storage
 
         one dataset per product type and resolution
         """
-        self.__data.final_product_matrix[res][prod_type] = new_dataset  # noqa E501
+        self.__data.product_matrix[res][prod_type] = new_dataset  # noqa E501
+
+    def set_qc_product_matrix(self, prod_type, res, new_dataset):
+        """write a quality controlled dataset with common grid (wavelength, time, altitude) to storage
+
+        one dataset per product type and resolution
+        """
+        self.__data.qc_product_matrix[res][prod_type] = new_dataset  # noqa E501
 
     def set_binres_common_smooth(self, prod_id_str, resolution, new_res_array):
         """
@@ -520,27 +532,57 @@ class DataStorage:
 
         return result
 
-    def final_product_matrix(self, prod_type, res):
+    def product_matrix(self, prod_type, res):
         """ 3-dimensional (wavelength, time, altitude) data matrix
 
-        Product matrix contains all product profiles and cloud mask.
+        Product matrix contains all product profiles (as they were calculated) and cloud mask.
         All data are on the same grid of time, altitude and wavelength.
         Except cloud mask, which has no wavelength dimension.
         Missing data are filled with nan.
 
         Args:
-            prod_type :
+            prod_type : can be RBSC (=0), EXT (=1), LR (=2), EBSC (=3), AE (=13), CR (=14), VLDR (=15), or PLDR (=16)
             res (int): can be LOWRES (=0) or HIGHRES (=1)
 
         Returns:
             :obj:'xarray.Dataset': deepcopy of the final product matrix
 
         """
-        return deepcopy(self.__data.final_product_matrix[res][prod_type])
+        try:
+            result = deepcopy(self.__data.product_matrix[res][prod_type])
+        except NotFoundInStorage:
+            raise NotFoundInStorage('product matrix of type {0}'.format(prod_type),
+                                    'products with common smoothing with {0}'.format(RESOLUTION_STR[res]))
+
+        return result
+
+    def qc_product_matrix(self, prod_type, res):
+        """ 3-dimensional (wavelength, time, altitude) quality controlled data matrix
+
+        Product matrix contains all product profiles (as they were calculated) and cloud mask.
+        All data are on the same grid of time, altitude and wavelength.
+        Except cloud mask, which has no wavelength dimension.
+        Missing data are filled with nan.
+
+        Args:
+            prod_type : can be RBSC (=0), EXT (=1), LR (=2), EBSC (=3), AE (=13), CR (=14), VLDR (=15), or PLDR (=16)
+            res (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:'xarray.Dataset': deepcopy of the final product matrix
+
+        """
+        try:
+            result = deepcopy(self.__data.qc_product_matrix[res][prod_type])
+        except NotFoundInStorage:
+            raise NotFoundInStorage('product matrix of type {0}'.format(prod_type),
+                                    'products with common smoothing with {0}'.format(RESOLUTION_STR[res]))
+
+        return result
 
     def number_of_derived_products(self):
         count = 0
-        for res, res_data in self._DataStorage__data.final_product_matrix.items():
+        for res, res_data in self._DataStorage__data.product_matrix.items():
             for prod_type in res_data.keys():
                 product_data = res_data[prod_type]
                 for wl in range(product_data.dims['wavelength']):
