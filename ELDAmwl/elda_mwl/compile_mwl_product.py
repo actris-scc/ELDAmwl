@@ -66,6 +66,50 @@ class GetProductMatrixDefault(BaseOperation):
                      'wl': wl_axis,
                      })
 
+    def create_empty_dataset(self, ptype, wavelengths):
+        # create a common Dataset for each product type
+        # with common shape and empty data variables
+        array = np.ones(self.shape.shape) * np.nan
+        flag_array = np.ones(self.shape.shape, dtype=int) * ALL_OK
+
+        ds = xr.Dataset(data_vars={
+            'altitude': self.shape.alt,
+            'wavelength': self.shape.wl,
+            'data': (
+                ['wavelength', 'time', 'level'],
+                deepcopy(array),
+                MWLFileStructure.data_attrs(MWLFileStructure, ptype),
+            ),
+            'absolute_statistical_uncertainty': (
+                ['wavelength', 'time', 'level'],
+                deepcopy(array),
+                MWLFileStructure.stat_err_attrs(MWLFileStructure, ptype),
+            ),
+            'quality_flag': (
+                ['wavelength', 'time', 'level'],
+                deepcopy(flag_array),
+                MWLFileStructure.qf_attrs(MWLFileStructure, ptype),
+            ),
+            'meta_data': (
+                ['wavelength'],
+                np.empty(len(wavelengths), dtype=object),
+                {'long_name': 'path to meta data'},
+            ),
+        })
+
+        if MWLFileStructure.is_product_with_sys_error(MWLFileStructure, ptype):
+            ds['absolute_systematic_uncertainty_negative'] = xr.DataArray(
+                deepcopy(array),
+                dims=['wavelength', 'time', 'level'],
+                attrs=MWLFileStructure.sys_err_neg_attrs(MWLFileStructure, ptype),
+            )
+            ds['absolute_systematic_uncertainty_positive'] = xr.DataArray(
+                deepcopy(array),
+                dims=['wavelength', 'time', 'level'],
+                attrs=MWLFileStructure.sys_err_pos_attrs(MWLFileStructure, ptype),
+            )
+        return ds
+
     def run(self):
         self.product_params = self.kwargs['product_params']
         if len(self.product_params.basic_products()) == 0:
@@ -79,48 +123,49 @@ class GetProductMatrixDefault(BaseOperation):
             self.shape = self.get_common_shape(res)
 
             for ptype in p_types:
-                # create a common Dataset for each product type
-                # with common shape and empty data variables
-                array = np.ones(self.shape.shape) * np.nan
-                flag_array = np.ones(self.shape.shape, dtype=int) * ALL_OK
+                # # create a common Dataset for each product type
+                # # with common shape and empty data variables
+                # array = np.ones(self.shape.shape) * np.nan
+                # flag_array = np.ones(self.shape.shape, dtype=int) * ALL_OK
+                #
+                # ds = xr.Dataset(data_vars={
+                #     'altitude': self.shape.alt,
+                #     'wavelength': self.shape.wl,
+                #     'data': (
+                #         ['wavelength', 'time', 'level'],
+                #         deepcopy(array),
+                #         MWLFileStructure.data_attrs(MWLFileStructure, ptype),
+                #     ),
+                #     'absolute_statistical_uncertainty': (
+                #         ['wavelength', 'time', 'level'],
+                #         deepcopy(array),
+                #         MWLFileStructure.stat_err_attrs(MWLFileStructure, ptype),
+                #     ),
+                #     'quality_flag': (
+                #         ['wavelength', 'time', 'level'],
+                #         deepcopy(flag_array),
+                #         MWLFileStructure.qf_attrs(MWLFileStructure, ptype),
+                #     ),
+                #     'meta_data': (
+                #         ['wavelength'],
+                #         np.empty(len(wavelengths), dtype=object),
+                #         {'long_name': 'path to meta data'},
+                #     ),
+                # })
+                #
+                # if MWLFileStructure.is_product_with_sys_error(MWLFileStructure, ptype):
+                #     ds['absolute_systematic_uncertainty_negative'] = xr.DataArray(
+                #         deepcopy(array),
+                #         dims=['wavelength', 'time', 'level'],
+                #         attrs=MWLFileStructure.sys_err_neg_attrs(MWLFileStructure, ptype),
+                #     )
+                #     ds['absolute_systematic_uncertainty_positive'] = xr.DataArray(
+                #         deepcopy(array),
+                #         dims=['wavelength', 'time', 'level'],
+                #         attrs=MWLFileStructure.sys_err_pos_attrs(MWLFileStructure, ptype),
+                #     )
 
-                ds = xr.Dataset(data_vars={
-                    'altitude': self.shape.alt,
-                    'wavelength': self.shape.wl,
-                    'data': (
-                        ['wavelength', 'time', 'level'],
-                        deepcopy(array),
-                        MWLFileStructure.data_attrs(MWLFileStructure, ptype),
-                    ),
-                    'absolute_statistical_uncertainty': (
-                        ['wavelength', 'time', 'level'],
-                        deepcopy(array),
-                        MWLFileStructure.stat_err_attrs(MWLFileStructure, ptype),
-                    ),
-                    'quality_flag': (
-                        ['wavelength', 'time', 'level'],
-                        deepcopy(flag_array),
-                        MWLFileStructure.qf_attrs(MWLFileStructure, ptype),
-                    ),
-                    'meta_data': (
-                        ['wavelength'],
-                        np.empty(len(wavelengths), dtype=object),
-                        {'long_name': 'path to meta data'},
-                    ),
-                })
-
-                if MWLFileStructure.is_product_with_sys_error(MWLFileStructure, ptype):
-                    ds['absolute_systematic_uncertainty_negative'] = xr.DataArray(
-                        deepcopy(array),
-                        dims=['wavelength', 'time', 'level'],
-                        attrs=MWLFileStructure.sys_err_neg_attrs(MWLFileStructure, ptype),
-                    )
-                    ds['absolute_systematic_uncertainty_positive'] = xr.DataArray(
-                        deepcopy(array),
-                        dims=['wavelength', 'time', 'level'],
-                        attrs=MWLFileStructure.sys_err_pos_attrs(MWLFileStructure, ptype),
-                    )
-
+                ds = self.create_empty_dataset(ptype, wavelengths)
                 ds.load()
 
                 for wl in wavelengths:
@@ -163,6 +208,8 @@ class GetProductMatrixDefault(BaseOperation):
                     # todo: make writing routine intelligent that only 1 bsc matrix is needed
                     for bsc_type in [RBSC, EBSC]:
                         self.data_storage.set_final_product_matrix(bsc_type, res, combined)
+                else:
+                    self.logger.warning('more than 1 backscatter product was scheduled for the same wavelength')
 
 
 
