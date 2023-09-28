@@ -110,6 +110,53 @@ class GetProductMatrixDefault(BaseOperation):
             )
         return ds
 
+    def combine_ebsc_rbsc_matrix(self, res, wavelengths):
+        bsc_unique = True
+        for wl in wavelengths:
+            if (self.product_params.prod_param(EBSC, wl) is not None) and \
+                (self.product_params.prod_param(RBSC, wl) is not None):
+                bsc_unique = False
+                self.logger.warning(f'Raman bsc product {self.product_params.prod_param(RBSC, wl).prod_id_str} '
+                                    f'and elast bsc product {self.product_params.prod_param(EBSC, wl).prod_id_str} '
+                                    f'at the same wavelength {wl}')
+            # todo: check input and make sure that not more than
+            #       1 bsc product is assigned per wavelength (Raman + elsat)
+        if bsc_unique:
+            rbsc_matrix = self.data_storage.final_product_matrix(RBSC, res)
+            ebsc_matrix = self.data_storage.final_product_matrix(EBSC, res)
+            combined = rbsc_matrix.combine_first(ebsc_matrix)
+            # preliminray solution: write combined data in matrices of both bsc products
+            # => the writing routine will overwrite the first with the second
+            # todo: make writing routine intelligent that only 1 bsc matrix is needed
+            for bsc_type in [RBSC, EBSC]:
+                self.data_storage.set_final_product_matrix(bsc_type, res, combined)
+        else:
+            self.logger.warning('more than 1 backscatter product was scheduled for the same wavelength')
+
+    def get_product_matrix(self, ptype, res, wavelengths):
+        ds = self.create_empty_dataset(ptype, wavelengths)
+        ds.load()
+
+        for wl in wavelengths:
+            # get the product param related to products type and wavelength;
+            # returns None if the product does not exists
+            param = self.product_params.prod_param(ptype, wl)
+            if param is not None:
+                if param.calc_with_res(res):
+                    prod_id = param.prod_id_str
+                    # get product object from data storage
+                    prod = self.data_storage.product_common_smooth(prod_id, res)
+                    # write product data into common Dataset
+                    prod.write_data_in_ds(ds)
+
+                    wl_idx = wavelengths.index(wl)
+                    ds.meta_data[wl_idx] = '/{}/{}'.format(
+                        MWLFileStructure.GROUP_NAME[MWLFileStructure.META_DATA],
+                        prod.mwl_meta_id,
+                    )
+
+        self.data_storage.set_product_matrix(ptype, res, ds)
+
     def run(self):
         self.product_params = self.kwargs['product_params']
         if len(self.product_params.basic_products()) == 0:
@@ -123,94 +170,10 @@ class GetProductMatrixDefault(BaseOperation):
             self.shape = self.get_common_shape(res)
 
             for ptype in p_types:
-                # # create a common Dataset for each product type
-                # # with common shape and empty data variables
-                # array = np.ones(self.shape.shape) * np.nan
-                # flag_array = np.ones(self.shape.shape, dtype=int) * ALL_OK
-                #
-                # ds = xr.Dataset(data_vars={
-                #     'altitude': self.shape.alt,
-                #     'wavelength': self.shape.wl,
-                #     'data': (
-                #         ['wavelength', 'time', 'level'],
-                #         deepcopy(array),
-                #         MWLFileStructure.data_attrs(MWLFileStructure, ptype),
-                #     ),
-                #     'absolute_statistical_uncertainty': (
-                #         ['wavelength', 'time', 'level'],
-                #         deepcopy(array),
-                #         MWLFileStructure.stat_err_attrs(MWLFileStructure, ptype),
-                #     ),
-                #     'quality_flag': (
-                #         ['wavelength', 'time', 'level'],
-                #         deepcopy(flag_array),
-                #         MWLFileStructure.qf_attrs(MWLFileStructure, ptype),
-                #     ),
-                #     'meta_data': (
-                #         ['wavelength'],
-                #         np.empty(len(wavelengths), dtype=object),
-                #         {'long_name': 'path to meta data'},
-                #     ),
-                # })
-                #
-                # if MWLFileStructure.is_product_with_sys_error(MWLFileStructure, ptype):
-                #     ds['absolute_systematic_uncertainty_negative'] = xr.DataArray(
-                #         deepcopy(array),
-                #         dims=['wavelength', 'time', 'level'],
-                #         attrs=MWLFileStructure.sys_err_neg_attrs(MWLFileStructure, ptype),
-                #     )
-                #     ds['absolute_systematic_uncertainty_positive'] = xr.DataArray(
-                #         deepcopy(array),
-                #         dims=['wavelength', 'time', 'level'],
-                #         attrs=MWLFileStructure.sys_err_pos_attrs(MWLFileStructure, ptype),
-                #     )
-
-                ds = self.create_empty_dataset(ptype, wavelengths)
-                ds.load()
-
-                for wl in wavelengths:
-                    # get the product param related to products type and wavelength;
-                    # returns None if the product does not exists
-                    param = self.product_params.prod_param(ptype, wl)
-                    if param is not None:
-                        if param.calc_with_res(res):
-                            prod_id = param.prod_id_str
-                            # get product object from data storage
-                            prod = self.data_storage.product_common_smooth(prod_id, res)
-                            # write product data into common Dataset
-                            prod.write_data_in_ds(ds)
-
-                            wl_idx = wavelengths.index(wl)
-                            ds.meta_data[wl_idx] = '/{}/{}'.format(
-                                MWLFileStructure.GROUP_NAME[MWLFileStructure.META_DATA],
-                                prod.mwl_meta_id,
-                            )
-
-                self.data_storage.set_product_matrix(ptype, res, ds)
+                self.get_product_matrix(ptype, res, wavelengths)
 
             if (RBSC in p_types) and (EBSC in p_types):
-                bsc_unique = True
-                for wl in wavelengths:
-                    if (self.product_params.prod_param(EBSC, wl) is not None) and \
-                        (self.product_params.prod_param(RBSC, wl) is not None):
-                        bsc_unique = False
-                        self.logger.warning(f'Raman bsc product {self.product_params.prod_param(RBSC, wl).prod_id_str} '
-                                            f'and elast bsc product {self.product_params.prod_param(EBSC, wl).prod_id_str} '
-                                            f'at the same wavelength {wl}')
-                    # todo: check input and make sure that not more than
-                    #       1 bsc product is assigned per wavelength (Raman + elsat)
-                if bsc_unique:
-                    rbsc_matrix = self.data_storage.final_product_matrix(RBSC, res)
-                    ebsc_matrix = self.data_storage.final_product_matrix(EBSC, res)
-                    combined = rbsc_matrix.combine_first(ebsc_matrix)
-                    # preliminray solution: write combined data in matrices of both bsc products
-                    # => the writing routine will overwrite the first with the second
-                    # todo: make writing routine intelligent that only 1 bsc matrix is needed
-                    for bsc_type in [RBSC, EBSC]:
-                        self.data_storage.set_final_product_matrix(bsc_type, res, combined)
-                else:
-                    self.logger.warning('more than 1 backscatter product was scheduled for the same wavelength')
-
+                self.combine_ebsc_rbsc_matrix(res, wavelengths)
 
 
 class GetProductMatrix(BaseOperationFactory):
