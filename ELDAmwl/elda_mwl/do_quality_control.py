@@ -2,8 +2,9 @@ from addict import Dict
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.utils.constants import NEG_DATA
+from ELDAmwl.utils.constants import NEG_DATA, UNCERTAINTY_TOO_LARGE
 from ELDAmwl.utils.constants import RESOLUTIONS
+
 
 import numpy as np
 
@@ -31,26 +32,15 @@ class QualityControlDefault(BaseOperation):
             for prod_type in p_types:
                 self.qc_product_matrix[res][prod_type] = self.data_storage.product_matrix(prod_type, res)
 
-    def screen_negative_values(self, a_matrix):
-        """
-
-        """
-        # maximum possible value = value + 2 * uncertainty
-        max_values = a_matrix.data + 2 * a_matrix.absolute_statistical_uncertainty
-        bad_idxs = np.where(max_values < 0)
-        # a_matrix.data[bad_idxs] = np.nan
-        # do not exclude bad data points in every step in order to allow accumulation of flags
-        # todo: remove bad points in the end
-
-        a_matrix.qflag[bad_idxs] = a_matrix.qflag[bad_idxs] | NEG_DATA
-
     def run_single_product_tests(self):
-        for res in RESOLUTIONS:
-            p_types = self.product_params.prod_types(res=res)
-            for prod_type in p_types:
-                a_matrix = self.qc_product_matrix[res][prod_type]
-
-                self.screen_negative_values(a_matrix)
+        pass
+        # for res in RESOLUTIONS:
+        #     p_types = self.product_params.prod_types(res=res)
+        #     for prod_type in p_types:
+        #         a_matrix = self.qc_product_matrix[res][prod_type]
+        #
+        #         self.screen_negative_values(a_matrix)
+        #         self.screen_uncertainties(a_matrix, prod_type)
 
     def run(self):
         self.prepare()
@@ -61,9 +51,9 @@ class QualityControlDefault(BaseOperation):
         # todo: add quality flag for complete profile (e.g. this profile causes bad angströms,
         #                                               aod / integral of this profile too large, )
         #                                               additionally to flag profile
-        # todo: 1) screen for negative values
+        #  1) screen for negative values -> done on single product profile level
         # todo: 1a) if bsc profile has negative area in the middle -> skip complete profile
-        # todo: 2) screen for too large error
+        #  2) screen for too large error -> done on single product profile level
         # todo: 3) screen derived products for layers with no aerosol (bsc ratio < threshold)
         # todo: 4) if there are more than 1 bsc at the same wavelegnth
         #           -> decide which one to use (use the one with best test results on angstroem and lidar ratio)

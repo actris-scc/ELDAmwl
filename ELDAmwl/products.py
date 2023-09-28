@@ -26,10 +26,12 @@ from ELDAmwl.utils.constants import HIGHRES
 from ELDAmwl.utils.constants import LOWRES
 from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import MERGE_PRODUCT_USE_CASES
+from ELDAmwl.utils.constants import NEG_DATA
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR
+from ELDAmwl.utils.constants import UNCERTAINTY_TOO_LARGE
 from zope import component
 
 import ELDAmwl.utils.constants
@@ -120,6 +122,23 @@ class Products(Signals):
                 self.set_invalid_point(t, lev, CALC_WINDOW_OUTSIDE_PROFILE)
             for lev in range(lsb, num_levels):
                 self.set_invalid_point(t, lev, CALC_WINDOW_OUTSIDE_PROFILE)
+
+    def screen_negative_data(self):
+        max_values = self.data + self.cfg.NEG_VALUES_ERR_FACTOR * self.err
+        # todo: how to handle systematic errors ?
+        bad_idxs = np.where(max_values < 0)
+
+        self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | NEG_DATA
+
+    def screen_too_large_errors(self):
+        bad_idxs = np.where((self.rel_errors > self.cfg.MAX_ALLOWED_REL_ERROR[self.prod_type]) &
+                            (self.err > self.cfg.MAX_ALLOWED_ABS_ERROR[self.prod_type]))
+
+        self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | UNCERTAINTY_TOO_LARGE
+
+    def quality_control(self):
+        self.screen_negative_data()
+        self.screen_too_large_errors()
 
     def save_to_netcdf(self):
         pass

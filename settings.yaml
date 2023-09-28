@@ -70,6 +70,22 @@ default:
   WRITE_EXTENDED_OUTPUT : True
   APPEND_LOG_FILE : False
 
+# :::::::::::::::::::
+# single-wavelength quality control
+#  (flag values are defined in utils.constants.py)
+# :::::::::::::::::::
+  # screening of negative values
+  # values below 0 - data - error * NEG_VALUES_ERR_FACTOR are flagged
+  NEG_VALUES_ERR_FACTOR : 2
+
+  MAX_ALLOWED_REL_ERROR : {
+      3 : 0.001,  # EBSC
+  }
+  MAX_ALLOWED_ABS_ERROR : {
+      3 : 1E-10,  # EBSC
+  }
+
+
 testing:
   SIGNAL_PATH : 'data/ELPP_files'
 

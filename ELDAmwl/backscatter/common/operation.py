@@ -44,6 +44,8 @@ class BackscatterFactoryDefault(BaseOperation):
         else:
             bsc = None
 
+        bsc.quality_control()
+
         return bsc
 
 
