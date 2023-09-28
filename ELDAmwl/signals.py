@@ -195,6 +195,10 @@ class Signals(Columns):
         self.is_from_depol_components = False
 
     @property
+    def cfg(self):
+        return component.queryUtility(ICfg)
+
+    @property
     def name(self):
         return hex(id(self))
 

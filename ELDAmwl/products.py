@@ -77,6 +77,10 @@ class Products(Signals):
 
         return result
 
+    @property
+    def product_type(self):
+        return self.params.product_type
+
     def smooth(self, binres):
         """
         performs smoothing of the data
@@ -131,8 +135,8 @@ class Products(Signals):
         self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | NEG_DATA
 
     def screen_too_large_errors(self):
-        bad_idxs = np.where((self.rel_errors > self.cfg.MAX_ALLOWED_REL_ERROR[self.prod_type]) &
-                            (self.err > self.cfg.MAX_ALLOWED_ABS_ERROR[self.prod_type]))
+        bad_idxs = np.where((self.rel_err > self.cfg.MAX_ALLOWED_REL_ERROR[self.product_type]) &
+                            (self.err > self.cfg.MAX_ALLOWED_ABS_ERROR[self.product_type]))
 
         self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | UNCERTAINTY_TOO_LARGE
 
