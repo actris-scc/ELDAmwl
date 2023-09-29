@@ -7,7 +7,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoProductsGenerated
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import EBSC, VLDR, NEG_DATA, ALL_OK
+from ELDAmwl.utils.constants import EBSC, VLDR, NEG_DATA, ALL_OK, BSCR
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import LR
 from ELDAmwl.utils.constants import RBSC
@@ -122,14 +122,14 @@ class GetProductMatrixDefault(BaseOperation):
             # todo: check input and make sure that not more than
             #       1 bsc product is assigned per wavelength (Raman + elsat)
         if bsc_unique:
-            rbsc_matrix = self.data_storage.final_product_matrix(RBSC, res)
-            ebsc_matrix = self.data_storage.final_product_matrix(EBSC, res)
+            rbsc_matrix = self.data_storage.product_matrix(RBSC, res)
+            ebsc_matrix = self.data_storage.product_matrix(EBSC, res)
             combined = rbsc_matrix.combine_first(ebsc_matrix)
             # preliminray solution: write combined data in matrices of both bsc products
             # => the writing routine will overwrite the first with the second
             # todo: make writing routine intelligent that only 1 bsc matrix is needed
             for bsc_type in [RBSC, EBSC]:
-                self.data_storage.set_final_product_matrix(bsc_type, res, combined)
+                self.data_storage.set_product_matrix(bsc_type, res, combined)
         else:
             self.logger.warning('more than 1 backscatter product was scheduled for the same wavelength')
 
@@ -157,6 +157,25 @@ class GetProductMatrixDefault(BaseOperation):
 
         self.data_storage.set_product_matrix(ptype, res, ds)
 
+    def get_bsc_ratio_matrix(self, res, wavelengths):
+        ds = self.create_empty_dataset(BSCR, wavelengths)
+        ds.load()
+
+        for wl in wavelengths:
+            # get the product param related to products type and wavelength;
+            # returns None if the product does not exists
+            for ptype in [EBSC, RBSC]:
+                param = self.product_params.prod_param(ptype, wl)
+                if param is not None:
+                    if param.calc_with_res(res):
+                        prod_id = param.prod_id_bsc_ratio_str
+                        # get product object from data storage
+                        bsc_ratio = self.data_storage.product_common_smooth(prod_id, res)
+                        # write product data into common Dataset
+                        bsc_ratio.write_data_in_ds(ds)
+
+        self.data_storage.set_product_matrix(BSCR, res, ds)
+
     def run(self):
         self.product_params = self.kwargs['product_params']
         if len(self.product_params.basic_products()) == 0:
@@ -174,6 +193,9 @@ class GetProductMatrixDefault(BaseOperation):
 
             if (RBSC in p_types) and (EBSC in p_types):
                 self.combine_ebsc_rbsc_matrix(res, wavelengths)
+
+            if (RBSC in p_types) or (EBSC in p_types):
+                self.get_bsc_ratio_matrix(res, wavelengths)
 
 
 class GetProductMatrix(BaseOperationFactory):

@@ -144,6 +144,8 @@ class CalcRamanBackscatterDefault(BaseOperation):
             error_params=error_params,
             calibration=cal_params)
 
+        self.result.ds['mol_backscatter'] = deepcopy(data.ds.mol_backscatter)
+
         return self.result
 
 

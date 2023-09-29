@@ -3,6 +3,7 @@
 """
 from copy import deepcopy
 from ELDAmwl.backscatter.common.calibration.operation import FindCommonBscCalibrWindow
+from ELDAmwl.backscatter.common.product import BackscatterRatios
 from ELDAmwl.backscatter.common.vertical_resolution.operation import ElastBscEffBinRes
 from ELDAmwl.backscatter.common.vertical_resolution.operation import ElastBscUsedBinRes
 from ELDAmwl.backscatter.common.vertical_resolution.operation import RamBscEffBinRes
@@ -273,6 +274,10 @@ class GetBasicProductsDefault(BaseOperation):
                     smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_bsc)
+                    # calculate bsc ratio and store it
+                    bsc_ratio = BackscatterRatios.from_bsc(smooth_bsc)
+                    self.data_storage.set_basic_product_common_smooth(
+                        bsc_ratio.product_id_str, res, bsc_ratio)
             del bsc
 
     def get_elast_bsc_fixed_smooth(self):
@@ -311,6 +316,10 @@ class GetBasicProductsDefault(BaseOperation):
                         smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                         self.data_storage.set_basic_product_common_smooth(
                             prod_id, res, smooth_bsc)
+                        # calculate bsc ratio and store it
+                        bsc_ratio = BackscatterRatios.from_bsc(smooth_bsc)
+                        self.data_storage.set_basic_product_common_smooth(
+                            bsc_ratio.product_id_str, res, bsc_ratio)
                 del bsc
             except ELDAmwlException as e:
                 self.logger.error('cannot get backscatter product {}'.format(bsc_param.prod_id_str))

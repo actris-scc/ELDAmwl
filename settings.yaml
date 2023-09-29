@@ -79,9 +79,11 @@ default:
   NEG_VALUES_ERR_FACTOR : 2
 
   MAX_ALLOWED_REL_ERROR : {
+      0 : 0.01,  # RBSC
       3 : 0.001,  # EBSC
   }
   MAX_ALLOWED_ABS_ERROR : {
+      0 : 1E-9,  # RBSC
       3 : 1E-10,  # EBSC
   }
 

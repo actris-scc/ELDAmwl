@@ -68,6 +68,7 @@ class Products(Signals):
         result.emission_wavelength = signal.emission_wavelength
         result.num_scan_angles = signal.num_scan_angles
         result.ds['time_bounds'] = signal.ds['time_bounds']
+        result.ds['mol_backscatter'] = signal.ds.mol_backscatter
 
         result.mwl_meta_id = '{}_{}'.format(MWLFileStructure.NC_VAR_NAMES[p_params.general_params.product_type],
                                             round(float(result.emission_wavelength)))
@@ -80,6 +81,10 @@ class Products(Signals):
     @property
     def product_type(self):
         return self.params.product_type
+
+    @property
+    def product_id_str(self):
+        return self.params.prod_id_str
 
     def smooth(self, binres):
         """

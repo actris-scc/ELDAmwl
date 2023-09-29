@@ -225,6 +225,7 @@ class Signals(Columns):
         result.channel_id = xr.concat([enumerator.channel_id,
                                        denominator.channel_id],
                                       dim='nc')
+        result.ds['mol_backscatter'] = enumerator.ds.mol_backscatter
 
         # todo: combine other attributes, e.g. detection type etc.
 
