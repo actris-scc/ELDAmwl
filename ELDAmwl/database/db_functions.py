@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """functions for db handling"""
 from addict import Dict
+from sqlalchemy import func
+
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.database.db import DBUtils
 from ELDAmwl.database.tables.backscatter import BscCalibrLowestHeight
@@ -16,15 +18,14 @@ from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.channels import Telescopes
-from ELDAmwl.database.tables.depolarization import VLDROption, PolarizationCalibrationCorrectionFactors, VLDRMethod
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
-from ELDAmwl.database.tables.general import ELDAmwlLogs, EldaMwlProductStatus, SccVersion
-from ELDAmwl.database.tables.lidar_constants import LidarConstants
+from ELDAmwl.database.tables.general import ELDAmwlLogs
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
+from ELDAmwl.database.tables.angstroem import AngstroemExpOption
 from ELDAmwl.database.tables.measurements import Measurements
 from ELDAmwl.database.tables.system_product import ErrorThresholds
 from ELDAmwl.database.tables.system_product import MCOption
@@ -36,8 +37,8 @@ from ELDAmwl.database.tables.system_product import ProductTypes
 from ELDAmwl.database.tables.system_product import SmoothMethod
 from ELDAmwl.database.tables.system_product import SmoothOptions
 from ELDAmwl.database.tables.system_product import SystemProduct
-from ELDAmwl.errors.exceptions import NoBscCalOptions, NoParamsForDepolUncertainty, NoMwlProductDefined, NoELPPFileInDB, \
-    NoBasicProductsInDB
+from ELDAmwl.database.tables.lidar_constants import LidarConstants
+from ELDAmwl.errors.exceptions import NoBscCalOptions
 from ELDAmwl.errors.exceptions import NOMCOptions
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import MWL
@@ -45,8 +46,6 @@ from ELDAmwl.utils.constants import RBSC
 from sqlalchemy.orm import aliased
 from zope import component
 from zope import interface
-
-from ELDAmwl.utils.numerical import np_datetime64_to_datetime
 
 
 def register_db_func(connect_string=None):
@@ -314,71 +313,6 @@ class DBFunc(DBUtils):
         method_id = self.read_raman_bsc_smooth_method_id(product_id)
         return self.read_effbin_algorithm(method_id, SmoothMethod)
 
-    def read_vldr_smooth_method_id(self, product_id):
-        """
-        read from db which algorithm (id) shall be used for smoothing in the retrieval of this VLDR product
-            Args:
-                product_id (int): the id of the actual VLDR product
-
-            Returns:
-                int: id of the algorithm in table _vldr_methods
-
-        """
-        options = self.session.query(VLDROption)\
-            .filter(VLDROption.product_id == product_id)
-
-        if options.count() == 1:
-            result = options.first().smooth_method_id
-            return result
-        else:
-            self.logger.error(
-                'wrong number of Raman bsc options ({0})'.format(options.count()),
-            )
-
-    def read_vldr_usedbin_algorithm(self, product_id):
-        """ read from db which algorithm shall be used to calculate how
-        many bins have to be used in VLDR retrievals
-        in order to achieve a given effective resolution.
-
-            Args:
-                product_id (int): the id of the actual VLDR bsc product
-
-            Returns:
-                str: name of the BaseOperation class to be used
-
-            """
-        method_id = self.read_vldr_smooth_method_id(product_id)
-        return self.read_usedbin_algorithm(method_id, SmoothMethod)
-
-    def read_vldr_effbin_algorithm(self, product_id):
-        """ read from db which algorithm shall be used for the
-        calculation of the effective bin resolution from the number of
-        bins used in VLDR retrievals.
-
-            Args:
-                product_id (int): the id of the actual VLDR product
-
-            Returns:
-                str: name of the BaseOperation class to be used
-
-            """
-        method_id = self.read_vldr_smooth_method_id(product_id)
-        return self.read_effbin_algorithm(method_id, SmoothMethod)
-
-    def read_vldr_algorithm(self, product_id):
-        """ read from db which algorithm shall be used for
-            calculation in VLDR retrievals.
-
-            Args:
-                product_id (int): the id of the actual VLDR product
-
-            Returns:
-                str: name of the BaseOperation class to be used
-
-            """
-        method_id = self.read_vldr_smooth_method_id(product_id)
-        return self.read_algorithm(method_id, VLDRMethod)
-
     def read_raman_bsc_usedbin_algorithm(self, product_id):
         """ read from db which algorithm shall be used to calculate how
         many bins have to be used in Raman backscatter retrievals
@@ -503,6 +437,19 @@ class DBFunc(DBUtils):
                 'wrong number of lidar ratio options ({0})'.format(options.count()),
             )
 
+    def read_angstroem_exp_params(self, product_id):
+        """ function to read options of an lidar ratio product from db.
+        """
+        options = self.session.query(AngstroemExpOption) \
+            .filter(AngstroemExpOption.product_id == product_id)
+
+        if options.count() >= 1:
+            return options
+        else:
+            self.logger.error(
+                'wrong number of angstroem exponent options ({0})'.format(options.count())
+            )
+
     def read_extinction_params(self, product_id):
         """ function to read options of an extinction product from db.
 
@@ -550,16 +497,6 @@ class DBFunc(DBUtils):
                 'wrong number of extinction options ({0})'.format(options.count()),
             )
 
-    def get_scc_version_id(self):
-        versions = self.session.query(SccVersion).filter(SccVersion.is_latest)
-        if versions.count() == 1:
-            version_id = versions.first().ID
-            self.logger.debug(f'SCC version id is {version_id}')
-            return version_id
-        else:
-            self.logger.error('wrong number of latest SCC versions ({versions.count()}) in DB')
-            return None
-
     def get_basic_products_query(self, mwl_prod_id, measurement_id):
         """ read from db which of the products correlated to
             this system is the mwl product.
@@ -572,6 +509,12 @@ class DBFunc(DBUtils):
                 list of individual product IDs corresponding to this mwl product
 
             """
+        # todo: keep this ErrorThreshold tables in this query. we might need it when
+        #  we implement automatic smoothing later. but for the moment, keep the lines inactive
+        # ErrorThresholdsLow = aliased(ErrorThresholds,
+        #                              name='ErrorThresholdsLow')
+        # ErrorThresholdsHigh = aliased(ErrorThresholds,
+        #                               name='ErrorThresholdsHigh')
 
         products = self.session.query(
             MWLproductProduct,
@@ -579,6 +522,8 @@ class DBFunc(DBUtils):
             ProductTypes,
             SmoothOptions,
             PreProcOptions,
+            # ErrorThresholdsLow,
+            # ErrorThresholdsHigh,
             PreparedSignalFile,
             ProductChannels,
             Channels,
@@ -596,31 +541,24 @@ class DBFunc(DBUtils):
             SmoothOptions.product_id == Products.ID,
         ).filter(
             PreProcOptions.product_id == Products.ID,
+        # ).filter(
+        #     SmoothOptions.lowrange_error_threshold_id == ErrorThresholdsLow.ID,
+        # ).filter(
+        #     SmoothOptions.highrange_error_threshold_id == ErrorThresholdsHigh.ID,
         ).filter(
             ProductChannels.prod_id == Products.ID,
         ).filter(
             ProductChannels.channel_id == Channels.ID,
-        ).group_by(Products.ID)
-
-        product_count = products.count()
-        if product_count == 0:
-            self.logger.error('no individual basic products defined for mwl product')
-            raise NoBasicProductsInDB(mwl_prod_id)
-
-        products = products.filter(
+        ).filter(
             PreparedSignalFile.product_id == Products.ID,
         ).filter(
             PreparedSignalFile.measurements_id == measurement_id,
-        )
+        ).group_by(Products.ID)
 
-        if products.count() == 0:
-            self.logger.error(f'no ELPP signals available for measurement {measurement_id}')
-            raise NoELPPFileInDB(measurement_id)
-        elif products.count() < product_count:
-            self.logger.warning('some basic products have no ELPP file')
+        if products.count() > 0:
             return products
         else:
-            return products
+            self.logger.error('no individual products for mwl product')
 
     def get_derived_products_query(self, mwl_prod_id):
         """ read from db which of the products correlated to
@@ -764,6 +702,61 @@ class DBFunc(DBUtils):
                 'wrong number of product options ({0})'.format(options.count()),
             )
 
+    def get_products_resolution_query(self, mwl_prod_id):
+        """ function to read the vertical and temporal resolution of the products from db.
+
+            This function reads from the db table preproc_options
+            which are the vertical and temporal resolution of the products.
+
+            Args:
+                mwl_prod_id (int): product id of mwl product
+
+            Returns:
+                list of individual product IDs corresponding to this mwl product
+
+        """
+        products_resolution = self.session.query(
+            MWLproductProduct.mwl_product_id,
+            func.min(PreProcOptions.preprocessing_integration_time).label('min_preprocessing_integration_time'),
+            func.max(PreProcOptions.preprocessing_integration_time).label('max_preprocessing_integration_time'),
+            func.min(PreProcOptions.preprocessing_vertical_resolution).label('min_preprocessing_vertical_resolution'),
+            func.max(PreProcOptions.preprocessing_vertical_resolution).label('max_preprocessing_vertical_resolution'),
+        ).filter(
+            MWLproductProduct.mwl_product_id == mwl_prod_id,
+        ).filter(
+            MWLproductProduct.product_id == Products.ID,
+        ).filter(
+            PreProcOptions.product_id == Products.ID
+        ).group_by(MWLproductProduct.mwl_product_id)
+
+        if products_resolution.count() == 1:
+            same_temporal_resolution = products_resolution[0].min_preprocessing_integration_time \
+                                     == products_resolution[0].max_preprocessing_integration_time
+            same_vertical_resolution = products_resolution[0].min_preprocessing_vertical_resolution \
+                                     == products_resolution[0].max_preprocessing_vertical_resolution
+
+            if same_temporal_resolution:
+                if same_vertical_resolution:
+                    # self.logger.info('all products have the same temporal and vertical resolution')
+                    return True
+                else:
+                    self.logger.error('there are different vertical resolutions configured')
+                    return False
+            else:
+                if same_vertical_resolution:
+                    self.logger.error('there are different temporal resolutions configured')
+                    return False
+                else:
+                    self.logger.error('there are different temporal and vertical resolutions configured')
+                    return False
+        elif products_resolution.count() == 0:
+            self.logger.error('there are no vertical and temporal resolutions available for this measurement')
+            return None
+        else:
+            self.logger.warning('can there be more than one mwl_product_ID each time?')
+            return None
+
+
     def read_elast_bsc_params(self, product_id):
         """ function to read options of an elast bsc product from db.
 
@@ -861,33 +854,6 @@ class DBFunc(DBUtils):
                 'wrong number of Raman bsc options ({0})'.format(options.count()),
             )
 
-    def read_vldr_params(self, product_id):
-        """ function to read options of a VLDR product from db.
-
-            This function reads from db with which parameters a
-            VLDR product shall be derived.
-
-            Args:
-                product_id (str): the id of the actual Raman bsc product
-
-            Returns:
-                options : {'vldr_method': None, 'error_method': None, 'smooth_method': None}
-
-            """
-        options = self.session.query(VLDROption)\
-            .filter(VLDROption.product_id == product_id)
-
-        if options.count() == 1:
-            result = {'vldr_method': options.first().vldr_method_id,
-                      'error_method': options.first().error_method_id,
-                      'smooth_method': options.first().smooth_method_id,
-                      }
-            return result
-        else:
-            self.logger.error(
-                'wrong number of VLDR options ({0})'.format(options.count()),
-            )
-
     def get_mc_params_query(self, prod_id):
         """read from db which params shall be used for the Monte-Carlo error retrieval
         Args:
@@ -937,39 +903,14 @@ class DBFunc(DBUtils):
             BackscatterOption.bsc_calibration_window_id == BscCalibrWindow.ID
         ).filter(
             BackscatterOption.bsc_calibration_value_id == BscCalibrValue.ID
-        ). filter(
+        ).filter(
             BackscatterOption.bsc_calibration_range_search_method_id == BscCalibrRangeSearchMethod.ID
         ).filter(BackscatterOption.product_id == bsc_prod_id)
 
         if cal_params.count() > 0:
             return cal_params[0]
         else:
-            raise(NoBscCalOptions(bsc_prod_id))
-
-    def get_depol_uncertainties_query(self, prod_id, measurement_date):
-        """read from db the parameters for calculation depolarization uncertainties
-            Args:
-                prod_id (int): the id of the VLDR product
-                measurement_data (datetime): the time of the measurement
-
-            Returns:
-                query with uncertainty parameters
-        """
-        dt = np_datetime64_to_datetime(measurement_date)
-
-        params = self.session.query(PolarizationCalibrationCorrectionFactors)\
-            .filter(PolarizationCalibrationCorrectionFactors.product_id == prod_id)\
-            .filter(PolarizationCalibrationCorrectionFactors.correction_date <= dt)\
-            .order_by(PolarizationCalibrationCorrectionFactors.correction_date.desc())\
-            .order_by(PolarizationCalibrationCorrectionFactors.correction_submission_date.desc())
-
-        if params.count() > 0:
-            return params.first()
-        else:
-            self.logger.error('no matching parameter for depolarization uncertainty for product {0} '
-                              'and measurement time{1} in database'.format(prod_id, measurement_date))
-            raise NoParamsForDepolUncertainty(prod_id, measurement_date)
-
+            raise (NoBscCalOptions(bsc_prod_id))
 
     def read_mwl_product_id(self, system_id):
         """ read from db which of the products correlated
@@ -993,7 +934,6 @@ class DBFunc(DBUtils):
             self.logger.error(
                 'wrong number of mwl products ({0})'.format(products.count()),
             )
-            raise NoMwlProductDefined(system_id)
 
     def read_system_id(self, measurement_id):
         """ function to read from db which products shall be derived .
@@ -1009,7 +949,7 @@ class DBFunc(DBUtils):
                 list: List of product ids (int)
 
             """
-        sys_id = self.session.query(Measurements)\
+        sys_id = self.session.query(Measurements) \
             .filter(Measurements.ID == measurement_id)
 
         if sys_id.count() == 1:
@@ -1131,39 +1071,13 @@ class DBFunc(DBUtils):
             detection_wavelength=detection_wl,
             is_latest_value=1
         )
-        if lidar_const.count() == 1:
+        if lidar_const.count() == 0:
+            self.session.add(new_db_entry)
+        elif lidar_const.count() == 1:
             lidar_const.update({'is_latest_value': 0,
                                 },
                                synchronize_session=False)
-        elif lidar_const.count() > 1:
-            self.logger.error('wrong number ({0}) of lidar constants in db '.format(lidar_const.count()))
-
-        self.session.add(new_db_entry)
-        self.session.commit()
-
-    def write_product_status_in_db(self, meas_id, mwl_prod_id, prod_id,
-                                   new_status, description,
-                                   ):
-        prod_status = self.session.query(EldaMwlProductStatus)\
-            .filter(EldaMwlProductStatus.measurement_id == meas_id)\
-            .filter(EldaMwlProductStatus.mwl_product_id == mwl_prod_id)\
-            .filter(EldaMwlProductStatus.product_id == prod_id)
-
-        new_db_entry = EldaMwlProductStatus(
-            measurement_id=meas_id,
-            mwl_product_id=mwl_prod_id,
-            product_id=prod_id,
-            status_code=new_status,
-            description=description,
-        )
-        if prod_status.count() == 0:
-            self.session.add(new_db_entry)
-        elif prod_status.count() == 1:
-            prod_status.update({'status_code': new_status,
-                                'description': description,
-                                },
-                               synchronize_session=False)
         else:
-            self.logger.error('wrong number ({0}) of product status entries in db '.format(prod_status.count()))
+            self.logger.error('wrong number ({0}) of lidar constants in db '.format(lidar_const.count()))
 
         self.session.commit()

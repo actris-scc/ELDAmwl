@@ -1,30 +1,32 @@
 # -*- coding: utf-8 -*-
 """ELDAmwl operations"""
+import numpy as np
+import pandas as pd
+import zope
 from addict import Dict
+from zope import component
+
 from ELDAmwl.backscatter.elastic.params import ElastBscParams
 from ELDAmwl.backscatter.raman.params import RamanBscParams
 from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IParams
-from ELDAmwl.depol.params import VLDRParams
 from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
 from ELDAmwl.elda_mwl.get_lidar_constants import GetLidarConstants
 from ELDAmwl.elda_mwl.mwl_products import GetProductMatrix
 from ELDAmwl.elda_mwl.mwl_products import QualityControl
-from ELDAmwl.errors.exceptions import ProductNotUnique, ELDAmwlException
+from ELDAmwl.errors.exceptions import ProductNotUnique, DifferentProductsResolution, CouldNotFindProductsResolution
 from ELDAmwl.extinction.params import ExtinctionParams
 from ELDAmwl.lidar_ratio.params import LidarRatioParams
+from ELDAmwl.angstroem_exponent.params import AngstroemExpParams
 from ELDAmwl.output.write_mwl_output import WriteMWLOutput
 from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams
 from ELDAmwl.products import SmoothParams
 from ELDAmwl.signals import ElppData
 from ELDAmwl.utils.constants import EBSC
-from ELDAmwl.utils.constants import EXIT_CODE_NONE
-from ELDAmwl.utils.constants import EXIT_CODE_OK
-from ELDAmwl.utils.constants import EXIT_CODE_SOME
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import HIGHRES
 from ELDAmwl.utils.constants import LOWRES
@@ -32,6 +34,7 @@ from ELDAmwl.utils.constants import LR
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR
 from ELDAmwl.utils.constants import VLDR
+from ELDAmwl.utils.constants import AE
 from zope import component
 
 import numpy as np
@@ -43,7 +46,7 @@ PARAM_CLASSES = {RBSC: RamanBscParams,
                  EBSC: ElastBscParams,
                  EXT: ExtinctionParams,
                  LR: LidarRatioParams,
-                 VLDR: VLDRParams}
+                 AE: AngstroemExpParams}
 
 
 @zope.interface.implementer(IParams)
@@ -104,7 +107,7 @@ class MeasurementParams(Params):
 
         self.smooth_params = SmoothParams.from_db(self.measurement_params.mwl_product_id)
 
-    def wavelengths(self, res=None, prod_types=None):
+    def wavelengths(self, res=None):
         """unique sorted list of wavelengths of all products with resolution = res
         Args:
             res (optional): ['lowres', 'highres']
@@ -115,19 +118,9 @@ class MeasurementParams(Params):
         prod_df = prod_df[(prod_df['failed'] == False) & (prod_df['basic'] == 1)]
 
         if res is not None:
-            prod_df = prod_df[prod_df[RESOLUTION_STR[res]] == True]
-        if prod_types is not None:
-            if (len(prod_types) == 1) or isinstance(prod_types, int):
-                prod_df = prod_df[prod_df['type'] == prod_types]
-            elif len(prod_types) > 1:
-                type_df = prod_df[prod_df['type'] == prod_types[0]]
-                for pt in prod_types[1:]:
-                    type_df = pd.concat([type_df, prod_df[prod_df['type'] == pt]])
-                prod_df = type_df
-            else:
-                self.logger.error('empty list of product types')
-
-        all_wls = prod_df.wl.to_numpy()
+            all_wls = prod_df['wl'][prod_df[RESOLUTION_STR[res]] == True].to_numpy()  # noqa E712
+        else:
+            all_wls = prod_df.wl.to_numpy()
 
         unique_wls = np.unique(all_wls)
         return unique_wls.tolist()
@@ -161,18 +154,6 @@ class MeasurementParams(Params):
         prod_df = self.measurement_params.product_table
         prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][prod_df.basic]
-        return self.filtered_list(ids)
-
-    def failed_products(self):
-        """list of parameters of all products which could not be derived
-
-        Returns:
-            list of :class:`ELDAmwl.products.ProductParams`:
-            list of parameters of all products which could not be derived
-        """
-        prod_df = self.measurement_params.product_table
-        prod_df = prod_df[prod_df['failed']]
-        ids = prod_df['id']
         return self.filtered_list(ids)
 
     def all_products_of_res(self, res):
@@ -268,6 +249,17 @@ class MeasurementParams(Params):
         ids = prod_df['id'][prod_df.type == LR]
         return self.filtered_list(ids)
 
+    def angstroem_exp_products(self):
+        """list of parameters of all angstroem_exp products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all angstroem exponent products
+        """
+        prod_df = self.measurement_params.product_table
+        ids = prod_df['id'][prod_df.type == AE]
+        return self.filtered_list(ids)
+
     def filtered_list(self, filtered_ids):
         """ converts a filtered subset of the product_table
         into list of product parameter instances`
@@ -287,19 +279,6 @@ class MeasurementParams(Params):
             return result
         else:
             return []
-
-    def count_scheduled_products(self):
-        """counts the number of scheduled products.
-
-        Each wavelength and resolution is counted as an extra product.
-
-        Returns: (integer): number of products
-
-        """
-        prod_df = self.measurement_params.product_table
-        result = prod_df[prod_df['lowres']].id.count() \
-                 + prod_df[prod_df['highres']].id.count()
-        return result
 
     def read_product_list(self):
         """Reads the parameter of all products of this measurement from database.
@@ -342,7 +321,6 @@ class MeasurementParams(Params):
                     prod_params.assign_to_product_list(self.measurement_params)
                 else:
                     self.logger.error('product type {} not yet implemented'.format(prod_type))
-
 
     def prod_params(self, prod_type, wl):
         """ returns a list with params of all products of type prod_type and wavelength wl
@@ -389,11 +367,24 @@ class MeasurementParams(Params):
         if ids.size == 1:
             return ids.values[0]
         elif ids.size >= 1:
-            self.logger.warning('more than one product id for wavelength {} and produc type {}'.format(wl, prod_type))
+            self.logger.warning('more than one product id for wavelength {} and product type {}'.format(wl, prod_type))
             return None
         else:
             return None
 
+    def get_products_resolution(self):
+        """Reads the products resolution to make sure it is consistent between all the products     # ToDo Pilar improve
+
+        Returns:
+            same_resolution (bool): true if all the temporal and vertical resolutions are the same, false otherwise
+            None: if no resolutions are defined for the current mwl_product_id
+        """
+
+        # read resolution of the configured products for the current mwl_product_id
+        same_resolution = self.db_func.get_products_resolution_query(
+            self.mwl_product_id)
+
+        return same_resolution
 
 def register_params(params=None):
     if params is None:
@@ -408,23 +399,26 @@ class RunELDAmwl(BaseOperation):
 
     def __init__(self, meas_id):
         super(RunELDAmwl, self).__init__()
-
-        scc_version_id = self.db_func.get_scc_version_id()
-        self.data_storage.set_scc_version_id(scc_version_id)
+        # todo: read current scc version
         self.params.load_from_db(meas_id)
 
     def read_tasks(self):
-        """read from db which products shall be calculated
+        """read from db which products shall be calculated and make sure that all the preprocessed files have the same resolution
 
         """
         self.logger.info('read tasks from db')
         self.params.read_product_list()
-        pc = self.params.count_scheduled_products()
-        self.data_storage.set_number_of_scheduled_products(pc)
+        # Check whether all the temporal and vertical resolutions are equal
+        self.logger.info('read products resolution from db')
+        same_prod_res = self.params.get_products_resolution()
+        if same_prod_res is False:
+            # Different resolutions, we cannot continue with the processing
+            raise DifferentProductsResolution(self.params.mwl_product_id)
+        if same_prod_res is None:
+            # No resolutions found in preproc_options for the current mwl_product_id
+            raise CouldNotFindProductsResolution(self.params.mwl_product_id)
 
-        self.logger.debug('{0} products are scheduled.'.format(pc))
-
-        # todo: check whether the products have at
+    # todo: check whether the products have at
         #  least one resolution with which they shall be derived
         #  (calc_with_lr or calc_with_hr)
 
@@ -477,28 +471,6 @@ class RunELDAmwl(BaseOperation):
         """
         self.logger.info('synergistic quality control of all products ')
         QualityControl()(product_params=self.params).run()
-
-    def get_return_value(self):
-        """determines the return code
-
-        Returns: 0 in case that all scheduled products have been derived,
-        1 in case only some of them are derived,
-        2 if no products were derived
-
-        """
-        self.logger.debug('determine return code')
-        num_products = self.data_storage.number_of_derived_products()
-
-        if num_products == self.data_storage.number_of_scheduled_products():
-            self.logger.info('all scheduled products have been calculated')
-            return EXIT_CODE_OK
-        elif num_products > 0:
-            self.logger.warning('only some of the scheduled products have been calculated')
-            return EXIT_CODE_SOME
-        else:
-            self.logger.error('none of the scheduled products have been calculated')
-            return EXIT_CODE_NONE
-
 
     def write_single_output(self):
         """write products in single nc files (old style)  - not yet implemented
