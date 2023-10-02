@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELDAmwl.backscatter.common.vertical_resolution package &mdash; ELDAmwl 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ELDAmwl.backscatter.elastic package" href="ELDAmwl.backscatter.elastic.html" />
+    <link rel="prev" title="ELDAmwl.backscatter.common.calibration package" href="ELDAmwl.backscatter.common.calibration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ELDAmwl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../py-modindex.html">Module Index</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ELDAmwl</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ELDAmwl.html">ELDAmwl package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ELDAmwl.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="ELDAmwl.backscatter.html">ELDAmwl.backscatter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.bases.html">ELDAmwl.bases package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.component.html">ELDAmwl.component package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.html">ELDAmwl.database package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.elda_mwl.html">ELDAmwl.elda_mwl package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.errors.html">ELDAmwl.errors package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.extinction.html">ELDAmwl.extinction package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.lidar_ratio.html">ELDAmwl.lidar_ratio package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.log.html">ELDAmwl.log package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.monte_carlo.html">ELDAmwl.monte_carlo package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.output.html">ELDAmwl.output package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.plugins.html">ELDAmwl.plugins package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.storage.html">ELDAmwl.storage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.html">ELDAmwl.tests package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.utils.html">ELDAmwl.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.config">ELDAmwl.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.header">ELDAmwl.header module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.main">ELDAmwl.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.prepare_signals">ELDAmwl.prepare_signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.products">ELDAmwl.products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.rayleigh">ELDAmwl.rayleigh module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.signals">ELDAmwl.signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ELDAmwl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ELDAmwl</a></li>
+          <li class="breadcrumb-item"><a href="ELDAmwl.html">ELDAmwl package</a></li>
+          <li class="breadcrumb-item"><a href="ELDAmwl.backscatter.html">ELDAmwl.backscatter package</a></li>
+          <li class="breadcrumb-item"><a href="ELDAmwl.backscatter.common.html">ELDAmwl.backscatter.common package</a></li>
+      <li class="breadcrumb-item active">ELDAmwl.backscatter.common.vertical_resolution package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ELDAmwl.backscatter.common.vertical_resolution.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="eldamwl-backscatter-common-vertical-resolution-package">
+<h1>ELDAmwl.backscatter.common.vertical_resolution package<a class="headerlink" href="#eldamwl-backscatter-common-vertical-resolution-package" title="Permalink to this heading"></a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.backscatter.common.vertical_resolution.operation">
+<span id="eldamwl-backscatter-common-vertical-resolution-operation-module"></span><h2>ELDAmwl.backscatter.common.vertical_resolution.operation module<a class="headerlink" href="#module-ELDAmwl.backscatter.common.vertical_resolution.operation" title="Permalink to this heading"></a></h2>
+<p><strong>Classes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes" title="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBscEffBinRes</span></code></a>()</p></td>
+<td><p>Creates a Class for the calculation of the effective bin resolution for a given number of bins used in the retrieval of ...</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes" title="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBscUsedBinRes</span></code></a>()</p></td>
+<td><p>Creates a Class for the calculation of how many bins have to be used for the .</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes" title="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RamBscEffBinRes</span></code></a>()</p></td>
+<td><p>Creates a Class for the calculation of the effective bin resolution for a given number of bins used in the retrieval of ...</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes" title="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RamBscUsedBinRes</span></code></a>()</p></td>
+<td><p>Creates a Class for the calculation of how many bins have to be used ...</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes" title="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SavGolayEffBinRes</span></code></a>(**kwargs)</p></td>
+<td><p>calculates effective bin resolution for a given number of bins used for smoothing a profile with Savitzky-Golay method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes" title="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SavGolayUsedBinRes</span></code></a>(**kwargs)</p></td>
+<td><p>calculates the number of bins which have to be used for smoothing a profile with Savitzky-Golay method in order to achieve a given effective bin resolution</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.common.vertical_resolution.operation.</span></span><span class="sig-name descname"><span class="pre">ElastBscEffBinRes</span></span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code></a></p>
+<p>Creates a Class for the calculation of the effective bin resolution for a given number of bins
+used in the retrieval of …</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>prod_id</strong> (<em>str</em>) – id of the product</p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.get_classname_from_db" title="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>reads from SCC db which algorithm to use</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.name" title="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.prod_id" title="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.prod_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prod_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.get_classname_from_db">
+<span class="sig-name descname"><span class="pre">get_classname_from_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.get_classname_from_db" title="Permalink to this definition"></a></dt>
+<dd><p>reads from SCC db which algorithm to use</p>
+<p>Returns: name of the class for the bsc calculation</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ElastBscEffBinRes'</span></em><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.prod_id">
+<span class="sig-name descname"><span class="pre">prod_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscEffBinRes.prod_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.common.vertical_resolution.operation.</span></span><span class="sig-name descname"><span class="pre">ElastBscUsedBinRes</span></span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code></a></p>
+<p>Creates a Class for the calculation of how many bins have to be used for the
+… in order to achieve the required effective bin resolution of …</p>
+<p>Keyword Args:</p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.get_classname_from_db" title="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>reads from SCC db which algorithm to use</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.name" title="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.prod_id" title="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.prod_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prod_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.get_classname_from_db">
+<span class="sig-name descname"><span class="pre">get_classname_from_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.get_classname_from_db" title="Permalink to this definition"></a></dt>
+<dd><p>reads from SCC db which algorithm to use</p>
+<p>Returns: name of the class for the bsc calculation</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ElastBscUsedBinRes'</span></em><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.prod_id">
+<span class="sig-name descname"><span class="pre">prod_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.ElastBscUsedBinRes.prod_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.common.vertical_resolution.operation.</span></span><span class="sig-name descname"><span class="pre">RamBscEffBinRes</span></span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code></a></p>
+<p>Creates a Class for the calculation of the effective bin resolution for a given number of bins
+used in the retrieval of …</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>prod_id</strong> (<em>str</em>) – id of the product</p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.get_classname_from_db" title="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>reads from SCC db which algorithm to use</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.name" title="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.prod_id" title="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.prod_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prod_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.get_classname_from_db">
+<span class="sig-name descname"><span class="pre">get_classname_from_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.get_classname_from_db" title="Permalink to this definition"></a></dt>
+<dd><p>reads from SCC db which algorithm to use</p>
+<p>Returns: name of the class for the bsc calculation</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RamBscEffBinRes'</span></em><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.prod_id">
+<span class="sig-name descname"><span class="pre">prod_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscEffBinRes.prod_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.common.vertical_resolution.operation.</span></span><span class="sig-name descname"><span class="pre">RamBscUsedBinRes</span></span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code></a></p>
+<p>Creates a Class for the calculation of how many bins have to be used …</p>
+<p>Keyword Args:</p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.get_classname_from_db" title="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>reads from SCC db which algorithm to use</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.name" title="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.prod_id" title="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.prod_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prod_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.get_classname_from_db">
+<span class="sig-name descname"><span class="pre">get_classname_from_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.get_classname_from_db" title="Permalink to this definition"></a></dt>
+<dd><p>reads from SCC db which algorithm to use</p>
+<p>Returns: name of the class for the bsc calculation</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RamBscUsedBinRes'</span></em><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.prod_id">
+<span class="sig-name descname"><span class="pre">prod_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.RamBscUsedBinRes.prod_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.common.vertical_resolution.operation.</span></span><span class="sig-name descname"><span class="pre">SavGolayEffBinRes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperation</span></code></a></p>
+<p>calculates effective bin resolution for a given number of bins
+used for smoothing a profile with Savitzky-Golay method</p>
+<p>The calculation is done according to Mattis et al. 2016 with the equation
+eff_binres = round(used_bins_ELDA * 1.24 - 0.24)
+In this paper, used_bins_ELDA corresponds to the radius of the smooth window.
+Here, used_bins is the diameter of the smooth window:
+used_bins = used_bins_ELDA <a href="#id1"><span class="problematic" id="id2">*</span></a>2 +1
+=&gt;  eff_binres = round(used_bins_ELDA * 1.24 - 0.24) = round(used_bins * 0.62 - 0.86)</p>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes.name" title="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes.run" title="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(**kwargs)</p></td>
+<td><p>starts the calculation</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SavGolayEffBinRes'</span></em><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayEffBinRes.run" title="Permalink to this definition"></a></dt>
+<dd><p>starts the calculation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>used_bins</strong> (<em>integer</em>) – number of bins used for the calculation of Sav-Gol filter
+(= diameter of the smoothing window)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>resulting effective resolution in terms of vertical bins</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>eff_binres(integer)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.common.vertical_resolution.operation.</span></span><span class="sig-name descname"><span class="pre">SavGolayUsedBinRes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperation</span></code></a></p>
+<p>calculates the number of bins which have to be
+used for smoothing a profile with Savitzky-Golay method in order to achieve
+a given effective bin resolution</p>
+<p>The calculation is done according to Mattis et al. 2016 with the equation
+used_bins_ELDA = round((eff_binres + 0.24) / 1.24).
+In this paper, used_bins_ELDA corresponds to the radius of the smooth window.
+Here, used_bins is the diameter of the smooth window:
+used_bins = used_bins_ELDA <a href="#id3"><span class="problematic" id="id4">*</span></a>2 +1 = round((eb+0.86)/0.62)</p>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes.name" title="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes.run" title="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(**kwargs)</p></td>
+<td><p>starts the calculation</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SavGolayUsedBinRes'</span></em><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.common.vertical_resolution.operation.SavGolayUsedBinRes.run" title="Permalink to this definition"></a></dt>
+<dd><p>starts the calculation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>eff_binres</strong> (<em>integer</em>) – required effective vertical resolution in terms of bins</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>number of bins (= diameter of the smooth window) to be used for</dt><dd><p>the calculation of the Sav-Gol filter in order to achieve the required effective
+vertical bin resolution. must be an odd number.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>used_bins(integer)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.backscatter.common.vertical_resolution">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl.backscatter.common.vertical_resolution" title="Permalink to this heading"></a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ELDAmwl.backscatter.common.calibration.html" class="btn btn-neutral float-left" title="ELDAmwl.backscatter.common.calibration package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ELDAmwl.backscatter.elastic.html" class="btn btn-neutral float-right" title="ELDAmwl.backscatter.elastic package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Ina Mattis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

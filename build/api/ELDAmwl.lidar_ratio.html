@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELDAmwl.lidar_ratio package &mdash; ELDAmwl 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ELDAmwl.log package" href="ELDAmwl.log.html" />
+    <link rel="prev" title="ELDAmwl.extinction.vertical_resolution package" href="ELDAmwl.extinction.vertical_resolution.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ELDAmwl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../py-modindex.html">Module Index</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ELDAmwl</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ELDAmwl.html">ELDAmwl package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ELDAmwl.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.html">ELDAmwl.backscatter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.bases.html">ELDAmwl.bases package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.component.html">ELDAmwl.component package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.html">ELDAmwl.database package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.elda_mwl.html">ELDAmwl.elda_mwl package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.errors.html">ELDAmwl.errors package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.extinction.html">ELDAmwl.extinction package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ELDAmwl.lidar_ratio package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.log.html">ELDAmwl.log package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.monte_carlo.html">ELDAmwl.monte_carlo package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.output.html">ELDAmwl.output package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.plugins.html">ELDAmwl.plugins package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.storage.html">ELDAmwl.storage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.html">ELDAmwl.tests package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.utils.html">ELDAmwl.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.config">ELDAmwl.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.header">ELDAmwl.header module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.main">ELDAmwl.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.prepare_signals">ELDAmwl.prepare_signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.products">ELDAmwl.products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.rayleigh">ELDAmwl.rayleigh module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.signals">ELDAmwl.signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ELDAmwl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ELDAmwl</a></li>
+          <li class="breadcrumb-item"><a href="ELDAmwl.html">ELDAmwl package</a></li>
+      <li class="breadcrumb-item active">ELDAmwl.lidar_ratio package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ELDAmwl.lidar_ratio.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="eldamwl-lidar-ratio-package">
+<h1>ELDAmwl.lidar_ratio package<a class="headerlink" href="#eldamwl-lidar-ratio-package" title="Permalink to this heading"></a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.lidar_ratio.operation">
+<span id="eldamwl-lidar-ratio-operation-module"></span><h2>ELDAmwl.lidar_ratio.operation module<a class="headerlink" href="#module-ELDAmwl.lidar_ratio.operation" title="Permalink to this heading"></a></h2>
+<p>Classes for lidar ratio calculation</p>
+<p><strong>Classes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatio" title="ELDAmwl.lidar_ratio.operation.CalcLidarRatio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalcLidarRatio</span></code></a>()</p></td>
+<td><p>creates a Class for the calculation of a lidar ratio</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault" title="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalcLidarRatioDefault</span></code></a>(**kwargs)</p></td>
+<td><p>Calculates particle lidar ratio from extinction and backscatter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactory" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LidarRatioFactory</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LidarRatioFactoryDefault</span></code></a>(**kwargs)</p></td>
+<td><p>derives a single instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">LidarRatios</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.CalcLidarRatio">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.lidar_ratio.operation.</span></span><span class="sig-name descname"><span class="pre">CalcLidarRatio</span></span><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatio" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code></a></p>
+<p>creates a Class for the calculation of a lidar ratio</p>
+<p>Returns an instance of BaseOperation which calculates the particle
+lidar ratio from extinction and backscatter. In this case, it
+will be always an instance of CalcLidarRatioDefault().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lr_params</strong> (<a class="reference internal" href="#ELDAmwl.lidar_ratio.params.LidarRatioParams" title="ELDAmwl.lidar_ratio.params.LidarRatioParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.lidar_ratio.params.LidarRatioParams</span></code></a>) – retrieval parameter of the lidar ratio product</p></li>
+<li><p><strong>ext</strong> (<a class="reference internal" href="ELDAmwl.extinction.html#ELDAmwl.extinction.product.Extinctions" title="ELDAmwl.extinction.product.Extinctions"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.extinction.product.Extinctions</span></code></a>) – particle extinction profiles</p></li>
+<li><p><strong>bsc</strong> (<a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.product.RamanBackscatters" title="ELDAmwl.backscatter.raman.product.RamanBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.raman.product.RamanBackscatters</span></code></a>) – particle backscatter (Raman) profiles</p></li>
+<li><p><strong>empty_lr</strong> (<a class="reference internal" href="#ELDAmwl.lidar_ratio.product.LidarRatios" title="ELDAmwl.lidar_ratio.product.LidarRatios"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.lidar_ratio.product.LidarRatios</span></code></a>) – instance of LidarRatios which has all meta data but profile data are empty arrays</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>instance of <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperation</span></code></a></p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatio.get_classname_from_db" title="ELDAmwl.lidar_ratio.operation.CalcLidarRatio.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>return: always 'CalcLidarRatioDefault' .</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatio.name" title="ELDAmwl.lidar_ratio.operation.CalcLidarRatio.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.CalcLidarRatio.get_classname_from_db">
+<span class="sig-name descname"><span class="pre">get_classname_from_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatio.get_classname_from_db" title="Permalink to this definition"></a></dt>
+<dd><p>return: always ‘CalcLidarRatioDefault’ .</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.CalcLidarRatio.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CalcLidarRatio'</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatio.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.lidar_ratio.operation.</span></span><span class="sig-name descname"><span class="pre">CalcLidarRatioDefault</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperation</span></code></a></p>
+<p>Calculates particle lidar ratio from extinction and backscatter.</p>
+<p>The result is a copy of empty_lr, but its dataset (data, err, qf) is filled with the calculated values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lr_params</strong> (<a class="reference internal" href="#ELDAmwl.lidar_ratio.params.LidarRatioParams" title="ELDAmwl.lidar_ratio.params.LidarRatioParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.lidar_ratio.params.LidarRatioParams</span></code></a>) – retrieval parameter of the lidar ratio product</p></li>
+<li><p><strong>ext</strong> (<a class="reference internal" href="ELDAmwl.extinction.html#ELDAmwl.extinction.product.Extinctions" title="ELDAmwl.extinction.product.Extinctions"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.extinction.product.Extinctions</span></code></a>) – particle extinction profiles</p></li>
+<li><p><strong>bsc</strong> (<a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.product.RamanBackscatters" title="ELDAmwl.backscatter.raman.product.RamanBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.raman.product.RamanBackscatters</span></code></a>) – particle backscatter (Raman) profiles</p></li>
+<li><p><strong>empty_lr</strong> (<a class="reference internal" href="#ELDAmwl.lidar_ratio.product.LidarRatios" title="ELDAmwl.lidar_ratio.product.LidarRatios"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.lidar_ratio.product.LidarRatios</span></code></a>) – instance of LidarRatios which has all meta data but profile data are empty arrays</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>particle lidar ratio profiles (<a class="reference internal" href="#ELDAmwl.lidar_ratio.product.LidarRatios" title="ELDAmwl.lidar_ratio.product.LidarRatios"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.lidar_ratio.product.LidarRatios</span></code></a>)</p>
+</dd>
+</dl>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.bsc" title="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.bsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bsc</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.ext" title="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.ext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ext</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.name" title="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.result" title="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.result"><code class="xref py py-obj docutils literal notranslate"><span class="pre">result</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.run" title="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([ext, bsc])</p></td>
+<td><p>run the lidar ratio calculation</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.bsc">
+<span class="sig-name descname"><span class="pre">bsc</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.bsc" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.ext">
+<span class="sig-name descname"><span class="pre">ext</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.ext" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CalcLidarRatioDefault'</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.result" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bsc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.CalcLidarRatioDefault.run" title="Permalink to this definition"></a></dt>
+<dd><p>run the lidar ratio calculation</p>
+<p>The the optional keyword args ‘ext’ and ‘bsc’ allow to feed new input data into
+an existing instance of CalcLidarRatioDefault and run a new calculation.
+This feature is used e.g., for Monte-Carlo error retrievals</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ext</strong> (<a class="reference internal" href="ELDAmwl.extinction.html#ELDAmwl.extinction.product.Extinctions" title="ELDAmwl.extinction.product.Extinctions"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.extinction.product.Extinctions</span></code></a>) – extinction profiles, default=None</p></li>
+<li><p><strong>bsc</strong> (<a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.product.RamanBackscatters" title="ELDAmwl.backscatter.raman.product.RamanBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.raman.product.RamanBackscatters</span></code></a>) – Raman backscatter profiles, default=None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>profiles of particle lidar ratio (<a class="reference internal" href="#ELDAmwl.lidar_ratio.product.LidarRatios" title="ELDAmwl.lidar_ratio.product.LidarRatios"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.lidar_ratio.product.LidarRatios</span></code></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.lidar_ratio.operation.</span></span><span class="sig-name descname"><span class="pre">LidarRatioFactory</span></span><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code></a></p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactory.get_classname_from_db" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactory.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>return: always 'lidarRatioFactoryDefault' .</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactory.name" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactory.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactory.get_classname_from_db">
+<span class="sig-name descname"><span class="pre">get_classname_from_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactory.get_classname_from_db" title="Permalink to this definition"></a></dt>
+<dd><p>return: always ‘lidarRatioFactoryDefault’ .</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactory.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'LidarRatioFactory'</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactory.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.lidar_ratio.operation.</span></span><span class="sig-name descname"><span class="pre">LidarRatioFactoryDefault</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperation</span></code></a></p>
+<p>derives a single instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">LidarRatios</span></code>.</p>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.bsc" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.bsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bsc</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.empty_lr" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.empty_lr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty_lr</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.ext" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.ext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ext</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.name" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.param" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.param"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.prod_id" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.prod_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prod_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.resolution" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.resolution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolution</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.result" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.result"><code class="xref py py-obj docutils literal notranslate"><span class="pre">result</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.get_non_merge_product" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.get_non_merge_product"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_non_merge_product</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.get_product" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.get_product"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_product</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.prepare" title="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.bsc">
+<span class="sig-name descname"><span class="pre">bsc</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.bsc" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.empty_lr">
+<span class="sig-name descname"><span class="pre">empty_lr</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.empty_lr" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.ext">
+<span class="sig-name descname"><span class="pre">ext</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.ext" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.get_non_merge_product">
+<span class="sig-name descname"><span class="pre">get_non_merge_product</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.get_non_merge_product" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.get_product">
+<span class="sig-name descname"><span class="pre">get_product</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.get_product" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'lidarRatioFactoryDefault'</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.param">
+<span class="sig-name descname"><span class="pre">param</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.param" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.prepare" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.prod_id">
+<span class="sig-name descname"><span class="pre">prod_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.prod_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.resolution">
+<span class="sig-name descname"><span class="pre">resolution</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-2147483647</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.resolution" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.lidar_ratio.operation.LidarRatioFactoryDefault.result" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.lidar_ratio.params">
+<span id="eldamwl-lidar-ratio-params-module"></span><h2>ELDAmwl.lidar_ratio.params module<a class="headerlink" href="#module-ELDAmwl.lidar_ratio.params" title="Permalink to this heading"></a></h2>
+<p><strong>Classes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.params.LidarRatioParams" title="ELDAmwl.lidar_ratio.params.LidarRatioParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LidarRatioParams</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.params.LidarRatioParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.lidar_ratio.params.</span></span><span class="sig-name descname"><span class="pre">LidarRatioParams</span></span><a class="headerlink" href="#ELDAmwl.lidar_ratio.params.LidarRatioParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.html#ELDAmwl.products.ProductParams" title="ELDAmwl.products.ProductParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProductParams</span></code></a></p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.params.LidarRatioParams.assign_to_product_list" title="ELDAmwl.lidar_ratio.params.LidarRatioParams.assign_to_product_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_to_product_list</span></code></a>(global_product_list)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.params.LidarRatioParams.from_db" title="ELDAmwl.lidar_ratio.params.LidarRatioParams.from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_db</span></code></a>(general_params)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.params.LidarRatioParams.to_meta_ds_dict" title="ELDAmwl.lidar_ratio.params.LidarRatioParams.to_meta_ds_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_meta_ds_dict</span></code></a>(dct)</p></td>
+<td><p>writes parameter content into Dict for further export in mwl file :param dct: is a dict which will be converted into dataset. has the keys 'attrs' and 'data_vars' :type dct: addict.Dict.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.params.LidarRatioParams.assign_to_product_list">
+<span class="sig-name descname"><span class="pre">assign_to_product_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_product_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.params.LidarRatioParams.assign_to_product_list" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.params.LidarRatioParams.from_db">
+<span class="sig-name descname"><span class="pre">from_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">general_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.params.LidarRatioParams.from_db" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.params.LidarRatioParams.to_meta_ds_dict">
+<span class="sig-name descname"><span class="pre">to_meta_ds_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dct</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.params.LidarRatioParams.to_meta_ds_dict" title="Permalink to this definition"></a></dt>
+<dd><p>writes parameter content into Dict for further export in mwl file
+:param dct: is a dict which will be converted into dataset.</p>
+<blockquote>
+<div><p>has the keys ‘attrs’ and ‘data_vars’</p>
+</div></blockquote>
+<dl class="field-list simple">
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.lidar_ratio.product">
+<span id="eldamwl-lidar-ratio-product-module"></span><h2>ELDAmwl.lidar_ratio.product module<a class="headerlink" href="#module-ELDAmwl.lidar_ratio.product" title="Permalink to this heading"></a></h2>
+<p><strong>Classes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.product.LidarRatios" title="ELDAmwl.lidar_ratio.product.LidarRatios"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LidarRatios</span></code></a>()</p></td>
+<td><p>time series of lidar ratio profiles</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.product.LidarRatios">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.lidar_ratio.product.</span></span><span class="sig-name descname"><span class="pre">LidarRatios</span></span><a class="headerlink" href="#ELDAmwl.lidar_ratio.product.LidarRatios" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.html#ELDAmwl.products.Products" title="ELDAmwl.products.Products"><code class="xref py py-class docutils literal notranslate"><span class="pre">Products</span></code></a></p>
+<p>time series of lidar ratio profiles</p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.product.LidarRatios.init" title="ELDAmwl.lidar_ratio.product.LidarRatios.init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init</span></code></a>(ext, bsc, p_params, **kwargs)</p></td>
+<td><p>calculates LidarRatios from a backscatter and an extinction profile.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.lidar_ratio.product.LidarRatios.to_meta_ds_dict" title="ELDAmwl.lidar_ratio.product.LidarRatios.to_meta_ds_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_meta_ds_dict</span></code></a>(meta_data)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.product.LidarRatios.init">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bsc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_params</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.product.LidarRatios.init" title="Permalink to this definition"></a></dt>
+<dd><p>calculates LidarRatios from a backscatter and an extinction profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bsc</strong> (<a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.product.Backscatters" title="ELDAmwl.backscatter.common.product.Backscatters"><em>Backscatters</em></a>) – time series of backscatter coefficient profiles</p></li>
+<li><p><strong>ext</strong> (<a class="reference internal" href="ELDAmwl.extinction.html#ELDAmwl.extinction.product.Extinctions" title="ELDAmwl.extinction.product.Extinctions"><em>Extinctions</em></a>) – time series of extinction coefficient profiles</p></li>
+<li><p><strong>p_params</strong> (<em>ELDAmwl.operations.lidar_ratio.params.LidarRatioParams</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.lidar_ratio.product.LidarRatios.to_meta_ds_dict">
+<span class="sig-name descname"><span class="pre">to_meta_ds_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.lidar_ratio.product.LidarRatios.to_meta_ds_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.lidar_ratio">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl.lidar_ratio" title="Permalink to this heading"></a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ELDAmwl.extinction.vertical_resolution.html" class="btn btn-neutral float-left" title="ELDAmwl.extinction.vertical_resolution package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ELDAmwl.log.html" class="btn btn-neutral float-right" title="ELDAmwl.log package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Ina Mattis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELDAmwl.backscatter.elastic package &mdash; ELDAmwl 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ELDAmwl.backscatter.elastic.tools package" href="ELDAmwl.backscatter.elastic.tools.html" />
+    <link rel="prev" title="ELDAmwl.backscatter.common.vertical_resolution package" href="ELDAmwl.backscatter.common.vertical_resolution.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ELDAmwl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../py-modindex.html">Module Index</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ELDAmwl</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ELDAmwl.html">ELDAmwl package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ELDAmwl.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="ELDAmwl.backscatter.html">ELDAmwl.backscatter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.bases.html">ELDAmwl.bases package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.component.html">ELDAmwl.component package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.html">ELDAmwl.database package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.elda_mwl.html">ELDAmwl.elda_mwl package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.errors.html">ELDAmwl.errors package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.extinction.html">ELDAmwl.extinction package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.lidar_ratio.html">ELDAmwl.lidar_ratio package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.log.html">ELDAmwl.log package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.monte_carlo.html">ELDAmwl.monte_carlo package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.output.html">ELDAmwl.output package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.plugins.html">ELDAmwl.plugins package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.storage.html">ELDAmwl.storage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.html">ELDAmwl.tests package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.utils.html">ELDAmwl.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.config">ELDAmwl.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.header">ELDAmwl.header module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.main">ELDAmwl.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.prepare_signals">ELDAmwl.prepare_signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.products">ELDAmwl.products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.rayleigh">ELDAmwl.rayleigh module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.signals">ELDAmwl.signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ELDAmwl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ELDAmwl</a></li>
+          <li class="breadcrumb-item"><a href="ELDAmwl.html">ELDAmwl package</a></li>
+          <li class="breadcrumb-item"><a href="ELDAmwl.backscatter.html">ELDAmwl.backscatter package</a></li>
+      <li class="breadcrumb-item active">ELDAmwl.backscatter.elastic package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ELDAmwl.backscatter.elastic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="eldamwl-backscatter-elastic-package">
+<h1>ELDAmwl.backscatter.elastic package<a class="headerlink" href="#eldamwl-backscatter-elastic-package" title="Permalink to this heading"></a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html">ELDAmwl.backscatter.elastic.tools package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#module-ELDAmwl.backscatter.elastic.tools.operation">ELDAmwl.backscatter.elastic.tools.operation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcBscProfileIter"><code class="docutils literal notranslate"><span class="pre">CalcBscProfileIter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcBscProfileKF"><code class="docutils literal notranslate"><span class="pre">CalcBscProfileKF</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcBscProfileKF.calibration"><code class="docutils literal notranslate"><span class="pre">CalcBscProfileKF.calibration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcBscProfileKF.elast_sig"><code class="docutils literal notranslate"><span class="pre">CalcBscProfileKF.elast_sig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcBscProfileKF.error_params"><code class="docutils literal notranslate"><span class="pre">CalcBscProfileKF.error_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcBscProfileKF.name"><code class="docutils literal notranslate"><span class="pre">CalcBscProfileKF.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcBscProfileKF.range_axis"><code class="docutils literal notranslate"><span class="pre">CalcBscProfileKF.range_axis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcBscProfileKF.rayl_scat"><code class="docutils literal notranslate"><span class="pre">CalcBscProfileKF.rayl_scat</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcBscProfileKF.run"><code class="docutils literal notranslate"><span class="pre">CalcBscProfileKF.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcElastBscProfile"><code class="docutils literal notranslate"><span class="pre">CalcElastBscProfile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcElastBscProfile.get_classname_from_db"><code class="docutils literal notranslate"><span class="pre">CalcElastBscProfile.get_classname_from_db()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#module-ELDAmwl.backscatter.elastic.tools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.backscatter.elastic.operation">
+<span id="eldamwl-backscatter-elastic-operation-module"></span><h2>ELDAmwl.backscatter.elastic.operation module<a class="headerlink" href="#module-ELDAmwl.backscatter.elastic.operation" title="Permalink to this heading"></a></h2>
+<p><strong>Classes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalcElastBackscatter</span></code></a>()</p></td>
+<td><p>creates a class for the calculation of an elastic backscatter coefficient</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalcElastBackscatterDefault</span></code></a>(**kwargs)</p></td>
+<td><p>Calculates particle backscatter coefficient from an elastic signal.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory" title="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBackscatterFactory</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault" title="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBackscatterFactoryDefault</span></code></a>(**kwargs)</p></td>
+<td><p>derives a single instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">ElasticBackscatters</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.elastic.operation.</span></span><span class="sig-name descname"><span class="pre">CalcElastBackscatter</span></span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code></a></p>
+<p>creates a class for the calculation of an elastic backscatter coefficient</p>
+<p>Returns an instance of BaseOperation which calculates the particle
+backscatter coefficient from an elastic signal. In this case, it
+will be always an instance of CalcElastBackscatterDefault.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bsc_params</strong> (<a class="reference internal" href="#ELDAmwl.backscatter.elastic.params.ElastBscParams" title="ELDAmwl.backscatter.elastic.params.ElastBscParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.elastic.params.ElastBscParams</span></code></a>) – retrieval parameter of the backscatter product</p></li>
+<li><p><strong>calibr_window</strong> (<em>xarray.DataArray</em>) – variable ‘backscatter_calibration_range’ (time: 2, nv: 2)                 contains bottom and top height of calibration window for each time slice</p></li>
+<li><p><strong>calc_routine</strong> (<a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperation</span></code></a>) – result of <a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#ELDAmwl.backscatter.elastic.tools.operation.CalcElastBscProfile" title="ELDAmwl.backscatter.elastic.tools.operation.CalcElastBscProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.elastic.tools.operation.CalcElastBscProfile</span></code></a></p></li>
+<li><p><strong>elast_signal</strong> (<a class="reference internal" href="ELDAmwl.html#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.signals.Signals</span></code></a>) – time series of elastic signal profiles</p></li>
+<li><p><strong>empty_bsc</strong> (<a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.product.RamanBackscatters" title="ELDAmwl.backscatter.raman.product.RamanBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.raman.product.RamanBackscatters</span></code></a>) – instance of RamanBackscatters which has all meta data but profile data are empty arrays</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>instance of <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperation</span></code></a></p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter.get_classname_from_db" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>return: always 'CalcElastBackscatterDefault' .</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter.name" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter.get_classname_from_db">
+<span class="sig-name descname"><span class="pre">get_classname_from_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter.get_classname_from_db" title="Permalink to this definition"></a></dt>
+<dd><p>return: always ‘CalcElastBackscatterDefault’ .</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CalcElastBackscatter'</span></em><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.elastic.operation.</span></span><span class="sig-name descname"><span class="pre">CalcElastBackscatterDefault</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperation</span></code></a></p>
+<p>Calculates particle backscatter coefficient from an elastic signal.</p>
+<p>The result is a copy of empty_bsc, but its dataset (data, err, qf) is filled with the calculated values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bsc_params</strong> (<a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.params.RamanBscParams" title="ELDAmwl.backscatter.raman.params.RamanBscParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.raman.params.RamanBscParams</span></code></a>) – retrieval parameter of the backscatter product</p></li>
+<li><p><strong>calibr_window</strong> (<em>xarray.DataArray</em>) – variable ‘backscatter_calibration_range’ (time: 2, nv: 2)                 contains bottom and top height of calibration window for each time slice</p></li>
+<li><p><strong>calc_routine</strong> (<a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.bases.factory.BaseOperation</span></code></a>) – result of <code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.elast.tools.operation.CalcElastBscProfile</span></code></p></li>
+<li><p><strong>elast_signal</strong> (<a class="reference internal" href="ELDAmwl.html#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.signals.Signals</span></code></a>) – elastic signal</p></li>
+<li><p><strong>empty_bsc</strong> (<a class="reference internal" href="#ELDAmwl.backscatter.elastic.product.ElastBackscatters" title="ELDAmwl.backscatter.elastic.product.ElastBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.elastic.product.ElastBackscatters</span></code></a>) – instance of ElastBackscatters which has all meta data but profile data are empty arrays</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>profiles of particle backscatter coefficients (<a class="reference internal" href="#ELDAmwl.backscatter.elastic.product.ElastBackscatters" title="ELDAmwl.backscatter.elastic.product.ElastBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.elastic.product.ElastBackscatters</span></code></a>)</p>
+</dd>
+</dl>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.bsc_params" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.bsc_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bsc_params</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.calc_routine" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.calc_routine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_routine</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.calibr_window" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.calibr_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calibr_window</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.elast_sig" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.elast_sig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elast_sig</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.name" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.result" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.result"><code class="xref py py-obj docutils literal notranslate"><span class="pre">result</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.run" title="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([data])</p></td>
+<td><p>run the Elast backscatter calculation</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.bsc_params">
+<span class="sig-name descname"><span class="pre">bsc_params</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.bsc_params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.calc_routine">
+<span class="sig-name descname"><span class="pre">calc_routine</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.calc_routine" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.calibr_window">
+<span class="sig-name descname"><span class="pre">calibr_window</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.calibr_window" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.elast_sig">
+<span class="sig-name descname"><span class="pre">elast_sig</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.elast_sig" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CalcElastBackscatterDefault'</span></em><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.result" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.run" title="Permalink to this definition"></a></dt>
+<dd><p>run the Elast backscatter calculation</p>
+<p>The the optional keyword arg ‘data’ allows to feed new signals into
+an existing instance of CalcElastBackscatterDefault and run a new calculation.
+This feature is used e.g., for Monte-Carlo error retrievals</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="ELDAmwl.html#ELDAmwl.signals.Signals" title="ELDAmwl.signals.Signals"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.signals.Signals</span></code></a>) – elastic signals, default=None</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>profiles of particle backscatter
+coefficients(<a class="reference internal" href="#ELDAmwl.backscatter.elastic.product.ElastBackscatters" title="ELDAmwl.backscatter.elastic.product.ElastBackscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">ELDAmwl.backscatter.elastic.product.ElastBackscatters</span></code></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.elastic.operation.</span></span><span class="sig-name descname"><span class="pre">ElastBackscatterFactory</span></span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactory" title="ELDAmwl.backscatter.common.operation.BackscatterFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackscatterFactory</span></code></a></p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory.get_classname_from_db" title="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory.name" title="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory.get_classname_from_db">
+<span class="sig-name descname"><span class="pre">get_classname_from_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory.get_classname_from_db" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ElastBackscatterFactory'</span></em><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.elastic.operation.</span></span><span class="sig-name descname"><span class="pre">ElastBackscatterFactoryDefault</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault" title="ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackscatterFactoryDefault</span></code></a></p>
+<p>derives a single instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">ElasticBackscatters</span></code>.</p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.get_non_merge_product" title="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.get_non_merge_product"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_non_merge_product</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.prepare" title="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.name" title="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.get_non_merge_product">
+<span class="sig-name descname"><span class="pre">get_non_merge_product</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.get_non_merge_product" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ElastBackscatterFactoryDefault'</span></em><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.prepare" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.backscatter.elastic.params">
+<span id="eldamwl-backscatter-elastic-params-module"></span><h2>ELDAmwl.backscatter.elastic.params module<a class="headerlink" href="#module-ELDAmwl.backscatter.elastic.params" title="Permalink to this heading"></a></h2>
+<p><strong>Classes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.params.ElastBscParams" title="ELDAmwl.backscatter.elastic.params.ElastBscParams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBscParams</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.params.ElastBscParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.elastic.params.</span></span><span class="sig-name descname"><span class="pre">ElastBscParams</span></span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.params.ElastBscParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.BackscatterParams" title="ELDAmwl.backscatter.common.params.BackscatterParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackscatterParams</span></code></a></p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.params.ElastBscParams.from_db" title="ELDAmwl.backscatter.elastic.params.ElastBscParams.from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_db</span></code></a>(general_params)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.params.ElastBscParams.to_meta_ds_dict" title="ELDAmwl.backscatter.elastic.params.ElastBscParams.to_meta_ds_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_meta_ds_dict</span></code></a>(dct)</p></td>
+<td><p>writes parameter content into Dict for further export in mwl file :param dct: is a dict which will be converted into dataset. has the keys 'attrs' and 'data_vars' :type dct: addict.Dict.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.params.ElastBscParams.from_db">
+<span class="sig-name descname"><span class="pre">from_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">general_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.params.ElastBscParams.from_db" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.params.ElastBscParams.to_meta_ds_dict">
+<span class="sig-name descname"><span class="pre">to_meta_ds_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dct</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.params.ElastBscParams.to_meta_ds_dict" title="Permalink to this definition"></a></dt>
+<dd><p>writes parameter content into Dict for further export in mwl file
+:param dct: is a dict which will be converted into dataset.</p>
+<blockquote>
+<div><p>has the keys ‘attrs’ and ‘data_vars’</p>
+</div></blockquote>
+<dl class="field-list simple">
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.backscatter.elastic.product">
+<span id="eldamwl-backscatter-elastic-product-module"></span><h2>ELDAmwl.backscatter.elastic.product module<a class="headerlink" href="#module-ELDAmwl.backscatter.elastic.product" title="Permalink to this heading"></a></h2>
+<p><strong>Classes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.product.ElastBackscatters" title="ELDAmwl.backscatter.elastic.product.ElastBackscatters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElastBackscatters</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.product.ElastBackscatters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.backscatter.elastic.product.</span></span><span class="sig-name descname"><span class="pre">ElastBackscatters</span></span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.product.ElastBackscatters" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.product.Backscatters" title="ELDAmwl.backscatter.common.product.Backscatters"><code class="xref py py-class docutils literal notranslate"><span class="pre">Backscatters</span></code></a></p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.product.ElastBackscatters.init" title="ELDAmwl.backscatter.elastic.product.ElastBackscatters.init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init</span></code></a>(elast_sig, p_params[, calibr_window])</p></td>
+<td><p>creates an empty instance of ElastBackscatters with meta data copied from elast_sig.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.backscatter.elastic.product.ElastBackscatters.to_meta_ds_dict" title="ELDAmwl.backscatter.elastic.product.ElastBackscatters.to_meta_ds_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_meta_ds_dict</span></code></a>(meta_data)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.product.ElastBackscatters.init">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elast_sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibr_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.product.ElastBackscatters.init" title="Permalink to this definition"></a></dt>
+<dd><p>creates an empty instance of ElastBackscatters with meta data copied from elast_sig.</p>
+<p>The signals were previously prepared by PrepareBscSignals .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elast_sig</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Signals</span></code>) – time series
+of elastic signals</p></li>
+<li><p><strong>p_params</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">RamanBackscatterParams</span></code>) – calculation params
+of the backscatter product</p></li>
+<li><p><strong>calibr_window</strong> (<em>xarray.DataArray</em>) – variable
+‘backscatter_calibration_range’
+(time, nv: 2)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.backscatter.elastic.product.ElastBackscatters.to_meta_ds_dict">
+<span class="sig-name descname"><span class="pre">to_meta_ds_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.backscatter.elastic.product.ElastBackscatters.to_meta_ds_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.backscatter.elastic">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl.backscatter.elastic" title="Permalink to this heading"></a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ELDAmwl.backscatter.common.vertical_resolution.html" class="btn btn-neutral float-left" title="ELDAmwl.backscatter.common.vertical_resolution package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ELDAmwl.backscatter.elastic.tools.html" class="btn btn-neutral float-right" title="ELDAmwl.backscatter.elastic.tools package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Ina Mattis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELDAmwl.backscatter package &mdash; ELDAmwl 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ELDAmwl.backscatter.common package" href="ELDAmwl.backscatter.common.html" />
+    <link rel="prev" title="ELDAmwl package" href="ELDAmwl.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ELDAmwl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../py-modindex.html">Module Index</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ELDAmwl</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ELDAmwl.html">ELDAmwl package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ELDAmwl.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ELDAmwl.backscatter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.bases.html">ELDAmwl.bases package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.component.html">ELDAmwl.component package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.html">ELDAmwl.database package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.elda_mwl.html">ELDAmwl.elda_mwl package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.errors.html">ELDAmwl.errors package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.extinction.html">ELDAmwl.extinction package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.lidar_ratio.html">ELDAmwl.lidar_ratio package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.log.html">ELDAmwl.log package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.monte_carlo.html">ELDAmwl.monte_carlo package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.output.html">ELDAmwl.output package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.plugins.html">ELDAmwl.plugins package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.storage.html">ELDAmwl.storage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.html">ELDAmwl.tests package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.utils.html">ELDAmwl.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.config">ELDAmwl.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.header">ELDAmwl.header module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.main">ELDAmwl.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.prepare_signals">ELDAmwl.prepare_signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.products">ELDAmwl.products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.rayleigh">ELDAmwl.rayleigh module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.signals">ELDAmwl.signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ELDAmwl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ELDAmwl</a></li>
+          <li class="breadcrumb-item"><a href="ELDAmwl.html">ELDAmwl package</a></li>
+      <li class="breadcrumb-item active">ELDAmwl.backscatter package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ELDAmwl.backscatter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="eldamwl-backscatter-package">
+<h1>ELDAmwl.backscatter package<a class="headerlink" href="#eldamwl-backscatter-package" title="Permalink to this heading"></a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ELDAmwl.backscatter.common.html">ELDAmwl.backscatter.common package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.common.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.common.calibration.html">ELDAmwl.backscatter.common.calibration package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.calibration.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.calibration.html#module-ELDAmwl.backscatter.common.calibration.operation">ELDAmwl.backscatter.common.calibration.operation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.calibration.html#module-ELDAmwl.backscatter.common.calibration.params">ELDAmwl.backscatter.common.calibration.params module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.calibration.html#module-ELDAmwl.backscatter.common.calibration">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.common.vertical_resolution.html">ELDAmwl.backscatter.common.vertical_resolution package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.vertical_resolution.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.vertical_resolution.html#module-ELDAmwl.backscatter.common.vertical_resolution.operation">ELDAmwl.backscatter.common.vertical_resolution.operation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.vertical_resolution.html#module-ELDAmwl.backscatter.common.vertical_resolution">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.common.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.common.html#module-ELDAmwl.backscatter.common.operation">ELDAmwl.backscatter.common.operation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactory"><code class="docutils literal notranslate"><span class="pre">BackscatterFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactory.get_classname_from_db"><code class="docutils literal notranslate"><span class="pre">BackscatterFactory.get_classname_from_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactory.name"><code class="docutils literal notranslate"><span class="pre">BackscatterFactory.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault.calibr_window"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault.calibr_window</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault.data_storage"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault.data_storage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault.elast_sig"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault.elast_sig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault.empty_bsc"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault.empty_bsc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault.get_non_merge_product"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault.get_non_merge_product()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault.get_product"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault.get_product()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault.name"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault.param"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault.param</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault.prepare"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.operation.BackscatterFactoryDefault.prod_id"><code class="docutils literal notranslate"><span class="pre">BackscatterFactoryDefault.prod_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.common.html#module-ELDAmwl.backscatter.common.params">ELDAmwl.backscatter.common.params module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.BackscatterParams"><code class="docutils literal notranslate"><span class="pre">BackscatterParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.BackscatterParams.add_signal_role"><code class="docutils literal notranslate"><span class="pre">BackscatterParams.add_signal_role()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.BackscatterParams.from_db"><code class="docutils literal notranslate"><span class="pre">BackscatterParams.from_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.BackscatterParams.to_meta_ds_dict"><code class="docutils literal notranslate"><span class="pre">BackscatterParams.to_meta_ds_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.IterBscParams"><code class="docutils literal notranslate"><span class="pre">IterBscParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.IterBscParams.conv_crit"><code class="docutils literal notranslate"><span class="pre">IterBscParams.conv_crit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.IterBscParams.from_db"><code class="docutils literal notranslate"><span class="pre">IterBscParams.from_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.IterBscParams.max_iteration_count"><code class="docutils literal notranslate"><span class="pre">IterBscParams.max_iteration_count</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.IterBscParams.ram_bsc_method"><code class="docutils literal notranslate"><span class="pre">IterBscParams.ram_bsc_method</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.params.IterBscParams.to_meta_ds_dict"><code class="docutils literal notranslate"><span class="pre">IterBscParams.to_meta_ds_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.common.html#module-ELDAmwl.backscatter.common.product">ELDAmwl.backscatter.common.product module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.product.Backscatters"><code class="docutils literal notranslate"><span class="pre">Backscatters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.product.Backscatters.bsc_ratio"><code class="docutils literal notranslate"><span class="pre">Backscatters.bsc_ratio</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.product.Backscatters.calibr_window"><code class="docutils literal notranslate"><span class="pre">Backscatters.calibr_window</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.product.Backscatters.init"><code class="docutils literal notranslate"><span class="pre">Backscatters.init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.common.html#ELDAmwl.backscatter.common.product.Backscatters.to_meta_ds_dict"><code class="docutils literal notranslate"><span class="pre">Backscatters.to_meta_ds_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.common.html#module-ELDAmwl.backscatter.common">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html">ELDAmwl.backscatter.elastic package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html">ELDAmwl.backscatter.elastic.tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#module-ELDAmwl.backscatter.elastic.tools.operation">ELDAmwl.backscatter.elastic.tools.operation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.tools.html#module-ELDAmwl.backscatter.elastic.tools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#module-ELDAmwl.backscatter.elastic.operation">ELDAmwl.backscatter.elastic.operation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter.get_classname_from_db"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatter.get_classname_from_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatter.name"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatter.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatterDefault</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.bsc_params"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatterDefault.bsc_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.calc_routine"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatterDefault.calc_routine</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.calibr_window"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatterDefault.calibr_window</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.elast_sig"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatterDefault.elast_sig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.name"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatterDefault.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.result"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatterDefault.result</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.CalcElastBackscatterDefault.run"><code class="docutils literal notranslate"><span class="pre">CalcElastBackscatterDefault.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory"><code class="docutils literal notranslate"><span class="pre">ElastBackscatterFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory.get_classname_from_db"><code class="docutils literal notranslate"><span class="pre">ElastBackscatterFactory.get_classname_from_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactory.name"><code class="docutils literal notranslate"><span class="pre">ElastBackscatterFactory.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault"><code class="docutils literal notranslate"><span class="pre">ElastBackscatterFactoryDefault</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.get_non_merge_product"><code class="docutils literal notranslate"><span class="pre">ElastBackscatterFactoryDefault.get_non_merge_product()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.name"><code class="docutils literal notranslate"><span class="pre">ElastBackscatterFactoryDefault.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.operation.ElastBackscatterFactoryDefault.prepare"><code class="docutils literal notranslate"><span class="pre">ElastBackscatterFactoryDefault.prepare()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#module-ELDAmwl.backscatter.elastic.params">ELDAmwl.backscatter.elastic.params module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.params.ElastBscParams"><code class="docutils literal notranslate"><span class="pre">ElastBscParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.params.ElastBscParams.from_db"><code class="docutils literal notranslate"><span class="pre">ElastBscParams.from_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.params.ElastBscParams.to_meta_ds_dict"><code class="docutils literal notranslate"><span class="pre">ElastBscParams.to_meta_ds_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#module-ELDAmwl.backscatter.elastic.product">ELDAmwl.backscatter.elastic.product module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.product.ElastBackscatters"><code class="docutils literal notranslate"><span class="pre">ElastBackscatters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.product.ElastBackscatters.init"><code class="docutils literal notranslate"><span class="pre">ElastBackscatters.init()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#ELDAmwl.backscatter.elastic.product.ElastBackscatters.to_meta_ds_dict"><code class="docutils literal notranslate"><span class="pre">ElastBackscatters.to_meta_ds_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.elastic.html#module-ELDAmwl.backscatter.elastic">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ELDAmwl.backscatter.raman.html">ELDAmwl.backscatter.raman package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.raman.tools.html">ELDAmwl.backscatter.raman.tools package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.tools.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.tools.html#module-ELDAmwl.backscatter.raman.tools.operation">ELDAmwl.backscatter.raman.tools.operation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.tools.html#module-ELDAmwl.backscatter.raman.tools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#module-ELDAmwl.backscatter.raman.operation">ELDAmwl.backscatter.raman.operation module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatter"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatter.get_classname_from_db"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatter.get_classname_from_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatter.name"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatter.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatterDefault"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatterDefault</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatterDefault.bsc_params"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatterDefault.bsc_params</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatterDefault.calc_routine"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatterDefault.calc_routine</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatterDefault.calibr_window"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatterDefault.calibr_window</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatterDefault.name"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatterDefault.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatterDefault.result"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatterDefault.result</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatterDefault.run"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatterDefault.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.CalcRamanBackscatterDefault.sigratio"><code class="docutils literal notranslate"><span class="pre">CalcRamanBackscatterDefault.sigratio</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.RamanBackscatterFactory"><code class="docutils literal notranslate"><span class="pre">RamanBackscatterFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.RamanBackscatterFactory.get_classname_from_db"><code class="docutils literal notranslate"><span class="pre">RamanBackscatterFactory.get_classname_from_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.RamanBackscatterFactory.name"><code class="docutils literal notranslate"><span class="pre">RamanBackscatterFactory.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.RamanBackscatterFactoryDefault"><code class="docutils literal notranslate"><span class="pre">RamanBackscatterFactoryDefault</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.RamanBackscatterFactoryDefault.get_non_merge_product"><code class="docutils literal notranslate"><span class="pre">RamanBackscatterFactoryDefault.get_non_merge_product()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.RamanBackscatterFactoryDefault.name"><code class="docutils literal notranslate"><span class="pre">RamanBackscatterFactoryDefault.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.RamanBackscatterFactoryDefault.prepare"><code class="docutils literal notranslate"><span class="pre">RamanBackscatterFactoryDefault.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.RamanBackscatterFactoryDefault.raman_sig"><code class="docutils literal notranslate"><span class="pre">RamanBackscatterFactoryDefault.raman_sig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.operation.RamanBackscatterFactoryDefault.sig_ratio"><code class="docutils literal notranslate"><span class="pre">RamanBackscatterFactoryDefault.sig_ratio</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#module-ELDAmwl.backscatter.raman.params">ELDAmwl.backscatter.raman.params module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.params.RamanBscParams"><code class="docutils literal notranslate"><span class="pre">RamanBscParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.params.RamanBscParams.add_signal_role"><code class="docutils literal notranslate"><span class="pre">RamanBscParams.add_signal_role()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.params.RamanBscParams.from_db"><code class="docutils literal notranslate"><span class="pre">RamanBscParams.from_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.params.RamanBscParams.to_meta_ds_dict"><code class="docutils literal notranslate"><span class="pre">RamanBscParams.to_meta_ds_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#module-ELDAmwl.backscatter.raman.product">ELDAmwl.backscatter.raman.product module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.product.RamanBackscatters"><code class="docutils literal notranslate"><span class="pre">RamanBackscatters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#ELDAmwl.backscatter.raman.product.RamanBackscatters.init"><code class="docutils literal notranslate"><span class="pre">RamanBackscatters.init()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ELDAmwl.backscatter.raman.html#module-ELDAmwl.backscatter.raman">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="module-ELDAmwl.backscatter">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl.backscatter" title="Permalink to this heading"></a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ELDAmwl.html" class="btn btn-neutral float-left" title="ELDAmwl package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ELDAmwl.backscatter.common.html" class="btn btn-neutral float-right" title="ELDAmwl.backscatter.common package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Ina Mattis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELDAmwl.extinction.vertical_resolution package &mdash; ELDAmwl 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ELDAmwl.lidar_ratio package" href="ELDAmwl.lidar_ratio.html" />
+    <link rel="prev" title="ELDAmwl.extinction.tools package" href="ELDAmwl.extinction.tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ELDAmwl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../py-modindex.html">Module Index</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ELDAmwl</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ELDAmwl.html">ELDAmwl package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ELDAmwl.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.html">ELDAmwl.backscatter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.bases.html">ELDAmwl.bases package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.component.html">ELDAmwl.component package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.html">ELDAmwl.database package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.elda_mwl.html">ELDAmwl.elda_mwl package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.errors.html">ELDAmwl.errors package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="ELDAmwl.extinction.html">ELDAmwl.extinction package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.lidar_ratio.html">ELDAmwl.lidar_ratio package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.log.html">ELDAmwl.log package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.monte_carlo.html">ELDAmwl.monte_carlo package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.output.html">ELDAmwl.output package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.plugins.html">ELDAmwl.plugins package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.storage.html">ELDAmwl.storage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.html">ELDAmwl.tests package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.utils.html">ELDAmwl.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.config">ELDAmwl.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.header">ELDAmwl.header module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.main">ELDAmwl.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.prepare_signals">ELDAmwl.prepare_signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.products">ELDAmwl.products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.rayleigh">ELDAmwl.rayleigh module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.signals">ELDAmwl.signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ELDAmwl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ELDAmwl</a></li>
+          <li class="breadcrumb-item"><a href="ELDAmwl.html">ELDAmwl package</a></li>
+          <li class="breadcrumb-item"><a href="ELDAmwl.extinction.html">ELDAmwl.extinction package</a></li>
+      <li class="breadcrumb-item active">ELDAmwl.extinction.vertical_resolution package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ELDAmwl.extinction.vertical_resolution.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="eldamwl-extinction-vertical-resolution-package">
+<h1>ELDAmwl.extinction.vertical_resolution package<a class="headerlink" href="#eldamwl-extinction-vertical-resolution-package" title="Permalink to this heading"></a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.extinction.vertical_resolution.operation">
+<span id="eldamwl-extinction-vertical-resolution-operation-module"></span><h2>ELDAmwl.extinction.vertical_resolution.operation module<a class="headerlink" href="#module-ELDAmwl.extinction.vertical_resolution.operation" title="Permalink to this heading"></a></h2>
+<p><strong>Classes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes" title="ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtEffBinRes</span></code></a>()</p></td>
+<td><p>Creates a Class for the calculation of the effective bin resolution for a given number of bins used in the retrieval of the signal slope.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes" title="ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtUsedBinRes</span></code></a>()</p></td>
+<td><p>Creates a Class for the calculation of how many bins have to be used for the linear fit in order to achieve the required effective bin resolutionof signal slope.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes" title="ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinFitEffBinRes</span></code></a>(**kwargs)</p></td>
+<td><p>The calculation is done according to Mattis et al. 2016 with the equation eff_binres = round(used_bins * 0.85934 - 0.17802).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes" title="ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinFitUsedBinRes</span></code></a>(**kwargs)</p></td>
+<td><p>The calculation is done according to Mattis et al. 2016 with the equation used_bins = round((eff_binres + 0.17802) / 0.85934).</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.extinction.vertical_resolution.operation.</span></span><span class="sig-name descname"><span class="pre">ExtEffBinRes</span></span><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code></a></p>
+<p>Creates a Class for the calculation of the effective bin resolution for a given number of bins
+used in the retrieval of the signal slope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>prod_id</strong> (<em>str</em>) – id of the product</p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.get_classname_from_db" title="ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>creates the classname from the name of the slope algorithm or the product id</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.name" title="ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.prod_id" title="ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.prod_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prod_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.get_classname_from_db">
+<span class="sig-name descname"><span class="pre">get_classname_from_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.get_classname_from_db" title="Permalink to this definition"></a></dt>
+<dd><p>creates the classname from the name of the slope algorithm or the product id</p>
+<p>Returns: name of the class for the calculation of the effective bin resolution of the slope retrieval</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ExtEffBinRes'</span></em><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.prod_id">
+<span class="sig-name descname"><span class="pre">prod_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtEffBinRes.prod_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.extinction.vertical_resolution.operation.</span></span><span class="sig-name descname"><span class="pre">ExtUsedBinRes</span></span><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperationFactory" title="ELDAmwl.bases.factory.BaseOperationFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperationFactory</span></code></a></p>
+<p>Creates a Class for the calculation of how many bins have to be used for the linear fit
+in order to achieve the required effective bin resolutionof signal slope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>prod_id</strong> (<em>str</em>) – id of the product</p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.get_classname_from_db" title="ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.get_classname_from_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classname_from_db</span></code></a>()</p></td>
+<td><p>creates the classname from the name of the slope algorithm or the product id</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.name" title="ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.prod_id" title="ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.prod_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prod_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.get_classname_from_db">
+<span class="sig-name descname"><span class="pre">get_classname_from_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.get_classname_from_db" title="Permalink to this definition"></a></dt>
+<dd><p>creates the classname from the name of the slope algorithm or the product id</p>
+<p>Returns: name of the class for the calculation of the used bin resolution of the slope retrieval</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ExtUsedBinRes'</span></em><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.prod_id">
+<span class="sig-name descname"><span class="pre">prod_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.ExtUsedBinRes.prod_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.extinction.vertical_resolution.operation.</span></span><span class="sig-name descname"><span class="pre">LinFitEffBinRes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperation</span></code></a></p>
+<p>The calculation is done according to Mattis et al. 2016 with the equation
+eff_binres = round(used_bins * 0.85934 - 0.17802)</p>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes.name" title="ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes.run" title="ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(**kwargs)</p></td>
+<td><p>starts the calculation</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'LinFit_EffBinRes'</span></em><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitEffBinRes.run" title="Permalink to this definition"></a></dt>
+<dd><p>starts the calculation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>used_bins</strong> (<em>integer</em>) – number of bins used for the calculation of the linear fit (= diameter of the fit window)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>resulting effective resolution in terms of vertical bins</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>eff_binres(integer)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ELDAmwl.extinction.vertical_resolution.operation.</span></span><span class="sig-name descname"><span class="pre">LinFitUsedBinRes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="ELDAmwl.bases.html#ELDAmwl.bases.factory.BaseOperation" title="ELDAmwl.bases.factory.BaseOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOperation</span></code></a></p>
+<p>The calculation is done according to Mattis et al. 2016 with the equation
+used_bins = round((eff_binres + 0.17802) / 0.85934)</p>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes.name" title="ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes.run" title="ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(**kwargs)</p></td>
+<td><p>starts the calculation</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'LinFit_UsedBinRes'</span></em><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.extinction.vertical_resolution.operation.LinFitUsedBinRes.run" title="Permalink to this definition"></a></dt>
+<dd><p>starts the calculation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keyword Arguments</dt>
+<dd class="field-odd"><p><strong>eff_binres</strong> (<em>integer</em>) – required effective vertical resolution in terms of bins</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>number of bins (= diameter of the fit window) to be used for</dt><dd><p>the calculation of the linear fit in order to achieve the required effective
+vertical bin resolution</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>used_bins(integer)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.extinction.vertical_resolution">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl.extinction.vertical_resolution" title="Permalink to this heading"></a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ELDAmwl.extinction.tools.html" class="btn btn-neutral float-left" title="ELDAmwl.extinction.tools package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ELDAmwl.lidar_ratio.html" class="btn btn-neutral float-right" title="ELDAmwl.lidar_ratio package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Ina Mattis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELDAmwl.utils package &mdash; ELDAmwl 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="ELDAmwl.tests.test_integration package" href="ELDAmwl.tests.test_integration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> ELDAmwl
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ELDAmwl Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/installing.html">Installation and setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/algorithms.html">Algorithms and Flow Charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../py-modindex.html">Module Index</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ELDAmwl</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ELDAmwl.html">ELDAmwl package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ELDAmwl.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.backscatter.html">ELDAmwl.backscatter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.bases.html">ELDAmwl.bases package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.component.html">ELDAmwl.component package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.database.html">ELDAmwl.database package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.elda_mwl.html">ELDAmwl.elda_mwl package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.errors.html">ELDAmwl.errors package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.extinction.html">ELDAmwl.extinction package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.lidar_ratio.html">ELDAmwl.lidar_ratio package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.log.html">ELDAmwl.log package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.monte_carlo.html">ELDAmwl.monte_carlo package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.output.html">ELDAmwl.output package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.plugins.html">ELDAmwl.plugins package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.storage.html">ELDAmwl.storage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ELDAmwl.tests.html">ELDAmwl.tests package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ELDAmwl.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.config">ELDAmwl.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.header">ELDAmwl.header module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.main">ELDAmwl.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.prepare_signals">ELDAmwl.prepare_signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.products">ELDAmwl.products module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.rayleigh">ELDAmwl.rayleigh module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl.signals">ELDAmwl.signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ELDAmwl.html#module-ELDAmwl">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ELDAmwl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ELDAmwl</a></li>
+          <li class="breadcrumb-item"><a href="ELDAmwl.html">ELDAmwl package</a></li>
+      <li class="breadcrumb-item active">ELDAmwl.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/ELDAmwl.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="eldamwl-utils-package">
+<h1>ELDAmwl.utils package<a class="headerlink" href="#eldamwl-utils-package" title="Permalink to this heading"></a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.utils.constants">
+<span id="eldamwl-utils-constants-module"></span><h2>ELDAmwl.utils.constants module<a class="headerlink" href="#module-ELDAmwl.utils.constants" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="module-ELDAmwl.utils.numerical">
+<span id="eldamwl-utils-numerical-module"></span><h2>ELDAmwl.utils.numerical module<a class="headerlink" href="#module-ELDAmwl.utils.numerical" title="Permalink to this heading"></a></h2>
+<p><strong>Functions:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.utils.numerical.calc_rolling_means_sems" title="ELDAmwl.utils.numerical.calc_rolling_means_sems"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calc_rolling_means_sems</span></code></a>(ds, w_width)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.utils.numerical.closest_bin" title="ELDAmwl.utils.numerical.closest_bin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">closest_bin</span></code></a>(data[, error, first_bin, ...])</p></td>
+<td><p>finds the bin which has the value closest to the search value</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.utils.numerical.find_minimum_window" title="ELDAmwl.utils.numerical.find_minimum_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_minimum_window</span></code></a>(means, sems, w_width, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.utils.numerical.integral_profile" title="ELDAmwl.utils.numerical.integral_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">integral_profile</span></code></a>(data[, range_axis, ...])</p></td>
+<td><p>calculates the vertical integral of a profile</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.utils.numerical.np_datetime64_to_datetime" title="ELDAmwl.utils.numerical.np_datetime64_to_datetime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np_datetime64_to_datetime</span></code></a>(np_datetme_64)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.utils.numerical.rolling_mean_sem" title="ELDAmwl.utils.numerical.rolling_mean_sem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rolling_mean_sem</span></code></a>(data, level)</p></td>
+<td><p>calculate rolling mean and stderror of mean</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="ELDAmwl.utils.numerical.calc_rolling_means_sems">
+<span class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.numerical.</span></span><span class="sig-name descname"><span class="pre">calc_rolling_means_sems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_width</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.numerical.calc_rolling_means_sems" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ELDAmwl.utils.numerical.closest_bin">
+<span class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.numerical.</span></span><span class="sig-name descname"><span class="pre">closest_bin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_bin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_bin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.numerical.closest_bin" title="Permalink to this definition"></a></dt>
+<dd><p>finds the bin which has the value closest to the search value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.array</em>) – 1-dimensional vertical profile of the data</p></li>
+<li><p><strong>error</strong> (<em>np.array</em>) – vertical profile of absolute data errors. Default = None
+if provided: if the closest bin is not equal to the search value within its error, returns None.</p></li>
+<li><p><strong>first_bin</strong> (<em>int</em>) – first and last bin of the profile, where the search shall be done.
+Default: None =&gt; the complete profile is used</p></li>
+<li><p><strong>last_bin</strong> (<em>int</em>) – first and last bin of the profile, where the search shall be done.
+Default: None =&gt; the complete profile is used</p></li>
+<li><p><strong>search_value</strong> (<em>float</em>) – Default=None. if not provided, the mean value of the profile is used</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the index which has the value closest to the search value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>idx (int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ELDAmwl.utils.numerical.find_minimum_window">
+<span class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.numerical.</span></span><span class="sig-name descname"><span class="pre">find_minimum_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">means</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sems</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_threshold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.numerical.find_minimum_window" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ELDAmwl.utils.numerical.integral_profile">
+<span class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.numerical.</span></span><span class="sig-name descname"><span class="pre">integral_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extrapolate_ovl_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_bin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_bin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.numerical.integral_profile" title="Permalink to this definition"></a></dt>
+<dd><p>calculates the vertical integral of a profile</p>
+<p>uses the scipy.integrate.cumulative_trapezoid method.
+if there are nan values, they are removed before integration and the resulting cumulative integral
+will be interpolated to the original range axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray</em><em>, </em><em>1 dimensional</em>) – the ydata to be integrated</p></li>
+<li><p><strong>range_axis</strong> (<em>ndarray</em><em>, </em><em>1 dimensional</em>) – the xdata.</p></li>
+<li><p><strong>first_bin</strong> (<em>int</em><em>, </em><em>optional</em>) – (default = 0) the first bin of the integration</p></li>
+<li><p><strong>last_bin</strong> (<em>int</em><em>, </em><em>optional</em>) – (default = ydata.size) the last bin of the integration.
+if last_bin &lt; first_bin, the integration direction is reversed</p></li>
+<li><p><strong>extrapolate_ovl_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – (default = None) if not None, the profile is extrapolated towards
+the ground by inserting a new data point with values
+range_new = 0, data_new = data[0] * extrapolate_ovl_factor</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ELDAmwl.utils.numerical.np_datetime64_to_datetime">
+<span class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.numerical.</span></span><span class="sig-name descname"><span class="pre">np_datetime64_to_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">np_datetme_64</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.numerical.np_datetime64_to_datetime" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ELDAmwl.utils.numerical.rolling_mean_sem">
+<span class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.numerical.</span></span><span class="sig-name descname"><span class="pre">rolling_mean_sem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.numerical.rolling_mean_sem" title="Permalink to this definition"></a></dt>
+<dd><p>calculate rolling mean and stderror of mean</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.utils.path_utils">
+<span id="eldamwl-utils-path-utils-module"></span><h2>ELDAmwl.utils.path_utils module<a class="headerlink" href="#module-ELDAmwl.utils.path_utils" title="Permalink to this heading"></a></h2>
+<p><strong>Functions:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.utils.path_utils.abs_file_path" title="ELDAmwl.utils.path_utils.abs_file_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">abs_file_path</span></code></a>(*file_path)</p></td>
+<td><p>Make a relative file_path absolute in respect to the ELDAmwl projekt directory.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ELDAmwl.utils.path_utils.dir_not_found_hint" title="ELDAmwl.utils.path_utils.dir_not_found_hint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_not_found_hint</span></code></a>(path_str)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="ELDAmwl.utils.path_utils.abs_file_path">
+<span class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.path_utils.</span></span><span class="sig-name descname"><span class="pre">abs_file_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.path_utils.abs_file_path" title="Permalink to this definition"></a></dt>
+<dd><p>Make a relative file_path absolute in respect to the ELDAmwl projekt directory.
+Absolute path wil not be changed</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ELDAmwl.utils.path_utils.dir_not_found_hint">
+<span class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.path_utils.</span></span><span class="sig-name descname"><span class="pre">dir_not_found_hint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.path_utils.dir_not_found_hint" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.utils.wrapper">
+<span id="eldamwl-utils-wrapper-module"></span><h2>ELDAmwl.utils.wrapper module<a class="headerlink" href="#module-ELDAmwl.utils.wrapper" title="Permalink to this heading"></a></h2>
+<p><strong>Functions:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ELDAmwl.utils.wrapper.scipy_reduce_wrapper" title="ELDAmwl.utils.wrapper.scipy_reduce_wrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy_reduce_wrapper</span></code></a>(scipy_func)</p></td>
+<td><p>There is an scipy bug that makes scipy capable of dealing with one dimensional statistical functions, only.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="ELDAmwl.utils.wrapper.scipy_reduce_wrapper">
+<span class="sig-prename descclassname"><span class="pre">ELDAmwl.utils.wrapper.</span></span><span class="sig-name descname"><span class="pre">scipy_reduce_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scipy_func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ELDAmwl.utils.wrapper.scipy_reduce_wrapper" title="Permalink to this definition"></a></dt>
+<dd><p>There is an scipy bug that makes scipy capable of dealing with one dimensional statistical functions, only.
+scipy.stats.stats.py:2425  n = a.shape[axis]</p>
+<p>This a wrapper wraps a scipy funtion and fixes the axis argument if given as tuple to a single axis number</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ELDAmwl.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ELDAmwl.utils" title="Permalink to this heading"></a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ELDAmwl.tests.test_integration.html" class="btn btn-neutral float-left" title="ELDAmwl.tests.test_integration package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Ina Mattis.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
