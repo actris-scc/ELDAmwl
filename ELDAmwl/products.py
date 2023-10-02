@@ -145,9 +145,13 @@ class Products(Signals):
 
         self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | UNCERTAINTY_TOO_LARGE
 
+    def qc_integral(self):
+        pass
+
     def quality_control(self):
         self.screen_negative_data()
         self.screen_too_large_errors()
+        self.qc_integral()
 
     def save_to_netcdf(self):
         pass

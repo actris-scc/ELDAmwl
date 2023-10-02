@@ -47,7 +47,6 @@ class LidarRatioFactoryDefault(BaseOperation):
     empty_lr = None
     result = None
     prod_id = None
-    resolution = None
 
     def prepare(self):
         self.param = self.kwargs['lr_param']
@@ -94,6 +93,8 @@ class LidarRatioFactoryDefault(BaseOperation):
             lr = self.get_non_merge_product()
         else:
             lr = None
+
+        lr.quality_control()
 
         return lr
 

@@ -78,13 +78,29 @@ default:
   # values below 0 - data - error * NEG_VALUES_ERR_FACTOR are flagged
   NEG_VALUES_ERR_FACTOR : 2
 
+  # screening for too large errors
+  # values with (error > MAX_ALLOWED_REL_ERROR) and (error > MAX_ALLOWED_ABS_ERROR) are flagged
   MAX_ALLOWED_REL_ERROR : {
-      0 : 0.01,  # RBSC
+      0 : 0.1,  # RBSC
       3 : 0.001,  # EBSC
+      1 : 0.5,  # EXT
+      2 : 1,  # LR
+      15: 0.1,  # VLDR
+      16: 0.1,  # PLDR
   }
   MAX_ALLOWED_ABS_ERROR : {
       0 : 1E-9,  # RBSC
       3 : 1E-10,  # EBSC
+      1 : 1E-6,  # EXT
+      2 : 20,  # LR
+      15: 0.1,  # VLDR
+      16: 0.1,  # PLDR
+  }
+
+  # screening for layers with no aerosol
+  # values with corresponding backscatter ratio (at 532nm) < MIN_BSC_RATIO are flagged
+  MIN_BSC_RATIO : {
+      2 : 1.1,  # LR
   }
 
 

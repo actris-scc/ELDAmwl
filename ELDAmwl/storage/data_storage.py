@@ -73,6 +73,10 @@ class DataStorage:
 
                 'header': None,
                 'cloud_mask': None,
+                'bsc_ratio_532': Dict({
+                    LOWRES: None,
+                    HIGHRES: None,
+                })
             })
 
     def set_number_of_scheduled_products(self, number):
@@ -163,6 +167,17 @@ class DataStorage:
 
         """
         self.__data.common_vertical_resolution[resolution] = new_res_array
+
+    def set_bsc_ratio_532(self, res, new_bsc_ratio):
+        """
+        writes a profile of bsc ratio at 532 nm into storage
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+            new_bsc_ratio: xarray.DataArray
+
+        """
+
+        self.__data.bsc_ratio_532[res] = new_bsc_ratio
 
     def elpp_signals(self, prod_id_str):
         """copies of all ELPP signals of one product
@@ -579,6 +594,17 @@ class DataStorage:
                                     'products with common smoothing with {0}'.format(RESOLUTION_STR[res]))
 
         return result
+
+    def bsc_ratio_532(self, res):
+        """ 2 dimensional (time, altitude) backscatter ratio at 532 nm for checking for aerosol free layers
+
+        Args:
+            res (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:'xarray.DataArray': deepcopy of the backscatter ratio at 532 nm
+        """
+        return deepcopy(self.__data.bsc_ratio_532[res])
 
     def number_of_derived_products(self):
         count = 0

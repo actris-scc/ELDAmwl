@@ -27,7 +27,19 @@ VLDR = 15
 PLDR = 16
 BSCR = 17
 
-PRODUCT_TYPES = [RBSC, EXT, LR, EBSC, MWL, AE, CR, VLDR, PLDR]
+PRODUCT_TYPES = [RBSC, EXT, LR, EBSC, MWL, AE, CR, VLDR, PLDR, BSCR]
+PRODUCT_TYPE_NAME = {RBSC: 'raman_backscatter',
+                     EXT: 'extinction',
+                     LR: 'lidar_ratio',
+                     EBSC: 'elastic_backscatter',
+                     MWL: 'multi_wavelength_product',
+                     AE: 'angstroem_exponent',
+                     CR: 'color_ratio',
+                     VLDR: 'vldr',
+                     PLDR: 'pldr',
+                     BSCR: 'basc_ratio',
+}
+
 BASIC_PRODUCT_TYPES = [RBSC, EXT, EBSC, VLDR]
 
 # todo: put info on USE_CASES in db tables
@@ -174,6 +186,7 @@ RANGE_BOUNDARY_KM = RANGE_BOUNDARY / 1000.
 # settings for retrieval of lidar constants
 # =========================================
 ANGSTROEM_DEFAULT = 1.6
+MOL_ANGSTROEM_DEFAULT = 4
 ASSUMED_LR_DEFAULT = 50
 ASSUMED_LR_ERROR_DEFAULT = 10
 LOWEST_HEIGHT_RANGE = 100  # [m]

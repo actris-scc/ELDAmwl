@@ -151,7 +151,7 @@ class MeasurementParams(Params):
         unique_ptypes = np.unique(all_ptypes)
         return unique_ptypes.tolist()
 
-    def basic_products(self):
+    def basic_products(self, res=None):
         """list of parameters of all basic products
 
         Returns:
@@ -160,6 +160,8 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
         prod_df = prod_df[prod_df['failed'] == False]
+        if res is not None:
+            prod_df = prod_df[prod_df[RESOLUTION_STR[res]]]
         ids = prod_df['id'][prod_df.basic]
         return self.filtered_list(ids)
 
@@ -199,7 +201,7 @@ class MeasurementParams(Params):
         ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.basic)]
         return self.filtered_list(ids)
 
-    def extinction_products(self):
+    def extinction_products(self, res=None):
         """list of parameters of all extinction products
 
         Returns:
@@ -208,10 +210,12 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
         prod_df = prod_df[prod_df['failed'] == False]
+        if res is not None:
+            prod_df = prod_df[prod_df[RESOLUTION_STR[res]]]
         ids = prod_df['id'][prod_df.type == EXT]
         return self.filtered_list(ids)
 
-    def raman_bsc_products(self):
+    def raman_bsc_products(self, res=None):
         """list of parameters of all Raman backscatter products
 
         Returns:
@@ -220,10 +224,12 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
         prod_df = prod_df[prod_df['failed'] == False]
+        if res is not None:
+            prod_df = prod_df[prod_df[RESOLUTION_STR[res]]]
         ids = prod_df['id'][prod_df.type == RBSC]
         return self.filtered_list(ids)
 
-    def elast_bsc_products(self):
+    def elast_bsc_products(self, res=None):
         """list of parameters of all elastic backscatter products
 
         Returns:
@@ -232,6 +238,8 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
         prod_df = prod_df[prod_df['failed'] == False]
+        if res is not None:
+            prod_df = prod_df[prod_df[RESOLUTION_STR[res]]]
         ids = prod_df['id'][prod_df.type == EBSC]
         return self.filtered_list(ids)
 
@@ -247,16 +255,19 @@ class MeasurementParams(Params):
         ids = prod_df['id'][prod_df.type == VLDR]
         return self.filtered_list(ids)
 
-    def all_bsc_products(self):
+    def all_bsc_products(self, res=None):
         """list of parameters of all backscatter products
 
         Returns:
             list of :class:`ELDAmwl.products.ProductParams`:
             list of parameters of all backscatter products
         """
-        return self.raman_bsc_products() + self.elast_bsc_products()
+        if res is not None:
+            return self.raman_bsc_products(res=res) + self.elast_bsc_products(res=res)
+        else:
+            return self.raman_bsc_products() + self.elast_bsc_products()
 
-    def lidar_ratio_products(self):
+    def lidar_ratio_products(self, res=None):
         """list of parameters of all lidar_ratio products
 
         Returns:
@@ -265,6 +276,8 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
         prod_df = prod_df[prod_df['failed'] == False]
+        if res is not None:
+            prod_df = prod_df[prod_df[RESOLUTION_STR[res]]]
         ids = prod_df['id'][prod_df.type == LR]
         return self.filtered_list(ids)
 

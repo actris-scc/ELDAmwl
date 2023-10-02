@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """Classes for getting derived products like lidar ratio, particle depolarization ratio etc.
 """
+from ELDAmwl.backscatter.bsc_ratio.operation import StandardBackscatterRatioFactory
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.lidar_ratio.operation import LidarRatioFactory
-from ELDAmwl.utils.constants import RESOLUTIONS
+from ELDAmwl.utils.constants import RESOLUTIONS, RESOLUTION_STR
 
 
 class GetDerivedProductsDefault(BaseOperation):
@@ -23,27 +24,39 @@ class GetDerivedProductsDefault(BaseOperation):
         self.get_derived_products()
 
     def get_derived_products(self):
+        self.get_standard_bsc_ratio()
         self.get_lidar_ratios()
 
+    def get_standard_bsc_ratio(self):
+        """
+        get the standard backscatter ratio profile for determination of aerosol free layers
+        Returns: None
+
+        """
+        for res in RESOLUTIONS:
+            bsc_ratio = StandardBackscatterRatioFactory()(resolution=res).get_product()
+            if bsc_ratio is not None:
+                self.data_storage.set_bsc_ratio_532(res, bsc_ratio)
+
     def get_lidar_ratios(self):
-        if len(self.product_params.lidar_ratio_products()) == 0:
-            self.logger.warning('no lidar ratio product will be calculated')
+        for res in RESOLUTIONS:
+            lr_params = self.product_params.lidar_ratio_products(res=res)
+            if len(lr_params) == 0:
+                self.logger.warning(f'no lidar ratio product will be calculated with {RESOLUTION_STR[res]} resolution')
 
-        for lr_param in self.product_params.lidar_ratio_products():
-            prod_id = lr_param.prod_id_str
-            self.logger.info('get lidar ratio at {0} nm (product id {1})'.format(
-                lr_param.general_params.emission_wavelength,
-                prod_id
-            ))
+            for lr_param in lr_params:
+                prod_id = lr_param.prod_id_str
+                self.logger.info('get lidar ratio at {0} nm (product id {1})'.format(
+                    lr_param.general_params.emission_wavelength,
+                    prod_id
+                ))
 
-            for res in RESOLUTIONS:
-                if lr_param in self.product_params.all_products_of_res(res):
-                    lr = LidarRatioFactory()(
-                        lr_param=lr_param,
-                        resolution=res).get_product()
+                lr = LidarRatioFactory()(
+                    lr_param=lr_param,
+                    resolution=res).get_product()
 
-                    self.data_storage.set_derived_products(
-                        prod_id, res, lr)
+                self.data_storage.set_derived_products(
+                    prod_id, res, lr)
 
 
 class GetDerivedProducts(BaseOperationFactory):

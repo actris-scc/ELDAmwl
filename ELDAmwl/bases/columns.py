@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
 from ELDAmwl.component.interface import ILogger
-from ELDAmwl.utils.constants import NC_FILL_BYTE, NEG_TEST_STD_FACTOR
+from ELDAmwl.utils.constants import NC_FILL_BYTE, NEG_TEST_STD_FACTOR, ALL_OK
 from ELDAmwl.utils.constants import NC_FILL_INT
 from zope import component
 
@@ -15,6 +15,7 @@ class Columns(object):
     """
 
     has_sys_err = None
+    profile_qf = None
 
     def __init__(self):
         self.ds = xr.Dataset(
@@ -38,6 +39,7 @@ class Columns(object):
         self.station_altitude = None
 
         self.has_sys_err = False
+        self.profile_qf = ALL_OK
 
     @property
     def logger(self):
