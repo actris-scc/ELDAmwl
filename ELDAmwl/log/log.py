@@ -131,7 +131,10 @@ class Logger:
                 self.cfg.LOG_PATH,
                 '{id}.log'.format(id=self.meas_id),
             )
-            file_handler = FileHandler(log_file_path)
+            if not self.cfg.APPEND_LOG_FILE:
+                file_handler = FileHandler(log_file_path, mode='w')
+            else:
+                file_handler = FileHandler(log_file_path)
             file_handler_formatter = formatter
             file_handler.setFormatter(file_handler_formatter)
             file_handler.setLevel(self.cfg.log_level_file)
