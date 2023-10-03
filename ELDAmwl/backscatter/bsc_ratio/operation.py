@@ -1,6 +1,8 @@
 from copy import deepcopy
 
 from addict import Dict
+
+from ELDAmwl.backscatter.bsc_ratio.product import BackscatterRatios
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
@@ -94,13 +96,19 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         """
         profiles = []
         for param in param_list:
-            profiles.append(self.data_storage.basic_product_common_smooth(param.product_id_str,
-                                                                          self.resolution))
+            prod_id = param.prod_id_bsc_ratio_str
+            profile = self.data_storage.basic_product_common_smooth(prod_id, self.resolution)
+            profiles.append(profile.ds.data)
+
         # concatenate all DataArrays along a new dimension
         list_array = xr.concat(profiles, 'prod_idx')
-        result = list_array.mean(dim='prod_idx')
+        mean = list_array.mean(dim='prod_idx')
 
-        # todo: testing, handle errors and attributes
+        result = BackscatterRatios()
+        result.ds['data'] = mean
+        result.emission_wavelength = profile.emission_wavelength
+
+        # todo: handle errors, flags, cloud mask and attributes
         return result
 
     def interpolate(self):
@@ -114,7 +122,8 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
 
         profile_532_data = profile_355 + (profile_1064 - profile_355) / (1064 - 355) * (532 - 355)
 
-        result = deepcopy(self.bsc_ratio_profiles[355])
+        # result = deepcopy(self.bsc_ratio_profiles[355])
+        result = BackscatterRatios()
         result.ds['data'] = profile_532_data
         result.emission_wavelength.values = 532
 
@@ -138,10 +147,17 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         factor_p = np.power((from_wl / 532), ae_par)
         factor = factor_p / factor_m
 
-        bsc_ratio_532 = source.data * factor + (1 - factor)
+        # create a new, empty instance
+        result = BackscatterRatios()
+        # calculate data
+        result.ds['data'] = source.data * factor + (1 - factor)
+        # copy variable for emission wavelength
+        result.emission_wavelength = source.emission_wavelength
+        # set the correct value
+        result.emission_wavelength.values = 532
 
         # todo: testing, handle errors and attributes
-        return bsc_ratio_532
+        return result
 
     def get_product(self):
         num_profiles = self.prepare()

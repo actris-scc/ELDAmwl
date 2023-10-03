@@ -68,6 +68,7 @@ class FindBscCalibrWindow(BaseOperation):
         # check whether all calibration params are equal
         for bp in self.bsc_params[1:]:
             if not self.calibration_params.equal(bp.calibration_params):
+                self.logger.error(f'calibration params are not equal')
                 raise BscCalParamsNotEqual(self.bsc_params[0].prod_id,
                                            bp.prod_id)
 
