@@ -107,6 +107,7 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         result = BackscatterRatios()
         result.ds['data'] = mean
         result.emission_wavelength = profile.emission_wavelength
+        result.profile_qf = deepcopy(profile.profile_qf)  # todo: average of all profiles
 
         # todo: handle errors, flags, cloud mask and attributes
         return result
@@ -126,6 +127,7 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         result = BackscatterRatios()
         result.ds['data'] = profile_532_data
         result.emission_wavelength.values = 532
+        result.profile_qf = profile_355.profile_qf | profile_1064.profile_qf
 
         # todo: testing, handle errors and attributes
         return result
@@ -153,6 +155,7 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         result.ds['data'] = source.data * factor + (1 - factor)
         # set the correct value for emission wavelength
         result.emission_wavelength.values = 532
+        result.profile_qf = deepcopy(source.profile_qf)
 
         # todo: testing, handle errors and attributes
         return result

@@ -178,6 +178,7 @@ class CalcExtinctionDefault(BaseOperation):
         self.slope_to_ext_routine(
             slope=self.result.ds,
             ext_params=param_dct).run()
+        self.result.profile_qf = deepcopy(data.profile_qf)
 
         return self.result
 

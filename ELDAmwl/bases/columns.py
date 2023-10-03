@@ -39,7 +39,6 @@ class Columns(object):
         self.station_altitude = None
 
         self.has_sys_err = False
-        self.profile_qf = ALL_OK
 
     @property
     def logger(self):

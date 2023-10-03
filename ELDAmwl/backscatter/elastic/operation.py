@@ -201,6 +201,7 @@ class CalcElastBackscatterDefault(BaseOperation):
         self.result.ds['time_bounds'] = deepcopy(data.ds.time_bounds)
         self.result.ds['laser_pointing_angle'] = deepcopy(data.ds.laser_pointing_angle)
         self.result.ds['mol_backscatter'] = deepcopy(data.ds.mol_backscatter)
+        self.result.profile_qf = deepcopy(data.profile_qf)
 
         return self.result
 

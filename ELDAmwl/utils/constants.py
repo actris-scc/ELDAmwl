@@ -149,7 +149,7 @@ NC_FILL_STR = ''
 
 MWL_PROD_ID_DEFAULT = 0
 
-# ====== quality flags ======
+# ====== quality flags of data points ======
 ALL_OK = 0
 NEG_DATA = 1
 BELOW_OVL = 2
@@ -161,6 +161,9 @@ BELOW_MIN_BSCR = 64
 CALC_WINDOW_OUTSIDE_PROFILE = 128
 UNCERTAINTY_TOO_LARGE = 256
 
+# ====== quality flags of complete profiles ======
+ALL_OK = 0
+NEG_DATA = 1
 
 # ===================
 # Time strings

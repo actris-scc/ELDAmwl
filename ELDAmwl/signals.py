@@ -226,6 +226,7 @@ class Signals(Columns):
                                        denominator.channel_id],
                                       dim='nc')
         result.ds['mol_backscatter'] = enumerator.ds.mol_backscatter
+        result.profile_qf = enumerator.profile_qf | denominator.profile_qf
 
         # todo: combine other attributes, e.g. detection type etc.
 
@@ -368,6 +369,10 @@ class Signals(Columns):
 
         result.get_raw_heightres()
         result.calc_mol_backscatter()
+        result.profile_qf = xr.DataArray(np.ones(nc_ds.dims['time'], dtype=np.int8) * ALL_OK, # noqa E501
+                                         coords=[nc_ds.time],
+                                         dims=['time'],
+                                         )
 
         return result
 

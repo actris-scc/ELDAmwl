@@ -69,6 +69,7 @@ class Products(Signals):
         result.num_scan_angles = signal.num_scan_angles
         result.ds['time_bounds'] = signal.ds['time_bounds']
         result.ds['mol_backscatter'] = signal.ds.mol_backscatter
+        result.profile_qf = deepcopy(signal.profile_qf)
 
         result.mwl_meta_id = '{}_{}'.format(MWLFileStructure.NC_VAR_NAMES[p_params.general_params.product_type],
                                             round(float(result.emission_wavelength)))
@@ -133,11 +134,19 @@ class Products(Signals):
                 self.set_invalid_point(t, lev, CALC_WINDOW_OUTSIDE_PROFILE)
 
     def screen_negative_data(self):
+        good_points_before = self.ds.qf.where(self.ds.qf == 0).count(dim='level')
+
         max_values = self.data + self.cfg.NEG_VALUES_ERR_FACTOR * self.err
         # todo: how to handle systematic errors ?
         bad_idxs = np.where(max_values < 0)
-
         self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | NEG_DATA
+
+        good_points_after = self.ds.qf.where(self.ds.qf == 0).count(dim='level')
+        num_neg_points = good_points_before - good_points_after
+
+        max_percentage = self.cfg.MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA[self.product_type]
+        bad_idxs = np.where((num_neg_points / good_points_before) > max_percentage)
+        self.profile_qf[bad_idxs] = self.profile_qf[bad_idxs] | NEG_DATA
 
     def screen_too_large_errors(self):
         bad_idxs = np.where((self.rel_err > self.cfg.MAX_ALLOWED_REL_ERROR[self.product_type]) &
@@ -149,8 +158,8 @@ class Products(Signals):
         pass
 
     def quality_control(self):
-        self.screen_negative_data()
         self.screen_too_large_errors()
+        self.screen_negative_data()
         self.qc_integral()
 
     def save_to_netcdf(self):
