@@ -65,7 +65,7 @@ class Products(Signals):
         result.params = p_params
 
         # todo: copy other general parameter
-        result.emission_wavelength = signal.emission_wavelength
+        result.emission_wavelength = deepcopy(signal.emission_wavelength)
         result.num_scan_angles = signal.num_scan_angles
         result.ds['time_bounds'] = signal.ds['time_bounds']
         result.ds['mol_backscatter'] = signal.ds.mol_backscatter

@@ -148,12 +148,10 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         factor = factor_p / factor_m
 
         # create a new, empty instance
-        result = BackscatterRatios()
+        result = BackscatterRatios.from_signal(source, source.params)
         # calculate data
         result.ds['data'] = source.data * factor + (1 - factor)
-        # copy variable for emission wavelength
-        result.emission_wavelength = source.emission_wavelength
-        # set the correct value
+        # set the correct value for emission wavelength
         result.emission_wavelength.values = 532
 
         # todo: testing, handle errors and attributes

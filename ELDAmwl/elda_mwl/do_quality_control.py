@@ -38,13 +38,15 @@ class QualityControlDefault(BaseOperation):
         # if there is a bsc ratio threshold defined for this product type
         if prod_type in self.cfg.MIN_BSC_RATIO:
             try:
-                bsc_ratio_matrix = self.data_storage.product_matrix(BSCR, res)
-                bad_idxs = np.where(bsc_ratio_matrix.data < self.cfg.MIN_BSC_RATIO[prod_type])
-                a_matrix.quality_flag[bad_idxs] = a_matrix.quality_flag[bad_idxs] | BELOW_MIN_BSCR
+                bsc_ratio_profile = self.data_storage.bsc_ratio_532(res)
+                bad_idxs = np.where(bsc_ratio_profile.data < self.cfg.MIN_BSC_RATIO[prod_type])
+                # apply the profile information in bad_idxs on every wavelength of matrix
+                for wl in range(a_matrix.a_matrix.dims['wavelength']):
+                    a_matrix.quality_flag[wl][bad_idxs] = a_matrix.quality_flag[wl][bad_idxs] | BELOW_MIN_BSCR
 
             except NotFoundInStorage:
                 self.logger.error(f'screening for aerosol free layers cannot be done for {PRODUCT_TYPE_NAME[prod_type]} '
-                                  f'because no bsc ratios are available for {RESOLUTION_STR[res]} resolution')
+                                  f'because no bsc ratio is available for {RESOLUTION_STR[res]} resolution')
                 # todo: discuss with giuseppe whether to raise an exception here
 
     def run_single_product_tests(self):
@@ -54,7 +56,7 @@ class QualityControlDefault(BaseOperation):
             for prod_type in p_types:
                 a_matrix = self.qc_product_matrix[res][prod_type]
 
-                self.screen_aerosol_free_layers(a_matrix, prod_type)
+                self.screen_aerosol_free_layers(a_matrix, prod_type, res)
         #         self.screen_uncertainties(a_matrix, prod_type)
 
     def run(self):

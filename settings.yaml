@@ -100,6 +100,7 @@ default:
   # screening for layers with no aerosol
   # values with corresponding backscatter ratio (at 532nm) < MIN_BSC_RATIO are flagged
   MIN_BSC_RATIO : {
+      3 : 1.1,  # EBSC, just for testing
       2 : 1.1,  # LR
   }
 
