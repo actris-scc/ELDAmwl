@@ -164,6 +164,7 @@ UNCERTAINTY_TOO_LARGE = 256
 # ====== quality flags of complete profiles ======
 ALL_OK = 0
 NEG_DATA = 1
+TOO_LARGE_INTEGRAL = 2
 
 # ===================
 # Time strings

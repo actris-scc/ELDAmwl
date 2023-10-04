@@ -6,6 +6,7 @@ from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.interface import IParams
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import DetectionLimitZero
 from ELDAmwl.errors.exceptions import DifferentWlForLR
@@ -31,19 +32,21 @@ from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR
-from ELDAmwl.utils.constants import UNCERTAINTY_TOO_LARGE
+from ELDAmwl.utils.constants import UNCERTAINTY_TOO_LARGE, TOO_LARGE_INTEGRAL, ALL_OK
 from zope import component
 
 import ELDAmwl.utils.constants
 import numpy as np
 import xarray as xr
 
+from ELDAmwl.utils.numerical import integral_profile
+
 
 class Products(Signals):
-    p_params = None
+    # p_params = None
     smooth_routine = None  # class to perform smoothing
     mwl_meta_id = None
-    params = None
+    params = None  # params of this specific product (ProductParams)
     num_scan_angles = None
 
     @classmethod
@@ -144,9 +147,10 @@ class Products(Signals):
         good_points_after = self.ds.qf.where(self.ds.qf == 0).count(dim='level')
         num_neg_points = good_points_before - good_points_after
 
-        max_percentage = self.cfg.MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA[self.product_type]
-        bad_idxs = np.where((num_neg_points / good_points_before) > max_percentage)
-        self.profile_qf[bad_idxs] = self.profile_qf[bad_idxs] | NEG_DATA
+        if self.product_type in self.cfg.MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA:
+            max_percentage = self.cfg.MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA[self.product_type]
+            bad_idxs = np.where((num_neg_points / good_points_before) > max_percentage)
+            self.profile_qf[bad_idxs] = self.profile_qf[bad_idxs] | NEG_DATA
 
     def screen_too_large_errors(self):
         bad_idxs = np.where((self.rel_err > self.cfg.MAX_ALLOWED_REL_ERROR[self.product_type]) &
@@ -155,12 +159,38 @@ class Products(Signals):
         self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | UNCERTAINTY_TOO_LARGE
 
     def qc_integral(self):
-        pass
+        max_integral = self.cfg.MAX_INTEGRAL[self.product_type]
+        for t in range(self.num_times):
+            int_profile = integral_profile(self.data[t].values,
+                                           range_axis=self.height[t].values,
+                                           # extrapolate_ovl_factor=OVL_FACTOR,
+                                           first_bin=self.first_valid_bin(t),
+                                           last_bin=self.last_valid_bin(t))
+            integral = int_profile[-1]
+            if integral > max_integral:
+                self.profile_qf[t] = self.profile_qf[t] | TOO_LARGE_INTEGRAL
+
+    def retrieval_failed(self):
+        if (self.profile_qf != ALL_OK).all():
+            return True
+        else:
+            return False
 
     def quality_control(self):
         self.screen_too_large_errors()
         self.screen_negative_data()
-        self.qc_integral()
+        if self.product_type in self.cfg.MAX_INTEGRAL:
+            self.qc_integral()
+
+        if (self.profile_qf != ALL_OK).any():
+            for t in np.where(self.profile_qf != ALL_OK)[0]:
+                self.set_invalid_profile(t)
+
+        # if all time slices are labelles as corrupt profiles -> set the whole product retrieval as failed
+        if self.retrieval_failed():
+            # measurement_params are all params of the measurement (MeasurementParams)
+            measurement_params = component.queryUtility(IParams)
+            self.params.mark_as_failed(measurement_params)
 
     def save_to_netcdf(self):
         pass

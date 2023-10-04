@@ -70,9 +70,9 @@ class QualityControlDefault(BaseOperation):
         #                                               aod / integral of this profile too large, )
         #                                               additionally to flag profile
         #  1) screen for negative values -> done on single product profile level
-        # todo: 1a) if bsc profile has negative area in the middle -> skip complete profile
+        #  1a) if bsc profile has negative area in the middle -> skip complete profile
         #  2) screen for too large error -> done on single product profile level
-        # todo: 3) screen derived products for layers with no aerosol (bsc ratio < threshold)
+        #  3) screen derived products for layers with no aerosol (bsc ratio < threshold)
         # todo: 4) if there are more than 1 bsc at the same wavelength
         #           -> decide which one to use (use the one with best test results on angstroem and lidar ratio)
         # todo: 5) test data in aerosol layers for thresholds in lidar ratio and angstroem exp

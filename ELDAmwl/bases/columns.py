@@ -44,6 +44,11 @@ class Columns(object):
     def logger(self):
         return component.queryUtility(ILogger)
 
+    def set_invalid_profile(self, time):
+        self.ds['data'][time,:] = np.nan
+        self.ds['err'][time, :] = np.nan
+        self.ds['binres'][time, :] = NC_FILL_INT
+
     def set_invalid_point(self, time, level, qf):
         self.ds['data'][time, level] = np.nan
         self.ds['err'][time, level] = np.nan

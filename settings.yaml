@@ -110,6 +110,12 @@ default:
       2 : 1.1,  # LR
   }
 
+  # screening for profiles with unrealistic large integral values
+  MAX_INTEGRAL : {
+      0 : 0.02,  # RBSC
+      3 : 0.02,  # EBSC
+      1 : 1,  # EXT
+  }
 
 testing:
   SIGNAL_PATH : 'data/ELPP_files'
