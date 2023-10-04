@@ -34,7 +34,7 @@ from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.utils.constants import NEG_DATA
 from ELDAmwl.utils.constants import PRODUCT_TYPE_NAME
 from ELDAmwl.utils.constants import RBSC
-from ELDAmwl.utils.constants import RESOLUTION_STR
+from ELDAmwl.utils.constants import RESOLUTION_STR, SINGLE_POINT
 from ELDAmwl.utils.constants import TOO_LARGE_INTEGRAL
 from ELDAmwl.utils.constants import UNCERTAINTY_TOO_LARGE
 from ELDAmwl.utils.numerical import integral_profile
@@ -167,6 +167,9 @@ class Products(Signals):
         self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | UNCERTAINTY_TOO_LARGE
 
     def screen_for_aerosol_free_layers(self):
+        # can be done only for derived products, because the reference backscatter ratio at 532
+        # is obtained as first step of derived products
+        # todo: testing
         try:
             bsc_ratio_profile = self.data_storage.bsc_ratio_532(self.resolution)
             bad_idxs = np.where(bsc_ratio_profile.data < self.cfg.MIN_BSC_RATIO[self.product_type])
@@ -175,6 +178,33 @@ class Products(Signals):
             self.logger.error('screening for aerosol free layers '
                                   f'for {PRODUCT_TYPE_NAME[self.product_type]} failed '
                                   f'because no bsc ratio is available for {RESOLUTION_STR[self.resolution]} ')
+
+    def screen_for_single_points(self):
+        """ flag single data points which are not connected to other neighboring valid data points
+        """
+        # use dummy_data.rolling(level=3, min_periods=1, center=True).count() < 2
+        # if level==3 and count == 2, the point has itself and 1 neighbor
+        # if level==3 and count == 1, the point has itself or only 1 neighbor
+        # if level ==5 and count >=3, the point has itself and 2 neighbors in the 5 bins window
+        # strategy -> increase level iteratively
+
+        # select only data which are ok
+        dummy_data = self.data.where(self.ds.qf == ALL_OK)
+
+        # all bin resolutions which occur in this array
+        all_bin_res = np.unique(self.binres.values)
+
+        # this list may contain also NC_FILL_INT
+        all_bin_res = all_bin_res[np.where(all_bin_res != NC_FILL_INT)]
+        for br in all_bin_res:
+            window = br + 2
+            min_nb_of_neighbors = br // 2 + 1
+
+            # test only data points which have the bin resolution br
+            test_data = dummy_data.where(self.binres == br)
+            counts = test_data.rolling(level=window, min_periods=1, center=True).count()
+            bad_idxs = np.where((self.ds.qf == ALL_OK) & (counts < min_nb_of_neighbors))
+            self.ds.qf[bad_idxs] = SINGLE_POINT
 
     def qc_integral(self):
         max_integral = self.cfg.MAX_INTEGRAL[self.product_type]
@@ -203,6 +233,8 @@ class Products(Signals):
 
         if self.is_derived_product and self.product_type in self.cfg.MIN_BSC_RATIO[self.product_type]:
             self.screen_for_aerosol_free_layers()
+
+        self.screen_for_single_points()
 
         if (self.profile_qf != ALL_OK).any():
             for t in np.where(self.profile_qf != ALL_OK)[0]:
