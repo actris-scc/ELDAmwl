@@ -11,6 +11,7 @@ from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import DetectionLimitZero
 from ELDAmwl.errors.exceptions import DifferentWlForLR
 from ELDAmwl.errors.exceptions import NotEnoughMCIterations
+from ELDAmwl.errors.exceptions import NotFoundInStorage
 from ELDAmwl.errors.exceptions import SizeMismatch
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
@@ -18,6 +19,7 @@ from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.signals import Signals
 from ELDAmwl.storage.cached_functions import sg_coeffs
 from ELDAmwl.storage.cached_functions import smooth_routine_from_db
+from ELDAmwl.utils.constants import ALL_OK, BELOW_MIN_BSCR
 from ELDAmwl.utils.constants import CALC_WINDOW_OUTSIDE_PROFILE
 from ELDAmwl.utils.constants import COMBINE_DEPOL_USE_CASES
 from ELDAmwl.utils.constants import EBSC
@@ -27,19 +29,20 @@ from ELDAmwl.utils.constants import HIGHRES
 from ELDAmwl.utils.constants import LOWRES
 from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import MERGE_PRODUCT_USE_CASES
-from ELDAmwl.utils.constants import NEG_DATA
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
+from ELDAmwl.utils.constants import NEG_DATA
+from ELDAmwl.utils.constants import PRODUCT_TYPE_NAME
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR
-from ELDAmwl.utils.constants import UNCERTAINTY_TOO_LARGE, TOO_LARGE_INTEGRAL, ALL_OK
+from ELDAmwl.utils.constants import TOO_LARGE_INTEGRAL
+from ELDAmwl.utils.constants import UNCERTAINTY_TOO_LARGE
+from ELDAmwl.utils.numerical import integral_profile
 from zope import component
 
 import ELDAmwl.utils.constants
 import numpy as np
 import xarray as xr
-
-from ELDAmwl.utils.numerical import integral_profile
 
 
 class Products(Signals):
@@ -48,6 +51,7 @@ class Products(Signals):
     mwl_meta_id = None
     params = None  # params of this specific product (ProductParams)
     num_scan_angles = None
+    resolution = None
 
     @classmethod
     def from_signal(cls, signal, p_params, **kw_args):
@@ -89,6 +93,10 @@ class Products(Signals):
     @property
     def product_id_str(self):
         return self.params.prod_id_str
+
+    @property
+    def is_derived_product(self):
+        self.params.general_params.is_derived_product
 
     def smooth(self, binres):
         """
@@ -158,6 +166,16 @@ class Products(Signals):
 
         self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | UNCERTAINTY_TOO_LARGE
 
+    def screen_for_aerosol_free_layers(self):
+        try:
+            bsc_ratio_profile = self.data_storage.bsc_ratio_532(self.resolution)
+            bad_idxs = np.where(bsc_ratio_profile.data < self.cfg.MIN_BSC_RATIO[self.product_type])
+            self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs][bad_idxs] | BELOW_MIN_BSCR
+        except NotFoundInStorage:
+            self.logger.error('screening for aerosol free layers '
+                                  f'for {PRODUCT_TYPE_NAME[self.product_type]} failed '
+                                  f'because no bsc ratio is available for {RESOLUTION_STR[self.resolution]} ')
+
     def qc_integral(self):
         max_integral = self.cfg.MAX_INTEGRAL[self.product_type]
         for t in range(self.num_times):
@@ -179,8 +197,12 @@ class Products(Signals):
     def quality_control(self):
         self.screen_too_large_errors()
         self.screen_negative_data()
+
         if self.product_type in self.cfg.MAX_INTEGRAL:
             self.qc_integral()
+
+        if self.is_derived_product and self.product_type in self.cfg.MIN_BSC_RATIO[self.product_type]:
+            self.screen_for_aerosol_free_layers()
 
         if (self.profile_qf != ALL_OK).any():
             for t in np.where(self.profile_qf != ALL_OK)[0]:

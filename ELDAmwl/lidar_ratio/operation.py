@@ -57,7 +57,7 @@ class LidarRatioFactoryDefault(BaseOperation):
         self.ext = self.data_storage.basic_product_common_smooth(self.param.ext_prod_id, self.resolution)
         self.bsc = self.data_storage.basic_product_common_smooth(self.param.bsc_prod_id, self.resolution)
 
-        self.empty_lr = LidarRatios.init(self.ext, self.bsc, self.param)
+        self.empty_lr = LidarRatios.init(self.ext, self.bsc, self.param, self.resolution)
 
     def get_non_merge_product(self):
         # create Dict with all params which are needed for the calculation

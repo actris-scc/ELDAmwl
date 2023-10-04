@@ -440,6 +440,8 @@ class RunELDAmwl(BaseOperation):
         # todo: check whether the products have at
         #  least one resolution with which they shall be derived
         #  (calc_with_lr or calc_with_hr)
+        # todo: check whether there is only one product per wavelength and type (e.g. no different usecases or Raman+elast
+        # todo: check that there is not the combination lr + ext + ebsc, only lr+ext+rbsc is allowed
 
     def read_elpp_data(self):
         """read pre-processed signals from ELPP files
