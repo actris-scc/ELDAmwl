@@ -64,11 +64,13 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         # calculate average if there are more than 1 bsc ratio per wavelength
         for wl in self.bsc_params:
             if len(self.bsc_params[wl]) > 1:
-                self.bsc_ratio_profiles[wl] = self.calc_average(self.bsc_params[wl])
+                self.logger.warning(f'there is more than 1 bsc product at wavelength{wl}')
+                # self.bsc_ratio_profiles[wl] = self.calc_average(self.bsc_params[wl])
             else:
                 prod_id = self.bsc_params[wl][0].prod_id_bsc_ratio_str
+                # todo: use qc profiles here (but qc of bsc ratio not yet implemented)
                 self.bsc_ratio_profiles[wl] = self.data_storage.basic_product_common_smooth(prod_id,
-                                                                                            self.resolution)
+                                                                                 self.resolution)
         return num_profiles
 
     def target_wl(self, a_bsc_param):
@@ -84,33 +86,33 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
 
         return result
 
-    def calc_average(self, param_list):
-        """calculates the average of several bsc ratio profiles
-
-        Args:
-            param_list: list of product params of the bsc ratios that shall be averaged
-
-        Returns:
-            :obj:`BackscatterRatios`: the averaged backscatter ratio profile
-
-        """
-        profiles = []
-        for param in param_list:
-            prod_id = param.prod_id_bsc_ratio_str
-            profile = self.data_storage.basic_product_common_smooth(prod_id, self.resolution)
-            profiles.append(profile.ds.data)
-
-        # concatenate all DataArrays along a new dimension
-        list_array = xr.concat(profiles, 'prod_idx')
-        mean = list_array.mean(dim='prod_idx')
-
-        result = BackscatterRatios()
-        result.ds['data'] = mean
-        result.emission_wavelength = profile.emission_wavelength
-        result.profile_qf = deepcopy(profile.profile_qf)  # todo: average of all profiles
-
-        # todo: handle errors, flags, cloud mask and attributes
-        return result
+    # def calc_average(self, param_list):
+    #     """calculates the average of several bsc ratio profiles
+    #
+    #     Args:
+    #         param_list: list of product params of the bsc ratios that shall be averaged
+    #
+    #     Returns:
+    #         :obj:`BackscatterRatios`: the averaged backscatter ratio profile
+    #
+    #     """
+    #     profiles = []
+    #     for param in param_list:
+    #         prod_id = param.prod_id_bsc_ratio_str
+    #         profile = self.data_storage.basic_product_common_smooth(prod_id, self.resolution)
+    #         profiles.append(profile.ds.data)
+    #
+    #     # concatenate all DataArrays along a new dimension
+    #     list_array = xr.concat(profiles, 'prod_idx')
+    #     mean = list_array.mean(dim='prod_idx')
+    #
+    #     result = BackscatterRatios()
+    #     result.ds['data'] = mean
+    #     result.emission_wavelength = profile.emission_wavelength
+    #     result.profile_qf = deepcopy(profile.profile_qf)  # todo: average of all profiles
+    #
+    #     # todo: handle errors, flags, cloud mask and attributes
+    #     return result
 
     def interpolate(self):
         """interpolates the bsc ratios at 355 nm and 1064 nm to 532 nm
@@ -126,6 +128,7 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         # result = deepcopy(self.bsc_ratio_profiles[355])
         result = BackscatterRatios()
         result.ds['data'] = profile_532_data
+        result.emission_wavelength = deepcopy(profile_355.emission_wavelength)
         result.emission_wavelength.values = 532
         result.profile_qf = profile_355.profile_qf | profile_1064.profile_qf
 

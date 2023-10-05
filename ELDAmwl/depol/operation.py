@@ -110,8 +110,6 @@ class VLRDFactoryDefault(BaseOperation):
         else:
             vldr = None
 
-        vldr.quality_control()
-
         return vldr
 
 

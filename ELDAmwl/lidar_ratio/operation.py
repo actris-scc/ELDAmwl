@@ -54,8 +54,8 @@ class LidarRatioFactoryDefault(BaseOperation):
         self.prod_id = self.param.prod_id_str
 
         # ext and bsc are deepcopies from the data storage
-        self.ext = self.data_storage.basic_product_common_smooth(self.param.ext_prod_id, self.resolution)
-        self.bsc = self.data_storage.basic_product_common_smooth(self.param.bsc_prod_id, self.resolution)
+        self.ext = self.data_storage.basic_product_qc(self.param.ext_prod_id, self.resolution)
+        self.bsc = self.data_storage.basic_product_qc(self.param.bsc_prod_id, self.resolution)
 
         self.empty_lr = LidarRatios.init(self.ext, self.bsc, self.param, self.resolution)
 

@@ -276,8 +276,6 @@ class ExtinctionFactoryDefault(BaseOperation):
             ext = None
             pass
 
-        ext.quality_control()
-
         return ext
 
 

@@ -185,6 +185,7 @@ class GetBasicProductsDefault(BaseOperation):
         self.get_elast_bsc_fixed_smooth()
         self.get_bsc_ratios_fixed_smooth()
         self.get_vldr_fixed_smooth()
+        self.single_products_quality_control()
 
     def get_extinctions_auto_smooth(self):
         """get extinction products with automatic smoothing
@@ -271,7 +272,6 @@ class GetBasicProductsDefault(BaseOperation):
                 # if resolution res is required: make a copy of bsc and smooth it
                 if bsc_param in self.product_params.all_products_of_res(res):
                     smooth_bsc = deepcopy(bsc)
-                    smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_bsc)
             del bsc
@@ -366,6 +366,16 @@ class GetBasicProductsDefault(BaseOperation):
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_vldr)
             del vldr
+
+    def single_products_quality_control(self):
+        for res in RESOLUTIONS:
+            all_products = self.product_params.basic_products(res=res)
+            # todo: add bsc ratio
+            for prod_param in all_products:
+                prod_id = prod_param.prod_id_str
+                product = self.data_storage.basic_product_common_smooth(prod_id, res)
+                product.quality_control()
+                self.data_storage.set_basic_product_qc(prod_id, res, product)
 
 
 class GetBasicProducts(BaseOperationFactory):

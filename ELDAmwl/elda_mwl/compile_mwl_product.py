@@ -7,7 +7,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoProductsGenerated
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import EBSC, VLDR, NEG_DATA, ALL_OK, BSCR
+from ELDAmwl.utils.constants import EBSC, VLDR, NEG_DATA, ALL_OK, BSCR, RESOLUTION_STR
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import LR
 from ELDAmwl.utils.constants import RBSC
@@ -22,9 +22,23 @@ class GetProductMatrixDefault(BaseOperation):
     brings all products onto a common grid (wavelength, time, altitude)
     """
 
-    # data_storage = None
-    product_params = None
+    product_params = None  # table with all scheduled products
     shape = None
+    wavelengths = None
+    p_types = None
+    result = None
+
+    def prepare(self):
+        self.product_params = self.kwargs['product_params']
+        self.wavelengths = Dict()
+        self.p_types = Dict()
+        self.result = Dict()
+
+        for res in RESOLUTIONS:
+            self.wavelengths[res] = self.product_params.wavelengths(res=res)
+            self.p_types[res] = self.product_params.prod_types(res=res)
+            for ptype in self.p_types[res]:
+                self.result[res][ptype] = None
 
     def get_common_shape(self, res):
 
@@ -54,7 +68,7 @@ class GetProductMatrixDefault(BaseOperation):
         for param in params:
             # todo: remove limit to EXT when all prod types are included
             if (alt_axis is None) and (param.product_type in [EXT, RBSC, EBSC, LR, VLDR]):
-                product = self.data_storage.product_common_smooth(param.prod_id_str, res)
+                product = self.data_storage.product_qc(param.prod_id_str, res)
                 alt_axis = product.altitude
             else:
                 # todo: find max of alt axes
@@ -111,27 +125,14 @@ class GetProductMatrixDefault(BaseOperation):
         return ds
 
     def combine_ebsc_rbsc_matrix(self, res, wavelengths):
-        bsc_unique = True
-        for wl in wavelengths:
-            if (self.product_params.prod_param(EBSC, wl) is not None) and \
-                (self.product_params.prod_param(RBSC, wl) is not None):
-                bsc_unique = False
-                self.logger.warning(f'Raman bsc product {self.product_params.prod_param(RBSC, wl).prod_id_str} '
-                                    f'and elast bsc product {self.product_params.prod_param(EBSC, wl).prod_id_str} '
-                                    f'at the same wavelength {wl}')
-            # todo: check input and make sure that not more than
-            #       1 bsc product is assigned per wavelength (Raman + elsat)
-        if bsc_unique:
-            rbsc_matrix = self.data_storage.product_matrix(RBSC, res)
-            ebsc_matrix = self.data_storage.product_matrix(EBSC, res)
-            combined = rbsc_matrix.combine_first(ebsc_matrix)
-            # preliminray solution: write combined data in matrices of both bsc products
-            # => the writing routine will overwrite the first with the second
-            # todo: make writing routine intelligent that only 1 bsc matrix is needed
-            for bsc_type in [RBSC, EBSC]:
-                self.data_storage.set_product_matrix(bsc_type, res, combined)
-        else:
-            self.logger.warning('more than 1 backscatter product was scheduled for the same wavelength')
+        rbsc_matrix = self.result[res][RBSC]
+        ebsc_matrix = self.result[res][EBSC]
+        combined = rbsc_matrix.combine_first(ebsc_matrix)
+        # preliminray solution: write combined data in matrices of both bsc products
+        # => the writing routine will overwrite the first with the second
+        # todo: make writing routine intelligent that only 1 bsc matrix is needed
+        for bsc_type in [RBSC, EBSC]:
+            self.result[res][bsc_type] = combined
 
     def get_product_matrix(self, ptype, res, wavelengths):
         ds = self.create_empty_dataset(ptype, wavelengths)
@@ -145,7 +146,7 @@ class GetProductMatrixDefault(BaseOperation):
                 if param.calc_with_res(res):
                     prod_id = param.prod_id_str
                     # get product object from data storage
-                    prod = self.data_storage.product_common_smooth(prod_id, res)
+                    prod = self.data_storage.product_qc(prod_id, res)
                     # write product data into common Dataset
                     prod.write_data_in_ds(ds)
 
@@ -155,47 +156,85 @@ class GetProductMatrixDefault(BaseOperation):
                         prod.mwl_meta_id,
                     )
 
-        self.data_storage.set_product_matrix(ptype, res, ds)
+        return ds
 
-    def get_bsc_ratio_matrix(self, res, wavelengths):
-        ds = self.create_empty_dataset(BSCR, wavelengths)
-        ds.load()
+    def find_empty_time_sices(self, res):
+        empty_time_slices = None
 
-        for wl in wavelengths:
-            # get the product param related to products type and wavelength;
-            # returns None if the product does not exists
-            for ptype in [EBSC, RBSC]:
-                param = self.product_params.prod_param(ptype, wl)
-                if param is not None:
-                    if param.calc_with_res(res):
-                        prod_id = param.prod_id_bsc_ratio_str
-                        # get product object from data storage
-                        bsc_ratio = self.data_storage.product_common_smooth(prod_id, res)
-                        # write product data into common Dataset
-                        bsc_ratio.write_data_in_ds(ds)
+        for prod_type in self.p_types[res]:
+            a_matrix = self.result[res][prod_type]
+            if empty_time_slices is None:
+                # init result with True
+                empty_time_slices = np.ones_like(a_matrix.time, dtype=bool)
+                empty_time_slices[:] = True
+            # if a time slice in this product is empty AND was empty in other products
+            empty_time_slices = empty_time_slices & a_matrix.data.isnull().all(dim='level').values
 
-        self.data_storage.set_product_matrix(BSCR, res, ds)
+        return empty_time_slices
+
+    def find_empty_height_bins(self, res):
+        empty_height_bins = None
+
+        for prod_type in self.p_types[res]:
+            a_matrix = self.result[res][prod_type]
+            if empty_height_bins is None:
+                empty_height_bins = np.ones_like(a_matrix.level, dtype=bool)
+                empty_height_bins[:] = True
+
+            empty_height_bins = empty_height_bins & a_matrix.data.isnull().all(dim='time').values
+
+        return empty_height_bins
+
+    def clip_data(self, res):
+        """remove time slices and altitude ranges without valid data from product matrixes"""
+        empty_time_slices = self.find_empty_time_sices(res)
+        empty_height_bins = self.find_empty_height_bins(res)
+        # todo: find empty products
+        if empty_time_slices.all():
+            self.logger.error(f'no valid products for {RESOLUTION_STR[res]}')
+            return None
+
+        valid_time_slices = np.where(~empty_time_slices[0])[0]
+        valid_height_bins = np.where(~ empty_height_bins[0])[0]
+
+        for prod_type in self.p_types[res]:
+            a_matrix = self.result[res][prod_type]
+            a_matrix = a_matrix.isel({'level': valid_height_bins,
+                                      'time': valid_time_slices})
+
+    def filter_data(self, res):
+        """set data points with critical quality flags to nan
+        """
+        # all product types that are defined for this resolution
+        for ptype in self.p_types[res]:
+            a_matrix = self.result[res][ptype]
+            for qf in self.cfg.CRITICAL_FLAGS:
+                a_matrix['data'] = a_matrix.data.where((a_matrix.quality_flag & qf) != qf)
+
+    def store_matrixes(self, res):
+        for ptype in self.p_types[res]:
+            self.data_storage.set_product_matrix(ptype, res, self.result[res][ptype])
 
     def run(self):
-        self.product_params = self.kwargs['product_params']
+        self.prepare()
+
         if len(self.product_params.basic_products()) == 0:
             self.logger.error('no products were derived -> cannot get common matrix')
             raise NoProductsGenerated(self.product_params.measurement_params.mwl_product_id)
 
         for res in RESOLUTIONS:
-            wavelengths = self.product_params.wavelengths(res=res)
-            p_types = self.product_params.prod_types(res=res)
-
             self.shape = self.get_common_shape(res)
 
-            for ptype in p_types:
-                self.get_product_matrix(ptype, res, wavelengths)
+            for ptype in self.p_types[res]:
+                self.result[res][ptype] = self.get_product_matrix(ptype, res, self.wavelengths[res])
 
-            if (RBSC in p_types) and (EBSC in p_types):
-                self.combine_ebsc_rbsc_matrix(res, wavelengths)
+            if (RBSC in self.p_types[res]) and (EBSC in self.p_types[res]):
+                self.combine_ebsc_rbsc_matrix(res, self.wavelengths[res])
 
-            if (RBSC in p_types) or (EBSC in p_types):
-                self.get_bsc_ratio_matrix(res, wavelengths)
+            self.filter_data(res)
+            self.clip_data(res)
+
+            self.store_matrixes(res)
 
 
 class GetProductMatrix(BaseOperationFactory):

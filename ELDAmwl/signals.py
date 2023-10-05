@@ -265,7 +265,7 @@ class Signals(Columns):
                                      }
 
         # initiate quality flag with values 'ALL_OK'
-        qf = np.ones((nc_ds.dims['time'], nc_ds.dims['level'])).astype(np.int8) * ALL_OK
+        qf = np.ones((nc_ds.dims['time'], nc_ds.dims['level'])).astype(np.short) * ALL_OK
         result.ds['qf'] = xr.DataArray(
             qf,
             coords=[nc_ds.time, nc_ds.level],
@@ -276,14 +276,15 @@ class Signals(Columns):
             'negative_data '
             'incomplete_overlap_not_correctable '
             'above_max_altitude_range '
-            'cloud_contamination '
-            'above_Klett_reference_height '
+            # 'cloud_contamination '
+            # 'above_Klett_reference_height '
             'depol_ratio_larger_100% '
             'backscatter_ratio_below_required_min_value',  # noqa E501
+            # 'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64],
             'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64],
             'valid_range': [0, 107],
             'units': '1',
-            '_FillValue': NC_FILL_BYTE,
+            '_FillValue': NC_FILL_INT,
         }
 
         # todo: make station_altitude a function of time (moving systems)

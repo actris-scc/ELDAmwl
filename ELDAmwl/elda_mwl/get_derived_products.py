@@ -23,9 +23,19 @@ class GetDerivedProductsDefault(BaseOperation):
 
         self.get_derived_products()
 
+    def single_products_quality_control(self):
+        for res in RESOLUTIONS:
+            all_products = self.product_params.derived_products(res=res)
+            for prod_param in all_products:
+                prod_id = prod_param.prod_id_str
+                product = self.data_storage.derived_product_common_smooth(prod_id, res)
+                product.quality_control()
+                self.data_storage.set_derived_product_qc(prod_id, res, product)
+
     def get_derived_products(self):
         self.get_standard_bsc_ratio()
         self.get_lidar_ratios()
+        self.single_products_quality_control()
 
     def get_standard_bsc_ratio(self):
         """

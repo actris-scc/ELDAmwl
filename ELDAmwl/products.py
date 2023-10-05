@@ -65,7 +65,7 @@ class Products(Signals):
         result.ds = deepcopy(signal.ds)
         result.ds['data'][:] = np.nan
         result.ds['err'][:] = np.nan
-        result.ds['qf'][:] = NC_FILL_BYTE
+        result.ds['qf'][:] = ALL_OK
         result.ds['binres'][:] = NC_FILL_INT
 
         result.station_altitude = signal.station_altitude
@@ -107,7 +107,7 @@ class Products(Signals):
         Returns:
 
         """
-
+        self.logger.debug('smooth')
         if self.data.shape != binres.shape:
             raise SizeMismatch('bin resolution',
                                'product {}'.format(self.params.prod_id_str),
@@ -198,7 +198,7 @@ class Products(Signals):
         all_bin_res = all_bin_res[np.where(all_bin_res != NC_FILL_INT)]
         for br in all_bin_res:
             window = br + 2
-            min_nb_of_neighbors = br // 2 + 1
+            min_nb_of_neighbors = window // 2 + 1
 
             # test only data points which have the bin resolution br
             test_data = dummy_data.where(self.binres == br)
@@ -740,6 +740,9 @@ class SmoothSavGolay(BaseOperation):
         win = kwargs['window']
         err = kwargs['err']
         data = kwargs['data']
+
+        # todo: handling of qflags
+        # todo: improve calculation time
 
         sgc = sg_coeffs(win, 2)
         err_sm = np.sqrt(np.sum(np.power(err * sgc, 2)))

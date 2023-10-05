@@ -162,8 +162,8 @@ class Main:
             elda_mwl.get_basic_products()
             elda_mwl.get_derived_products()
             elda_mwl.get_lidar_constants()
-            elda_mwl.get_product_matrix()
             elda_mwl.quality_control()
+            elda_mwl.get_product_matrix()
             elda_mwl.write_mwl_output()
             return_code = elda_mwl.get_return_value()
 

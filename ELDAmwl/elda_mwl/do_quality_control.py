@@ -17,7 +17,6 @@ class QualityControlDefault(BaseOperation):
     """
 
     product_params = None
-    qc_product_matrix = None
 
     def prepare(self):
         """
@@ -28,42 +27,15 @@ class QualityControlDefault(BaseOperation):
         """
         self.product_params = self.kwargs['product_params']
 
-        self.qc_product_matrix = Dict()
-        for res in RESOLUTIONS:
-            p_types = self.product_params.prod_types(res=res)
-            for prod_type in p_types:
-                self.qc_product_matrix[res][prod_type] = self.data_storage.product_matrix(prod_type, res)
-
-    # def screen_aerosol_free_layers(self, a_matrix, prod_type, res):
-    #     # if there is a bsc ratio threshold defined for this product type
-    #     if prod_type in self.cfg.MIN_BSC_RATIO:
-    #         try:
-    #             bsc_ratio_profile = self.data_storage.bsc_ratio_532(res)
-    #             bad_idxs = np.where(bsc_ratio_profile.data < self.cfg.MIN_BSC_RATIO[prod_type])
-    #             # apply the profile information in bad_idxs on every wavelength of matrix
-    #             for wl in range(a_matrix.a_matrix.dims['wavelength']):
-    #                 a_matrix.quality_flag[wl][bad_idxs] = a_matrix.quality_flag[wl][bad_idxs] | BELOW_MIN_BSCR
-    #
-    #         except NotFoundInStorage:
-    #             self.logger.error(f'screening for aerosol free layers cannot be done '
-    #                               f'for {PRODUCT_TYPE_NAME[prod_type]} '
-    #                               f'because no bsc ratio is available for {RESOLUTION_STR[res]} resolution')
-    #             # todo: discuss with giuseppe whether to raise an exception here
-
-    def run_single_product_tests(self):
-        for res in RESOLUTIONS:
-            # all product types that are defined for this resolution
-            p_types = self.product_params.prod_types(res=res)
-            for prod_type in p_types:
-                a_matrix = self.qc_product_matrix[res][prod_type]
-
-        #         self.screen_aerosol_free_layers(a_matrix, prod_type, res)
-        #         self.screen_uncertainties(a_matrix, prod_type)
+    def run_multi_product_tests(self):
+        pass
 
     def run(self):
         self.prepare()
 
-        self.run_single_product_tests()
+        self.run_multi_product_tests()
+        #self.filter_data()
+        #self.clip_data()
 
         # todo: implement quality control
         # done: add quality flag for complete profile (e.g. this profile causes bad angstroem exponents,

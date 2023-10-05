@@ -55,7 +55,17 @@ class DataStorage:
                         LOWRES: Dict(),
                         HIGHRES: Dict(),
                     }),
+                'basic_products_qc': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
                 'derived_products_common_smooth': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
+                'derived_products_qc': Dict(
                     {
                         LOWRES: Dict(),
                         HIGHRES: Dict(),
@@ -120,10 +130,20 @@ class DataStorage:
         """
         self.__data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
 
+    def set_basic_product_qc(self, prod_id_str, res, new_product):
+        """write a basic, quality controlled product to storage
+        """
+        self.__data.basic_products_qc[res][prod_id_str] = new_product  # noqa E501
+
     def set_derived_products(self, prod_id_str, res, new_product):
         """write a derived product to storage
         """
         self.__data.derived_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
+
+    def set_derived_products_qc(self, prod_id_str, res, new_product):
+        """write a quality controlled, derived product to storage
+        """
+        self.__data.derived_products_qc[res][prod_id_str] = new_product  # noqa E501
 
     def set_lidar_constant(self, wl, new_lidar_constant):
         """write a lidar constant to storage
@@ -500,8 +520,30 @@ class DataStorage:
             'product',
             'basic products with common smoothing with')
 
+    def basic_product_qc(self, prod_id, resolution):
+        """copy of a basic product, derived with common smooth after quality control
+
+        Args:
+            prod_id_str (str) or (int):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`Products` deepcopy of the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+
+        return self._get_prod_res_entry(
+            str(prod_id),
+            resolution,
+            'basic_products_qc',
+            'product',
+            'basic products after qc')
+
     def derived_product_common_smooth(self, prod_id_str, resolution):
-        """copy of a basic product, derived with common smooth
+        """copy of a derived product, derived with common smooth
 
         Args:
             prod_id_str (str):  product id
@@ -521,6 +563,28 @@ class DataStorage:
             'derived_products_common_smooth',
             'product',
             'derived products with common smoothing with')
+
+    def derived_product_qc(self, prod_id_str, resolution):
+        """copy of a quality controlled derived product, derived with common smooth
+
+        Args:
+            prod_id_str (str):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`Products`: deepcopy of the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+
+        return self._get_prod_res_entry(
+            prod_id_str,
+            resolution,
+            'derived_products_qc',
+            'product',
+            'derived products after quality control')
 
     def product_common_smooth(self, prod_id_str, resolution):
         """copy of a product, derived with common smooth
@@ -544,6 +608,31 @@ class DataStorage:
             except NotFoundInStorage:
                 raise NotFoundInStorage('product {0}'.format(prod_id_str),
                                         'products with common smoothing with {0}'.format(RESOLUTION_STR[resolution]))
+
+        return result
+
+    def product_qc(self, prod_id_str, resolution):
+        """copy of a quality controlled product
+
+        Args:
+            prod_id_str (str):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`Products`: deepcopy of the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+        try:
+            result = self.basic_product_qc(prod_id_str, resolution)
+        except NotFoundInStorage:
+            try:
+                result = self.derived_product_qc(prod_id_str, resolution)
+            except NotFoundInStorage:
+                raise NotFoundInStorage('product {0}'.format(prod_id_str),
+                                        'quality controlled products with {0}'.format(RESOLUTION_STR[resolution]))
 
         return result
 
