@@ -45,6 +45,8 @@ class DataStorage:
                 'binres_auto_smooth': Dict(),
                 'lidar_constants': Dict(),
                 'common_vertical_resolution': Dict(),
+                'clipped_vertical_resolution': Dict(),
+                'clipped_cloud_mask': Dict(),
                 'binres_common_smooth': Dict(
                     {
                         LOWRES: Dict(),
@@ -187,6 +189,28 @@ class DataStorage:
 
         """
         self.__data.common_vertical_resolution[resolution] = new_res_array
+
+    def set_clipped_vertical_resolution(self, resolution, new_array):
+        """writes an array with common vertical resolution into storage.
+        the dimensions of the array are clipped to dimensions of data
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+            new_array: xarray.DataArray
+
+        """
+        self.__data.clipped_vertical_resolution[resolution] = new_array
+
+    def set_clipped_cloud_mask(self, resolution, new_array):
+        """writes an array with cloud mask into storage.
+        the dimensions of the array are clipped to dimensions of data
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+            new_array: xarray.DataArray
+
+        """
+        self.__data.clipped_cloud_mask[resolution] = new_array
 
     def set_bsc_ratio_532(self, res, new_bsc_ratio):
         """
@@ -469,6 +493,56 @@ class DataStorage:
         else:
             raise NotFoundInStorage('{0} {1}'.format(RESOLUTION_STR[resolution], ''),
                                     '{0} {1}'.format('vertical resolution', RESOLUTION_STR[resolution]))
+
+    def clipped_vertical_resolution(self, resolution):
+        """copy of the profile of common vertical resolution of all products.
+        dimension of profile is clipped to the dimension of corresponding data
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`xarray.DataArray`: deepcopy of the requested resolution profile
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and resolution was found in storage
+        """
+        if resolution in RESOLUTIONS:
+            result = self.__data.clipped_vertical_resolution[resolution]
+        else:
+            result = None
+
+        if isinstance(result, xr.DataArray):
+            return deepcopy(result)
+        else:
+            raise NotFoundInStorage('{0} {1}'.format(RESOLUTION_STR[resolution], ''),
+                                    '{0} {1}'.format('clipped vertical resolution', RESOLUTION_STR[resolution]))
+
+    def clipped_cloud_mask(self, resolution):
+        """copy of the profile of cloud_mask.
+        dimension of profile is clipped to the dimension of corresponding data
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`xarray.DataArray`: deepcopy of the requested cloud mask profile
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and resolution was found in storage
+        """
+        if resolution in RESOLUTIONS:
+            result = self.__data.clipped_cloud_mask[resolution]
+        else:
+            result = None
+
+        if isinstance(result, xr.DataArray):
+            return deepcopy(result)
+        else:
+            raise NotFoundInStorage('{0} {1}'.format(RESOLUTION_STR[resolution], ''),
+                                    '{0} {1}'.format('clipped cloud_mask', RESOLUTION_STR[resolution]))
 
     def binres_common_smooth(self, prod_id_str, resolution):
         """ copy of a bin resolution profile of a product

@@ -39,6 +39,9 @@ class GetProductMatrixDefault(BaseOperation):
             self.p_types[res] = self.product_params.prod_types(res=res)
             for ptype in self.p_types[res]:
                 self.result[res][ptype] = None
+            self.result[res]['cloud_mask'] = None
+            self.result[res]['vertical_resolution'] = None
+
 
     def get_common_shape(self, res):
 
@@ -161,46 +164,89 @@ class GetProductMatrixDefault(BaseOperation):
     def find_empty_time_sices(self, res):
         empty_time_slices = None
 
-        for prod_type in self.p_types[res]:
-            a_matrix = self.result[res][prod_type]
+        for ptype in self.p_types[res]:
+            a_matrix = self.result[res][ptype]
             if empty_time_slices is None:
                 # init result with True
                 empty_time_slices = np.ones_like(a_matrix.time, dtype=bool)
                 empty_time_slices[:] = True
             # if a time slice in this product is empty AND was empty in other products
-            empty_time_slices = empty_time_slices & a_matrix.data.isnull().all(dim='level').values
+            empty_time_slices = empty_time_slices & a_matrix.data.isnull().all(dim=['level', 'wavelength']).values
 
         return empty_time_slices
 
     def find_empty_height_bins(self, res):
         empty_height_bins = None
 
-        for prod_type in self.p_types[res]:
-            a_matrix = self.result[res][prod_type]
+        for ptype in self.p_types[res]:
+            a_matrix = self.result[res][ptype]
             if empty_height_bins is None:
                 empty_height_bins = np.ones_like(a_matrix.level, dtype=bool)
                 empty_height_bins[:] = True
 
-            empty_height_bins = empty_height_bins & a_matrix.data.isnull().all(dim='time').values
+            empty_height_bins = empty_height_bins & a_matrix.data.isnull().all(dim=['time', 'wavelength']).values
 
         return empty_height_bins
 
+    def find_empty_wavelengths(self, res):
+        empty_wavelengths = None
+
+        for ptype in self.p_types[res]:
+            a_matrix = self.result[res][ptype]
+            if empty_wavelengths is None:
+                empty_wavelengths = np.ones_like(a_matrix.wavelength, dtype=bool)
+                empty_wavelengths[:] = True
+
+            empty_wavelengths = empty_wavelengths & a_matrix.data.isnull().all(dim=['time', 'level']).values
+
+        return empty_wavelengths
+
+    def find_empty_products(self, res):
+        empty_products = []
+        for ptype in self.p_types[res]:
+            a_matrix = self.result[res][ptype]
+            if a_matrix.data.isnull().all():
+                empty_products.append(ptype)
+
+        return empty_products
+
     def clip_data(self, res):
-        """remove time slices and altitude ranges without valid data from product matrixes"""
+        """remove product types, wavelengths, time slices and altitude ranges without valid data
+        from product matrices"""
+        if len(self.p_types[res]) == 0:
+            self.logger.warning(f'no products were derived for resolution {RESOLUTION_STR[res]}')
+            return None
+
         empty_time_slices = self.find_empty_time_sices(res)
         empty_height_bins = self.find_empty_height_bins(res)
-        # todo: find empty products
+        empty_products = self.find_empty_products(res)
+        empty_wavelengths = self.find_empty_wavelengths(res)
+
         if empty_time_slices.all():
             self.logger.error(f'no valid products for {RESOLUTION_STR[res]}')
             return None
 
-        valid_time_slices = np.where(~empty_time_slices[0])[0]
-        valid_height_bins = np.where(~ empty_height_bins[0])[0]
+        valid_time_slices = np.where(~empty_time_slices)[0]
+        valid_height_bins = np.where(~ empty_height_bins)[0]
+        valid_wavelengths = np.where(~ empty_wavelengths)[0]
 
-        for prod_type in self.p_types[res]:
-            a_matrix = self.result[res][prod_type]
-            a_matrix = a_matrix.isel({'level': valid_height_bins,
-                                      'time': valid_time_slices})
+        for ptype in self.p_types[res]:
+            if ptype in empty_products:
+                self.result[res][ptype] = None
+            else:
+                a_matrix = self.result[res][ptype]
+                a_matrix = a_matrix.isel({'level': valid_height_bins,
+                                          'time': valid_time_slices,
+                                          'wavelength': valid_wavelengths,
+                                          })
+                self.result[res][ptype] = a_matrix
+
+        # clip cloud mask and vertical resolution
+        cm = self.data_storage.get_common_cloud_mask(res)
+        self.result[res]['cloud_mask'] = cm.sel({'level': a_matrix.level, 'time': a_matrix.time})
+
+        vert_res = self.data_storage.common_vertical_resolution(res)
+        self.result[res]['vertical_resolution'] = vert_res.sel({'level': a_matrix.level})
 
     def filter_data(self, res):
         """set data points with critical quality flags to nan
@@ -211,9 +257,13 @@ class GetProductMatrixDefault(BaseOperation):
             for qf in self.cfg.CRITICAL_FLAGS:
                 a_matrix['data'] = a_matrix.data.where((a_matrix.quality_flag & qf) != qf)
 
-    def store_matrixes(self, res):
-        for ptype in self.p_types[res]:
-            self.data_storage.set_product_matrix(ptype, res, self.result[res][ptype])
+    def store_matrices(self, res):
+        if len(self.p_types[res]) > 0:
+            for ptype in self.p_types[res]:
+                self.data_storage.set_product_matrix(ptype, res, self.result[res][ptype])
+
+            self.data_storage.set_clipped_cloud_mask(res, self.result[res].cloud_mask)
+            self.data_storage.set_clipped_vertical_resolution(res, self.result[res].vertical_resolution)
 
     def run(self):
         self.prepare()
@@ -234,7 +284,7 @@ class GetProductMatrixDefault(BaseOperation):
             self.filter_data(res)
             self.clip_data(res)
 
-            self.store_matrixes(res)
+            self.store_matrices(res)
 
 
 class GetProductMatrix(BaseOperationFactory):
