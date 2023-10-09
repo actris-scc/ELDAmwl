@@ -191,7 +191,7 @@ class MeasurementParams(Params):
         ids = prod_df['id']
         return self.filtered_list(ids)
 
-    def all_products_of_res(self, res):
+    def all_products_of_res(self, res, include_failed=False):
         """list of parameters of all products with resolution res
 
         Returns:
@@ -199,8 +199,23 @@ class MeasurementParams(Params):
             list of parameters of all products with resolution res
         """
         prod_df = self.measurement_params.product_table
-        prod_df = prod_df[prod_df['failed'] == False]
+        if not include_failed:
+            prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][prod_df[RESOLUTION_STR[res]]]
+        return self.filtered_list(ids)
+
+    def all_products_of_type(self, type, res=None):
+        """list of parameters of all products of requested type
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all products with requested type
+        """
+        prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
+        if res is not None:
+            prod_df = prod_df[prod_df[RESOLUTION_STR[res]]]
+        ids = prod_df['id'][prod_df.type == type]
         return self.filtered_list(ids)
 
     def all_basic_products_of_wl(self, wl):
@@ -257,7 +272,7 @@ class MeasurementParams(Params):
         ids = prod_df['id'][prod_df.type == EBSC]
         return self.filtered_list(ids)
 
-    def vldr_products(self):
+    def vldr_products(self, res=None, include_failed=False):
         """list of parameters of all vldr products
 
         Returns:
@@ -265,7 +280,10 @@ class MeasurementParams(Params):
             list of parameters of all vldr products
         """
         prod_df = self.measurement_params.product_table
-        prod_df = prod_df[prod_df['failed'] == False]
+        if not include_failed:
+            prod_df = prod_df[prod_df['failed'] == False]
+        if res is not None:
+            prod_df = prod_df[prod_df[RESOLUTION_STR[res]]]
         ids = prod_df['id'][prod_df.type == VLDR]
         return self.filtered_list(ids)
 
@@ -371,11 +389,13 @@ class MeasurementParams(Params):
                     self.logger.error('product type {} not yet implemented'.format(prod_type))
 
 
-    def prod_params(self, prod_type, wl):
+    def prod_params(self, prod_type, wl, include_failed=False):
         """ returns a list with params of all products of type prod_type and wavelength wl
          """
         prod_df = self.measurement_params.product_table
-        prod_df = prod_df[prod_df['failed'] == False]
+        if not include_failed:
+            prod_df = prod_df[prod_df['failed'] == False]
+
         ids = prod_df['id'][(prod_df.wl == wl) & (prod_df.type == prod_type)]
 
         if ids.size > 0:

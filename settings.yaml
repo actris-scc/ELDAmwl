@@ -81,7 +81,7 @@ default:
   # if the percentage (in number) of negative points is larger
   # than MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA -> flag whole profile
   MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA : {
-      3 : 0.3,  # EBSC
+      3 : 0.1,  # EBSC
   }
 
   # screening for too large errors
@@ -117,13 +117,30 @@ default:
       1 : 1,  # EXT
   }
 
+  # data points which are outside physically meaningful range
+  VALID_DATA_RANGE : {
+      2 : [0, 150],  # LR
+      13: [-1, 4],  # AE
+      15: [-99, 0.5],  # VLDR
+      16: [0, 0.5],  # PLDR
+  }
+
+  # if the percentage (in number) of out-of-range data points is larger
+  # than MAX_ALLOWED_PERCENTAGE_OF_OUT_OF_RANGE_DATA -> flag whole profile
+  MAX_ALLOWED_PERCENTAGE_OF_OUT_OF_RANGE_DATA : {
+      2 : 0.3,  # LR
+      13: 0.3,
+      15: 0.3,
+      16: 0.3,
+  }
+
   # data points with critical quality flags are filled with nan values
   CRITICAL_FLAGS : [1,  # NEG_DATA
                     2,  # BELOW_OVL
                     4,  # ABOVE_MAX_ALT
                     # HAS_CLOUD = 8
                     # ABOVE_KLETT_REF = 16
-                    32,  # INVALID_DEPOL
+                    32,  # VALUE_OUTSIDE_VALID_RANGE
                     64,  # BELOW_MIN_BSCR
                     128,  # CALC_WINDOW_OUTSIDE_PROFILE
                     256,  # UNCERTAINTY_TOO_LARGE

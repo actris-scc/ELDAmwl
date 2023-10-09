@@ -16,7 +16,7 @@ from ELDAmwl.errors.exceptions import RepeatedNormalizeByshots
 from ELDAmwl.header import Header
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.utils.constants import ABOVE_MAX_ALT
-from ELDAmwl.utils.constants import ALL_OK
+from ELDAmwl.utils.constants import ALL_OK, P_ALL_OK
 from ELDAmwl.utils.constants import ALL_RANGE
 from ELDAmwl.utils.constants import ANALOG
 from ELDAmwl.utils.constants import BELOW_OVL
@@ -370,7 +370,7 @@ class Signals(Columns):
 
         result.get_raw_heightres()
         result.calc_mol_backscatter()
-        result.profile_qf = xr.DataArray(np.ones(nc_ds.dims['time'], dtype=np.int8) * ALL_OK, # noqa E501
+        result.profile_qf = xr.DataArray(np.ones(nc_ds.dims['time'], dtype=int) * P_ALL_OK, # noqa E501
                                          coords=[nc_ds.time],
                                          dims=['time'],
                                          )

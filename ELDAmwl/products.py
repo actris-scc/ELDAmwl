@@ -31,12 +31,12 @@ from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import MERGE_PRODUCT_USE_CASES
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
-from ELDAmwl.utils.constants import NEG_DATA
+from ELDAmwl.utils.constants import NEG_DATA, P_NEG_DATA, P_ALL_OK
 from ELDAmwl.utils.constants import PRODUCT_TYPE_NAME
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR, SINGLE_POINT
-from ELDAmwl.utils.constants import TOO_LARGE_INTEGRAL
-from ELDAmwl.utils.constants import UNCERTAINTY_TOO_LARGE
+from ELDAmwl.utils.constants import P_TOO_LARGE_INTEGRAL, P_VALUE_OUTSIDE_VALID_RANGE
+from ELDAmwl.utils.constants import UNCERTAINTY_TOO_LARGE, VALUE_OUTSIDE_VALID_RANGE
 from ELDAmwl.utils.numerical import integral_profile
 from zope import component
 
@@ -145,20 +145,38 @@ class Products(Signals):
                 self.set_invalid_point(t, lev, CALC_WINDOW_OUTSIDE_PROFILE)
 
     def screen_negative_data(self):
-        good_points_before = self.ds.qf.where(self.ds.qf == 0).count(dim='level')
+        good_points_before = self.ds.qf.where(self.ds.qf == ALL_OK).count(dim='level')
 
-        max_values = self.data + self.cfg.NEG_VALUES_ERR_FACTOR * self.err
-        # todo: how to handle systematic errors ?
-        bad_idxs = np.where(max_values < 0)
-        self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | NEG_DATA
+        self.flag_values_below_threshold(0, NEG_DATA)
 
-        good_points_after = self.ds.qf.where(self.ds.qf == 0).count(dim='level')
+        good_points_after = self.ds.qf.where(self.ds.qf == ALL_OK).count(dim='level')
         num_neg_points = good_points_before - good_points_after
 
         if self.product_type in self.cfg.MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA:
             max_percentage = self.cfg.MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA[self.product_type]
-            bad_idxs = np.where((num_neg_points / good_points_before) > max_percentage)
-            self.profile_qf[bad_idxs] = self.profile_qf[bad_idxs] | NEG_DATA
+            bad_time_slices = np.where((num_neg_points / good_points_before) > max_percentage)
+            self.profile_qf[bad_time_slices] = self.profile_qf[bad_time_slices] | P_NEG_DATA
+
+    def flag_values_below_threshold(self, threshold, qf_flag):
+        # todo: how to handle systematic errors ?
+        max_profile = self.data + self.cfg.NEG_VALUES_ERR_FACTOR * self.err
+        bad_idxs = np.where(max_profile < threshold)
+        self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | qf_flag
+
+    def flag_values_above_threshold(self, threshold, qf_flag):
+        # todo: how to handle systematic errors ?
+        min_profile = self.data - self.cfg.NEG_VALUES_ERR_FACTOR * self.err
+        bad_idxs = np.where(min_profile > threshold)
+        self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | qf_flag
+
+    def screen_valid_data_range(self):
+        min_value = self.cfg.VALID_DATA_RANGE[self.product_type][0]
+        max_value = self.cfg.VALID_DATA_RANGE[self.product_type][1]
+
+        self.flag_values_below_threshold(min_value, VALUE_OUTSIDE_VALID_RANGE)
+        self.flag_values_above_threshold(max_value, VALUE_OUTSIDE_VALID_RANGE)
+
+        self.qc_profile_data_range()
 
     def screen_too_large_errors(self):
         bad_idxs = np.where((self.rel_err > self.cfg.MAX_ALLOWED_REL_ERROR[self.product_type]) &
@@ -207,6 +225,7 @@ class Products(Signals):
             self.ds.qf[bad_idxs] = SINGLE_POINT
 
     def qc_integral(self):
+        # todo: use only data points with qf == ALL_OK
         max_integral = self.cfg.MAX_INTEGRAL[self.product_type]
         for t in range(self.num_times):
             int_profile = integral_profile(self.data[t].values,
@@ -216,10 +235,27 @@ class Products(Signals):
                                            last_bin=self.last_valid_bin(t))
             integral = int_profile[-1]
             if integral > max_integral:
-                self.profile_qf[t] = self.profile_qf[t] | TOO_LARGE_INTEGRAL
+                self.profile_qf[t] = self.profile_qf[t] | P_TOO_LARGE_INTEGRAL
+
+    def qc_profile_data_range(self):
+        if self.product_type in self.cfg.MAX_ALLOWED_PERCENTAGE_OF_OUT_OF_RANGE_DATA:
+            max_percentage = self.cfg.MAX_ALLOWED_PERCENTAGE_OF_OUT_OF_RANGE_DATA[self.product_type]
+
+            good_points = self.ds.qf.where(self.ds.qf == ALL_OK).count(dim='level')
+            out_of_range_points = self.ds.qf.where(self.ds.qf == VALUE_OUTSIDE_VALID_RANGE).count(dim='level')
+            all_points = out_of_range_points + good_points
+
+            bad_time_slices = np.where((out_of_range_points / all_points) > max_percentage)
+            self.profile_qf[bad_time_slices] = self.profile_qf[bad_time_slices] | P_VALUE_OUTSIDE_VALID_RANGE
 
     def retrieval_failed(self):
-        if (self.profile_qf != ALL_OK).all():
+        if (self.profile_qf != P_ALL_OK).all():
+            return True
+        else:
+            return False
+
+    def is_out_of_range(self):
+        if ((self.profile_qf & P_VALUE_OUTSIDE_VALID_RANGE) == P_VALUE_OUTSIDE_VALID_RANGE).all():
             return True
         else:
             return False
@@ -228,23 +264,27 @@ class Products(Signals):
         self.screen_too_large_errors()
         self.screen_negative_data()
 
-        if self.product_type in self.cfg.MAX_INTEGRAL:
-            self.qc_integral()
-
         if self.is_derived_product and self.product_type in self.cfg.MIN_BSC_RATIO[self.product_type]:
             self.screen_for_aerosol_free_layers()
 
+        if self.product_type in self.cfg.VALID_DATA_RANGE:
+            self.screen_valid_data_range()
+
         self.screen_for_single_points()
 
-        if (self.profile_qf != ALL_OK).any():
-            for t in np.where(self.profile_qf != ALL_OK)[0]:
-                self.set_invalid_profile(t)
+        if self.product_type in self.cfg.MAX_INTEGRAL:
+            self.qc_integral()
 
-        # if all time slices are labelles as corrupt profiles -> set the whole product retrieval as failed
-        if self.retrieval_failed():
-            # measurement_params are all params of the measurement (MeasurementParams)
-            measurement_params = component.queryUtility(IParams)
-            self.params.mark_as_failed(measurement_params)
+        invalid_time_slices = np.where(self.profile_qf != P_ALL_OK)
+        for t in invalid_time_slices[0]:
+            self.set_invalid_profile(t)
+
+        # todo: here is not the correct place to make this test. the product could be valid with other resolution
+        # if all time slices are labelled as corrupt profiles -> set the whole product retrieval as failed
+        # if self.retrieval_failed():
+        #     # measurement_params are all params of the measurement (MeasurementParams)
+        #     measurement_params = component.queryUtility(IParams)
+        #     self.params.mark_as_failed(measurement_params)
 
     def save_to_netcdf(self):
         pass
