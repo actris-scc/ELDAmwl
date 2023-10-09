@@ -51,6 +51,9 @@ NO_PRODUCTS_GENERATED = 52
 NEG_BSC_FOR_LIDAR_CONSTANT = 53
 DIFFERENT_PRODS_RESOLUTION = 54
 COULD_NOT_FIND_PRODS_RESOLUTION = 55
+NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB = 60
+NO_BSC_FOR_LIDAR_CONSTANT = 61
+NO_MWL_PRODUCT_DEFINED = 62
 # ===============================================
 # error codes which occur only during development
 # ===============================================

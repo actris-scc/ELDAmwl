@@ -1369,3 +1369,13 @@ class SystemProduct(Base):
     ID = Column(INTEGER(11), primary_key=True)
     _system_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
     _Product_ID = Column(INTEGER(11), nullable=False, index=True, server_default=text("'0'"))
+
+class AngstroemExpOption(Base):
+    __tablename__ = 'angstroem_exp_options'
+
+    ID = Column(INTEGER(10), primary_key=True)
+    _product_ID = Column(INTEGER(10), nullable=False, server_default=text("'-1'"))
+    _lambda1_product_ID = Column(INTEGER(10), nullable=False, server_default=text("'-1'"))
+    _lambda2_product_ID = Column(INTEGER(10), nullable=False, server_default=text("'-1'"))
+    _error_method_ID = Column(INTEGER(10), nullable=False, server_default=text("'-1'"))
+    min_BscRatio_for_AE = Column(DECIMAL(10,4), nullable=False, server_default=text("'1.0000'))

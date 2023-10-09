@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, INTEGRATION_FAILED, NO_STABLE_SOLUTION_FOR_KLETT, \
-    NOT_ENOUGH_MC_SAMPLES, NO_PRODUCTS_GENERATED, NEG_BSC_FOR_LIDAR_CONSTANT, DIFFERENT_PRODS_RESOLUTION, COULD_NOT_FIND_PRODS_RESOLUTION
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, NO_MWL_PRODUCT_DEFINED, NO_PRODUCT_OPTIONS_IN_DB
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -13,16 +12,23 @@ from ELDAmwl.errors.error_codes import DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR
 from ELDAmwl.errors.error_codes import ERR_INVALID_NB_OF_MC_ITERATIONS
 from ELDAmwl.errors.error_codes import ERROR_LOG_DIR_NOT_EXISTS
 from ELDAmwl.errors.error_codes import ERROR_SIG_FILE_NOT_EXISTS
+from ELDAmwl.errors.error_codes import INTEGRATION_FAILED
 from ELDAmwl.errors.error_codes import NC_OPEN_ERROR
+from ELDAmwl.errors.error_codes import NEG_BSC_FOR_LIDAR_CONSTANT
 from ELDAmwl.errors.error_codes import NO_BSC_CAL_OPTIONS_IN_DB
+from ELDAmwl.errors.error_codes import NO_BSC_FOR_LIDAR_CONSTANT
 from ELDAmwl.errors.error_codes import NO_MC_OPTIONS_IN_DB
+from ELDAmwl.errors.error_codes import NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB
+from ELDAmwl.errors.error_codes import NO_PRODUCTS_GENERATED
+from ELDAmwl.errors.error_codes import NO_STABLE_SOLUTION_FOR_KLETT
 from ELDAmwl.errors.error_codes import NO_VALID_POINTS_FOR_CAL
+from ELDAmwl.errors.error_codes import NOT_ENOUGH_MC_SAMPLES
 from ELDAmwl.errors.error_codes import REPEATED_ATTEMPT_TO_CORRECT_MOL_TRANSM
 from ELDAmwl.errors.error_codes import REPEATED_ATTEMPT_TO_NORMALZE_BY_SHOTS
 from ELDAmwl.errors.error_codes import USE_CASE_NOT_IMPLEMENTED
 from ELDAmwl.errors.error_codes import WRONG_COMMAND_LINE_PARAM
 from ELDAmwl.errors.error_codes import ZERO_DETECTION_LIMIT
-
+from ELDAmwl.errors.error_codes import DIFFERENT_PRODS_RESOLUTION, COULD_NOT_FIND_PRODS_RESOLUTION
 
 class ELDAmwlException(BaseException):
     """
@@ -165,7 +171,7 @@ class ProductNotUnique(ELDAmwlException):
 
 
 class ELPPFileNotFound(ELDAmwlException):
-    """raised when the requested ELPP file is not found
+    """raised when the requested ELPP file is not found on disc
     """
 
     return_value = ERROR_SIG_FILE_NOT_EXISTS
@@ -178,7 +184,7 @@ class ELPPFileNotFound(ELDAmwlException):
 
 
 class CannotOpenELLPFile(ELDAmwlException):
-    """raised when an eLPP file cannot be opened"""
+    """raised when an ELPP file cannot be opened"""
 
     return_value = NC_OPEN_ERROR
 
@@ -187,6 +193,29 @@ class CannotOpenELLPFile(ELDAmwlException):
 
     def __str__(self):
         return 'cannot open ELPP file {0}'.format(self.filename)
+
+
+class NoELPPFileInDB(ELDAmwlException):
+    """raised when a measurement has no attributed ELPP files in database
+    """
+
+    return_value = ERROR_SIG_FILE_NOT_EXISTS
+
+    def __init__(self, meas_id):
+        self.meas_id = meas_id
+
+    def __str__(self):
+        return f'no ELPP file in database for measurement{self.meas_id}'
+
+
+class NoBasicProductsInDB(ELDAmwlException):
+    """raised when no basic products are attributed to a mwl product in database
+    """
+
+    return_value = NO_PRODUCT_OPTIONS_IN_DB
+
+    def __str__(self):
+        return f'no basic products are defined for mwl product{self.prod_id}'
 
 
 class LogPathNotExists(ELDAmwlException):
@@ -404,6 +433,15 @@ class NegBscForLidarconst(ELDAmwlException):
         return('cannot calculate lidar constant from negative backscatter value'
                .format(self.prod_id))
 
+class NoBscForLidarconst(ELDAmwlException):
+    """raised when no bsc profile is available for retrieval of lidar constant
+    """
+
+    return_value = NO_BSC_FOR_LIDAR_CONSTANT
+
+    def __str__(self):
+        return('cannot calculate lidar constant without backscatter profile'
+               .format(self.prod_id))
 
 class SciPyWrapperAxisError(ELDAmwlException):
     """Raised when the scipy axis wrapper detects more than one dimension
@@ -411,6 +449,34 @@ class SciPyWrapperAxisError(ELDAmwlException):
 
     def __init__(self):
         pass
+
+
+class NoParamsForDepolUncertainty(ELDAmwlException):
+    """raised when no parameters for depolarization uncertainty for a product and time are in the database
+    """
+
+    return_value = NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB
+
+    def __init__(self, prod_id, measurement_date):
+        super(NoParamsForDepolUncertainty, self).__init__(prod_id)
+        self.measurement_date = measurement_date
+
+    def __str__(self):
+        return ('no matching parameter for depolarization uncertainty for product {0} '
+                'and measurement time{1} in database'.format(self.prod_id, self.measurement_date))
+
+class NoMwlProductDefined(ELDAmwlException):
+    """raised when no multi-wavelength product is defined for the measurement
+    """
+
+    return_value = NO_MWL_PRODUCT_DEFINED
+
+    def __init__(self, system_id):
+        super(NoMwlProductDefined, self).__init__(None)
+        self.system_id = system_id
+
+    def __str__(self):
+        return ('no multi-wavelength product is defined for the system_id {0}'.format(self.system_id))
 
 class DifferentProductsResolution(ELDAmwlException):
     """raised when the temporal and/or vertical resolutions are not the same for all the products of a mwl_product_id"""
@@ -435,4 +501,3 @@ class CouldNotFindProductsResolution(ELDAmwlException):
         return('the temporal and vertical resolutions are '
                'not available for mwl_product_id={0}'
                .format(self.mwl_product_id))
-

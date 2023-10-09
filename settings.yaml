@@ -31,7 +31,7 @@ default:
 # :::::::::::::::::::
 # Directories
 # :::::::::::::::::::
-#  LOG_PATH : '/home/ina/Downloads/eldamwl_logs'
+  LOG_PATH : 'C:/Users/Pilar/Documents/GitHub/ELDAmwl/eldamwl_logs'
   SIGNAL_PATH : 'data/ELPP_files'
   PRODUCT_PATH : 'data/ELDAmwl_files'
   TEMP_PATH : ''

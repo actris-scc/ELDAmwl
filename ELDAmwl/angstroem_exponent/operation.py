@@ -56,7 +56,7 @@ class AngstroemExpFactoryDefault(BaseOperation):
         self.resolution = self.kwargs['resolution']
         self.prod_id = self.param.prod_id_str
 
-        # ext and bsc are deepcopies from the data storage
+        # ext and bsc are deep copies from the data storage
         self.lambda1 = self.data_storage.basic_product_common_smooth(self.param.lambda1_prod_id, self.resolution)
         self.lambda2 = self.data_storage.basic_product_common_smooth(self.param.lambda2_prod_id, self.resolution)
 
