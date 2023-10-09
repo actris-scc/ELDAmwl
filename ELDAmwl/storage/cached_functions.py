@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""functions which are often calles with same parameters. Their results can be cached"""
+"""functions which are often called with same parameters. Their results can be cached"""
 
 from ELDAmwl.component.interface import IDBFunc
 from functools import lru_cache
