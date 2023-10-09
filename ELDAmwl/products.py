@@ -156,6 +156,7 @@ class Products(Signals):
             max_percentage = self.cfg.MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA[self.product_type]
             bad_time_slices = np.where((num_neg_points / good_points_before) > max_percentage)
             self.profile_qf[bad_time_slices] = self.profile_qf[bad_time_slices] | P_NEG_DATA
+        # todo: overwrite this method in angstroem exponents and skip (pass) the test
 
     def flag_values_below_threshold(self, threshold, qf_flag):
         # todo: how to handle systematic errors ?
@@ -173,8 +174,10 @@ class Products(Signals):
         min_value = self.cfg.VALID_DATA_RANGE[self.product_type][0]
         max_value = self.cfg.VALID_DATA_RANGE[self.product_type][1]
 
-        self.flag_values_below_threshold(min_value, VALUE_OUTSIDE_VALID_RANGE)
-        self.flag_values_above_threshold(max_value, VALUE_OUTSIDE_VALID_RANGE)
+        if min_value != self.cfg.INVALID:
+            self.flag_values_below_threshold(min_value, VALUE_OUTSIDE_VALID_RANGE)
+        if max_value != self.cfg.INVALID:
+            self.flag_values_above_threshold(max_value, VALUE_OUTSIDE_VALID_RANGE)
 
         self.qc_profile_data_range()
 
@@ -212,8 +215,9 @@ class Products(Signals):
         # all bin resolutions which occur in this array
         all_bin_res = np.unique(self.binres.values)
 
-        # this list may contain also NC_FILL_INT
+        # this list may contain also NC_FILL_INT -> remove it
         all_bin_res = all_bin_res[np.where(all_bin_res != NC_FILL_INT)]
+
         for br in all_bin_res:
             window = br + 2
             min_nb_of_neighbors = window // 2 + 1
@@ -227,12 +231,17 @@ class Products(Signals):
     def qc_integral(self):
         # todo: use only data points with qf == ALL_OK
         max_integral = self.cfg.MAX_INTEGRAL[self.product_type]
+        dummy_data = self.data.where(self.ds.qf == ALL_OK)
+        dummy_heights = self.height.where(self.ds.qf == ALL_OK)
         for t in range(self.num_times):
-            int_profile = integral_profile(self.data[t].values,
-                                           range_axis=self.height[t].values,
+            int_profile = integral_profile(dummy_data[t].values,
+                                           range_axis=dummy_heights[t].values)
+                                           # dummy_data[t].values,
+                                           # range_axis=dummy_heights[t].values,
                                            # extrapolate_ovl_factor=OVL_FACTOR,
-                                           first_bin=self.first_valid_bin(t),
-                                           last_bin=self.last_valid_bin(t))
+                                           # first_bin=self.first_valid_bin(t),
+                                           # last_bin=self.last_valid_bin(t))
+
             integral = int_profile[-1]
             if integral > max_integral:
                 self.profile_qf[t] = self.profile_qf[t] | P_TOO_LARGE_INTEGRAL

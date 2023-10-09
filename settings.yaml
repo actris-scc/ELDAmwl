@@ -117,13 +117,15 @@ default:
       1 : 1,  # EXT
   }
 
-  # data points which are outside physically meaningful range
+  # data points which are outside physically meaningful range.
+  # if no threshold can be defined, use the value of variable INVALID
   VALID_DATA_RANGE : {
       2 : [0, 150],  # LR
       13: [-1, 4],  # AE
-      15: [-99, 0.5],  # VLDR
+      15: [-999, 0.5],  # VLDR
       16: [0, 0.5],  # PLDR
   }
+  INVALID : -999
 
   # if the percentage (in number) of out-of-range data points is larger
   # than MAX_ALLOWED_PERCENTAGE_OF_OUT_OF_RANGE_DATA -> flag whole profile
