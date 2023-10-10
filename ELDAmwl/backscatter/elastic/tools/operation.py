@@ -181,7 +181,7 @@ class CalcBscProfileKF(BaseOperation):
                                               coords=[bsc.time],
                                               dims=['time'])
         for t in range(num_times):
-            bsc['qf'][t][calibr_bin[t]:-1] = ABOVE_KLETT_REF
+            bsc['qf'][t][calibr_bin[t]:-1] = bsc['qf'][t][calibr_bin[t]:-1] | ABOVE_KLETT_REF
         return bsc
 
 

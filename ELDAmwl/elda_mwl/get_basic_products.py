@@ -272,6 +272,7 @@ class GetBasicProductsDefault(BaseOperation):
                 # if resolution res is required: make a copy of bsc and smooth it
                 if bsc_param in self.product_params.all_products_of_res(res):
                     smooth_bsc = deepcopy(bsc)
+                    smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_bsc)
             del bsc

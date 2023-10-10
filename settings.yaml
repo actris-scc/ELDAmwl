@@ -87,16 +87,16 @@ default:
   # screening for too large errors
   # values with (error > MAX_ALLOWED_REL_ERROR) and (error > MAX_ALLOWED_ABS_ERROR) are flagged
   MAX_ALLOWED_REL_ERROR : {
-      0 : 0.1,  # RBSC
-      3 : 0.05,  # EBSC
+      0 : 0.2,  # RBSC
+      3 : 0.2,  # EBSC
       1 : 0.5,  # EXT
       2 : 1,  # LR
       15: 0.1,  # VLDR
       16: 0.1,  # PLDR
   }
   MAX_ALLOWED_ABS_ERROR : {
-      0 : 1E-8,  # RBSC
-      3 : 1E-8,  # EBSC
+      0 : 1E-7,  # RBSC
+      3 : 1E-7,  # EBSC
       1 : 1E-6,  # EXT
       2 : 20,  # LR
       15: 0.1,  # VLDR
