@@ -97,7 +97,7 @@ class Columns(object):
         return da
 
     def _relative_error(self):
-        return self.err[:] / self.data[:]
+        return abs(self.err[:] / self.data[:])
 
     def _is_negative(self):
         return (self.data[:] + NEG_TEST_STD_FACTOR * self.err[:]) < 0
