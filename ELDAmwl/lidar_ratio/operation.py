@@ -63,7 +63,7 @@ class LidarRatioFactoryDefault(BaseOperation):
         # create Dict with all params which are needed for the calculation
         lr_params = Dict({
             'error_method': self.param.error_method,
-            'min_bsc_ratio': self.param.min_BscRatio_for_LR,
+            'min_bsc_ratio': self.param.min_BscRatio,
         })
 
         lr_routine = CalcLidarRatio()(
