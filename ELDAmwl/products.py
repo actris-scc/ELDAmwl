@@ -107,7 +107,7 @@ class Products(Signals):
         Returns:
 
         """
-        self.logger.debug('smooth')
+        self.logger.debug(f'smooth product {self.product_id_str}')
         if self.data.shape != binres.shape:
             raise SizeMismatch('bin resolution',
                                'product {}'.format(self.params.prod_id_str),
@@ -223,10 +223,14 @@ class Products(Signals):
             min_nb_of_neighbors = window // 2 + 1
 
             # test only data points which have the bin resolution br
-            test_data = dummy_data.where(self.binres == br)
-            counts = test_data.rolling(level=window, min_periods=1, center=True).count()
-            bad_idxs = np.where((self.ds.qf == ALL_OK) & (counts < min_nb_of_neighbors))
-            self.ds.qf[bad_idxs] = SINGLE_POINT
+            # test_data = dummy_data.where(self.binres == br)
+            # counts = test_data.rolling(level=window, min_periods=1, center=True).count()
+
+            # data with all binres are taken into account when counting neighbors
+            counts = dummy_data.rolling(level=window, min_periods=1, center=True).count()
+            # comparison to number of required neighbors is done only for data points with binres =br
+            bad_idxs = np.where((self.ds.qf == ALL_OK) & (counts < min_nb_of_neighbors) & (self.binres == br))
+            self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | SINGLE_POINT
 
     def qc_integral(self):
         # todo: use only data points with qf == ALL_OK
@@ -242,9 +246,13 @@ class Products(Signals):
                                            # first_bin=self.first_valid_bin(t),
                                            # last_bin=self.last_valid_bin(t))
 
-            integral = int_profile[-1]
-            if integral > max_integral:
-                self.profile_qf[t] = self.profile_qf[t] | P_TOO_LARGE_INTEGRAL
+            # the last valid point of the integral profile (if any)
+            if np.isfinite(int_profile).any():
+                integral = int_profile[np.where(~np.isnan(int_profile))][-1]
+                if integral > max_integral:
+                    self.profile_qf[t] = self.profile_qf[t] | P_TOO_LARGE_INTEGRAL
+            else:
+                self.logger.warning('cannot perform qc integral check because no valid data in profile')
 
     def qc_profile_data_range(self):
         if self.product_type in self.cfg.MAX_ALLOWED_PERCENTAGE_OF_OUT_OF_RANGE_DATA:
@@ -351,6 +359,10 @@ class ProductParams(Params):
         if self.general_params.is_basic_product:
             self.smooth_params = SmoothParams.from_db(general_params.prod_id)
             self.quality_params = QualityParams.from_db(general_params.prod_id)
+
+    def from_db_with_id(self, prod_id):
+        general_params = GeneralProductParams.from_id(prod_id)
+        self.from_db(general_params)
 
     def get_error_params(self, db_options):
         """reads error params
