@@ -207,7 +207,7 @@ class GetBasicProductsDefault(BaseOperation):
         for res in RESOLUTIONS:
             ext_params = self.product_params.extinction_products(res=res)
             if len(ext_params) == 0:
-                self.logger.warning('no extinction products will be calculated')
+                self.logger.warning(f'no extinction products will be calculated with {RESOLUTION_STR[res]}')
             for ext_param in ext_params:
                 self.logger.info('get extinction at {0} nm (product id {1})'.format(
                     ext_param.general_params.emission_wavelength, ext_param.prod_id_str))

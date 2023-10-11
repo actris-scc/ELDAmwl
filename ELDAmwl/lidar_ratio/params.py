@@ -1,8 +1,7 @@
-from ELDAmwl.backscatter.raman.params import RamanBscParams
 from ELDAmwl.component.interface import IParams
-from ELDAmwl.extinction.params import ExtinctionParams
+from ELDAmwl.errors.exceptions import BasicProductMissingForDerivedProduct
 from ELDAmwl.products import ProductParams
-from ELDAmwl.utils.constants import ERROR_METHODS
+from ELDAmwl.utils.constants import ERROR_METHODS, RBSC
 from zope import component
 
 
@@ -31,21 +30,20 @@ class LidarRatioParams(ProductParams):
 
         # self. backscatter_params is a link to the parameters of the basic bsc product
         self.backscatter_params = meas_params.product_list[str(self.bsc_prod_id)]
+        if self.backscatter_params.general_params.product_type != RBSC:
+            self.logger.error('cannot calculate lidar ratio ({general_params.prod_id}) from backscatter'
+                              '{self.bsc_prod_id} because it is no Raman backscatter.')
         if self.backscatter_params == {}:
-            self.logger.debug(f'attribute Raman bsc product {self.bsc_prod_id} to this mwl product'
-                              f'because it is needed for lidar ratio {general_params.prod_id} ')
-            dummy_param = RamanBscParams()
-            dummy_param.from_db_with_id(self.ext_prod_id)
-            self.backscatter_params = dummy_param
+            self.logger.error(f'Raman bsc product {self.bsc_prod_id} is not attributed to this mwl product.'
+                              f'but it is needed for lidar ratio {general_params.prod_id} ')
+            raise BasicProductMissingForDerivedProduct(general_params.prod_id, self.bsc_prod_id)
 
         # self. extinction_params is a link to the parameters of the basic ext product
         self.extinction_params = meas_params.product_list[str(self.ext_prod_id)]
         if self.extinction_params == {}:
-            self.logger.debug(f'attribute extinction product {self.ext_prod_id} to this mwl product'
-                              f'because it is needed for lidar ratio {general_params.prod_id} ')
-            dummy_param = ExtinctionParams()
-            dummy_param.from_db_with_id(self.ext_prod_id)
-            self.extinction_params = dummy_param
+            self.logger.error(f'Extinction product {self.ext_prod_id} is not attributed to this mwl product.'
+                              f'but it is needed for lidar ratio {general_params.prod_id} ')
+            raise BasicProductMissingForDerivedProduct(general_params.prod_id, self.ext_prod_id)
 
         # use emission wavelength of ext product also for this lr
         self.general_params.emission_wavelength = self.backscatter_params.general_params.emission_wavelength

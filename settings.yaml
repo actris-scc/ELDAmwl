@@ -81,7 +81,8 @@ default:
   # if the percentage (in number) of negative points is larger
   # than MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA -> flag whole profile
   MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA : {
-      3 : 0.1,  # EBSC
+      0: 0.25,  # RBSC
+      3 : 0.25,  # EBSC
   }
 
   # screening for too large errors

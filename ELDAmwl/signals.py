@@ -199,6 +199,10 @@ class Signals(Columns):
         return component.queryUtility(ICfg)
 
     @property
+    def data_storage(self):
+        return component.queryUtility(IDataStorage)
+
+    @property
     def name(self):
         return hex(id(self))
 

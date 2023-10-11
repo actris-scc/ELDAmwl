@@ -383,8 +383,11 @@ class MeasurementParams(Params):
                 prod_type = general_params.product_type
                 if prod_type in PARAM_CLASSES:
                     prod_params = PARAM_CLASSES[prod_type]()
-                    prod_params.from_db(general_params)
-                    prod_params.assign_to_product_list(self.measurement_params)
+                    try:
+                        prod_params.from_db(general_params)
+                        prod_params.assign_to_product_list(self.measurement_params)
+                    except ELDAmwlException:
+                        pass
                 else:
                     self.logger.error('product type {} not yet implemented'.format(prod_type))
 

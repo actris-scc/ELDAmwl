@@ -170,7 +170,7 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
             return None
 
         if 532 in self.bsc_params:
-            bsc_ratio = self.bsc_params[532][0]
+            bsc_ratio = self.bsc_ratio_profiles[532]
         elif (355 in self.bsc_params) and (1064 in self.bsc_params):
             bsc_ratio = self.interpolate()
         elif 355 in self.bsc_params:

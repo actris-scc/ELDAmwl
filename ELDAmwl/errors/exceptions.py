@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, NO_MWL_PRODUCT_DEFINED, NO_PRODUCT_OPTIONS_IN_DB
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -15,10 +15,13 @@ from ELDAmwl.errors.error_codes import ERROR_SIG_FILE_NOT_EXISTS
 from ELDAmwl.errors.error_codes import INTEGRATION_FAILED
 from ELDAmwl.errors.error_codes import NC_OPEN_ERROR
 from ELDAmwl.errors.error_codes import NEG_BSC_FOR_LIDAR_CONSTANT
+from ELDAmwl.errors.error_codes import NO_BASIC_PRODUCT_FOR_DERIVED_PRODUCT
 from ELDAmwl.errors.error_codes import NO_BSC_CAL_OPTIONS_IN_DB
 from ELDAmwl.errors.error_codes import NO_BSC_FOR_LIDAR_CONSTANT
 from ELDAmwl.errors.error_codes import NO_MC_OPTIONS_IN_DB
+from ELDAmwl.errors.error_codes import NO_MWL_PRODUCT_DEFINED
 from ELDAmwl.errors.error_codes import NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB
+from ELDAmwl.errors.error_codes import NO_PRODUCT_OPTIONS_IN_DB
 from ELDAmwl.errors.error_codes import NO_PRODUCTS_GENERATED
 from ELDAmwl.errors.error_codes import NO_STABLE_SOLUTION_FOR_KLETT
 from ELDAmwl.errors.error_codes import NO_VALID_POINTS_FOR_CAL
@@ -253,6 +256,20 @@ class DifferentWlForLR(ELDAmwlException):
         return('the extinction and backscatter products '
                'for the retrieval of lidar ratio (product_id={0}) '
                'have different wavelengths'.format(self.product_id))
+
+
+class BasicProductMissingForDerivedProduct(ELDAmwlException):
+    """raised when no one of the necessary basic products of a derived product was not attributed to the mwl product """
+    return_value = NO_BASIC_PRODUCT_FOR_DERIVED_PRODUCT
+
+    def __init__(self, product_id, missing_product_id):
+        self.product_id = product_id
+        self.missing_id = missing_product_id
+
+    def __str__(self):
+        return('the backscatter product '
+               'for the retrieval of lidar ratio (product_id={0}) '
+               'was not attributed to the mwl product'.format(self.product_id))
 
 
 class CalRangeHigherThanValid(ELDAmwlException):

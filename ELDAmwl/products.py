@@ -96,7 +96,7 @@ class Products(Signals):
 
     @property
     def is_derived_product(self):
-        self.params.general_params.is_derived_product
+        return self.params.general_params.is_derived_product
 
     def smooth(self, binres):
         """
@@ -191,9 +191,19 @@ class Products(Signals):
         # can be done only for derived products, because the reference backscatter ratio at 532
         # is obtained as first step of derived products
         # todo: testing
+
+        if 'min_BscRatio' in self.params.__dict__:
+            min_bsc_ratio = self.params.min_BscRatio
+        elif self.product_type in self.cfg.MIN_BSC_RATIO:
+            min_bsc_ratio = self.cfg.MIN_BSC_RATIO[self.product_type]
+        else:
+            self.logger.warning('cannot perform screening for aerosol free layers '
+                                'because no minimum bsc ratio was defined')
+            return None
+
         try:
             bsc_ratio_profile = self.data_storage.bsc_ratio_532(self.resolution)
-            bad_idxs = np.where(bsc_ratio_profile.data < self.cfg.MIN_BSC_RATIO[self.product_type])
+            bad_idxs = np.where(bsc_ratio_profile.data < min_bsc_ratio)
             self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs][bad_idxs] | BELOW_MIN_BSCR
         except NotFoundInStorage:
             self.logger.error('screening for aerosol free layers '
@@ -237,6 +247,11 @@ class Products(Signals):
         max_integral = self.cfg.MAX_INTEGRAL[self.product_type]
         dummy_data = self.data.where(self.ds.qf == ALL_OK)
         dummy_heights = self.height.where(self.ds.qf == ALL_OK)
+
+        if np.isnan(dummy_data).all():
+            self.logger.warning('cannot perform qc integral check because no valid data in profile')
+            return None
+
         for t in range(self.num_times):
             int_profile = integral_profile(dummy_data[t].values,
                                            range_axis=dummy_heights[t].values)
@@ -247,7 +262,7 @@ class Products(Signals):
                                            # last_bin=self.last_valid_bin(t))
 
             # the last valid point of the integral profile (if any)
-            if np.isfinite(int_profile).any():
+            if int_profile is not None:
                 integral = int_profile[np.where(~np.isnan(int_profile))][-1]
                 if integral > max_integral:
                     self.profile_qf[t] = self.profile_qf[t] | P_TOO_LARGE_INTEGRAL
@@ -281,7 +296,7 @@ class Products(Signals):
         self.screen_too_large_errors()
         self.screen_negative_data()
 
-        if self.is_derived_product and self.product_type in self.cfg.MIN_BSC_RATIO[self.product_type]:
+        if self.is_derived_product:
             self.screen_for_aerosol_free_layers()
 
         if self.product_type in self.cfg.VALID_DATA_RANGE:
