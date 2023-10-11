@@ -45,7 +45,11 @@ class AngstroemExpParams(ProductParams):
         self.harmonize_resolution_settings(basic_params)
         self.ensure_different_wavelength(basic_params)
         # self.general_params.emission_wavelength = self.backscatter_params.general_params.emission_wavelength  # ToDo EXAMPLE
-        # self.ensure_same_product_type(basic_params)   # ToDo b/e
+
+
+
+        self.ensure_same_product_type(basic_params)   # ToDo b/e
+        self.logger.debug('Checked if the products for AE are of the same type.')
         self.get_valid_alt_range(basic_params)    # ToDo CHECK
 
     def assign_to_product_list(self, global_product_list):

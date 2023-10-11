@@ -8,6 +8,7 @@ from ELDAmwl.errors.error_codes import DB_ERROR
 from ELDAmwl.errors.error_codes import DIFFERENT_BSC_OPTIONS_IN_MEASUREMENT
 from ELDAmwl.errors.error_codes import DIFFERENT_CLOUD_MASK_EXISTS
 from ELDAmwl.errors.error_codes import DIFFERENT_HEADER_EXISTS
+from ELDAmwl.errors.error_codes import DIFFERENT_PRODUCT_TYPE_FOR_AE
 from ELDAmwl.errors.error_codes import DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR
 from ELDAmwl.errors.error_codes import ERR_INVALID_NB_OF_MC_ITERATIONS
 from ELDAmwl.errors.error_codes import ERROR_LOG_DIR_NOT_EXISTS
@@ -515,3 +516,16 @@ class SameWlForAE(ELDAmwlException):
         return('the products for the retrieval '
                'of angstroem exponent (product_id={0}) '
                'have the same wavelength'.format(self.mwl_product_id))
+
+class DifferentProductTypeForAE(ELDAmwlException):
+    """raised when the two products for the angstroem exponent
+    retrieval are not of the same type (b/e)"""
+    return_value = DIFFERENT_PRODUCT_TYPE_FOR_AE
+
+    def __init__(self, mwl_product_id):
+        self.mwl_product_id = mwl_product_id
+
+    def __str__(self):
+        return('the products for the retrieval '
+               'of angstroem exponent (product_id={0}) '
+               'are not of the same type'.format(self.mwl_product_id))
