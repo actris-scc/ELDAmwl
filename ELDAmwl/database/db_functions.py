@@ -614,6 +614,10 @@ class DBFunc(DBUtils):
         ).filter(
             PreparedSignalFile.measurements_id == measurement_id,
         )
+        # self.logger.debug(f'query: {products}')
+        # self.logger.debug(f'product count: {products.count()}')
+
+
 
         if products.count() == 0:
             self.logger.error(f'no ELPP signals available for measurement {measurement_id}')

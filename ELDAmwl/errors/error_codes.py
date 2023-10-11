@@ -54,6 +54,8 @@ COULD_NOT_FIND_PRODS_RESOLUTION = 55
 NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB = 60
 NO_BSC_FOR_LIDAR_CONSTANT = 61
 NO_MWL_PRODUCT_DEFINED = 62
+SAME_WL_FOR_AE = 63
+
 # ===============================================
 # error codes which occur only during development
 # ===============================================

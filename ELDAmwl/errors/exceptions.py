@@ -25,6 +25,7 @@ from ELDAmwl.errors.error_codes import NO_VALID_POINTS_FOR_CAL
 from ELDAmwl.errors.error_codes import NOT_ENOUGH_MC_SAMPLES
 from ELDAmwl.errors.error_codes import REPEATED_ATTEMPT_TO_CORRECT_MOL_TRANSM
 from ELDAmwl.errors.error_codes import REPEATED_ATTEMPT_TO_NORMALZE_BY_SHOTS
+from ELDAmwl.errors.error_codes import SAME_WL_FOR_AE
 from ELDAmwl.errors.error_codes import USE_CASE_NOT_IMPLEMENTED
 from ELDAmwl.errors.error_codes import WRONG_COMMAND_LINE_PARAM
 from ELDAmwl.errors.error_codes import ZERO_DETECTION_LIMIT
@@ -501,3 +502,16 @@ class CouldNotFindProductsResolution(ELDAmwlException):
         return('the temporal and vertical resolutions are '
                'not available for mwl_product_id={0}'
                .format(self.mwl_product_id))
+
+class SameWlForAE(ELDAmwlException):
+    """raised when the two products for the angstroem exponent
+    retrieval have the same wavelength"""
+    return_value = SAME_WL_FOR_AE
+
+    def __init__(self, mwl_product_id):
+        self.mwl_product_id = mwl_product_id
+
+    def __str__(self):
+        return('the products for the retrieval '
+               'of angstroem exponent (product_id={0}) '
+               'have the same wavelength'.format(self.mwl_product_id))

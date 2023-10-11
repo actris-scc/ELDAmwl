@@ -3,18 +3,18 @@ from ELDAmwl.products import Products
 
 class AngstroemExps(Products):
     """
-    time series of lidar ratio profiles
+    time series of angstroem exponent profiles
     """
     @classmethod
-    def init(cls, lwvl, hwvl, p_params, **kwargs):
+    def init(cls, lambda1, lambda2, p_params, **kwargs):
         """calculates AngstroemExp from two backscatter or two extinction profiles at different emission wavelengths
 
         Args:
-            lwvl (Backscatters/Extinctions): time series of backscatter/extinction coefficient profiles at the lowest wavelength
-            hwvl (Backscatters/Extinctions): time series of backscatter/extinction coefficient profiles at the highest wavelength
+            lambda1 (Backscatters/Extinctions): time series of backscatter/extinction coefficient profiles at the lowest wavelength
+            lambda2 (Backscatters/Extinctions): time series of backscatter/extinction coefficient profiles at the highest wavelength
             p_params (ELDAmwl.operations.angstroem_exponent.params.AngstroemExpParams) # ToDo check
         """
-        result = super(AngstroemExps, cls).from_signal(lwvl, hwvl, p_params, **kwargs)
+        result = super(AngstroemExps, cls).from_signal(lambda1, lambda2, p_params, **kwargs)
 
         return result
 

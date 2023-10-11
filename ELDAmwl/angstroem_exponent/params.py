@@ -20,13 +20,15 @@ class AngstroemExpParams(ProductParams):
         self.lambda1_params = None
         self.lambda2_params = None
 
+
     def from_db(self, general_params):
         super(AngstroemExpParams, self).from_db(general_params)
         # global measurement params
         meas_params = component.queryUtility(IParams).measurement_params
 
         query = self.db_func.read_angstroem_exp_params(general_params.prod_id)
-        query = query[-1]    # ToDo Loop -- For now selecting prod_id 330 (b 1064) & prod_id 378 (b355). What do we do if one of the channels is not available (i.e. 532)?
+        query = query[-1]    # ToDo Loop -- For now selecting prod_id 330 (b 1064) & prod_id 378 (b355).
+        # ToDo What do we do if one of the channels is not available (i.e. 532)?
         self.lambda1_prod_id = query.lambda1_product_id
         self.lambda2_prod_id = query.lambda2_product_id
         self.general_params.error_method = ERROR_METHODS[query.error_method_id]  # noqa E501
@@ -39,9 +41,9 @@ class AngstroemExpParams(ProductParams):
         self.lambda2_params = meas_params.product_list[str(self.lambda2_prod_id)]
 
         # some consistency tests and harmonization of / with bsc and ext params
-        basic_params = [self.lambda1_params, self.lambda2_params]   # ToDo
-        self.harmonize_resolution_settings(basic_params) # ToDo
-        # self.ensure_different_wavelength(basic_params) # ToDo
+        basic_params = [self.lambda1_params, self.lambda2_params]
+        self.harmonize_resolution_settings(basic_params)
+        self.ensure_different_wavelength(basic_params)
         # self.general_params.emission_wavelength = self.backscatter_params.general_params.emission_wavelength  # ToDo EXAMPLE
         # self.ensure_same_product_type(basic_params)   # ToDo b/e
         self.get_valid_alt_range(basic_params)    # ToDo CHECK

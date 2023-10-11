@@ -10,6 +10,7 @@ from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import DetectionLimitZero
 from ELDAmwl.errors.exceptions import DifferentWlForLR
 from ELDAmwl.errors.exceptions import NotEnoughMCIterations
+from ELDAmwl.errors.exceptions import SameWlForAE
 from ELDAmwl.errors.exceptions import SizeMismatch
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
@@ -231,6 +232,18 @@ class ProductParams(Params):
 
         self.general_params.valid_alt_range.min_height = max(min_heights)
         self.general_params.valid_alt_range.max_height = min(max_heights)
+
+    def ensure_different_wavelength(self, params):
+        """applicable for derived products.
+        make sure that basic profiles are calculated for different wavelengths
+
+        Args:
+        params: list of basic params (:class:`ELDAmwl.products.ProductParams`)
+        """
+
+        if params[0].general_params.emission_wavelength == params[1].general_params.emission_wavelength:
+            raise SameWlForAE(self.prod_id_str)
+
 
     @property
     def prod_id_str(self):
@@ -656,6 +669,8 @@ class SmoothRoutine(BaseOperationFactory):
         Returns: name of the class for the smoothing
         """
         return smooth_routine_from_db(self.method_id)
+
+
 
 
 registry.register_class(SmoothRoutine,
