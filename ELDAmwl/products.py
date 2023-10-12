@@ -31,7 +31,7 @@ from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import MERGE_PRODUCT_USE_CASES
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
-from ELDAmwl.utils.constants import NEG_DATA, P_NEG_DATA, P_ALL_OK
+from ELDAmwl.utils.constants import NEG_DATA, P_NEG_DATA, P_ALL_OK, P_EMPTY
 from ELDAmwl.utils.constants import PRODUCT_TYPE_NAME
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR, SINGLE_POINT
@@ -203,8 +203,8 @@ class Products(Signals):
 
         try:
             bsc_ratio_profile = self.data_storage.bsc_ratio_532(self.resolution)
-            bad_idxs = np.where(bsc_ratio_profile.data < min_bsc_ratio)
-            self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs][bad_idxs] | BELOW_MIN_BSCR
+            bad_idxs = np.where((bsc_ratio_profile.data < min_bsc_ratio) & (bsc_ratio_profile.ds.qf == ALL_OK))
+            self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | BELOW_MIN_BSCR
         except NotFoundInStorage:
             self.logger.error('screening for aerosol free layers '
                                   f'for {PRODUCT_TYPE_NAME[self.product_type]} failed '
@@ -221,6 +221,9 @@ class Products(Signals):
 
         # select only data which are ok
         dummy_data = self.data.where(self.ds.qf == ALL_OK)
+
+        # todo: attach the test to effective vertical resolution (and not bin resolution) plus a minimum threshold (e.g. 100m)
+        # self.cfg.MIN_LAYER_DEPTH
 
         # all bin resolutions which occur in this array
         all_bin_res = np.unique(self.binres.values)
@@ -248,11 +251,7 @@ class Products(Signals):
         dummy_data = self.data.where(self.ds.qf == ALL_OK)
         dummy_heights = self.height.where(self.ds.qf == ALL_OK)
 
-        if np.isnan(dummy_data).all():
-            self.logger.warning('cannot perform qc integral check because no valid data in profile')
-            return None
-
-        for t in range(self.num_times):
+        for t in np.where(self.profile_qf == P_ALL_OK)[0]:
             int_profile = integral_profile(dummy_data[t].values,
                                            range_axis=dummy_heights[t].values)
                                            # dummy_data[t].values,
@@ -292,6 +291,10 @@ class Products(Signals):
         else:
             return False
 
+    def flag_empty_profiles(self):
+        empty_profiles = self.data.isnull().all('level')
+        self.profile_qf[empty_profiles] = self.profile_qf[empty_profiles] | P_EMPTY
+
     def quality_control(self):
         self.screen_too_large_errors()
         self.screen_negative_data()
@@ -303,6 +306,8 @@ class Products(Signals):
             self.screen_valid_data_range()
 
         self.screen_for_single_points()
+
+        self.flag_empty_profiles()
 
         if self.product_type in self.cfg.MAX_INTEGRAL:
             self.qc_integral()

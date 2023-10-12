@@ -34,5 +34,6 @@ class BackscatterRatios(Products):
 
         result.calibr_window = deepcopy(bsc.calibr_window)
         result.smooth_routine = bsc.smooth_routine
+        result.profile_qf = deepcopy(bsc.profile_qf)
 
         return result

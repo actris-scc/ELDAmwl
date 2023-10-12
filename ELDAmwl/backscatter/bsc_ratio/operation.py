@@ -120,15 +120,16 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         Returns:
             :obj:`BackscatterRatios`: the interpolated backscatter ratio profile at 532nm
         """
-        profile_355 = self.bsc_ratio_profiles[355].ds.data
-        profile_1064 = self.bsc_ratio_profiles[1064].ds.data
+        profile_355 = self.bsc_ratio_profiles[355]
+        profile_1064 = self.bsc_ratio_profiles[1064]
 
-        profile_532_data = profile_355 + (profile_1064 - profile_355) / (1064 - 355) * (532 - 355)
+        profile_532_data = profile_355.ds.data + \
+                           (profile_1064.ds.data - profile_355.ds.data) / (1064 - 355) * (532 - 355)
 
         # result = deepcopy(self.bsc_ratio_profiles[355])
-        result = BackscatterRatios()
+        result = BackscatterRatios.from_signal(profile_355, profile_355.params)
         result.ds['data'] = profile_532_data
-        result.emission_wavelength = deepcopy(profile_355.emission_wavelength)
+        result.ds['qf'] = profile_355.ds.qf | profile_1064.ds.qf
         result.emission_wavelength.values = 532
         result.profile_qf = profile_355.profile_qf | profile_1064.profile_qf
 
@@ -156,9 +157,10 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         result = BackscatterRatios.from_signal(source, source.params)
         # calculate data
         result.ds['data'] = source.data * factor + (1 - factor)
+        result.ds['qf'] = deepcopy(source.ds.qf)
         # set the correct value for emission wavelength
         result.emission_wavelength.values = 532
-        result.profile_qf = deepcopy(source.profile_qf)
+        result.profile_qf[:] = deepcopy(source.profile_qf[:])
 
         # todo: testing, handle errors and attributes
         return result

@@ -91,7 +91,7 @@ default:
       0 : 0.2,  # RBSC
       3 : 0.2,  # EBSC
       1 : 0.5,  # EXT
-      2 : 1,  # LR
+      2 : 2,  # LR
       15: 0.1,  # VLDR
       16: 0.1,  # PLDR
   }
@@ -99,7 +99,7 @@ default:
       0 : 1E-7,  # RBSC
       3 : 1E-7,  # EBSC
       1 : 1E-6,  # EXT
-      2 : 20,  # LR
+      2 : 100,  # LR
       15: 0.1,  # VLDR
       16: 0.1,  # PLDR
   }
@@ -136,6 +136,13 @@ default:
       15: 0.3,
       16: 0.3,
   }
+
+  # if there are gaps in the profile (due to previous qc steps), how many adjacent points are considered to be enough?
+  # in order to avoid single data points. The comparison is made with respect to the current vertical resolution
+  # of the profile, but there need to be a minimum threshold, too.
+  # if one or some adjacent data points do not cover a height range more than MIN_LAYER_DEPTH,
+  # they are considered "single points" and flagged accordingly
+  MIN_LAYER_DEPTH : 100  # in m
 
   # data points with critical quality flags are filled with nan values
   CRITICAL_FLAGS : [1,  # NEG_DATA

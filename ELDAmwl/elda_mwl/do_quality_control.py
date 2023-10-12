@@ -128,6 +128,7 @@ class QualityControlDefault(BaseOperation):
         self.handle_failed_basic_products(failed_basic_products)
 
         self.test_vldr()
+        # check whether low and high resolution of a product overlap
 
         res = LOWRES
 
