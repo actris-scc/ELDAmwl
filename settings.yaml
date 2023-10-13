@@ -31,7 +31,6 @@ default:
 # :::::::::::::::::::
 # Directories
 # :::::::::::::::::::
-  LOG_PATH : 'C:/Users/Pilar/Documents/GitHub/ELDAmwl/eldamwl_logs'
   SIGNAL_PATH : 'data/ELPP_files'
   PRODUCT_PATH : 'data/ELDAmwl_files'
   TEMP_PATH : ''
@@ -41,10 +40,10 @@ default:
 # :::::::::::::::::::
 # database connection
 # :::::::::::::::::::
-  DB_SERVER : 'localhost'
-  DB_USER : 'root'
+  DB_SERVER : ''
+  DB_USER : ''
   DB_PASS : ''
-  DB_DB : 'sccdevelopment'
+  DB_DB : ''
 # You have to supply a .secrets.yaml file beside this file with the database access secrets shown above!
 
 # :::::::::::::::::::

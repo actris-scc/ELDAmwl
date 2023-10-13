@@ -22,7 +22,6 @@ from ELDAmwl.utils.constants import ANALOG
 from ELDAmwl.utils.constants import BELOW_OVL
 from ELDAmwl.utils.constants import CROSS
 from ELDAmwl.utils.constants import FAR_RANGE
-from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.utils.constants import NEAR_RANGE
 from ELDAmwl.utils.constants import PARALLEL
@@ -123,6 +122,7 @@ class ElppData(object):
 
         self.cloud_mask = nc_ds.cloud_mask.astype(int)
         self.data_storage.cloud_mask = self.cloud_mask
+
         self.header = Header.from_nc_file(elpp_file, nc_ds)
         self.data_storage.header = self.header
 
@@ -275,17 +275,20 @@ class Signals(Columns):
             dims=['time', 'level'])
         result.ds['qf'].attrs = {
             'long_name': 'quality_flag',
-            'flag_meanings': 'data_ok '
-            'negative_data '
-            'incomplete_overlap_not_correctable '
-            'above_max_altitude_range '
-            # 'cloud_contamination '
-            # 'above_Klett_reference_height '
-            'depol_ratio_larger_100% '
-            'backscatter_ratio_below_required_min_value',  # noqa E501
+            'flag_meanings': 'data_ok '  # 0
+            'negative_data '  # 1
+            'incomplete_overlap_not_correctable '  # 2
+            'above_max_altitude_range '  # 4
+            'not defined '  # 8
+            'above_Klett_reference_height '  # 16
+            'data outside physically meaningful range '  # 32
+            'aerosol free layer'  # 64
+            'calculation window outside profile height range'  # 128
+            'uncertainty too large'  # 256
+            'single data point without valid adjacent neighbors',  # 1024
             # 'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64],
-            'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64],
-            'valid_range': [0, 107],
+            'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 1024],
+            'valid_range': [0, 1535],
             'units': '1',
             '_FillValue': NC_FILL_INT,
         }

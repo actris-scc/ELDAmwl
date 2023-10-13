@@ -30,8 +30,6 @@ xarray = "^0.19.0"
 matplotlib = "^3.5.0"
 h5netcdf = "^1.2.0"
 
-
-
 [tool.poetry.dev-dependencies]
 autodocsumm = "^0.2.7"
 coveralls = "^3.2.0"
@@ -45,8 +43,6 @@ sphinxcontrib-serializinghtml = "^1.1.4"
 sphinx-rtd-theme = "^1.1.1"
 coverage = "^6.5.0"
 rayleigh_fit = {path="../rayleigh_fit", develop=true}
-
-
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

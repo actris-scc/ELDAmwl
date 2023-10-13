@@ -37,7 +37,7 @@ class GetDerivedProductsDefault(BaseOperation):
     def get_derived_products(self):
         self.get_standard_bsc_ratio()
         self.get_lidar_ratios()
-        self.get_angstroem_exps() # ToDo check
+        self.get_angstroem_exps()
         self.single_products_quality_control()
 
     def get_standard_bsc_ratio(self):
@@ -71,11 +71,15 @@ class GetDerivedProductsDefault(BaseOperation):
                 self.data_storage.set_derived_products(
                     prod_id, res, lr)
 
-    def get_angstroem_exps(self): # ToDo Pilar
-        if len(self.product_params.angstroem_exp_products()) == 0:
-            self.logger.warning('no angstroem exponent product will be calculated')
+    def get_angstroem_exps(self):
+        for res in RESOLUTIONS:
+            ae_params = self.product_params.angstroem_exp_products(res=res)
 
-        for ae_param in self.product_params.angstroem_exp_products():
+            if len(ae_params) == 0:
+                self.logger.warning(f'no angstroem exponent product will be calculated'
+                                    f'with {RESOLUTION_STR[res]} resolution')
+
+            for ae_param in ae_params:
                 prod_id = ae_param.prod_id_str
                 self.logger.info('get angstroem exponent at {0} nm - {1} nm (product id {2})'.format(
                     ae_param.lambda1_params.general_params.emission_wavelength,
@@ -83,8 +87,6 @@ class GetDerivedProductsDefault(BaseOperation):
                     prod_id
                 ))
 
-        for res in RESOLUTIONS:
-            if ae_param in self.product_params.all_products_of_res(res):
                 ae = AngstroemExpFactory()(
                     ae_param=ae_param,
                     resolution=res).get_product()

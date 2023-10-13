@@ -122,7 +122,7 @@ class MeasurementParams(Params):
             list of float: unique, sorted list of wavelengths of all products with resolution = res
         """
         prod_df = self.measurement_params.product_table
-        prod_df = prod_df[prod_df['failed'] == False]
+        prod_df = prod_df[(prod_df['failed'] == False) & (prod_df['basic'] == 1)]
 
         if res is not None:
             prod_df = prod_df[prod_df[RESOLUTION_STR[res]] == True]
@@ -461,7 +461,7 @@ class MeasurementParams(Params):
         if ids.size == 1:
             return ids.values[0]
         elif ids.size >= 1:
-            self.logger.warning('more than one product id for wavelength {} and produc type {}'.format(wl, prod_type))
+            self.logger.warning('more than one product id for wavelength {} and product type {}'.format(wl, prod_type))
             return None
         else:
             return None
