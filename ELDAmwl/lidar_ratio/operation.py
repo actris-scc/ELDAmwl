@@ -194,12 +194,13 @@ class CalcLidarRatioDefault(BaseOperation):
         self.result.ds['err'] = self.result.data * np.sqrt(
             np.power(ext.err / ext.err, 2) + np.power(bsc.err / bsc.err, 2))
 
+        self.result.resolution = ext.resolution
         self.result.profile_qf = ext.profile_qf | bsc.profile_qf
         self.result.ds['qf'] = ext.qf | bsc.qf
 
         for t in np.where(self.result.profile_qf == P_ALL_OK)[0]:
             lvb = min(ext.last_valid_bin(t), bsc.last_valid_bin(t))
-            fvb = max(self.ext.first_valid_bin(t), self.bsc.first_valid_bin(t))
+            fvb = max(ext.first_valid_bin(t), bsc.first_valid_bin(t))
             self.result.ds.qf[t, lvb:] = self.result.ds.qf[t, lvb:] | CALC_WINDOW_OUTSIDE_PROFILE
             self.result.ds.qf[t, :fvb] = self.result.ds.qf[t, :fvb] | CALC_WINDOW_OUTSIDE_PROFILE
 

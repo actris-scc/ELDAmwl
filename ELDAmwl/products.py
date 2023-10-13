@@ -69,6 +69,7 @@ class Products(Signals):
         result.ds['binres'][:] = NC_FILL_INT
 
         result.station_altitude = signal.station_altitude
+        result.raw_heightres = signal.raw_heightres
         result.params = p_params
 
         # todo: copy other general parameter
@@ -222,28 +223,39 @@ class Products(Signals):
         # select only data which are ok
         dummy_data = self.data.where(self.ds.qf == ALL_OK)
 
-        # todo: attach the test to effective vertical resolution (and not bin resolution) plus a minimum threshold (e.g. 100m)
-        # self.cfg.MIN_LAYER_DEPTH
+        # the common vertical resolution in m
+        vert_res_m = self.data_storage.common_vertical_resolution(self.resolution).data
+
+        # if some values in vert_res_m are smaller than the minimum layer depth, replace them with min_layer_depth
+        min_layer_depth = self.cfg.MIN_LAYER_DEPTH
+        vert_res_m[np.where(vert_res_m < min_layer_depth)[0]] = min_layer_depth
+
+        # common vertical resolution in bins
+        vert_res_bins = self.heightres_to_bins(vert_res_m)
 
         # all bin resolutions which occur in this array
-        all_bin_res = np.unique(self.binres.values)
+        all_bin_res = np.unique(vert_res_bins)
 
         # this list may contain also NC_FILL_INT -> remove it
         all_bin_res = all_bin_res[np.where(all_bin_res != NC_FILL_INT)]
 
-        for br in all_bin_res:
-            window = br + 2
-            min_nb_of_neighbors = window // 2 + 1
+        self.ds['heightres'] = self.data_storage.common_vertical_resolution(self.resolution)
+        self.ds['heightres_bin'] = self.data_storage.common_vertical_resolution(self.resolution)
+        self.ds['heightres_bin'].data = vert_res_bins
+        self.ds['counts'] = self.data_storage.common_vertical_resolution(self.resolution)
+        self.ds['counts'].data[:] = 0
 
-            # test only data points which have the bin resolution br
-            # test_data = dummy_data.where(self.binres == br)
-            # counts = test_data.rolling(level=window, min_periods=1, center=True).count()
+        for br in all_bin_res:
 
             # data with all binres are taken into account when counting neighbors
-            counts = dummy_data.rolling(level=window, min_periods=1, center=True).count()
-            # comparison to number of required neighbors is done only for data points with binres =br
-            bad_idxs = np.where((self.ds.qf == ALL_OK) & (counts < min_nb_of_neighbors) & (self.binres == br))
+            counts = dummy_data.rolling(level=br, min_periods=1, center=True).count()
+
+            # comparison to number of required neighbors is done only for data points with vert_res_bins == br
+            bad_idxs = np.where((self.ds.qf == ALL_OK) & (counts < (br/2)) & (vert_res_bins == br))
             self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | SINGLE_POINT
+
+            br_idxs = np.where(vert_res_bins == br)
+            self.ds['counts'][br_idxs] = counts[br_idxs]
 
     def qc_integral(self):
         # todo: use only data points with qf == ALL_OK

@@ -245,6 +245,7 @@ class ExtinctionFactoryDefault(BaseOperation):
         self.raman_sig.ds['binres'] = self.smooth_res
 
         self.empty_ext = Extinctions.init(self.raman_sig, self.param)
+        self.empty_ext.resolution = self.resolution
 
     def get_non_merge_product(self):
 

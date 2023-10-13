@@ -67,9 +67,10 @@ class GetBasicProductsDefault(BaseOperation):
         self.product_params = self.kwargs['product_params']
         self.smooth_type = self.product_params.smooth_params.smooth_type
 
-        self.bsc_calibr_window = FindCommonBscCalibrWindow()(
-            data_storage=self.data_storage,
-            bsc_params=self.product_params.all_bsc_products()).run()
+        if len(self.product_params.all_bsc_products()) > 0:
+            self.bsc_calibr_window = FindCommonBscCalibrWindow()(
+                data_storage=self.data_storage,
+                bsc_params=self.product_params.all_bsc_products()).run()
 
         if self.smooth_type == AUTO:
             self.get_auto_smooth_products()
@@ -273,6 +274,7 @@ class GetBasicProductsDefault(BaseOperation):
                 if bsc_param in self.product_params.all_products_of_res(res):
                     smooth_bsc = deepcopy(bsc)
                     smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
+                    smooth_bsc.resolution = res
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_bsc)
             del bsc
@@ -311,6 +313,7 @@ class GetBasicProductsDefault(BaseOperation):
                     if bsc_param in self.product_params.all_products_of_res(res):
                         smooth_bsc = deepcopy(bsc)
                         smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
+                        smooth_bsc.resolution = res
                         self.data_storage.set_basic_product_common_smooth(
                             prod_id, res, smooth_bsc)
                 del bsc
