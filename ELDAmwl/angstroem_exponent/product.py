@@ -1,6 +1,7 @@
 from ELDAmwl.products import Products
 
 
+
 class AngstroemExps(Products):
     """
     time series of angstroem exponent profiles
@@ -14,7 +15,11 @@ class AngstroemExps(Products):
             lambda2 (Backscatters/Extinctions): time series of backscatter/extinction coefficient profiles at the highest wavelength
             p_params (ELDAmwl.operations.angstroem_exponent.params.AngstroemExpParams) # ToDo check
         """
-        result = super(AngstroemExps, cls).from_signal(lambda1, lambda2, p_params, **kwargs)
+        # result = super(AngstroemExps, cls).from_signal(lambda1, lambda2, p_params, **kwargs)
+        # ToDo test
+        result = super(AngstroemExps, cls).from_signal(lambda1, p_params, **kwargs)
+
+        print('AE result here!')
 
         return result
 

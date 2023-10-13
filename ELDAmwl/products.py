@@ -7,10 +7,14 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import CouldNotFindProductsResolution
 from ELDAmwl.errors.exceptions import DetectionLimitZero
+from ELDAmwl.errors.exceptions import DifferentProductsResolution
 from ELDAmwl.errors.exceptions import DifferentProductTypeForAE
 from ELDAmwl.errors.exceptions import DifferentWlForLR
 from ELDAmwl.errors.exceptions import NotEnoughMCIterations
+from ELDAmwl.errors.exceptions import NoMwlProductDefined
+from ELDAmwl.errors.exceptions import SameWlForAE
 from ELDAmwl.errors.exceptions import SizeMismatch
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
@@ -248,6 +252,7 @@ class ProductParams(Params):
 
         if min(wl) == max(wl):
             raise SameWlForAE(self.prod_id_str)
+        # ToDo fix problem if only one of the products is there
 
     def ensure_same_product_type(self, params):
         """applicable for derived products.
@@ -257,18 +262,13 @@ class ProductParams(Params):
         params: list of basic params (:class:`ELDAmwl.products.ProductParams`)
         """
 
-        # ToDo improve this to read from DB table _product_types
-        # product_type_id:
-        # 0 & 3 backscatter
-        # 1 & 2 extinction
-
         prod_type = []
 
         for param in params:
             prod_type.append(param.general_params.product_type)
 
-        n_b=prod_type.count(0) + prod_type.count(3)
-        n_e=prod_type.count(1) + prod_type.count(2)
+        n_b=prod_type.count(RBSC) + prod_type.count(EBSC)
+        n_e=prod_type.count(EXT)
 
         if (n_b > 0) and (n_e > 0) :
             raise DifferentProductTypeForAE(self.prod_id_str)

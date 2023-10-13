@@ -988,6 +988,7 @@ class DBFunc(DBUtils):
                 product id of mwl product
 
             """
+
         products = self.session.query(SystemProduct, Products) \
             .filter(SystemProduct.system_id == system_id) \
             .filter(SystemProduct.product_id == Products.ID) \
@@ -1214,6 +1215,7 @@ class DBFunc(DBUtils):
         ).filter(
             PreProcOptions.product_id == Products.ID
         ).group_by(MWLproductProduct.mwl_product_id)
+
 
         if products_resolution.count() == 1:
             same_temporal_resolution = products_resolution[0].min_preprocessing_integration_time \

@@ -27,7 +27,7 @@ class AngstroemExpParams(ProductParams):
         meas_params = component.queryUtility(IParams).measurement_params
 
         query = self.db_func.read_angstroem_exp_params(general_params.prod_id)
-        query = query[-1]    # ToDo Loop -- For now selecting prod_id 330 (b 1064) & prod_id 378 (b355).
+        query = query[-1]    # ToDo Loop -- For now selecting prod_id 330 (b 1064) & prod_id 378 (b 355).
         # ToDo What do we do if one of the channels is not available (i.e. 532)?
         self.lambda1_prod_id = query.lambda1_product_id
         self.lambda2_prod_id = query.lambda2_product_id
@@ -42,15 +42,12 @@ class AngstroemExpParams(ProductParams):
 
         # some consistency tests and harmonization of / with bsc and ext params
         basic_params = [self.lambda1_params, self.lambda2_params]
-        self.harmonize_resolution_settings(basic_params)
+        # ToDo check if they all work if one of the two products is not available
+        self.harmonize_resolution_settings(basic_params) # ToDo uncomment
         self.ensure_different_wavelength(basic_params)
-        # self.general_params.emission_wavelength = self.backscatter_params.general_params.emission_wavelength  # ToDo EXAMPLE
-
-
-
-        self.ensure_same_product_type(basic_params)   # ToDo b/e
-        self.logger.debug('Checked if the products for AE are of the same type.')
-        self.get_valid_alt_range(basic_params)    # ToDo CHECK
+        # self.ensure_order_of_wavelengths_for_ae(basic_params) # ToDo not here
+        self.ensure_same_product_type(basic_params)
+        self.get_valid_alt_range(basic_params)
 
     def assign_to_product_list(self, global_product_list):
         super(AngstroemExpParams, self).assign_to_product_list(

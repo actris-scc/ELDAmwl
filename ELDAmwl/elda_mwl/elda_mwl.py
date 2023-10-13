@@ -257,6 +257,7 @@ class MeasurementParams(Params):
             list of parameters of all angstroem exponent products
         """
         prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
         ids = prod_df['id'][prod_df.type == AE]
         return self.filtered_list(ids)
 
