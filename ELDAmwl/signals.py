@@ -123,7 +123,6 @@ class ElppData(object):
 
         self.cloud_mask = nc_ds.cloud_mask.astype(int)
         self.data_storage.cloud_mask = self.cloud_mask
-
         self.header = Header.from_nc_file(elpp_file, nc_ds)
         self.data_storage.header = self.header
 

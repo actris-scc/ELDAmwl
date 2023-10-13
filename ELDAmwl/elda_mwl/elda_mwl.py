@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 """ELDAmwl operations"""
+import numpy as np
+import pandas as pd
+import zope
 from addict import Dict
+from zope import component
+
 from ELDAmwl.backscatter.elastic.params import ElastBscParams
 from ELDAmwl.backscatter.raman.params import RamanBscParams
 from ELDAmwl.bases.base import Params
@@ -11,11 +16,15 @@ from ELDAmwl.depol.params import VLDRParams
 from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
 from ELDAmwl.elda_mwl.get_lidar_constants import GetLidarConstants
+from ELDAmwl.elda_mwl.mwl_products import GetProductMatrix
+from ELDAmwl.elda_mwl.mwl_products import QualityControl
+from ELDAmwl.errors.exceptions import ProductNotUnique, DifferentProductsResolution, CouldNotFindProductsResolution
 from ELDAmwl.elda_mwl.compile_mwl_product import GetProductMatrix
 from ELDAmwl.elda_mwl.do_quality_control import QualityControl
 from ELDAmwl.errors.exceptions import ProductNotUnique, ELDAmwlException
 from ELDAmwl.extinction.params import ExtinctionParams
 from ELDAmwl.lidar_ratio.params import LidarRatioParams
+from ELDAmwl.angstroem_exponent.params import AngstroemExpParams
 from ELDAmwl.output.write_mwl_output import WriteMWLOutput
 from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams
@@ -32,6 +41,7 @@ from ELDAmwl.utils.constants import LR
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR
 from ELDAmwl.utils.constants import VLDR
+from ELDAmwl.utils.constants import AE
 from zope import component
 
 import numpy as np
@@ -43,7 +53,7 @@ PARAM_CLASSES = {RBSC: RamanBscParams,
                  EBSC: ElastBscParams,
                  EXT: ExtinctionParams,
                  LR: LidarRatioParams,
-                 VLDR: VLDRParams}
+                 AE: AngstroemExpParams}
 
 
 @zope.interface.implementer(IParams)
@@ -313,6 +323,18 @@ class MeasurementParams(Params):
         ids = prod_df['id'][prod_df.type == LR]
         return self.filtered_list(ids)
 
+    def angstroem_exp_products(self):
+        """list of parameters of all angstroem_exp products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all angstroem exponent products
+        """
+        prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
+        ids = prod_df['id'][prod_df.type == AE]
+        return self.filtered_list(ids)
+
     def filtered_list(self, filtered_ids):
         """ converts a filtered subset of the product_table
         into list of product parameter instances`
@@ -444,6 +466,19 @@ class MeasurementParams(Params):
         else:
             return None
 
+    def get_products_resolution(self):
+        """Reads the products resolution to make sure it is consistent between all the products     # ToDo Pilar improve
+
+        Returns:
+            same_resolution (bool): true if all the temporal and vertical resolutions are the same, false otherwise
+            None: if no resolutions are defined for the current mwl_product_id
+        """
+
+        # read resolution of the configured products for the current mwl_product_id
+        same_resolution = self.db_func.get_products_resolution_query(
+            self.mwl_product_id)
+
+        return same_resolution
 
 def register_params(params=None):
     if params is None:
@@ -464,17 +499,27 @@ class RunELDAmwl(BaseOperation):
         self.params.load_from_db(meas_id)
 
     def read_tasks(self):
-        """read from db which products shall be calculated
+        """read from db which products shall be calculated and make sure that all the preprocessed files have the same resolution
 
         """
         self.logger.info('read tasks from db')
         self.params.read_product_list()
+        # Check whether all the temporal and vertical resolutions are equal
+        self.logger.info('read products resolution from db')
+        same_prod_res = self.params.get_products_resolution()
+        if same_prod_res is False:
+            # Different resolutions, we cannot continue with the processing
+            raise DifferentProductsResolution(self.params.mwl_product_id)
+        if same_prod_res is None:
+            # No resolutions found in preproc_options for the current mwl_product_id
+            raise CouldNotFindProductsResolution(self.params.mwl_product_id)
+
         pc = self.params.count_scheduled_products()
         self.data_storage.set_number_of_scheduled_products(pc)
 
         self.logger.debug('{0} products are scheduled.'.format(pc))
 
-        # todo: check whether the products have at
+    # todo: check whether the products have at
         #  least one resolution with which they shall be derived
         #  (calc_with_lr or calc_with_hr)
         # todo: check whether there is only one product per wavelength and type (e.g. no different usecases or Raman+elast

@@ -121,7 +121,7 @@ class MWLFileStructure:
         BSCR: 'backscatter ratio',
         EXT: 'particle extinction coefficient',
         LR: 'particle lidar ratio',
-        # AE: 'particle angstroem exponent',
+        AE: 'particle angstroem exponent',
         # CR: 'color ratio',
         VLDR: 'volume linear depolarization ratio',
         PLDR: 'particle linear depolarization ratio',

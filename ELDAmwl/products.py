@@ -8,9 +8,14 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.interface import IParams
 from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import CouldNotFindProductsResolution
 from ELDAmwl.errors.exceptions import DetectionLimitZero
+from ELDAmwl.errors.exceptions import DifferentProductsResolution
+from ELDAmwl.errors.exceptions import DifferentProductTypeForAE
 from ELDAmwl.errors.exceptions import DifferentWlForLR
 from ELDAmwl.errors.exceptions import NotEnoughMCIterations
+from ELDAmwl.errors.exceptions import NoMwlProductDefined
+from ELDAmwl.errors.exceptions import SameWlForAE
 from ELDAmwl.errors.exceptions import NotFoundInStorage
 from ELDAmwl.errors.exceptions import SizeMismatch
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
@@ -450,6 +455,43 @@ class ProductParams(Params):
 
         self.general_params.valid_alt_range.min_height = max(min_heights)
         self.general_params.valid_alt_range.max_height = min(max_heights)
+
+    def ensure_different_wavelength(self, params):
+        """applicable for derived products.
+        make sure that basic profiles are calculated for different wavelengths
+
+        Args:
+        params: list of basic params (:class:`ELDAmwl.products.ProductParams`)
+        """
+
+        wl = []
+
+        for param in params:
+            wl.append(param.general_params.emission_wavelength)
+
+        if min(wl) == max(wl):
+            raise SameWlForAE(self.prod_id_str)
+        # ToDo fix problem if only one of the products is there
+
+    def ensure_same_product_type(self, params):
+        """applicable for derived products.
+        make sure that basic profiles are of the same type (all backscatters or all extinctions)
+
+        Args:
+        params: list of basic params (:class:`ELDAmwl.products.ProductParams`)
+        """
+
+        prod_type = []
+
+        for param in params:
+            prod_type.append(param.general_params.product_type)
+
+        n_b=prod_type.count(RBSC) + prod_type.count(EBSC)
+        n_e=prod_type.count(EXT)
+
+        if (n_b > 0) and (n_e > 0) :
+            raise DifferentProductTypeForAE(self.prod_id_str)
+
 
     @property
     def prod_id_str(self):
