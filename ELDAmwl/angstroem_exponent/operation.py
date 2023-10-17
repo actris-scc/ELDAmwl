@@ -57,8 +57,6 @@ class AngstroemExpFactoryDefault(BaseOperation):
         self.prod_id = self.param.prod_id_str
 
         # lambda1 and lambda2 are deep copies from the data storage
-        print(f'lambda 1 prod id {self.param.lambda1_prod_id}')
-        print(f'lambda 2 prod id {self.param.lambda2_prod_id}')
         self.lambda1 = self.data_storage.basic_product_common_smooth(self.param.lambda1_prod_id, self.resolution)
         self.lambda2 = self.data_storage.basic_product_common_smooth(self.param.lambda2_prod_id, self.resolution)
 
@@ -195,13 +193,12 @@ class CalcAngstroemExpDefault(BaseOperation):
 
         # ToDo check the "order" of the wavelengths (bigger/smaller) not to invert the results. If needed, change them.
         # ToDo check formulas
-        print(f'lambda1.emission_wavelength : {lambda1.emission_wavelength.data}')
-        print(f'lambda2.emission_wavelength : {lambda2.emission_wavelength.data}')
-        self.result.ds['data'] = np.log(lambda1.data / lambda2.data) / np.log(
-            lambda2.emission_wavelength.data / lambda1.emission_wavelength.data)
-        self.result.ds['err'] = self.result.data * np.sqrt(
-            np.power(lambda1.err / lambda1.err, 2) + np.power(lambda2.err / lambda2.err, 2))
-        self.result.ds['qf'] = lambda2.qf | lambda1.qf
+        with np.errstate(invalid='ignore'):     # ToDo is this correct?
+            self.result.ds['data'] = np.log(lambda1.data / lambda2.data) / np.log(
+                lambda2.emission_wavelength.data / lambda1.emission_wavelength.data)
+            self.result.ds['err'] = self.result.data * np.sqrt(
+                np.power(lambda1.err / lambda1.err, 2) + np.power(lambda2.err / lambda2.err, 2))
+            self.result.ds['qf'] = lambda2.qf | lambda1.qf
 
         return self.result
 

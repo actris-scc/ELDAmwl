@@ -19,7 +19,6 @@ class AngstroemExps(Products):
         # ToDo test
         result = super(AngstroemExps, cls).from_signal(lambda1, p_params, **kwargs)
 
-        print('AE result here!')
 
         return result
 

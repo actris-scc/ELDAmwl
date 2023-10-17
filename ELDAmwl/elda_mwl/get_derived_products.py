@@ -73,7 +73,8 @@ class GetDerivedProductsDefault(BaseOperation):
 
     def get_angstroem_exps(self):
         for res in RESOLUTIONS:
-            ae_params = self.product_params.angstroem_exp_products(res=res)
+            # ae_params = self.product_params.angstroem_exp_products(res=res)   # ToDo check parameter
+            ae_params = self.product_params.angstroem_exp_products()
 
             if len(ae_params) == 0:
                 self.logger.warning(f'no angstroem exponent product will be calculated'
@@ -81,10 +82,11 @@ class GetDerivedProductsDefault(BaseOperation):
 
             for ae_param in ae_params:
                 prod_id = ae_param.prod_id_str
-                self.logger.info('get angstroem exponent at {0} nm - {1} nm (product id {2})'.format(
+                self.logger.info('get angstroem exponent at {0} nm - {1} nm (product id {2}, {3})'.format(
                     ae_param.lambda1_params.general_params.emission_wavelength,
                     ae_param.lambda2_params.general_params.emission_wavelength,
-                    prod_id
+                    prod_id,
+                    RESOLUTION_STR[res]
                 ))
 
                 ae = AngstroemExpFactory()(
