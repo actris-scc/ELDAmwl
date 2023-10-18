@@ -323,7 +323,7 @@ class MeasurementParams(Params):
         ids = prod_df['id'][prod_df.type == LR]
         return self.filtered_list(ids)
 
-    def angstroem_exp_products(self):
+    def angstroem_exp_products(self, res = None):
         """list of parameters of all angstroem_exp products
 
         Returns:
@@ -332,6 +332,8 @@ class MeasurementParams(Params):
         """
         prod_df = self.measurement_params.product_table
         prod_df = prod_df[prod_df['failed'] == False]
+        if res is not None:
+            prod_df = prod_df[prod_df[RESOLUTION_STR[res]]]
         ids = prod_df['id'][prod_df.type == AE]
         return self.filtered_list(ids)
 

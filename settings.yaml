@@ -40,10 +40,10 @@ default:
 # :::::::::::::::::::
 # database connection
 # :::::::::::::::::::
-  DB_SERVER : ''
-  DB_USER : ''
-  DB_PASS : ''
-  DB_DB : ''
+#  DB_SERVER : ''
+#  DB_USER : ''
+#  DB_PASS : ''
+#  DB_DB : ''
 # You have to supply a .secrets.yaml file beside this file with the database access secrets shown above!
 
 # :::::::::::::::::::
@@ -90,17 +90,19 @@ default:
       0 : 0.2,  # RBSC
       3 : 0.2,  # EBSC
       1 : 0.5,  # EXT
-      2 : 2,  # LR
+      2 : 2,    # LR
       15: 0.1,  # VLDR
       16: 0.1,  # PLDR
+      13: 0.2,  # AE
   }
   MAX_ALLOWED_ABS_ERROR : {
-      0 : 1E-7,  # RBSC
-      3 : 1E-7,  # EBSC
-      1 : 1E-6,  # EXT
+      0 : 1E-7, # RBSC
+      3 : 1E-7, # EBSC
+      1 : 1E-6, # EXT
       2 : 100,  # LR
       15: 0.1,  # VLDR
       16: 0.1,  # PLDR
+      13: 1,    # AE
   }
 
   # screening for layers with no aerosol

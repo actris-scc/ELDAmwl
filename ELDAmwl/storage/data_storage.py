@@ -488,6 +488,8 @@ class DataStorage:
         else:
             result = None
 
+        print(f'Resolution is {result}')
+
         if isinstance(result, xr.DataArray):
             return deepcopy(result)
         else:

@@ -193,11 +193,11 @@ class CalcAngstroemExpDefault(BaseOperation):
 
         # ToDo check the "order" of the wavelengths (bigger/smaller) not to invert the results. If needed, change them.
         # ToDo check formulas
-        with np.errstate(invalid='ignore'):     # ToDo is this correct?
+        with np.errstate(invalid='ignore'):  # ToDo is this correct?
             self.result.ds['data'] = np.log(lambda1.data / lambda2.data) / np.log(
                 lambda2.emission_wavelength.data / lambda1.emission_wavelength.data)
-            self.result.ds['err'] = self.result.data * np.sqrt(
-                np.power(lambda1.err / lambda1.err, 2) + np.power(lambda2.err / lambda2.err, 2))
+            self.result.ds['err'] = np.log(lambda2.emission_wavelength.data / lambda1.emission_wavelength.data) \
+                * (lambda1.err / lambda1.data + lambda2.err / lambda2.data)
             self.result.ds['qf'] = lambda2.qf | lambda1.qf
 
         return self.result

@@ -73,8 +73,7 @@ class GetDerivedProductsDefault(BaseOperation):
 
     def get_angstroem_exps(self):
         for res in RESOLUTIONS:
-            # ae_params = self.product_params.angstroem_exp_products(res=res)   # ToDo check parameter
-            ae_params = self.product_params.angstroem_exp_products()
+            ae_params = self.product_params.angstroem_exp_products(res=res)
 
             if len(ae_params) == 0:
                 self.logger.warning(f'no angstroem exponent product will be calculated'
