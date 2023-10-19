@@ -16,8 +16,6 @@ from ELDAmwl.depol.params import VLDRParams
 from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
 from ELDAmwl.elda_mwl.get_lidar_constants import GetLidarConstants
-from ELDAmwl.elda_mwl.mwl_products import GetProductMatrix
-from ELDAmwl.elda_mwl.mwl_products import QualityControl
 from ELDAmwl.errors.exceptions import ProductNotUnique, DifferentProductsResolution, CouldNotFindProductsResolution
 from ELDAmwl.elda_mwl.compile_mwl_product import GetProductMatrix
 from ELDAmwl.elda_mwl.do_quality_control import QualityControl
