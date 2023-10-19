@@ -29,6 +29,7 @@ xarray = "^0.19.0"
 "zope.component" = "^5.0.1"
 matplotlib = "^3.5.0"
 h5netcdf = "^1.2.0"
+plotly = "^5.17.0"
 
 [tool.poetry.dev-dependencies]
 autodocsumm = "^0.2.7"
@@ -51,3 +52,4 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 elda_mwl = "ELDAmwl.main:run"
 elda_gen_test = "ELDAmwl.tests.fixtures:run"
+elda_gen_sg_params = "ELDAmwl.cached_functions:gen_sg_params"
