@@ -48,8 +48,7 @@ class AngstroemExpFactoryDefault(BaseOperation):
     bsc = None
     empty_ae = None
     result = None
-    prod_id = NC_FILL_STR
-    resolution = NC_FILL_INT
+    prod_id = None
 
     def prepare(self):
         self.param = self.kwargs['ae_param']
@@ -60,7 +59,7 @@ class AngstroemExpFactoryDefault(BaseOperation):
         self.lambda1 = self.data_storage.basic_product_common_smooth(self.param.lambda1_prod_id, self.resolution)
         self.lambda2 = self.data_storage.basic_product_common_smooth(self.param.lambda2_prod_id, self.resolution)
 
-        self.empty_ae = AngstroemExps.init(self.lambda1, self.lambda2, self.param)
+        self.empty_ae = AngstroemExps.init(self.lambda1, self.lambda2, self.param, self.resolution)
 
     def get_non_merge_product(self):
         # create Dict with all params which are needed for the calculation
@@ -197,7 +196,7 @@ class CalcAngstroemExpDefault(BaseOperation):
             self.result.ds['data'] = np.log(lambda1.data / lambda2.data) / np.log(
                 lambda2.emission_wavelength.data / lambda1.emission_wavelength.data)
             self.result.ds['err'] = np.log(lambda2.emission_wavelength.data / lambda1.emission_wavelength.data) \
-                * (lambda1.err / lambda1.data + lambda2.err / lambda2.data)
+                * np.sqrt(np.power((lambda1.err / lambda1.data), 2) + np.power((lambda2.err / lambda2.data), 2))
             self.result.ds['qf'] = lambda2.qf | lambda1.qf
 
         return self.result
