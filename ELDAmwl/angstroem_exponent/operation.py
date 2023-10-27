@@ -7,12 +7,12 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
 from ELDAmwl.angstroem_exponent.product import AngstroemExps
-from ELDAmwl.utils.constants import MC  # ToDo needed?
-from ELDAmwl.utils.constants import NC_FILL_INT  # ToDo needed?
-from ELDAmwl.utils.constants import NC_FILL_STR  # ToDo needed?
+from ELDAmwl.utils.constants import MC
 
 import numpy as np
 import zope
+
+
 
 
 class AngstroemExpFactory(BaseOperationFactory):
@@ -178,21 +178,26 @@ class CalcAngstroemExpDefault(BaseOperation):
         This feature is used e.g., for Monte-Carlo error retrievals # ToDo needed?
 
         Keyword Args:
-            lambda1 (:class:``):    # ToDo complete
-            lambda2 (:class:``):    # ToDo complete
+            lambda1 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                     :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                     :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                     extinction profiles, depending on the Angstroem Exponent configuration, default=None
+            lambda2 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                     :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                     :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                     extinction profiles, depending on the Angstroem Exponent configuration, default=None
 
         Returns:
             profiles of angstroem exponents (:class:`ELDAmwl.angstroem_exponent.product.AngstroemExps`)
 
         """
+
         if lambda1 is None:
             lambda1 = self.lambda1
         if lambda2 is None:
             lambda2 = self.lambda2
 
-        # ToDo check the "order" of the wavelengths (bigger/smaller) not to invert the results. If needed, change them.
-        # ToDo check formulas
-        with np.errstate(invalid='ignore'):  # ToDo is this correct?
+        with np.errstate(invalid='ignore'):  # ToDo ask Ina if she agrees with this
             self.result.ds['data'] = np.log(lambda1.data / lambda2.data) / np.log(
                 lambda2.emission_wavelength.data / lambda1.emission_wavelength.data)
             self.result.ds['err'] = np.log(lambda2.emission_wavelength.data / lambda1.emission_wavelength.data) \
