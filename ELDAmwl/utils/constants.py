@@ -46,9 +46,9 @@ BASIC_PRODUCT_TYPES = [RBSC, EXT, EBSC, VLDR]
 COMBINE_DEPOL_USE_CASES = {RBSC: [7, 9, 10, 11, 12, 18, 17],
                            EBSC: [3, 4, 7, 8]}
 
-MERGE_PRODUCT_USE_CASES = {EXT: [2, 4, 5],
+MERGE_PRODUCT_USE_CASES = {EXT: [2, 4, 5, 13],
                            RBSC: [2, 4, 6, 12, 13, 14, 15, 16, 19],
-                           EBSC: [2, 5, 6, 9]}
+                           EBSC: [2, 5, 6, 9, 13]}
 
 # ====== signal detection types ======
 ANALOG = 1
@@ -128,6 +128,13 @@ PROFILE = 0
 FIXED = 1
 
 LR_INPUT_METHODS = [PROFILE, FIXED]
+
+# ====== Angstroem exponent types ======
+ERel = 0    # Extinction related
+BRel = 1    # Backscatter related
+
+AE_TYPES = [ERel, BRel]
+
 
 # ====== Raman bsc algorithms ======
 # todo: write method ids in db and read from there

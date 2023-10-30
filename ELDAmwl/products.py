@@ -24,6 +24,7 @@ from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.signals import Signals
 from ELDAmwl.storage.cached_functions import sg_coeffs
 from ELDAmwl.storage.cached_functions import smooth_routine_from_db
+from ELDAmwl.utils.constants import AE_TYPES
 from ELDAmwl.utils.constants import ALL_OK, BELOW_MIN_BSCR
 from ELDAmwl.utils.constants import CALC_WINDOW_OUTSIDE_PROFILE
 from ELDAmwl.utils.constants import COMBINE_DEPOL_USE_CASES
@@ -486,12 +487,16 @@ class ProductParams(Params):
         for param in params:
             prod_type.append(param.general_params.product_type)
 
-        n_b=prod_type.count(RBSC) + prod_type.count(EBSC)
-        n_e=prod_type.count(EXT)
+        n_b = prod_type.count(RBSC) + prod_type.count(EBSC)
+        n_e = prod_type.count(EXT)
 
         if (n_b > 0) and (n_e > 0) :
             raise DifferentProductTypeForAE(self.prod_id_str)
-
+        else:
+            if n_b > 0:
+                self.angstroem_exponent_type = AE_TYPES[1]    # AE Backscatter related
+            else:
+                self.angstroem_exponent_type = AE_TYPES[0]    # AE Extinction related
 
     @property
     def prod_id_str(self):
