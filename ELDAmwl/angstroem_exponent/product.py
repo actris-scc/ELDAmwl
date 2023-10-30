@@ -13,7 +13,7 @@ class AngstroemExps(Products):
         Args:
             lambda1 (Backscatters/Extinctions): time series of backscatter/extinction coefficient profiles at the lowest wavelength
             lambda2 (Backscatters/Extinctions): time series of backscatter/extinction coefficient profiles at the highest wavelength
-            p_params (ELDAmwl.operations.angstroem_exponent.params.AngstroemExpParams) # ToDo check
+            p_params (ELDAmwl.operations.angstroem_exponent.params.AngstroemExpParams)
         """
         result = super(AngstroemExps, cls).from_signal(lambda1, p_params, **kwargs)
         result.resolution = resolution

@@ -13,8 +13,6 @@ import numpy as np
 import zope
 
 
-
-
 class AngstroemExpFactory(BaseOperationFactory):
     """
     """
@@ -110,8 +108,14 @@ class CalcAngstroemExp(BaseOperationFactory):
     Keyword Args:
         ae_params (:class:`ELDAmwl.angstroem_exponent.params.AngstroemExpParams`): \
                 retrieval parameter of the angstroem exponent product
-        lambda1 (:class:):     # ToDo complete
-        lambda2 (:class:):     # ToDo complete
+        lambda1 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                 :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                 :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                 extinction profiles, depending on the Angstroem Exponent configuration, default=None
+        lambda2 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                 :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                 :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                 extinction profiles, depending on the Angstroem Exponent configuration, default=None
         empty_ae (:class:`ELDAmwl.angstroem_exponent.product.AngstroemExps`): \
                 instance of AngstroemExps which has all meta data but profile data are empty arrays
 
@@ -148,8 +152,14 @@ class CalcAngstroemExpDefault(BaseOperation):
     Keyword Args:
         ae_params (:class:`ELDAmwl.angstroem_exponent.params.AngstroemExpParams`): \
                 retrieval parameter of the angstroem exponent product
-        lambda1 (:class:``):  # ToDo complete
-        lambda2 (:class:``): # ToDo change
+        lambda1 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                 :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                 :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                 extinction profiles, depending on the Angstroem Exponent configuration, default=None
+        lambda2 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                 :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                 :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                 extinction profiles, depending on the Angstroem Exponent configuration, default=None
         empty_ae (:class:`ELDAmwl.angstroem_exponents.product.AngstroemExps`): \
                 instance of AngstroemExp which has all meta data but profile data are empty arrays
 
@@ -175,7 +185,19 @@ class CalcAngstroemExpDefault(BaseOperation):
 
         The optional keyword args 'lambda1' and 'lambda2' allow to feed new input data into
         an existing instance of CalcAngstroemExtDefault and run a new calculation.
-        This feature is used e.g., for Monte-Carlo error retrievals # ToDo needed?
+        This feature is used e.g., for Monte-Carlo error retrievals
+
+        The calculation of the Angstrom exponent is:
+
+        .. math::
+            AE &= log( \alpha_{\lambda_1} / \alpha_{\lambda_2}) / \:
+                log( \lambda_2 / \lambda_1)\\
+
+        And this is the error calculation:
+
+        .. math::
+            AE_{err} &= log(\lambda_2/\lambda_1) \:
+                * \sqrt{ (\alpha_{\lambda_1,err}/\alpha_{\lambda_1})^2 + (\alpha_{\lambda_2,err}/\alpha_{\lambda_2})^2}\\
 
         Keyword Args:
             lambda1 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
@@ -201,7 +223,7 @@ class CalcAngstroemExpDefault(BaseOperation):
             self.result.ds['data'] = np.log(lambda1.data / lambda2.data) / np.log(
                 lambda2.emission_wavelength.data / lambda1.emission_wavelength.data)
             self.result.ds['err'] = np.log(lambda2.emission_wavelength.data / lambda1.emission_wavelength.data) \
-                * np.sqrt(np.power((lambda1.err / lambda1.data), 2) + np.power((lambda2.err / lambda2.data), 2))
+                                    * np.sqrt(np.power((lambda1.err / lambda1.data), 2) + np.power((lambda2.err / lambda2.data), 2))
             self.result.ds['qf'] = lambda2.qf | lambda1.qf
 
         return self.result
