@@ -472,7 +472,10 @@ class ProductParams(Params):
 
         if min(wl) == max(wl):
             raise SameWlForAE(self.prod_id_str)
-        # ToDo fix problem if only one of the products is there
+        else:
+            wl.sort()
+            self.angstroem_exponent_wavelength_bounds = wl
+
 
     def ensure_same_product_type(self, params):
         """applicable for derived products.
