@@ -1,7 +1,3 @@
-- name: Setup and Cache Python Poetry
-
-  uses: packetcoders/action-setup-cache-python-poetry@v1.0.3
-
 on:
   # Triggers the workflow on push but only for the main branch
   push:
