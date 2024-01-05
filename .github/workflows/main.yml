@@ -13,7 +13,7 @@ jobs:
       #  Install mercurial                  #
       #-------------------------------------#
       - name: install mercurial
-        run: hg clone https://${{ secrets.HG_SCC_USER }}:${{ secrets.HG_SCC_PW }}@repositories.imaa.cnr.it/private/rayleigh-fit/
+        run: hg clone https://${{ secrets.HG_SCC_USER }}:${{ secrets.HG_SCC_PW }}@repositories.imaa.cnr.it/private/rayleigh-fit/ ../rayleigh_fit
         
       #-------------------------------------#
       #  Check out repo and set up Python   #
