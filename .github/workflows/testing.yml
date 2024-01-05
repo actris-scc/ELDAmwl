@@ -1,3 +1,4 @@
+name: teste python
 on:
   # Triggers the workflow on push but only for the main branch
   push:
