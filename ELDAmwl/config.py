@@ -15,12 +15,17 @@ def register_config(args, env=None):
 
     if not exists(config_dir / 'settings.yaml'):
         raise ConfigFileNotFound(config_dir / 'settings.yaml')
-    if not exists(config_dir / '.secrets.yaml'):
-        raise ConfigFileNotFound(config_dir / '.secrets.yaml')
+
+    if env == 'testing':
+        settings_files = [config_dir / 'settings.yaml']
+    else:
+        if not exists(config_dir / '.secrets.yaml'):
+            raise ConfigFileNotFound(config_dir / '.secrets.yaml')
+        settings_files = [config_dir / 'settings.yaml', config_dir / '.secrets.yaml']
 
     cfg = Dynaconf(
         envvar_prefix='DYNACONF',  # replaced "DYNACONF" by 'DYNACONF'
-        settings_files=[config_dir / 'settings.yaml', config_dir / '.secrets.yaml'],
+        settings_files=settings_files,
         environments=True,
         env=env,
     )
