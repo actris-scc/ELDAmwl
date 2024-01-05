@@ -1,0 +1,27 @@
+name: teste python
+on:
+  # Triggers the workflow on push but only for the main branch
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      #-------------------------------------#
+      #  Check out repo and set up Python   #
+      #-------------------------------------#
+      - name: Check out the repository
+        uses: actions/checkout@v3
+      - name: "Setup Python, Poetry and Dependencies"
+        uses: packetcoders/action-setup-cache-python-poetry@main
+        with:
+          python-version: 3.8
+          poetry-version: 1.2.2
+
+      #------------------------#
+      #  Run your actual job   #
+      #------------------------#
+      - name: Run tests
+        run: |
+          poetry run coverage run --source=ELDAmwl -m pytest
