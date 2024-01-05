@@ -27,43 +27,5 @@ jobs:
       #------------------------#
       - name: Run tests
         run: |
-          poetry run pytest
-
-Matrix Strategy Usage
-
-With a matrix strategy, several "workflows" are generated based on your matrix inputs. In this case, multiple caches for each of the matrix workflows will be generated.
-
-name: ci
-
-on:
-  # Triggers the workflow on push but only for the main branch
-  push:
-    branches: [ main ]
-
-jobs:
-  test:
-    # Using matrix strategy
-    strategy:
-      matrix:
-        python-version: [3.8, 3.9, 3.10]
-        poetry-version: [1.2.2]
-    runs-on: ubuntu-latest
-    steps:
-      #------------------------------------#
-      #  Check out repo and set up Python  #
-      #------------------------------------#
-      - name: Check out the repository
-        uses: actions/checkout@v3
-      - name: "Setup Python, Poetry and Dependencies"
-        uses: packetcoders/action-setup-cache-python-poetry@main
-        with:
-          python-version: ${{matrix.python-version}}
-          poetry-version: ${{matrix.poetry-version}}
-
-      #-----------------------#
-      #  Run your actual job  #
-      #-----------------------#
-      - name: Run tests
-        run: |
-          poetry run pytest
+          poetry run coverage run --source=ELDAmwl -m pytest
 
