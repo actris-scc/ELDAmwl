@@ -7,8 +7,6 @@ from pathlib import Path
 
 import zope
 
-
-
 def register_config(args, env=None):
     if args is not None:
         config_dir = Path(abs_file_path(args.config_dir))

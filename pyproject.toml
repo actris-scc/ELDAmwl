@@ -42,7 +42,7 @@ sphinxcontrib-qthelp = "^1.0.3"
 sphinxcontrib-serializinghtml = "^1.1.4"
 sphinx-rtd-theme = "^1.1.1"
 coverage = "^6.5.0"
-rayleigh_fit = {path="../rayleigh_fit", develop=true}
+# rayleigh_fit = {path="../rayleigh_fit", develop=true}
 
 
 [build-system]
