@@ -1,4 +1,4 @@
-name: teste python
+name: test ELDAmwl
 on:
   # Triggers the workflow on push but only for the main branch
   push:
@@ -12,12 +12,12 @@ jobs:
       #-------------------------------------#
       #  Install mercurial                  #
       #-------------------------------------#
-      - name: install mercurial
+      - name: install Rayleigh fit package
         run: hg clone https://${{ secrets.HG_SCC_USER }}:${{ secrets.HG_SCC_PW }}@repositories.imaa.cnr.it/private/rayleigh-fit/ ../rayleigh_fit
-      - name: check rayleigh installed
-        run: ls -al ..
-      - name: check rayleigh installed
-        run: ls -al ../rayleigh_fit
+      #- name: check rayleigh installed
+      #  run: ls -al ..
+      #- name: check rayleigh installed
+      #  run: ls -al ../rayleigh_fit
         
       #-------------------------------------#
       #  Check out repo and set up Python   #
