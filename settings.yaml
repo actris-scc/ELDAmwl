@@ -36,6 +36,7 @@ default:
   TEMP_PATH : ''
   PLUGINS_DIR : ''
   LOG_PATH : 'data/eldamwl_logs'
+  SAV_GOLAY_FILE : 'data/sg_params.pickle'
 
 # :::::::::::::::::::
 # database connection

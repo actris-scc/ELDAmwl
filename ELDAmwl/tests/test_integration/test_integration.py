@@ -14,11 +14,12 @@ from zope import component
 import os
 import unittest
 
+#os.environ['env'] = 'testing'
 
 class TestTestDB(unittest.TestCase):
     def setUp(self):
         print(f'working dir = {os.getcwd()}')
-        register_config(args=None, env='testing')
+        register_config(args=None)
         # Setup the logging facility for this measurement ID
         register_logger('20181017oh00')
         register_dbconstructor()
@@ -32,7 +33,7 @@ class Test(unittest.TestCase):
 
     def setUp(self):
         print(f'working dir = {os.getcwd()}')
-        register_config(args=None, env='testing')
+        register_config(args=None)
         register_logger('20181017oh00')
         register_dbconstructor()
         db_constructor = component.queryUtility(IDBConstructor)

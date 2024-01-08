@@ -53,4 +53,4 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 elda_mwl = "ELDAmwl.main:run"
 elda_gen_test = "ELDAmwl.tests.fixtures:run"
-elda_gen_sg_params = "ELDAmwl.cached_functions:gen_sg_params"
+elda_gen_sg_params = "ELDAmwl.storage.cached_functions:gen_sg_params"

@@ -3,20 +3,31 @@
 import pickle
 
 from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.interface import ICfg
 from functools import lru_cache
 from scipy.signal import savgol_coeffs
 from zope import component
 
+from ELDAmwl.config import register_config
+
+register_config(args=None)
+
 DEFAULT_ORDER = 2
-SG_PARAMS_FILENAME = 'sg_params.pickle'
+SG_PARAMS_FILENAME = component.queryUtility(ICfg).SAV_GOLAY_FILE
+# SG_PARAMS_FILENAME = 'sg_params.pickle'
+
+SG_PARAMS = None
 
 def gen_sg_params():
+    global SG_PARAMS
     sg_param = {}
     for window_length in range(10, 100):
         sg_param[window_length]=savgol_coeffs(window_length, DEFAULT_ORDER)
     with open(SG_PARAMS_FILENAME, 'wb') as outfile:
         pickle.dump(sg_param, outfile)
+    SG_PARAMS = sg_param
 
+# this code is no part of gen_sg_params()
 try:
     with open(SG_PARAMS_FILENAME, 'rb') as infile:
         SG_PARAMS = pickle.load(infile)

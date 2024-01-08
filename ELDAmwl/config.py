@@ -1,3 +1,5 @@
+import os
+
 from dynaconf import Dynaconf
 from ELDAmwl.component.interface import ICfg
 from ELDAmwl.errors.exceptions import ConfigFileNotFound
@@ -7,7 +9,7 @@ from pathlib import Path
 
 import zope
 
-def register_config(args, env=None):
+def register_config(args):
     if args is not None:
         config_dir = Path(abs_file_path(args.config_dir))
     else:
@@ -16,7 +18,7 @@ def register_config(args, env=None):
     if not exists(config_dir / 'settings.yaml'):
         raise ConfigFileNotFound(config_dir / 'settings.yaml')
 
-    if env == 'testing':
+    if os.environ['env'] == 'testing':
         settings_files = [config_dir / 'settings.yaml']
     else:
         if not exists(config_dir / '.secrets.yaml'):
@@ -27,7 +29,7 @@ def register_config(args, env=None):
         envvar_prefix='DYNACONF',  # replaced "DYNACONF" by 'DYNACONF'
         settings_files=settings_files,
         environments=True,
-        env=env,
+        env=os.environ['env'],
     )
 
     # `envvar_prefix` = export envvars with `export DYNACONF_FOO=bar`.

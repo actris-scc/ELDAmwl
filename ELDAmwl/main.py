@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+
 from ELDAmwl.component.interface import ICfg, IDBFunc
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IParams
@@ -41,8 +43,9 @@ import traceback
 
 
 def elda_setup_components(args=None, env='Production'):
+    os.environ['env'] = 'Production'
     # Get the configuration
-    register_config(args, env=env)
+    register_config(args)
 
     # Setup the logging facility for this measurement ID
     register_logger(args.meas_id)
