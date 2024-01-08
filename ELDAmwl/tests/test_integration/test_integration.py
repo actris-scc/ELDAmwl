@@ -14,7 +14,6 @@ from zope import component
 import os
 import unittest
 
-#os.environ['env'] = 'testing'
 
 class TestTestDB(unittest.TestCase):
     def setUp(self):

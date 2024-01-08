@@ -42,8 +42,7 @@ import traceback
 #   598: mwl (378 + 379 + 328)
 
 
-def elda_setup_components(args=None, env='Production'):
-    os.environ['env'] = 'Production'
+def elda_setup_components(args=None):
     # Get the configuration
     register_config(args)
 
