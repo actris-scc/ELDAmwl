@@ -852,6 +852,8 @@ class SmoothSavGolay(BaseOperation):
     def run(self, **kwargs):
         """starts the calculation.
 
+        ToDo: compare with method with uncertainties
+
         in scipy.signal.savgol_filter
         (https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html),
         the filtering is done as
