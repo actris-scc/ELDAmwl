@@ -30,6 +30,7 @@ xarray = "^0.19.0"
 matplotlib = "^3.5.0"
 h5netcdf = "^1.2.0"
 plotly = "^5.17.0"
+PyDynamic = "^2.4.2"
 
 [tool.poetry.dev-dependencies]
 autodocsumm = "^0.2.7"
