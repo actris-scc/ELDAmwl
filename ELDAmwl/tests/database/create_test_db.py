@@ -24,7 +24,7 @@ from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
 from ELDAmwl.database.tables.extinction import ExtMethod
 from ELDAmwl.database.tables.extinction import OverlapFile
-from ELDAmwl.database.tables.general import ELDAmwlLogs
+from ELDAmwl.database.tables.general import ELDAmwlLogs, SccVersion
 from ELDAmwl.database.tables.lidar_constants import LidarConstants
 from ELDAmwl.database.tables.lidar_ratio import ExtBscOption
 from ELDAmwl.database.tables.measurements import Measurements
@@ -88,6 +88,7 @@ ALL_DB_TABLES = [
     ProductTypes,
     RamanBackscatterOption,
     RamanBscMethod,
+    SccVersion,
     SmoothMethod,
     SmoothOptions,
     SmoothTypes,

@@ -1,0 +1,2 @@
+ID,scc_version,pre_process_version,elda_version,daemon_version,scc_db_version,web_interface_version,release_date,scc_calibrator_version,hirelpp_version,cloudmask_version,elquick_version,elic_version,ltool_version,is_latest
+17,5.3.0,7.1.4,3.4.13,5.3.2,5.1.2,5.1.1,2023-07-13 10:00:00,2.1.5,1.1.4,1.6.0,1.0.8,1.0.8,1.7.4,1

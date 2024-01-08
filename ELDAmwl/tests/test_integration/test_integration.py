@@ -17,7 +17,7 @@ import unittest
 
 class TestTestDB(unittest.TestCase):
     def setUp(self):
-        print(os.getcwd())
+        print(f'working dir = {os.getcwd()}')
         register_config(args=None, env='testing')
         # Setup the logging facility for this measurement ID
         register_logger('20181017oh00')
@@ -31,7 +31,7 @@ class TestTestDB(unittest.TestCase):
 class Test(unittest.TestCase):
 
     def setUp(self):
-        print(os.getcwd())
+        print(f'working dir = {os.getcwd()}')
         register_config(args=None, env='testing')
         register_logger('20181017oh00')
         register_dbconstructor()
