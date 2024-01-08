@@ -12,7 +12,7 @@ ID,method,classname
 11,Ansmann method,CalcRamanBscProfileAsAnsmann
 12,via backscatter ratio,CalcRamanBscProfileViaBR
 13,minimum,FindCalibrWindowMinimum
-14,fit-slope,FindCalibrationWindowFitSlope
+14,fit-slope,FindBscCalibrWindowWithRaylFit
 15,Klett,CalcBscProfileKF
 16,iter,CalcBscProfileIter
 17,V Freudenthaler 2022,CalcVldrVFreudenthaler22
