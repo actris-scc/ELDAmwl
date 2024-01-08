@@ -71,4 +71,5 @@ default:
 
 testing:
   SIGNAL_PATH : 'data/ELPP_files'
+  LOG_PATH : 'data'
 
