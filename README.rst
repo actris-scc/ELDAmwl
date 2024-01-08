@@ -2,10 +2,9 @@
 ELDAmwl
 =======
 
-
-.. image:: https://travis-ci.com/actris-scc/ELDAmwl.svg?branch=master
-   :target: https://travis-ci.com/github/actris-scc/ELDAmwl
-   :alt: Travis CI status
+.. image:: https://github.com/actris-scc/ELDAmwl/actions/workflows/main.yml/badge.svg
+   :target: https://coveralls.io/github/actris-scc/ELDAmwl?branch=master
+   :alt: Testing Status
 
 .. image:: https://img.shields.io/coveralls/github/actris-scc/ELDAmwl/master.svg
    :target: https://coveralls.io/github/actris-scc/ELDAmwl?branch=master
