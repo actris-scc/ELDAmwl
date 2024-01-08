@@ -2,7 +2,7 @@
 ELDAmwl
 =======
 
-.. image:: https://github.com/actris-scc/ELDAmwl/actions/workflows/main.yml/badge.svg
+.. image:: https://github.com/actris-scc/ELDAmwl/actions/workflows/tests.yml/badge.svg
    :target: https://coveralls.io/github/actris-scc/ELDAmwl?branch=master
    :alt: Testing Status
 
