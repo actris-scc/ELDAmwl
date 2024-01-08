@@ -1182,8 +1182,8 @@ class DBFunc(DBUtils):
         options = self.session.query(AngstroemExpOption) \
             .filter(AngstroemExpOption.product_id == product_id)
 
-        if options.count() >= 1:
-            return options
+        if options.count() == 1:
+            return options[0]
         else:
             self.logger.error(
                 'wrong number of angstroem exponent options ({0})'.format(options.count())

@@ -7,9 +7,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
 from ELDAmwl.angstroem_exponent.product import AngstroemExps
-from ELDAmwl.utils.constants import MC  # ToDo needed?
-from ELDAmwl.utils.constants import NC_FILL_INT  # ToDo needed?
-from ELDAmwl.utils.constants import NC_FILL_STR  # ToDo needed?
+from ELDAmwl.utils.constants import MC
 
 import numpy as np
 import zope
@@ -48,8 +46,7 @@ class AngstroemExpFactoryDefault(BaseOperation):
     bsc = None
     empty_ae = None
     result = None
-    prod_id = NC_FILL_STR
-    resolution = NC_FILL_INT
+    prod_id = None
 
     def prepare(self):
         self.param = self.kwargs['ae_param']
@@ -60,7 +57,7 @@ class AngstroemExpFactoryDefault(BaseOperation):
         self.lambda1 = self.data_storage.basic_product_common_smooth(self.param.lambda1_prod_id, self.resolution)
         self.lambda2 = self.data_storage.basic_product_common_smooth(self.param.lambda2_prod_id, self.resolution)
 
-        self.empty_ae = AngstroemExps.init(self.lambda1, self.lambda2, self.param)
+        self.empty_ae = AngstroemExps.init(self.lambda1, self.lambda2, self.param, self.resolution)
 
     def get_non_merge_product(self):
         # create Dict with all params which are needed for the calculation
@@ -111,8 +108,14 @@ class CalcAngstroemExp(BaseOperationFactory):
     Keyword Args:
         ae_params (:class:`ELDAmwl.angstroem_exponent.params.AngstroemExpParams`): \
                 retrieval parameter of the angstroem exponent product
-        lambda1 (:class:):     # ToDo complete
-        lambda2 (:class:):     # ToDo complete
+        lambda1 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                 :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                 :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                 extinction profiles, depending on the Angstroem Exponent configuration, default=None
+        lambda2 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                 :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                 :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                 extinction profiles, depending on the Angstroem Exponent configuration, default=None
         empty_ae (:class:`ELDAmwl.angstroem_exponent.product.AngstroemExps`): \
                 instance of AngstroemExps which has all meta data but profile data are empty arrays
 
@@ -149,8 +152,14 @@ class CalcAngstroemExpDefault(BaseOperation):
     Keyword Args:
         ae_params (:class:`ELDAmwl.angstroem_exponent.params.AngstroemExpParams`): \
                 retrieval parameter of the angstroem exponent product
-        lambda1 (:class:``):  # ToDo complete
-        lambda2 (:class:``): # ToDo change
+        lambda1 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                 :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                 :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                 extinction profiles, depending on the Angstroem Exponent configuration, default=None
+        lambda2 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                 :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                 :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                 extinction profiles, depending on the Angstroem Exponent configuration, default=None
         empty_ae (:class:`ELDAmwl.angstroem_exponents.product.AngstroemExps`): \
                 instance of AngstroemExp which has all meta data but profile data are empty arrays
 
@@ -176,28 +185,45 @@ class CalcAngstroemExpDefault(BaseOperation):
 
         The optional keyword args 'lambda1' and 'lambda2' allow to feed new input data into
         an existing instance of CalcAngstroemExtDefault and run a new calculation.
-        This feature is used e.g., for Monte-Carlo error retrievals # ToDo needed?
+        This feature is used e.g., for Monte-Carlo error retrievals
+
+        The calculation of the Angstrom exponent is:
+
+        .. math::
+            AE &= log( \alpha_{\lambda_1} / \alpha_{\lambda_2}) / \:
+                log( \lambda_2 / \lambda_1)\\
+
+        And this is the error calculation:
+
+        .. math::
+            AE_{err} &= log(\lambda_2/\lambda_1) \:
+                * \sqrt{ (\alpha_{\lambda_1,err}/\alpha_{\lambda_1})^2 + (\alpha_{\lambda_2,err}/\alpha_{\lambda_2})^2}\\
 
         Keyword Args:
-            lambda1 (:class:``):    # ToDo complete
-            lambda2 (:class:``):    # ToDo complete
+            lambda1 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                     :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                     :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                     extinction profiles, depending on the Angstroem Exponent configuration, default=None
+            lambda2 (:class:`ELDAmwl.backscatter.raman.product.RamanBackscatters` or
+                     :class:`ELDAmwl.backscatter.elastic.product.ElastBackscatters` or
+                     :class:`ELDAmwl.extinction.product.Extinctions`): backscatter or
+                     extinction profiles, depending on the Angstroem Exponent configuration, default=None
 
         Returns:
             profiles of angstroem exponents (:class:`ELDAmwl.angstroem_exponent.product.AngstroemExps`)
 
         """
+
         if lambda1 is None:
             lambda1 = self.lambda1
         if lambda2 is None:
             lambda2 = self.lambda2
 
-        # ToDo check the "order" of the wavelengths (bigger/smaller) not to invert the results. If needed, change them.
-        # ToDo check formulas
-        with np.errstate(invalid='ignore'):  # ToDo is this correct?
+        with np.errstate(invalid='ignore'):  # ToDo ask Ina if she agrees with this
             self.result.ds['data'] = np.log(lambda1.data / lambda2.data) / np.log(
                 lambda2.emission_wavelength.data / lambda1.emission_wavelength.data)
             self.result.ds['err'] = np.log(lambda2.emission_wavelength.data / lambda1.emission_wavelength.data) \
-                * (lambda1.err / lambda1.data + lambda2.err / lambda2.data)
+                                    * np.sqrt(np.power((lambda1.err / lambda1.data), 2) + np.power((lambda2.err / lambda2.data), 2))
             self.result.ds['qf'] = lambda2.qf | lambda1.qf
 
         return self.result

@@ -1,6 +1,7 @@
 # from ELDAmwl.backscatter.common.params import IterBscParams
 # from ELDAmwl.backscatter.raman.params import RamanBscParams
 # from ELDAmwl.extinction.params import ExtinctionParams
+from ELDAmwl.errors.exceptions import BasicProductMissingForDerivedProduct
 from ELDAmwl.products import ProductParams
 from ELDAmwl.utils.constants import ERROR_METHODS
 from ELDAmwl.component.interface import IParams
@@ -27,25 +28,30 @@ class AngstroemExpParams(ProductParams):
         meas_params = component.queryUtility(IParams).measurement_params
 
         query = self.db_func.read_angstroem_exp_params(general_params.prod_id)
-        query = query[-1]    # ToDo Loop -- For now selecting prod_id 330 (b 1064) & prod_id 378 (b 355).
-        # ToDo What do we do if one of the channels is not available (i.e. 532)?
         self.lambda1_prod_id = query.lambda1_product_id
         self.lambda2_prod_id = query.lambda2_product_id
         self.general_params.error_method = ERROR_METHODS[query.error_method_id]  # noqa E501
         self.min_BscRatio_for_AE = query.min_BscRatio_for_AE
 
-        # self. backscatter_params is a link to the parameters of the basic bsc product
+        # self. lambda1_params is a link to the parameters of the basic bsc or ext product
         self.lambda1_params = meas_params.product_list[str(self.lambda1_prod_id)]
+        if self.lambda1_params == {}:
+            self.logger.error(f'Product {self.lambda1_prod_id} is not attributed to this mwl product.'
+                              f'but it is needed for lidar ratio {general_params.prod_id} ')
+            raise BasicProductMissingForDerivedProduct(general_params.prod_id, self.lambda1_prod_id)
 
-        # self. extinction_params is a link to the parameters of the basic ext product
+        # self. lambda2_params is a link to the parameters of the basic bsc or ext product
         self.lambda2_params = meas_params.product_list[str(self.lambda2_prod_id)]
+        if self.lambda2_params == {}:
+            self.logger.error(f'Product {self.lambda2_prod_id} is not attributed to this mwl product.'
+                              f'but it is needed for lidar ratio {general_params.prod_id} ')
+            raise BasicProductMissingForDerivedProduct(general_params.prod_id, self.lambda1_prod_id)
 
         # some consistency tests and harmonization of / with bsc and ext params
         basic_params = [self.lambda1_params, self.lambda2_params]
-        # ToDo check if they all work if one of the two products is not available
-        self.harmonize_resolution_settings(basic_params) # ToDo uncomment
+
+        self.harmonize_resolution_settings(basic_params)
         self.ensure_different_wavelength(basic_params)
-        # self.ensure_order_of_wavelengths_for_ae(basic_params) # ToDo not here
         self.ensure_same_product_type(basic_params)
         self.get_valid_alt_range(basic_params)
 
