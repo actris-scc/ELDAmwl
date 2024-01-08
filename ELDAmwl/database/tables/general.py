@@ -149,9 +149,8 @@ class SccVersion(Base):
         server_default=text("'1970-01-01 00:00:00'"),
     )
     is_latest = Column(
-        BOOLEAN,
+        INTEGER,
         nullable=False,
-        server_default=text("'0'"),
     )
 
 
