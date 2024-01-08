@@ -16,13 +16,12 @@ from ELDAmwl.errors.exceptions import RepeatedNormalizeByshots
 from ELDAmwl.header import Header
 from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.utils.constants import ABOVE_MAX_ALT
-from ELDAmwl.utils.constants import ALL_OK
+from ELDAmwl.utils.constants import ALL_OK, P_ALL_OK
 from ELDAmwl.utils.constants import ALL_RANGE
 from ELDAmwl.utils.constants import ANALOG
 from ELDAmwl.utils.constants import BELOW_OVL
 from ELDAmwl.utils.constants import CROSS
 from ELDAmwl.utils.constants import FAR_RANGE
-from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
 from ELDAmwl.utils.constants import NEAR_RANGE
 from ELDAmwl.utils.constants import PARALLEL
@@ -195,6 +194,14 @@ class Signals(Columns):
         self.is_from_depol_components = False
 
     @property
+    def cfg(self):
+        return component.queryUtility(ICfg)
+
+    @property
+    def data_storage(self):
+        return component.queryUtility(IDataStorage)
+
+    @property
     def name(self):
         return hex(id(self))
 
@@ -221,6 +228,8 @@ class Signals(Columns):
         result.channel_id = xr.concat([enumerator.channel_id,
                                        denominator.channel_id],
                                       dim='nc')
+        result.ds['mol_backscatter'] = enumerator.ds.mol_backscatter
+        result.profile_qf = enumerator.profile_qf | denominator.profile_qf
 
         # todo: combine other attributes, e.g. detection type etc.
 
@@ -259,25 +268,29 @@ class Signals(Columns):
                                      }
 
         # initiate quality flag with values 'ALL_OK'
-        qf = np.ones((nc_ds.dims['time'], nc_ds.dims['level'])).astype(np.int8) * ALL_OK
+        qf = np.ones((nc_ds.dims['time'], nc_ds.dims['level'])).astype(np.short) * ALL_OK
         result.ds['qf'] = xr.DataArray(
             qf,
             coords=[nc_ds.time, nc_ds.level],
             dims=['time', 'level'])
         result.ds['qf'].attrs = {
             'long_name': 'quality_flag',
-            'flag_meanings': 'data_ok '
-            'negative_data '
-            'incomplete_overlap_not_correctable '
-            'above_max_altitude_range '
-            'cloud_contamination '
-            'above_Klett_reference_height '
-            'depol_ratio_larger_100% '
-            'backscatter_ratio_below_required_min_value',  # noqa E501
-            'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64],
-            'valid_range': [0, 107],
+            'flag_meanings': 'data_ok '  # 0
+            'negative_data '  # 1
+            'incomplete_overlap_not_correctable '  # 2
+            'above_max_altitude_range '  # 4
+            'not defined '  # 8
+            'above_Klett_reference_height '  # 16
+            'data outside physically meaningful range '  # 32
+            'aerosol free layer'  # 64
+            'calculation window outside profile height range'  # 128
+            'uncertainty too large'  # 256
+            'single data point without valid adjacent neighbors',  # 1024
+            # 'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64],
+            'flag_masks': [0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 1024],
+            'valid_range': [0, 1535],
             'units': '1',
-            '_FillValue': NC_FILL_BYTE,
+            '_FillValue': NC_FILL_INT,
         }
 
         # todo: make station_altitude a function of time (moving systems)
@@ -363,6 +376,10 @@ class Signals(Columns):
 
         result.get_raw_heightres()
         result.calc_mol_backscatter()
+        result.profile_qf = xr.DataArray(np.ones(nc_ds.dims['time'], dtype=int) * P_ALL_OK, # noqa E501
+                                         coords=[nc_ds.time],
+                                         dims=['time'],
+                                         )
 
         return result
 

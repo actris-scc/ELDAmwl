@@ -6,10 +6,17 @@ from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IDBFunc
+from ELDAmwl.component.interface import IParams
 from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import CouldNotFindProductsResolution
 from ELDAmwl.errors.exceptions import DetectionLimitZero
+from ELDAmwl.errors.exceptions import DifferentProductsResolution
+from ELDAmwl.errors.exceptions import DifferentProductTypeForAE
 from ELDAmwl.errors.exceptions import DifferentWlForLR
 from ELDAmwl.errors.exceptions import NotEnoughMCIterations
+from ELDAmwl.errors.exceptions import NoMwlProductDefined
+from ELDAmwl.errors.exceptions import SameWlForAE
+from ELDAmwl.errors.exceptions import NotFoundInStorage
 from ELDAmwl.errors.exceptions import SizeMismatch
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
@@ -17,6 +24,8 @@ from ELDAmwl.rayleigh import RayleighLidarRatio
 from ELDAmwl.signals import Signals
 from ELDAmwl.storage.cached_functions import sg_coeffs
 from ELDAmwl.storage.cached_functions import smooth_routine_from_db
+from ELDAmwl.utils.constants import AE_TYPES
+from ELDAmwl.utils.constants import ALL_OK, BELOW_MIN_BSCR
 from ELDAmwl.utils.constants import CALC_WINDOW_OUTSIDE_PROFILE
 from ELDAmwl.utils.constants import COMBINE_DEPOL_USE_CASES
 from ELDAmwl.utils.constants import EBSC
@@ -28,8 +37,13 @@ from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import MERGE_PRODUCT_USE_CASES
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
+from ELDAmwl.utils.constants import NEG_DATA, P_NEG_DATA, P_ALL_OK, P_EMPTY
+from ELDAmwl.utils.constants import PRODUCT_TYPE_NAME
 from ELDAmwl.utils.constants import RBSC
-from ELDAmwl.utils.constants import RESOLUTION_STR
+from ELDAmwl.utils.constants import RESOLUTION_STR, SINGLE_POINT
+from ELDAmwl.utils.constants import P_TOO_LARGE_INTEGRAL, P_VALUE_OUTSIDE_VALID_RANGE
+from ELDAmwl.utils.constants import UNCERTAINTY_TOO_LARGE, VALUE_OUTSIDE_VALID_RANGE
+from ELDAmwl.utils.numerical import integral_profile
 from zope import component
 
 import ELDAmwl.utils.constants
@@ -38,11 +52,12 @@ import xarray as xr
 
 
 class Products(Signals):
-    p_params = None
+    # p_params = None
     smooth_routine = None  # class to perform smoothing
     mwl_meta_id = None
-    params = None
+    params = None  # params of this specific product (ProductParams)
     num_scan_angles = None
+    resolution = None
 
     @classmethod
     def from_signal(cls, signal, p_params, **kw_args):
@@ -56,16 +71,19 @@ class Products(Signals):
         result.ds = deepcopy(signal.ds)
         result.ds['data'][:] = np.nan
         result.ds['err'][:] = np.nan
-        result.ds['qf'][:] = NC_FILL_BYTE
+        result.ds['qf'][:] = ALL_OK
         result.ds['binres'][:] = NC_FILL_INT
 
         result.station_altitude = signal.station_altitude
+        result.raw_heightres = signal.raw_heightres
         result.params = p_params
 
         # todo: copy other general parameter
-        result.emission_wavelength = signal.emission_wavelength
+        result.emission_wavelength = deepcopy(signal.emission_wavelength)
         result.num_scan_angles = signal.num_scan_angles
         result.ds['time_bounds'] = signal.ds['time_bounds']
+        result.ds['mol_backscatter'] = signal.ds.mol_backscatter
+        result.profile_qf = deepcopy(signal.profile_qf)
 
         result.mwl_meta_id = '{}_{}'.format(MWLFileStructure.NC_VAR_NAMES[p_params.general_params.product_type],
                                             round(float(result.emission_wavelength)))
@@ -74,6 +92,18 @@ class Products(Signals):
             result.smooth_routine = SmoothRoutine()(method_id=result.params.smooth_method)
 
         return result
+
+    @property
+    def product_type(self):
+        return self.params.product_type
+
+    @property
+    def product_id_str(self):
+        return self.params.prod_id_str
+
+    @property
+    def is_derived_product(self):
+        return self.params.general_params.is_derived_product
 
     def smooth(self, binres):
         """
@@ -84,7 +114,7 @@ class Products(Signals):
         Returns:
 
         """
-
+        self.logger.debug(f'smooth product {self.product_id_str}')
         if self.data.shape != binres.shape:
             raise SizeMismatch('bin resolution',
                                'product {}'.format(self.params.prod_id_str),
@@ -121,6 +151,196 @@ class Products(Signals):
             for lev in range(lsb, num_levels):
                 self.set_invalid_point(t, lev, CALC_WINDOW_OUTSIDE_PROFILE)
 
+    def screen_negative_data(self):
+        good_points_before = self.ds.qf.where(self.ds.qf == ALL_OK).count(dim='level')
+
+        self.flag_values_below_threshold(0, NEG_DATA)
+
+        good_points_after = self.ds.qf.where(self.ds.qf == ALL_OK).count(dim='level')
+        num_neg_points = good_points_before - good_points_after
+
+        if self.product_type in self.cfg.MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA:
+            max_percentage = self.cfg.MAX_ALLOWED_PERCENTAGE_OF_NEG_DATA[self.product_type]
+            bad_time_slices = np.where((num_neg_points / good_points_before) > max_percentage)
+            self.profile_qf[bad_time_slices] = self.profile_qf[bad_time_slices] | P_NEG_DATA
+        # todo: overwrite this method in angstroem exponents and skip (pass) the test
+
+    def flag_values_below_threshold(self, threshold, qf_flag):
+        # todo: how to handle systematic errors ?
+        max_profile = self.data + self.cfg.NEG_VALUES_ERR_FACTOR * self.err
+        bad_idxs = np.where(max_profile < threshold)
+        self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | qf_flag
+
+    def flag_values_above_threshold(self, threshold, qf_flag):
+        # todo: how to handle systematic errors ?
+        min_profile = self.data - self.cfg.NEG_VALUES_ERR_FACTOR * self.err
+        bad_idxs = np.where(min_profile > threshold)
+        self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | qf_flag
+
+    def screen_valid_data_range(self):
+        min_value = self.cfg.VALID_DATA_RANGE[self.product_type][0]
+        max_value = self.cfg.VALID_DATA_RANGE[self.product_type][1]
+
+        if min_value != self.cfg.INVALID:
+            self.flag_values_below_threshold(min_value, VALUE_OUTSIDE_VALID_RANGE)
+        if max_value != self.cfg.INVALID:
+            self.flag_values_above_threshold(max_value, VALUE_OUTSIDE_VALID_RANGE)
+
+        self.qc_profile_data_range()
+
+    def screen_too_large_errors(self):
+        bad_idxs = np.where((self.rel_err > self.cfg.MAX_ALLOWED_REL_ERROR[self.product_type]) &
+                            (self.err > self.cfg.MAX_ALLOWED_ABS_ERROR[self.product_type]))
+
+        self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | UNCERTAINTY_TOO_LARGE
+
+    def screen_for_aerosol_free_layers(self):
+        # can be done only for derived products, because the reference backscatter ratio at 532
+        # is obtained as first step of derived products
+        # todo: testing
+
+        if 'min_BscRatio' in self.params.__dict__:
+            min_bsc_ratio = self.params.min_BscRatio
+        elif self.product_type in self.cfg.MIN_BSC_RATIO:
+            min_bsc_ratio = self.cfg.MIN_BSC_RATIO[self.product_type]
+        else:
+            self.logger.warning('cannot perform screening for aerosol free layers '
+                                'because no minimum bsc ratio was defined')
+            return None
+
+        try:
+            bsc_ratio_profile = self.data_storage.bsc_ratio_532(self.resolution)
+            bad_idxs = np.where((bsc_ratio_profile.data < min_bsc_ratio) & (bsc_ratio_profile.ds.qf == ALL_OK))
+            self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | BELOW_MIN_BSCR
+        except NotFoundInStorage:
+            self.logger.error('screening for aerosol free layers '
+                                  f'for {PRODUCT_TYPE_NAME[self.product_type]} failed '
+                                  f'because no bsc ratio is available for {RESOLUTION_STR[self.resolution]} ')
+
+    def screen_for_single_points(self):
+        """ flag single data points which are not connected to other neighboring valid data points
+        """
+        # use dummy_data.rolling(level=3, min_periods=1, center=True).count() < 2
+        # if level==3 and count == 2, the point has itself and 1 neighbor
+        # if level==3 and count == 1, the point has itself or only 1 neighbor
+        # if level ==5 and count >=3, the point has itself and 2 neighbors in the 5 bins window
+        # strategy -> increase level iteratively
+
+        # select only data which are ok
+        dummy_data = self.data.where(self.ds.qf == ALL_OK)
+
+        # the common vertical resolution in m
+        vert_res_m = self.data_storage.common_vertical_resolution(self.resolution).data
+
+        # if some values in vert_res_m are smaller than the minimum layer depth, replace them with min_layer_depth
+        min_layer_depth = self.cfg.MIN_LAYER_DEPTH
+        vert_res_m[np.where(vert_res_m < min_layer_depth)[0]] = min_layer_depth
+
+        # common vertical resolution in bins
+        vert_res_bins = self.heightres_to_bins(vert_res_m)
+
+        # all bin resolutions which occur in this array
+        all_bin_res = np.unique(vert_res_bins)
+
+        # this list may contain also NC_FILL_INT -> remove it
+        all_bin_res = all_bin_res[np.where(all_bin_res != NC_FILL_INT)]
+
+        self.ds['heightres'] = self.data_storage.common_vertical_resolution(self.resolution)
+        self.ds['heightres_bin'] = self.data_storage.common_vertical_resolution(self.resolution)
+        self.ds['heightres_bin'].data = vert_res_bins
+        self.ds['counts'] = self.data_storage.common_vertical_resolution(self.resolution)
+        self.ds['counts'].data[:] = 0
+
+        for br in all_bin_res:
+
+            # data with all binres are taken into account when counting neighbors
+            counts = dummy_data.rolling(level=br, min_periods=1, center=True).count()
+
+            # comparison to number of required neighbors is done only for data points with vert_res_bins == br
+            bad_idxs = np.where((self.ds.qf == ALL_OK) & (counts < (br/2)) & (vert_res_bins == br))
+            self.ds.qf[bad_idxs] = self.ds.qf[bad_idxs] | SINGLE_POINT
+
+            br_idxs = np.where(vert_res_bins == br)
+            self.ds['counts'][br_idxs] = counts[br_idxs]
+
+    def qc_integral(self):
+        # todo: use only data points with qf == ALL_OK
+        max_integral = self.cfg.MAX_INTEGRAL[self.product_type]
+        dummy_data = self.data.where(self.ds.qf == ALL_OK)
+        dummy_heights = self.height.where(self.ds.qf == ALL_OK)
+
+        for t in np.where(self.profile_qf == P_ALL_OK)[0]:
+            int_profile = integral_profile(dummy_data[t].values,
+                                           range_axis=dummy_heights[t].values)
+                                           # dummy_data[t].values,
+                                           # range_axis=dummy_heights[t].values,
+                                           # extrapolate_ovl_factor=OVL_FACTOR,
+                                           # first_bin=self.first_valid_bin(t),
+                                           # last_bin=self.last_valid_bin(t))
+
+            # the last valid point of the integral profile (if any)
+            if int_profile is not None:
+                integral = int_profile[np.where(~np.isnan(int_profile))][-1]
+                if integral > max_integral:
+                    self.profile_qf[t] = self.profile_qf[t] | P_TOO_LARGE_INTEGRAL
+            else:
+                self.logger.warning('cannot perform qc integral check because no valid data in profile')
+
+    def qc_profile_data_range(self):
+        if self.product_type in self.cfg.MAX_ALLOWED_PERCENTAGE_OF_OUT_OF_RANGE_DATA:
+            max_percentage = self.cfg.MAX_ALLOWED_PERCENTAGE_OF_OUT_OF_RANGE_DATA[self.product_type]
+
+            good_points = self.ds.qf.where(self.ds.qf == ALL_OK).count(dim='level')
+            out_of_range_points = self.ds.qf.where(self.ds.qf == VALUE_OUTSIDE_VALID_RANGE).count(dim='level')
+            all_points = out_of_range_points + good_points
+
+            bad_time_slices = np.where((out_of_range_points / all_points) > max_percentage)
+            self.profile_qf[bad_time_slices] = self.profile_qf[bad_time_slices] | P_VALUE_OUTSIDE_VALID_RANGE
+
+    def retrieval_failed(self):
+        if (self.profile_qf != P_ALL_OK).all():
+            return True
+        else:
+            return False
+
+    def is_out_of_range(self):
+        if ((self.profile_qf & P_VALUE_OUTSIDE_VALID_RANGE) == P_VALUE_OUTSIDE_VALID_RANGE).all():
+            return True
+        else:
+            return False
+
+    def flag_empty_profiles(self):
+        empty_profiles = self.data.isnull().all('level')
+        self.profile_qf[empty_profiles] = self.profile_qf[empty_profiles] | P_EMPTY
+
+    def quality_control(self):
+        self.screen_too_large_errors()
+        self.screen_negative_data()
+
+        if self.is_derived_product:
+            self.screen_for_aerosol_free_layers()
+
+        if self.product_type in self.cfg.VALID_DATA_RANGE:
+            self.screen_valid_data_range()
+
+        self.screen_for_single_points()
+
+        self.flag_empty_profiles()
+
+        if self.product_type in self.cfg.MAX_INTEGRAL:
+            self.qc_integral()
+
+        invalid_time_slices = np.where(self.profile_qf != P_ALL_OK)
+        for t in invalid_time_slices[0]:
+            self.set_invalid_profile(t)
+
+        # todo: here is not the correct place to make this test. the product could be valid with other resolution
+        # if all time slices are labelled as corrupt profiles -> set the whole product retrieval as failed
+        # if self.retrieval_failed():
+        #     # measurement_params are all params of the measurement (MeasurementParams)
+        #     measurement_params = component.queryUtility(IParams)
+        #     self.params.mark_as_failed(measurement_params)
+
     def save_to_netcdf(self):
         pass
 
@@ -148,6 +368,7 @@ class Products(Signals):
             t_idx = 0
             idx = np.searchsorted(subset.altitude.values[t_idx], self.altitude.values[t_idx])
             subset.variables['data'][:, idx] = self.data[:, :]
+            subset.variables['quality_flag'][:, idx] = self.ds.qf[:, :]
             subset.variables['absolute_statistical_uncertainty'][:, idx] = self.err[:, :]
             if self.has_sys_err:
                 subset.variables['absolute_systematic_uncertainty_positive'][:, idx] = self.ds.sys_err_pos[:, :]
@@ -176,6 +397,10 @@ class ProductParams(Params):
         if self.general_params.is_basic_product:
             self.smooth_params = SmoothParams.from_db(general_params.prod_id)
             self.quality_params = QualityParams.from_db(general_params.prod_id)
+
+    def from_db_with_id(self, prod_id):
+        general_params = GeneralProductParams.from_id(prod_id)
+        self.from_db(general_params)
 
     def get_error_params(self, db_options):
         """reads error params
@@ -231,6 +456,50 @@ class ProductParams(Params):
 
         self.general_params.valid_alt_range.min_height = max(min_heights)
         self.general_params.valid_alt_range.max_height = min(max_heights)
+
+    def ensure_different_wavelength(self, params):
+        """applicable for derived products.
+        make sure that basic profiles are calculated for different wavelengths
+
+        Args:
+        params: list of basic params (:class:`ELDAmwl.products.ProductParams`)
+        """
+
+        wl = []
+
+        for param in params:
+            wl.append(param.general_params.emission_wavelength)
+
+        if min(wl) == max(wl):
+            raise SameWlForAE(self.prod_id_str)
+        else:
+            wl.sort()
+            self.angstroem_exponent_wavelength_bounds = wl
+
+
+    def ensure_same_product_type(self, params):
+        """applicable for derived products.
+        make sure that basic profiles are of the same type (all backscatters or all extinctions)
+
+        Args:
+        params: list of basic params (:class:`ELDAmwl.products.ProductParams`)
+        """
+
+        prod_type = []
+
+        for param in params:
+            prod_type.append(param.general_params.product_type)
+
+        n_b = prod_type.count(RBSC) + prod_type.count(EBSC)
+        n_e = prod_type.count(EXT)
+
+        if (n_b > 0) and (n_e > 0) :
+            raise DifferentProductTypeForAE(self.prod_id_str)
+        else:
+            if n_b > 0:
+                self.angstroem_exponent_type = AE_TYPES[1]    # AE Backscatter related
+            else:
+                self.angstroem_exponent_type = AE_TYPES[0]    # AE Extinction related
 
     @property
     def prod_id_str(self):
@@ -591,6 +860,8 @@ class SmoothSavGolay(BaseOperation):
     def run(self, **kwargs):
         """starts the calculation.
 
+        ToDo: compare with method with uncertainties
+
         in scipy.signal.savgol_filter
         (https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html),
         the filtering is done as
@@ -614,6 +885,9 @@ class SmoothSavGolay(BaseOperation):
         win = kwargs['window']
         err = kwargs['err']
         data = kwargs['data']
+
+        # todo: handling of qflags
+        # todo: improve calculation time
 
         sgc = sg_coeffs(win, 2)
         err_sm = np.sqrt(np.sum(np.power(err * sgc, 2)))

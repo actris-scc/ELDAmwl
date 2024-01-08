@@ -69,6 +69,10 @@ class BackscatterParams(ProductParams):
         dct.data_vars.retrieval_method = mwl_vars.bsc_method_var(self.bsc_method)
         self.calibration_params.to_meta_ds_dict(dct)
 
+    @property
+    def prod_id_bsc_ratio_str(self):
+        return f'{self.general_params.prod_id}_bscr'
+
 
 class IterBscParams(Params):
 

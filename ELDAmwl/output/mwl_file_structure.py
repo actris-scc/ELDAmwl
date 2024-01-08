@@ -8,7 +8,7 @@ from ELDAmwl.database.tables.backscatter import ElastBscMethod
 from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.depolarization import VLDRMethod
 from ELDAmwl.database.tables.extinction import ExtMethod
-from ELDAmwl.utils.constants import AE
+from ELDAmwl.utils.constants import AE, BSCR
 from ELDAmwl.utils.constants import ASS
 from ELDAmwl.utils.constants import CR
 from ELDAmwl.utils.constants import EBSC
@@ -94,6 +94,7 @@ class MWLFileStructure:
     NC_VAR_NAMES = {
         RBSC: 'backscatter',
         EBSC: 'backscatter',
+        BSCR: 'backscatter_ratio',
         EXT: 'extinction',
         LR: 'lidarratio',
         AE: 'angstroemexponent',
@@ -105,6 +106,7 @@ class MWLFileStructure:
     UNITS = {
         RBSC: '1/(m*sr)',
         EBSC: '1/(m*sr)',
+        BSCR: '1',
         EXT: '1/m',
         LR: 'sr',
         AE: '1',
@@ -116,9 +118,10 @@ class MWLFileStructure:
     LONG_NAMES = {
         RBSC: 'particle backscatter coefficient',
         EBSC: 'particle backscatter coefficient',
+        BSCR: 'backscatter ratio',
         EXT: 'particle extinction coefficient',
         LR: 'particle lidar ratio',
-        # AE: 'particle angstroem exponent',
+        AE: 'particle angstroem exponent',
         # CR: 'color ratio',
         VLDR: 'volume linear depolarization ratio',
         PLDR: 'particle linear depolarization ratio',
@@ -142,6 +145,14 @@ class MWLFileStructure:
             'ancillary_variables': self.ANC_VAR_ATT.format(self.NC_VAR_NAMES[p_type]),
             # 'coordinates': COO_ATTR,
         }
+
+    def qf_attrs(self, p_type):
+        return {
+            'long_name': f'quality flag of {self.NC_VAR_NAMES[p_type]}',
+            'units': 1,
+            'ancillary_variables': self.ANC_VAR_ATT.format(self.NC_VAR_NAMES[p_type]),
+        }
+    # todo: correct description and attributes
 
     def stat_err_attrs(self, p_type):
         return {

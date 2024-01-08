@@ -153,6 +153,9 @@ def integral_profile(data,
     ydata = deepcopy(data)
     xdata = deepcopy(range_axis)
 
+    if np.all(np.isnan(ydata)):
+        return None
+
     if last_bin is None:
         lb = ydata.size
     else:

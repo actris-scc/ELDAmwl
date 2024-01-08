@@ -1,5 +1,5 @@
 from ELDAmwl.products import Products
-
+from ELDAmwl.utils.constants import VALUE_OUTSIDE_VALID_RANGE
 
 class VLDRs(Products):
     """
@@ -22,6 +22,14 @@ class VLDRs(Products):
         result.has_sys_err = True
 
         return result
+
+    def screen_valid_data_range(self):
+        # todo: test if the mol depol is available here
+        min_value = self.ds.molecular_depolarization_ratio
+        max_value = self.cfg.VALID_DATA_RANGE[self.product_type][1]
+
+        self.flag_values_below_threshold(min_value, VALUE_OUTSIDE_VALID_RANGE)
+        self.flag_values_above_threshold(max_value, VALUE_OUTSIDE_VALID_RANGE)
 
     def to_meta_ds_dict(self, meta_data):
         # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})

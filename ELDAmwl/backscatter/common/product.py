@@ -32,7 +32,7 @@ class Backscatters(Products):
     def bsc_ratio(self):
         """xarray.DataArray(imensions = time, level): bckscatter ratio (dimensionless)
         """
-        result = self.data / self.mol_backscatter + 1
+        result = self.data / self.ds.mol_backscatter + 1
         return result
 
     def to_meta_ds_dict(self, meta_data):

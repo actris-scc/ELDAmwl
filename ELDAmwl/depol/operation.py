@@ -233,6 +233,7 @@ class CalcVLDRDefault(BaseOperation):
         self.result.ds = self.calc_routine.run(
             sigratio=data.ds,
             depol_params=params)
+        self.result.profile_qf = deepcopy(data.profile_qf)
 
         return self.result
 

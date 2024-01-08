@@ -7,7 +7,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.registry import registry
 from ELDAmwl.lidar_ratio.product import LidarRatios
-from ELDAmwl.utils.constants import MC
+from ELDAmwl.utils.constants import MC, ABOVE_MAX_ALT, CALC_WINDOW_OUTSIDE_PROFILE, ALL_OK, P_ALL_OK
 
 import numpy as np
 import zope
@@ -47,7 +47,6 @@ class LidarRatioFactoryDefault(BaseOperation):
     empty_lr = None
     result = None
     prod_id = None
-    resolution = None
 
     def prepare(self):
         self.param = self.kwargs['lr_param']
@@ -55,16 +54,16 @@ class LidarRatioFactoryDefault(BaseOperation):
         self.prod_id = self.param.prod_id_str
 
         # ext and bsc are deepcopies from the data storage
-        self.ext = self.data_storage.basic_product_common_smooth(self.param.ext_prod_id, self.resolution)
-        self.bsc = self.data_storage.basic_product_common_smooth(self.param.bsc_prod_id, self.resolution)
+        self.ext = self.data_storage.basic_product_qc(self.param.ext_prod_id, self.resolution)
+        self.bsc = self.data_storage.basic_product_qc(self.param.bsc_prod_id, self.resolution)
 
-        self.empty_lr = LidarRatios.init(self.ext, self.bsc, self.param)
+        self.empty_lr = LidarRatios.init(self.ext, self.bsc, self.param, self.resolution)
 
     def get_non_merge_product(self):
         # create Dict with all params which are needed for the calculation
         lr_params = Dict({
             'error_method': self.param.error_method,
-            'min_bsc_ratio': self.param.min_BscRatio_for_LR,
+            'min_bsc_ratio': self.param.min_BscRatio,
         })
 
         lr_routine = CalcLidarRatio()(
@@ -94,6 +93,8 @@ class LidarRatioFactoryDefault(BaseOperation):
             lr = self.get_non_merge_product()
         else:
             lr = None
+
+        lr.quality_control()
 
         return lr
 
@@ -192,7 +193,17 @@ class CalcLidarRatioDefault(BaseOperation):
         self.result.ds['data'] = ext.data / bsc.data
         self.result.ds['err'] = self.result.data * np.sqrt(
             np.power(ext.err / ext.err, 2) + np.power(bsc.err / bsc.err, 2))
+
+        self.result.resolution = ext.resolution
+        self.result.profile_qf = ext.profile_qf | bsc.profile_qf
         self.result.ds['qf'] = ext.qf | bsc.qf
+
+        for t in np.where(self.result.profile_qf == P_ALL_OK)[0]:
+            lvb = min(ext.last_valid_bin(t), bsc.last_valid_bin(t))
+            fvb = max(ext.first_valid_bin(t), bsc.first_valid_bin(t))
+            self.result.ds.qf[t, lvb:] = self.result.ds.qf[t, lvb:] | CALC_WINDOW_OUTSIDE_PROFILE
+            self.result.ds.qf[t, :fvb] = self.result.ds.qf[t, :fvb] | CALC_WINDOW_OUTSIDE_PROFILE
+
 
         return self.result
 

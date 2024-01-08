@@ -45,6 +45,8 @@ class DataStorage:
                 'binres_auto_smooth': Dict(),
                 'lidar_constants': Dict(),
                 'common_vertical_resolution': Dict(),
+                'clipped_vertical_resolution': Dict(),
+                'clipped_cloud_mask': Dict(),
                 'binres_common_smooth': Dict(
                     {
                         LOWRES: Dict(),
@@ -55,12 +57,27 @@ class DataStorage:
                         LOWRES: Dict(),
                         HIGHRES: Dict(),
                     }),
+                'basic_products_qc': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
                 'derived_products_common_smooth': Dict(
                     {
                         LOWRES: Dict(),
                         HIGHRES: Dict(),
                     }),
-                'final_product_matrix': Dict(
+                'derived_products_qc': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
+                'product_matrix': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
+                'qc_product_matrix': Dict(
                     {
                         LOWRES: Dict(),
                         HIGHRES: Dict(),
@@ -68,6 +85,10 @@ class DataStorage:
 
                 'header': None,
                 'cloud_mask': None,
+                'bsc_ratio_532': Dict({
+                    LOWRES: None,
+                    HIGHRES: None,
+                })
             })
 
     def set_number_of_scheduled_products(self, number):
@@ -111,10 +132,20 @@ class DataStorage:
         """
         self.__data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
 
+    def set_basic_product_qc(self, prod_id_str, res, new_product):
+        """write a basic, quality controlled product to storage
+        """
+        self.__data.basic_products_qc[res][prod_id_str] = new_product  # noqa E501
+
     def set_derived_products(self, prod_id_str, res, new_product):
         """write a derived product to storage
         """
         self.__data.derived_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
+
+    def set_derived_products_qc(self, prod_id_str, res, new_product):
+        """write a quality controlled, derived product to storage
+        """
+        self.__data.derived_products_qc[res][prod_id_str] = new_product  # noqa E501
 
     def set_lidar_constant(self, wl, new_lidar_constant):
         """write a lidar constant to storage
@@ -124,12 +155,19 @@ class DataStorage:
             channel_id = str(lc.channel_id)
             self.__data.lidar_constants[channel_id] = lc
 
-    def set_final_product_matrix(self, prod_type, res, new_dataset):
+    def set_product_matrix(self, prod_type, res, new_dataset):
         """write a dataset with common grid (wavelength, time, altitude) to storage
 
         one dataset per product type and resolution
         """
-        self.__data.final_product_matrix[res][prod_type] = new_dataset  # noqa E501
+        self.__data.product_matrix[res][prod_type] = new_dataset  # noqa E501
+
+    def set_qc_product_matrix(self, prod_type, res, new_dataset):
+        """write a quality controlled dataset with common grid (wavelength, time, altitude) to storage
+
+        one dataset per product type and resolution
+        """
+        self.__data.qc_product_matrix[res][prod_type] = new_dataset  # noqa E501
 
     def set_binres_common_smooth(self, prod_id_str, resolution, new_res_array):
         """
@@ -151,6 +189,39 @@ class DataStorage:
 
         """
         self.__data.common_vertical_resolution[resolution] = new_res_array
+
+    def set_clipped_vertical_resolution(self, resolution, new_array):
+        """writes an array with common vertical resolution into storage.
+        the dimensions of the array are clipped to dimensions of data
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+            new_array: xarray.DataArray
+
+        """
+        self.__data.clipped_vertical_resolution[resolution] = new_array
+
+    def set_clipped_cloud_mask(self, resolution, new_array):
+        """writes an array with cloud mask into storage.
+        the dimensions of the array are clipped to dimensions of data
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+            new_array: xarray.DataArray
+
+        """
+        self.__data.clipped_cloud_mask[resolution] = new_array
+
+    def set_bsc_ratio_532(self, res, new_bsc_ratio):
+        """
+        writes a profile of bsc ratio at 532 nm into storage
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+            new_bsc_ratio: xarray.DataArray
+
+        """
+
+        self.__data.bsc_ratio_532[res] = new_bsc_ratio
 
     def elpp_signals(self, prod_id_str):
         """copies of all ELPP signals of one product
@@ -423,6 +494,56 @@ class DataStorage:
             raise NotFoundInStorage('{0} {1}'.format(RESOLUTION_STR[resolution], ''),
                                     '{0} {1}'.format('vertical resolution', RESOLUTION_STR[resolution]))
 
+    def clipped_vertical_resolution(self, resolution):
+        """copy of the profile of common vertical resolution of all products.
+        dimension of profile is clipped to the dimension of corresponding data
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`xarray.DataArray`: deepcopy of the requested resolution profile
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and resolution was found in storage
+        """
+        if resolution in RESOLUTIONS:
+            result = self.__data.clipped_vertical_resolution[resolution]
+        else:
+            result = None
+
+        if isinstance(result, xr.DataArray):
+            return deepcopy(result)
+        else:
+            raise NotFoundInStorage('{0} {1}'.format(RESOLUTION_STR[resolution], ''),
+                                    '{0} {1}'.format('clipped vertical resolution', RESOLUTION_STR[resolution]))
+
+    def clipped_cloud_mask(self, resolution):
+        """copy of the profile of cloud_mask.
+        dimension of profile is clipped to the dimension of corresponding data
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`xarray.DataArray`: deepcopy of the requested cloud mask profile
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and resolution was found in storage
+        """
+        if resolution in RESOLUTIONS:
+            result = self.__data.clipped_cloud_mask[resolution]
+        else:
+            result = None
+
+        if isinstance(result, xr.DataArray):
+            return deepcopy(result)
+        else:
+            raise NotFoundInStorage('{0} {1}'.format(RESOLUTION_STR[resolution], ''),
+                                    '{0} {1}'.format('clipped cloud_mask', RESOLUTION_STR[resolution]))
+
     def binres_common_smooth(self, prod_id_str, resolution):
         """ copy of a bin resolution profile of a product
 
@@ -473,8 +594,30 @@ class DataStorage:
             'product',
             'basic products with common smoothing with')
 
+    def basic_product_qc(self, prod_id, resolution):
+        """copy of a basic product, derived with common smooth after quality control
+
+        Args:
+            prod_id_str (str) or (int):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`Products` deepcopy of the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+
+        return self._get_prod_res_entry(
+            str(prod_id),
+            resolution,
+            'basic_products_qc',
+            'product',
+            'basic products after qc')
+
     def derived_product_common_smooth(self, prod_id_str, resolution):
-        """copy of a basic product, derived with common smooth
+        """copy of a derived product, derived with common smooth
 
         Args:
             prod_id_str (str):  product id
@@ -494,6 +637,28 @@ class DataStorage:
             'derived_products_common_smooth',
             'product',
             'derived products with common smoothing with')
+
+    def derived_product_qc(self, prod_id_str, resolution):
+        """copy of a quality controlled derived product, derived with common smooth
+
+        Args:
+            prod_id_str (str):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`Products`: deepcopy of the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+
+        return self._get_prod_res_entry(
+            prod_id_str,
+            resolution,
+            'derived_products_qc',
+            'product',
+            'derived products after quality control')
 
     def product_common_smooth(self, prod_id_str, resolution):
         """copy of a product, derived with common smooth
@@ -520,27 +685,93 @@ class DataStorage:
 
         return result
 
-    def final_product_matrix(self, prod_type, res):
+    def product_qc(self, prod_id_str, resolution):
+        """copy of a quality controlled product
+
+        Args:
+            prod_id_str (str):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`Products`: deepcopy of the requested product
+
+        Raises:
+             NotFoundInStorage: if no product for the given product id
+                is found in storage
+        """
+        try:
+            result = self.basic_product_qc(prod_id_str, resolution)
+        except NotFoundInStorage:
+            try:
+                result = self.derived_product_qc(prod_id_str, resolution)
+            except NotFoundInStorage:
+                raise NotFoundInStorage('product {0}'.format(prod_id_str),
+                                        'quality controlled products with {0}'.format(RESOLUTION_STR[resolution]))
+
+        return result
+
+    def product_matrix(self, prod_type, res):
         """ 3-dimensional (wavelength, time, altitude) data matrix
 
-        Product matrix contains all product profiles and cloud mask.
+        Product matrix contains all product profiles (as they were calculated) and cloud mask.
         All data are on the same grid of time, altitude and wavelength.
         Except cloud mask, which has no wavelength dimension.
         Missing data are filled with nan.
 
         Args:
-            prod_type :
+            prod_type : can be RBSC (=0), EXT (=1), LR (=2), EBSC (=3), AE (=13), CR (=14), VLDR (=15), or PLDR (=16)
             res (int): can be LOWRES (=0) or HIGHRES (=1)
 
         Returns:
             :obj:'xarray.Dataset': deepcopy of the final product matrix
 
         """
-        return deepcopy(self.__data.final_product_matrix[res][prod_type])
+        try:
+            result = deepcopy(self.__data.product_matrix[res][prod_type])
+        except NotFoundInStorage:
+            raise NotFoundInStorage('product matrix of type {0}'.format(prod_type),
+                                    'products with common smoothing with {0}'.format(RESOLUTION_STR[res]))
+
+        return result
+
+    def qc_product_matrix(self, prod_type, res):
+        """ 3-dimensional (wavelength, time, altitude) quality controlled data matrix
+
+        Product matrix contains all product profiles (as they were calculated) and cloud mask.
+        All data are on the same grid of time, altitude and wavelength.
+        Except cloud mask, which has no wavelength dimension.
+        Missing data are filled with nan.
+
+        Args:
+            prod_type : can be RBSC (=0), EXT (=1), LR (=2), EBSC (=3), AE (=13), CR (=14), VLDR (=15), or PLDR (=16)
+            res (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:'xarray.Dataset': deepcopy of the final product matrix
+
+        """
+        try:
+            result = deepcopy(self.__data.qc_product_matrix[res][prod_type])
+        except NotFoundInStorage:
+            raise NotFoundInStorage('product matrix of type {0}'.format(prod_type),
+                                    'products with common smoothing with {0}'.format(RESOLUTION_STR[res]))
+
+        return result
+
+    def bsc_ratio_532(self, res):
+        """ 2 dimensional (time, altitude) backscatter ratio at 532 nm for checking for aerosol free layers
+
+        Args:
+            res (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:'xarray.DataArray': deepcopy of the backscatter ratio at 532 nm
+        """
+        return deepcopy(self.__data.bsc_ratio_532[res])
 
     def number_of_derived_products(self):
         count = 0
-        for res, res_data in self._DataStorage__data.final_product_matrix.items():
+        for res, res_data in self._DataStorage__data.product_matrix.items():
             for prod_type in res_data.keys():
                 product_data = res_data[prod_type]
                 for wl in range(product_data.dims['wavelength']):

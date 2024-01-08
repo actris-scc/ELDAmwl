@@ -5,7 +5,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoValidDataPointsForCalibration, IntegrationFailed
 from ELDAmwl.rayleigh import RayleighLidarRatio
-from ELDAmwl.utils.constants import NC_FILL_INT
+from ELDAmwl.utils.constants import NC_FILL_INT, ABOVE_KLETT_REF
 from ELDAmwl.utils.numerical import closest_bin
 from ELDAmwl.utils.numerical import integral_profile
 
@@ -180,6 +180,8 @@ class CalcBscProfileKF(BaseOperation):
         bsc['calibration_bin'] = xr.DataArray(calibr_bin,
                                               coords=[bsc.time],
                                               dims=['time'])
+        for t in range(num_times):
+            bsc['qf'][t][calibr_bin[t]:-1] = bsc['qf'][t][calibr_bin[t]:-1] | ABOVE_KLETT_REF
         return bsc
 
 

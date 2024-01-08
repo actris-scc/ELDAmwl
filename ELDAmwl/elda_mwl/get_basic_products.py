@@ -2,6 +2,7 @@
 """Classes for getting basic products
 """
 from copy import deepcopy
+from ELDAmwl.backscatter.bsc_ratio.product import BackscatterRatios
 from ELDAmwl.backscatter.common.calibration.operation import FindCommonBscCalibrWindow
 from ELDAmwl.backscatter.common.vertical_resolution.operation import ElastBscEffBinRes
 from ELDAmwl.backscatter.common.vertical_resolution.operation import ElastBscUsedBinRes
@@ -66,9 +67,10 @@ class GetBasicProductsDefault(BaseOperation):
         self.product_params = self.kwargs['product_params']
         self.smooth_type = self.product_params.smooth_params.smooth_type
 
-        self.bsc_calibr_window = FindCommonBscCalibrWindow()(
-            data_storage=self.data_storage,
-            bsc_params=self.product_params.all_bsc_products()).run()
+        if len(self.product_params.all_bsc_products()) > 0:
+            self.bsc_calibr_window = FindCommonBscCalibrWindow()(
+                data_storage=self.data_storage,
+                bsc_params=self.product_params.all_bsc_products()).run()
 
         if self.smooth_type == AUTO:
             self.get_auto_smooth_products()
@@ -150,20 +152,19 @@ class GetBasicProductsDefault(BaseOperation):
         self.logger.info('get bin resolution of products for common smoothing')
         sp = self.product_params.smooth_params
 
-        for prod_param in self.product_params.basic_products():
-            pid = prod_param.prod_id_str
-            used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
-            for res in RESOLUTIONS:
+        for res in RESOLUTIONS:
+            for prod_param in self.product_params.basic_products(res=res):
+                pid = prod_param.prod_id_str
+                used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
                 # todo: get binres for all signals involved in the product and then store the max of them
                 # dummy_sig is a deepcopy from data storage
                 dummy_sig = self.data_storage.prepared_signals(pid)[0]
-                if prod_param in self.product_params.all_products_of_res(res):
-                    binres = dummy_sig.get_binres_from_fixed_smooth(
-                        sp,
-                        res,
-                        used_binres_routine=used_binres_routine,
-                    )
-                    self.data_storage.set_binres_common_smooth(pid, res, binres)
+                binres = dummy_sig.get_binres_from_fixed_smooth(
+                    sp,
+                    res,
+                    used_binres_routine=used_binres_routine,
+                )
+                self.data_storage.set_binres_common_smooth(pid, res, binres)
 
     def get_auto_smooth_products(self):
         """get all basic products with automatic smoothing
@@ -183,7 +184,9 @@ class GetBasicProductsDefault(BaseOperation):
         self.get_extinctions_fixed_smooth()
         self.get_raman_bsc_fixed_smooth()
         self.get_elast_bsc_fixed_smooth()
+        self.get_bsc_ratios_fixed_smooth()
         self.get_vldr_fixed_smooth()
+        self.single_products_quality_control()
 
     def get_extinctions_auto_smooth(self):
         """get extinction products with automatic smoothing
@@ -202,22 +205,22 @@ class GetBasicProductsDefault(BaseOperation):
         """get extinction products with pre-defined smoothing
 
         """
-        if len(self.product_params.extinction_products()) == 0:
-            self.logger.warning('no extinction products will be calculated')
-        for ext_param in self.product_params.extinction_products():
-            self.logger.info('get extinction at {0} nm (product id {1})'.format(
-                ext_param.general_params.emission_wavelength, ext_param.prod_id_str))
+        for res in RESOLUTIONS:
+            ext_params = self.product_params.extinction_products(res=res)
+            if len(ext_params) == 0:
+                self.logger.warning(f'no extinction products will be calculated with {RESOLUTION_STR[res]}')
+            for ext_param in ext_params:
+                self.logger.info('get extinction at {0} nm (product id {1})'.format(
+                    ext_param.general_params.emission_wavelength, ext_param.prod_id_str))
 
-            for res in RESOLUTIONS:
-                if ext_param.calc_with_res(res):
-                    extinction = ExtinctionFactory()(
-                        data_storage=self.data_storage,
-                        ext_param=ext_param,
-                        autosmooth=False,
-                        resolution=res,
-                    ).get_product()
-                    self.data_storage.set_basic_product_common_smooth(
-                        ext_param.prod_id_str, res, extinction)
+                extinction = ExtinctionFactory()(
+                    data_storage=self.data_storage,
+                    ext_param=ext_param,
+                    autosmooth=False,
+                    resolution=res,
+                ).get_product()
+                self.data_storage.set_basic_product_common_smooth(
+                    ext_param.prod_id_str, res, extinction)
 
     def get_raman_bsc_auto_smooth(self):
         for bsc_param in self.product_params.raman_bsc_products():
@@ -271,6 +274,7 @@ class GetBasicProductsDefault(BaseOperation):
                 if bsc_param in self.product_params.all_products_of_res(res):
                     smooth_bsc = deepcopy(bsc)
                     smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
+                    smooth_bsc.resolution = res
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_bsc)
             del bsc
@@ -309,12 +313,36 @@ class GetBasicProductsDefault(BaseOperation):
                     if bsc_param in self.product_params.all_products_of_res(res):
                         smooth_bsc = deepcopy(bsc)
                         smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
+                        smooth_bsc.resolution = res
                         self.data_storage.set_basic_product_common_smooth(
                             prod_id, res, smooth_bsc)
                 del bsc
             except ELDAmwlException as e:
                 self.logger.error('cannot get backscatter product {}'.format(bsc_param.prod_id_str))
                 bsc_param.mark_as_failed(self.product_params)
+
+    def get_bsc_ratios_fixed_smooth(self):
+        """"get backscatter ratios from all scheduled backscatter coefficients
+        """
+
+        for res in RESOLUTIONS:
+            bsc_params = self.product_params.all_bsc_products(res=res)
+            num_bsc = len(bsc_params)
+            if num_bsc == 0:
+                self.logger.warning(f'no backscatter ratio can be calculated with '
+                                    f'{RESOLUTION_STR[res]} because no bsc coef is available')
+            for bsc_param in bsc_params:
+                prod_id = bsc_param.prod_id_str
+                wl = bsc_param.general_params.emission_wavelength
+                self.logger.info(f'get backscatter ratio at {wl} nm '
+                                 f'from product {prod_id} '
+                                 f'with {RESOLUTION_STR[res]} resolution')
+                # find corresponding bsc profile
+                bsc = self.data_storage.basic_product_common_smooth(prod_id, res)
+                # calculate backscatter ratio and put it in data storage
+                bsc_ratio = BackscatterRatios.from_bsc(bsc)
+                self.data_storage.set_basic_product_common_smooth(
+                    bsc_ratio.product_id_str, res, bsc_ratio)
 
     def get_vldr_fixed_smooth(self):
         if len(self.product_params.vldr_products()) == 0:
@@ -342,6 +370,16 @@ class GetBasicProductsDefault(BaseOperation):
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_vldr)
             del vldr
+
+    def single_products_quality_control(self):
+        for res in RESOLUTIONS:
+            all_products = self.product_params.basic_products(res=res)
+            # todo: add bsc ratio
+            for prod_param in all_products:
+                prod_id = prod_param.prod_id_str
+                product = self.data_storage.basic_product_common_smooth(prod_id, res)
+                product.quality_control()
+                self.data_storage.set_basic_product_qc(prod_id, res, product)
 
 
 class GetBasicProducts(BaseOperationFactory):

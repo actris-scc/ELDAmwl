@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
 from ELDAmwl.component.interface import ILogger
-from ELDAmwl.utils.constants import NC_FILL_BYTE, NEG_TEST_STD_FACTOR
+from ELDAmwl.utils.constants import NC_FILL_BYTE, NEG_TEST_STD_FACTOR, ALL_OK
 from ELDAmwl.utils.constants import NC_FILL_INT
 from zope import component
 
@@ -15,6 +15,7 @@ class Columns(object):
     """
 
     has_sys_err = None
+    profile_qf = None
 
     def __init__(self):
         self.ds = xr.Dataset(
@@ -42,6 +43,11 @@ class Columns(object):
     @property
     def logger(self):
         return component.queryUtility(ILogger)
+
+    def set_invalid_profile(self, time):
+        self.ds['data'][time,:] = np.nan
+        self.ds['err'][time, :] = np.nan
+        self.ds['binres'][time, :] = NC_FILL_INT
 
     def set_invalid_point(self, time, level, qf):
         self.ds['data'][time, level] = np.nan
@@ -91,7 +97,7 @@ class Columns(object):
         return da
 
     def _relative_error(self):
-        return self.err[:] / self.data[:]
+        return abs(self.err[:] / self.data[:])
 
     def _is_negative(self):
         return (self.data[:] + NEG_TEST_STD_FACTOR * self.err[:]) < 0

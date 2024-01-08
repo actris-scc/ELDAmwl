@@ -25,17 +25,30 @@ AE = 13
 CR = 14
 VLDR = 15
 PLDR = 16
+BSCR = 17
 
-PRODUCT_TYPES = [RBSC, EXT, LR, EBSC, MWL, AE, CR, VLDR, PLDR]
+PRODUCT_TYPES = [RBSC, EXT, LR, EBSC, MWL, AE, CR, VLDR, PLDR, BSCR]
+PRODUCT_TYPE_NAME = {RBSC: 'raman_backscatter',
+                     EXT: 'extinction',
+                     LR: 'lidar_ratio',
+                     EBSC: 'elastic_backscatter',
+                     MWL: 'multi_wavelength_product',
+                     AE: 'angstroem_exponent',
+                     CR: 'color_ratio',
+                     VLDR: 'vldr',
+                     PLDR: 'pldr',
+                     BSCR: 'basc_ratio',
+}
+
 BASIC_PRODUCT_TYPES = [RBSC, EXT, EBSC, VLDR]
 
 # todo: put info on USE_CASES in db tables
 COMBINE_DEPOL_USE_CASES = {RBSC: [7, 9, 10, 11, 12, 18, 17],
                            EBSC: [3, 4, 7, 8]}
 
-MERGE_PRODUCT_USE_CASES = {EXT: [2, 4, 5],
+MERGE_PRODUCT_USE_CASES = {EXT: [2, 4, 5, 13],
                            RBSC: [2, 4, 6, 12, 13, 14, 15, 16, 19],
-                           EBSC: [2, 5, 6, 9]}
+                           EBSC: [2, 5, 6, 9, 13]}
 
 # ====== signal detection types ======
 ANALOG = 1
@@ -116,6 +129,13 @@ FIXED = 1
 
 LR_INPUT_METHODS = [PROFILE, FIXED]
 
+# ====== Angstroem exponent types ======
+ERel = 0    # Extinction related
+BRel = 1    # Backscatter related
+
+AE_TYPES = [ERel, BRel]
+
+
 # ====== Raman bsc algorithms ======
 # todo: write method ids in db and read from there
 ANSM = 0  # Ansmann
@@ -136,16 +156,26 @@ NC_FILL_STR = ''
 
 MWL_PROD_ID_DEFAULT = 0
 
-# ====== quality flags ======
+# ====== quality flags of data points ======
 ALL_OK = 0
 NEG_DATA = 1
 BELOW_OVL = 2
 ABOVE_MAX_ALT = 4
-HAS_CLOUD = 8
+# HAS_CLOUD = 8
 ABOVE_KLETT_REF = 16
-INVALID_DEPOL = 32
+# INVALID_DEPOL = 32
+VALUE_OUTSIDE_VALID_RANGE = 32
 BELOW_MIN_BSCR = 64
-CALC_WINDOW_OUTSIDE_PROFILE = 124
+CALC_WINDOW_OUTSIDE_PROFILE = 128
+UNCERTAINTY_TOO_LARGE = 256
+SINGLE_POINT = 1024
+
+# ====== quality flags of complete profiles ======
+P_ALL_OK = 0
+P_NEG_DATA = 1
+P_TOO_LARGE_INTEGRAL = 2
+P_EMPTY = 4
+P_VALUE_OUTSIDE_VALID_RANGE = 32
 
 # ===================
 # Time strings
@@ -171,6 +201,7 @@ RANGE_BOUNDARY_KM = RANGE_BOUNDARY / 1000.
 # settings for retrieval of lidar constants
 # =========================================
 ANGSTROEM_DEFAULT = 1.6
+MOL_ANGSTROEM_DEFAULT = 4
 ASSUMED_LR_DEFAULT = 50
 ASSUMED_LR_ERROR_DEFAULT = 10
 LOWEST_HEIGHT_RANGE = 100  # [m]

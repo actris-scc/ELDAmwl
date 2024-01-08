@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, NO_MWL_PRODUCT_DEFINED, NO_PRODUCT_OPTIONS_IN_DB
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -8,6 +8,7 @@ from ELDAmwl.errors.error_codes import DB_ERROR
 from ELDAmwl.errors.error_codes import DIFFERENT_BSC_OPTIONS_IN_MEASUREMENT
 from ELDAmwl.errors.error_codes import DIFFERENT_CLOUD_MASK_EXISTS
 from ELDAmwl.errors.error_codes import DIFFERENT_HEADER_EXISTS
+from ELDAmwl.errors.error_codes import DIFFERENT_PRODUCT_TYPE_FOR_AE
 from ELDAmwl.errors.error_codes import DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR
 from ELDAmwl.errors.error_codes import ERR_INVALID_NB_OF_MC_ITERATIONS
 from ELDAmwl.errors.error_codes import ERROR_LOG_DIR_NOT_EXISTS
@@ -15,20 +16,24 @@ from ELDAmwl.errors.error_codes import ERROR_SIG_FILE_NOT_EXISTS
 from ELDAmwl.errors.error_codes import INTEGRATION_FAILED
 from ELDAmwl.errors.error_codes import NC_OPEN_ERROR
 from ELDAmwl.errors.error_codes import NEG_BSC_FOR_LIDAR_CONSTANT
+from ELDAmwl.errors.error_codes import NO_BASIC_PRODUCT_FOR_DERIVED_PRODUCT
 from ELDAmwl.errors.error_codes import NO_BSC_CAL_OPTIONS_IN_DB
 from ELDAmwl.errors.error_codes import NO_BSC_FOR_LIDAR_CONSTANT
 from ELDAmwl.errors.error_codes import NO_MC_OPTIONS_IN_DB
+from ELDAmwl.errors.error_codes import NO_MWL_PRODUCT_DEFINED
 from ELDAmwl.errors.error_codes import NO_PARAMS_FOR_DEPOL_UNCERTAINTY_IN_DB
+from ELDAmwl.errors.error_codes import NO_PRODUCT_OPTIONS_IN_DB
 from ELDAmwl.errors.error_codes import NO_PRODUCTS_GENERATED
 from ELDAmwl.errors.error_codes import NO_STABLE_SOLUTION_FOR_KLETT
 from ELDAmwl.errors.error_codes import NO_VALID_POINTS_FOR_CAL
 from ELDAmwl.errors.error_codes import NOT_ENOUGH_MC_SAMPLES
 from ELDAmwl.errors.error_codes import REPEATED_ATTEMPT_TO_CORRECT_MOL_TRANSM
 from ELDAmwl.errors.error_codes import REPEATED_ATTEMPT_TO_NORMALZE_BY_SHOTS
+from ELDAmwl.errors.error_codes import SAME_WL_FOR_AE
 from ELDAmwl.errors.error_codes import USE_CASE_NOT_IMPLEMENTED
 from ELDAmwl.errors.error_codes import WRONG_COMMAND_LINE_PARAM
 from ELDAmwl.errors.error_codes import ZERO_DETECTION_LIMIT
-
+from ELDAmwl.errors.error_codes import DIFFERENT_PRODS_RESOLUTION, COULD_NOT_FIND_PRODS_RESOLUTION
 
 class ELDAmwlException(BaseException):
     """
@@ -255,6 +260,20 @@ class DifferentWlForLR(ELDAmwlException):
                'have different wavelengths'.format(self.product_id))
 
 
+class BasicProductMissingForDerivedProduct(ELDAmwlException):
+    """raised when no one of the necessary basic products of a derived product was not attributed to the mwl product """
+    return_value = NO_BASIC_PRODUCT_FOR_DERIVED_PRODUCT
+
+    def __init__(self, product_id, missing_product_id):
+        self.product_id = product_id
+        self.missing_id = missing_product_id
+
+    def __str__(self):
+        return('the backscatter product '
+               'for the retrieval of lidar ratio (product_id={0}) '
+               'was not attributed to the mwl product'.format(self.product_id))
+
+
 class CalRangeHigherThanValid(ELDAmwlException):
     """raised when the range for finding the calibration window is higher
     than vertical range for product calculation"""
@@ -478,3 +497,52 @@ class NoMwlProductDefined(ELDAmwlException):
     def __str__(self):
         return ('no multi-wavelength product is defined for the system_id {0}'.format(self.system_id))
 
+class DifferentProductsResolution(ELDAmwlException):
+    """raised when the temporal and/or vertical resolutions are not the same for all the products of a mwl_product_id"""
+    return_value = DIFFERENT_PRODS_RESOLUTION
+
+    def __init__(self, mwl_product_id):
+        self.mwl_product_id = mwl_product_id
+
+    def __str__(self):
+        return('the temporal and/or vertical resolutions are '
+               'not consistent for all the products configured (mwl_product_id={0})'
+               .format(self.mwl_product_id))
+
+class CouldNotFindProductsResolution(ELDAmwlException):
+    """raised when the temporal and vertical resolutions are not defined for a mwl_product_id"""
+    return_value = COULD_NOT_FIND_PRODS_RESOLUTION
+
+    def __init__(self, mwl_product_id):
+        self.mwl_product_id = mwl_product_id
+
+    def __str__(self):
+        return('the temporal and vertical resolutions are '
+               'not available for mwl_product_id={0}'
+               .format(self.mwl_product_id))
+
+class SameWlForAE(ELDAmwlException):
+    """raised when the two products for the angstroem exponent
+    retrieval have the same wavelength"""
+    return_value = SAME_WL_FOR_AE
+
+    def __init__(self, mwl_product_id):
+        self.mwl_product_id = mwl_product_id
+
+    def __str__(self):
+        return('the products for the retrieval '
+               'of angstroem exponent (product_id={0}) '
+               'have the same wavelength'.format(self.mwl_product_id))
+
+class DifferentProductTypeForAE(ELDAmwlException):
+    """raised when the two products for the angstroem exponent
+    retrieval are not of the same type (b/e)"""
+    return_value = DIFFERENT_PRODUCT_TYPE_FOR_AE
+
+    def __init__(self, mwl_product_id):
+        self.mwl_product_id = mwl_product_id
+
+    def __str__(self):
+        return('the products for the retrieval '
+               'of angstroem exponent (product_id={0}) '
+               'are not of the same type'.format(self.mwl_product_id))

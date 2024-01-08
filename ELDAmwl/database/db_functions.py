@@ -3,6 +3,7 @@
 from addict import Dict
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.database.db import DBUtils
+from ELDAmwl.database.tables.angstroem import AngstroemExpOption
 from ELDAmwl.database.tables.backscatter import BscCalibrLowestHeight
 from ELDAmwl.database.tables.backscatter import BscCalibrRangeSearchMethod
 from ELDAmwl.database.tables.backscatter import BscCalibrUpperHeight
@@ -43,6 +44,7 @@ from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import MWL
 from ELDAmwl.utils.constants import RBSC
 from sqlalchemy.orm import aliased
+from sqlalchemy import func
 from zope import component
 from zope import interface
 
@@ -612,6 +614,10 @@ class DBFunc(DBUtils):
         ).filter(
             PreparedSignalFile.measurements_id == measurement_id,
         )
+        # self.logger.debug(f'query: {products}')
+        # self.logger.debug(f'product count: {products.count()}')
+
+
 
         if products.count() == 0:
             self.logger.error(f'no ELPP signals available for measurement {measurement_id}')
@@ -982,6 +988,7 @@ class DBFunc(DBUtils):
                 product id of mwl product
 
             """
+
         products = self.session.query(SystemProduct, Products) \
             .filter(SystemProduct.system_id == system_id) \
             .filter(SystemProduct.product_id == Products.ID) \
@@ -1167,3 +1174,72 @@ class DBFunc(DBUtils):
             self.logger.error('wrong number ({0}) of product status entries in db '.format(prod_status.count()))
 
         self.session.commit()
+
+
+    def read_angstroem_exp_params(self, product_id):
+        """ function to read options of an lidar ratio product from db.
+        """
+        options = self.session.query(AngstroemExpOption) \
+            .filter(AngstroemExpOption.product_id == product_id)
+
+        if options.count() == 1:
+            return options[0]
+        else:
+            self.logger.error(
+                'wrong number of angstroem exponent options ({0})'.format(options.count())
+            )
+
+    def get_products_resolution_query(self, mwl_prod_id):
+        """ function to read the vertical and temporal resolution of the products from db.
+
+            This function reads from the db table preproc_options
+            which are the vertical and temporal resolution of the products.
+
+            Args:
+                mwl_prod_id (int): product id of mwl product
+
+            Returns:
+                list of individual product IDs corresponding to this mwl product
+
+        """
+        products_resolution = self.session.query(
+            MWLproductProduct.mwl_product_id,
+            func.min(PreProcOptions.preprocessing_integration_time).label('min_preprocessing_integration_time'),
+            func.max(PreProcOptions.preprocessing_integration_time).label('max_preprocessing_integration_time'),
+            func.min(PreProcOptions.preprocessing_vertical_resolution).label('min_preprocessing_vertical_resolution'),
+            func.max(PreProcOptions.preprocessing_vertical_resolution).label('max_preprocessing_vertical_resolution'),
+        ).filter(
+            MWLproductProduct.mwl_product_id == mwl_prod_id,
+        ).filter(
+            MWLproductProduct.product_id == Products.ID,
+        ).filter(
+            PreProcOptions.product_id == Products.ID
+        ).group_by(MWLproductProduct.mwl_product_id)
+
+
+        if products_resolution.count() == 1:
+            same_temporal_resolution = products_resolution[0].min_preprocessing_integration_time \
+                                       == products_resolution[0].max_preprocessing_integration_time
+            same_vertical_resolution = products_resolution[0].min_preprocessing_vertical_resolution \
+                                       == products_resolution[0].max_preprocessing_vertical_resolution
+
+            if same_temporal_resolution:
+                if same_vertical_resolution:
+                    # self.logger.info('all products have the same temporal and vertical resolution')
+                    return True
+                else:
+                    self.logger.error('there are different vertical resolutions configured')
+                    return False
+            else:
+                if same_vertical_resolution:
+                    self.logger.error('there are different temporal resolutions configured')
+                    return False
+                else:
+                    self.logger.error('there are different temporal and vertical resolutions configured')
+                    return False
+        elif products_resolution.count() == 0:
+            self.logger.error('there are no vertical and temporal resolutions available for this measurement')
+            return None
+        else:
+            self.logger.warning('can there be more than one mwl_product_ID each time?')
+            return None

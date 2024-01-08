@@ -6,7 +6,7 @@ class LidarRatios(Products):
     time series of lidar ratio profiles
     """
     @classmethod
-    def init(cls, ext, bsc, p_params, **kwargs):
+    def init(cls, ext, bsc, p_params, resolution, **kwargs):
         """calculates LidarRatios from a backscatter and an extinction profile.
 
         Args:
@@ -15,6 +15,7 @@ class LidarRatios(Products):
             p_params (ELDAmwl.operations.lidar_ratio.params.LidarRatioParams)
         """
         result = super(LidarRatios, cls).from_signal(ext, p_params, **kwargs)
+        result.resolution = resolution
 
         return result
 

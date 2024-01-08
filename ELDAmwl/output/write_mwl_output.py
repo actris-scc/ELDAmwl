@@ -75,19 +75,19 @@ class WriteMWLOutputDefault(BaseOperation):
 
     def write_groups(self):
         for group in MWLFileStructure.MAIN_GROUPS:
-            # todo: pass if group is empty
             # convert Dict into Dataset
-            ds = xr.Dataset(
-                data_vars=self.data[group].data_vars,
-                coords={},
-                attrs=self.data[group].attrs)
-            # write attributes and variables into netCDF file
-            ds.to_netcdf(
-                path=self.out_filename,
-                mode=MWLFileStructure.WRITE_MODE[group],
-                group=MWLFileStructure.GROUP_NAME[group],
-                format='NETCDF4')
-            ds.close()
+            if group in self.data:
+                ds = xr.Dataset(
+                    data_vars=self.data[group].data_vars,
+                    coords={},
+                    attrs=self.data[group].attrs)
+                # write attributes and variables into netCDF file
+                ds.to_netcdf(
+                    path=self.out_filename,
+                    mode=MWLFileStructure.WRITE_MODE[group],
+                    group=MWLFileStructure.GROUP_NAME[group],
+                    format='NETCDF4')
+                ds.close()
 
         for mwl_id, md in self.meta_data.items():
             ds = xr.Dataset(
@@ -120,29 +120,30 @@ class WriteMWLOutputDefault(BaseOperation):
         self.collect_meta_data()
 
         for res in RESOLUTIONS:
-            # collect all data with this resolution
-            group_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
-
             # all product types that are available for this resolution
             p_types = self.product_params.prod_types(res=res)
 
-            # todo cloudmask shall have common altitude, time and timebounds variables
-            group_data.data_vars.cloud_mask = self.data_storage.get_common_cloud_mask(res)
-            group_data.data_vars.vertical_res = self.data_storage.common_vertical_resolution(res)
+            if len(p_types) > 0:
+                # collect all data with this resolution
+                group_data = Dict({'attrs': Dict(), 'data_vars': Dict()})
 
-            for ptype in p_types:
-                p_matrix = self.data_storage.final_product_matrix(ptype, res)
-                var_name = MWLFileStructure.NC_VAR_NAMES[ptype]
-                group_data.data_vars[var_name] = p_matrix.data
-                group_data.data_vars['error_{}'.format(var_name)] = p_matrix.absolute_statistical_uncertainty
-                group_data.data_vars['{}_meta_data'.format(var_name)] = p_matrix.meta_data
-                if ptype in MWLFileStructure.PRODUCTS_WITH_SYS_ERROR:
-                    group_data.data_vars['positive_systematic_error_{}'.format(var_name)] = \
-                        p_matrix.absolute_systematic_uncertainty_positive
-                    group_data.data_vars['negative_systematic_error_{}'.format(var_name)] = \
-                        p_matrix.absolute_systematic_uncertainty_negative
+                # todo cloudmask shall have common altitude, time and timebounds variables
+                group_data.data_vars.cloud_mask = self.data_storage.clipped_cloud_mask(res)
+                group_data.data_vars.vertical_res = self.data_storage.clipped_vertical_resolution(res)
 
-            self.data[MWLFileStructure.RES_GROUP[res]] = group_data
+                for ptype in p_types:
+                    p_matrix = self.data_storage.product_matrix(ptype, res)
+                    var_name = MWLFileStructure.NC_VAR_NAMES[ptype]
+                    group_data.data_vars[var_name] = p_matrix.data
+                    group_data.data_vars['error_{}'.format(var_name)] = p_matrix.absolute_statistical_uncertainty
+                    group_data.data_vars['{}_meta_data'.format(var_name)] = p_matrix.meta_data
+                    if ptype in MWLFileStructure.PRODUCTS_WITH_SYS_ERROR:
+                        group_data.data_vars['positive_systematic_error_{}'.format(var_name)] = \
+                            p_matrix.absolute_systematic_uncertainty_positive
+                        group_data.data_vars['negative_systematic_error_{}'.format(var_name)] = \
+                            p_matrix.absolute_systematic_uncertainty_negative
+
+                self.data[MWLFileStructure.RES_GROUP[res]] = group_data
 
         self.write_groups()
         self.register_to_db()
