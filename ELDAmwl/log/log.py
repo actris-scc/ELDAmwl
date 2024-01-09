@@ -3,7 +3,7 @@ from ELDAmwl.component.interface import ICfg
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.errors.exceptions import LogPathNotExists
-from ELDAmwl.utils.path_utils import dir_not_found_hint
+from ELDAmwl.utils.path_utils import dir_not_found_hint, abs_file_path
 from logging import ERROR
 from logging import FileHandler
 from logging import Formatter
@@ -122,19 +122,20 @@ class Logger:
         Has to be setup when the output filename is known
         """
         if self.cfg.log_level_file != 'QUIET':
-            if not os.path.exists(self.cfg.LOG_PATH):
-                self.error(ERROR, """Log file directory "{path}" does not exists""".format(path=self.cfg.LOG_PATH))
-                dir_not_found_hint(self.cfg.LOG_PATH)
+            log_file_path = abs_file_path(self.cfg.LOG_PATH)
+            if not os.path.exists(log_file_path):
+                self.error(ERROR, """Log file directory "{path}" does not exists""".format(path=log_file_path))
+                dir_not_found_hint(log_file_path)
                 raise LogPathNotExists
 
-            log_file_path = os.path.join(
-                self.cfg.LOG_PATH,
+            log_file_name = os.path.join(
+                log_file_path,
                 '{id}.log'.format(id=self.meas_id),
             )
             if not self.cfg.APPEND_LOG_FILE:
-                file_handler = FileHandler(log_file_path, mode='w')
+                file_handler = FileHandler(log_file_name, mode='w')
             else:
-                file_handler = FileHandler(log_file_path)
+                file_handler = FileHandler(log_file_name)
             file_handler_formatter = formatter
             file_handler.setFormatter(file_handler_formatter)
             file_handler.setLevel(self.cfg.log_level_file)

@@ -3,6 +3,7 @@ import os
 from dynaconf import Dynaconf
 from ELDAmwl.component.interface import ICfg
 from ELDAmwl.errors.exceptions import ConfigFileNotFound
+from ELDAmwl.utils.misc import current_environment
 from ELDAmwl.utils.path_utils import abs_file_path
 from os.path import exists
 from pathlib import Path
@@ -18,7 +19,7 @@ def register_config(args):
     if not exists(config_dir / 'settings.yaml'):
         raise ConfigFileNotFound(config_dir / 'settings.yaml')
 
-    if os.environ['env'] == 'testing':
+    if current_environment == 'testing':
         settings_files = [config_dir / 'settings.yaml']
     else:
         if not exists(config_dir / '.secrets.yaml'):
@@ -29,7 +30,7 @@ def register_config(args):
         envvar_prefix='DYNACONF',  # replaced "DYNACONF" by 'DYNACONF'
         settings_files=settings_files,
         environments=True,
-        env=os.environ['env'],
+        env=current_environment(),
     )
 
     # `envvar_prefix` = export envvars with `export DYNACONF_FOO=bar`.

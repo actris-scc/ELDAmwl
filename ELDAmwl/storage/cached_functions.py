@@ -9,11 +9,12 @@ from scipy.signal import savgol_coeffs
 from zope import component
 
 from ELDAmwl.config import register_config
+from ELDAmwl.utils.path_utils import abs_file_path
 
 register_config(args=None)
 
 DEFAULT_ORDER = 2
-SG_PARAMS_FILENAME = component.queryUtility(ICfg).SAV_GOLAY_FILE
+SG_PARAMS_FILENAME = abs_file_path(component.queryUtility(ICfg).SAV_GOLAY_FILE)
 # SG_PARAMS_FILENAME = 'sg_params.pickle'
 
 SG_PARAMS = None
