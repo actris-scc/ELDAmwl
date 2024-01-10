@@ -7,7 +7,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import NoProductsGenerated
 from ELDAmwl.output.mwl_file_structure import MWLFileStructure
-from ELDAmwl.utils.constants import EBSC, VLDR, NEG_DATA, ALL_OK, BSCR, RESOLUTION_STR
+from ELDAmwl.utils.constants import EBSC, VLDR, NEG_DATA, ALL_OK, BSCR, RESOLUTION_STR, PRODUCT_TYPE_NAME, PRODUCT_TYPES
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import LR
 from ELDAmwl.utils.constants import RBSC
@@ -41,7 +41,6 @@ class GetProductMatrixDefault(BaseOperation):
                 self.result[res][ptype] = None
             self.result[res]['cloud_mask'] = None
             self.result[res]['vertical_resolution'] = None
-
 
     def get_common_shape(self, res):
 
@@ -210,6 +209,34 @@ class GetProductMatrixDefault(BaseOperation):
 
         return empty_products
 
+    def qc(self):
+        """ identify failed product retrievals"""
+
+        # all possibly failed products
+        failed_products = []
+
+        # are there empty product matrices ?
+        for res in RESOLUTIONS:
+            self.empty_products[res] = self.find_empty_products(res)
+
+            # which individual products contributed to these matrices ?
+            for ptype in self.empty_products[res]:
+                self.failed_products[res] = self.product_params.all_products_of_type(ptype, res=res)
+                failed_products = failed_products + self.failed_products[res]
+
+        # check for all possibly failed products whether there is a valid retrieval with another resolution
+        for param in failed_products:
+            failed = True
+            for res in RESOLUTIONS:
+                if self.product_params.product_table and param not in self.failed_products[res]:
+                    failed = False
+            if failed:
+                param.mark_as_failed(self.product_params)
+
+
+            self.empty_wavelengths[res] = self.find_empty_wavelengths(res)
+
+
     def clip_data(self, res):
         """remove product types, wavelengths, time slices and altitude ranges without valid data
         from product matrices"""
@@ -224,6 +251,7 @@ class GetProductMatrixDefault(BaseOperation):
 
         if empty_time_slices.all():
             self.logger.error(f'no valid products for {RESOLUTION_STR[res]}')
+            self.result[res] = None
             return None
 
         valid_time_slices = np.where(~empty_time_slices)[0]
@@ -233,6 +261,9 @@ class GetProductMatrixDefault(BaseOperation):
         for ptype in self.p_types[res]:
             if ptype in empty_products:
                 self.result[res][ptype] = None
+                self.logger.warning(f'no valid data were derived for product type {PRODUCT_TYPE_NAME[ptype]} '
+                                    f'with resolution {RESOLUTION_STR[res]}')
+
             else:
                 a_matrix = self.result[res][ptype]
                 a_matrix = a_matrix.isel({'level': valid_height_bins,

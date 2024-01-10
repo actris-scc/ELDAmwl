@@ -77,7 +77,7 @@ class QualityControlDefault(BaseOperation):
                     retrieval_failed = retrieval_failed & profile.retrieval_failed()
 
             if retrieval_failed:
-                result.append(prod_id)
+                result.append(prod_param)
 
         return result
 

@@ -37,7 +37,7 @@ from ELDAmwl.utils.constants import MC
 from ELDAmwl.utils.constants import MERGE_PRODUCT_USE_CASES
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import NC_FILL_INT
-from ELDAmwl.utils.constants import NEG_DATA, P_NEG_DATA, P_ALL_OK, P_EMPTY
+from ELDAmwl.utils.constants import NEG_DATA, P_NEG_DATA, P_ALL_OK, P_EMPTY, P_ALL_FLAGGED
 from ELDAmwl.utils.constants import PRODUCT_TYPE_NAME
 from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR, SINGLE_POINT
@@ -330,16 +330,21 @@ class Products(Signals):
         if self.product_type in self.cfg.MAX_INTEGRAL:
             self.qc_integral()
 
+        # if the profile is flagged by some retrieval problem -> set all data as nan
         invalid_time_slices = np.where(self.profile_qf != P_ALL_OK)
         for t in invalid_time_slices[0]:
             self.set_invalid_profile(t)
 
-        # todo: here is not the correct place to make this test. the product could be valid with other resolution
-        # if all time slices are labelled as corrupt profiles -> set the whole product retrieval as failed
-        # if self.retrieval_failed():
-        #     # measurement_params are all params of the measurement (MeasurementParams)
-        #     measurement_params = component.queryUtility(IParams)
-        #     self.params.mark_as_failed(measurement_params)
+        # if all data points are flagged, set profile flag, but keep individual values
+        # operate on a copy of the data array
+        dummy_data = deepcopy(self.data)
+        for qf in self.cfg.CRITICAL_FLAGS:
+            # where returns values where condition is fulfilled, nan otherwise
+            # data points where the qf is set are filled with nan
+            dummy_data = dummy_data.where((self.qf & qf) != qf)
+
+        bad_time_slices = dummy_data.isnull().all(dim='level').values
+        self.profile_qf[bad_time_slices] = self.profile_qf[bad_time_slices] | P_ALL_FLAGGED
 
     def save_to_netcdf(self):
         pass

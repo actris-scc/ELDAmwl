@@ -133,15 +133,16 @@ class WriteMWLOutputDefault(BaseOperation):
 
                 for ptype in p_types:
                     p_matrix = self.data_storage.product_matrix(ptype, res)
-                    var_name = MWLFileStructure.NC_VAR_NAMES[ptype]
-                    group_data.data_vars[var_name] = p_matrix.data
-                    group_data.data_vars['error_{}'.format(var_name)] = p_matrix.absolute_statistical_uncertainty
-                    group_data.data_vars['{}_meta_data'.format(var_name)] = p_matrix.meta_data
-                    if ptype in MWLFileStructure.PRODUCTS_WITH_SYS_ERROR:
-                        group_data.data_vars['positive_systematic_error_{}'.format(var_name)] = \
-                            p_matrix.absolute_systematic_uncertainty_positive
-                        group_data.data_vars['negative_systematic_error_{}'.format(var_name)] = \
-                            p_matrix.absolute_systematic_uncertainty_negative
+                    if p_matrix is not None:
+                        var_name = MWLFileStructure.NC_VAR_NAMES[ptype]
+                        group_data.data_vars[var_name] = p_matrix.data
+                        group_data.data_vars['error_{}'.format(var_name)] = p_matrix.absolute_statistical_uncertainty
+                        group_data.data_vars['{}_meta_data'.format(var_name)] = p_matrix.meta_data
+                        if ptype in MWLFileStructure.PRODUCTS_WITH_SYS_ERROR:
+                            group_data.data_vars['positive_systematic_error_{}'.format(var_name)] = \
+                                p_matrix.absolute_systematic_uncertainty_positive
+                            group_data.data_vars['negative_systematic_error_{}'.format(var_name)] = \
+                                p_matrix.absolute_systematic_uncertainty_negative
 
                 self.data[MWLFileStructure.RES_GROUP[res]] = group_data
 

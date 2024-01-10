@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for getting basic products
 """
+from addict import Dict
 from copy import deepcopy
 from ELDAmwl.backscatter.bsc_ratio.product import BackscatterRatios
 from ELDAmwl.backscatter.common.calibration.operation import FindCommonBscCalibrWindow
@@ -22,7 +23,7 @@ from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.extinction.operation import ExtinctionFactory
 from ELDAmwl.extinction.vertical_resolution.operation import ExtEffBinRes
 from ELDAmwl.extinction.vertical_resolution.operation import ExtUsedBinRes
-from ELDAmwl.utils.constants import AUTO
+from ELDAmwl.utils.constants import AUTO, P_ALL_OK
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import FIXED

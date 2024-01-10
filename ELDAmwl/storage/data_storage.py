@@ -774,9 +774,10 @@ class DataStorage:
         for res, res_data in self._DataStorage__data.product_matrix.items():
             for prod_type in res_data.keys():
                 product_data = res_data[prod_type]
-                for wl in range(product_data.dims['wavelength']):
-                    if not np.all(np.isnan(product_data['data'][wl])):
-                        count += 1
+                if product_data is not None:
+                    for wl in range(product_data.dims['wavelength']):
+                        if not np.all(np.isnan(product_data['data'][wl])):
+                            count += 1
 
         return count
 
