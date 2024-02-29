@@ -6,7 +6,7 @@ from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.errors.exceptions import DifferentCloudMaskExists
 from ELDAmwl.errors.exceptions import NotFoundInStorage
 from ELDAmwl.products import Products
-from ELDAmwl.utils.constants import HIGHRES, RESOLUTIONS
+from ELDAmwl.utils.constants import HIGHRES, RESOLUTIONS, RBSC, EBSC
 from ELDAmwl.utils.constants import LOWRES
 from ELDAmwl.utils.constants import NC_FILL_BYTE
 from ELDAmwl.utils.constants import RESOLUTION_STR
@@ -771,8 +771,12 @@ class DataStorage:
 
     def number_of_derived_products(self):
         count = 0
-        for res, res_data in self._DataStorage__data.product_matrix.items():
-            for prod_type in res_data.keys():
+        for resolutions, res_data in self._DataStorage__data.product_matrix.items():
+            prod_types = list(res_data.keys())
+            # at this point, if EBSC and RBSC were calculated, both matrices have the same content
+            if (RBSC in prod_types) and (EBSC in prod_types):
+                prod_types.pop(RBSC)
+            for prod_type in prod_types:
                 product_data = res_data[prod_type]
                 if product_data is not None:
                     for wl in range(product_data.dims['wavelength']):
