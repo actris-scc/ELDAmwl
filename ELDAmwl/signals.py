@@ -229,7 +229,8 @@ class Signals(Columns):
                                        denominator.channel_id],
                                       dim='nc')
         result.ds['mol_backscatter'] = enumerator.ds.mol_backscatter
-        result.ds['mol_depolarization_ratio'] = enumerator.ds.mol_depolarization_ratio
+        if 'mol_depolarization_ratio' in enumerator.ds:
+            result.ds['mol_depolarization_ratio'] = enumerator.ds.mol_depolarization_ratio
         result.profile_qf = enumerator.profile_qf | denominator.profile_qf
 
         # todo: combine other attributes, e.g. detection type etc.
