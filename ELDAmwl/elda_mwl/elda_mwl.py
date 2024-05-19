@@ -51,7 +51,8 @@ PARAM_CLASSES = {RBSC: RamanBscParams,
                  EBSC: ElastBscParams,
                  EXT: ExtinctionParams,
                  LR: LidarRatioParams,
-                 AE: AngstroemExpParams}
+                 AE: AngstroemExpParams,
+                 VLDR: VLDRParams}
 
 
 @zope.interface.implementer(IParams)

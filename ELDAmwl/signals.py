@@ -229,6 +229,7 @@ class Signals(Columns):
                                        denominator.channel_id],
                                       dim='nc')
         result.ds['mol_backscatter'] = enumerator.ds.mol_backscatter
+        result.ds['mol_depolarization_ratio'] = enumerator.ds.mol_depolarization_ratio
         result.profile_qf = enumerator.profile_qf | denominator.profile_qf
 
         # todo: combine other attributes, e.g. detection type etc.
@@ -361,6 +362,7 @@ class Signals(Columns):
                 pol_calibr_idx = int(nc_ds.depolarization_calibration_index[idx_in_file])  # noqa E501
                 result.pol_calibr = DepolarizationCalibration.from_nc_file(nc_ds,  # noqa E501
                                                                            pol_calibr_idx)  # noqa E501
+                result.ds['mol_depolarization_ratio'] = nc_ds.molecular_depolarization_ratio[pol_calibr_idx]
 
         if 'assumed_particle_lidar_ratio' in nc_ds:
             lidar_ratio = nc_ds.assumed_particle_lidar_ratio

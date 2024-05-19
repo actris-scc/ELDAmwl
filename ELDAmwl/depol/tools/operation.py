@@ -135,7 +135,7 @@ class CalcVldrVFreudenthaler22(BaseOperation):
             + depol_params.sys_err_upper_bound_c * vldr_data_sqr
 
         # todo: test if the mol depol is available here
-        vldr['molecular_depolarization_ratio'] = sigratio['molecular_depolarization_ratio']
+        vldr['molecular_depolarization_ratio'] = sigratio['mol_depolarization_ratio']
 
         return vldr
 

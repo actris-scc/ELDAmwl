@@ -368,6 +368,7 @@ class GetBasicProductsDefault(BaseOperation):
                 if depol_param in self.product_params.all_products_of_res(res):
                     smooth_vldr = deepcopy(vldr)
                     smooth_vldr.smooth(self.data_storage.binres_common_smooth(prod_id, res))
+                    smooth_vldr.resolution = res
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_vldr)
             del vldr
