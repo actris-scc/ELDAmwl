@@ -23,7 +23,8 @@ jobs:
       #  Check out repo and set up Python   #
       #-------------------------------------#
       - name: Check out the repository
-        uses: actions/checkout@v3
+
+        uses: actions/checkout@v4
       - name: "Setup Python, Poetry and Dependencies"
         uses: packetcoders/action-setup-cache-python-poetry@main
         with:
@@ -35,4 +36,6 @@ jobs:
       #------------------------#
       - name: Run tests
         run: |
-          export POETRY_ENV=testing; poetry run coverage run --source=ELDAmwl -m pytest
+          poetry run coverage run --source=ELDAmwl -m pytest
+        env: 
+          env: testing
