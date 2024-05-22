@@ -19,7 +19,7 @@ def register_config(args):
     if not exists(config_dir / 'settings.yaml'):
         raise ConfigFileNotFound(config_dir / 'settings.yaml')
 
-    if current_environment == 'testing':
+    if current_environment() == 'testing':
         settings_files = [config_dir / 'settings.yaml']
     else:
         if not exists(config_dir / '.secrets.yaml'):
