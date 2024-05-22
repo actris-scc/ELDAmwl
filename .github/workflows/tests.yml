@@ -35,4 +35,6 @@ jobs:
       #------------------------#
       - name: Run tests
         run: |
-          export env=testing; poetry run coverage run --source=ELDAmwl -m pytest
+          poetry run coverage run --source=ELDAmwl -m pytest
+        env: 
+          env: testing
