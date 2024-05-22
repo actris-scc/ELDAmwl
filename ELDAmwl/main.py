@@ -107,7 +107,7 @@ class Main:
         #                        SCC database. default = info')
 
         args = parser.parse_args()
-        print(args)
+        print(f'command line arguments {args}')
 
         return args
 
