@@ -15,6 +15,7 @@ from ELDAmwl.errors.exceptions import WrongCommandLineParameter
 from ELDAmwl.log.log import register_db_logger
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.monte_carlo.operation import register_monte_carlo
+from ELDAmwl.storage.cached_functions import gen_sg_params
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION, EXIT_CODE_NONE, MWL_PROD_ID_DEFAULT
 from zope import component
@@ -65,6 +66,8 @@ def elda_setup_components(args=None):
     # REgister MontaCarlo Adapter
     register_monte_carlo()
 
+    gen_sg_params()
+
 
 class Main:
 
@@ -107,7 +110,7 @@ class Main:
         #                        SCC database. default = info')
 
         args = parser.parse_args()
-        print(f'command line arguments {args}')
+        # print(f'command line arguments {args}')
 
         return args
 

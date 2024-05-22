@@ -11,30 +11,33 @@ from zope import component
 from ELDAmwl.config import register_config
 from ELDAmwl.utils.path_utils import abs_file_path
 
-register_config(args=None)
-
-DEFAULT_ORDER = 2
-SG_PARAMS_FILENAME = abs_file_path(component.queryUtility(ICfg).SAV_GOLAY_FILE)
-# SG_PARAMS_FILENAME = 'sg_params.pickle'
-
+# register_config(args=None)
+#
+# DEFAULT_ORDER = 2
+# SG_PARAMS_FILENAME = abs_file_path(component.queryUtility(ICfg).SAV_GOLAY_FILE)
+# # SG_PARAMS_FILENAME = 'sg_params.pickle'
+#
 SG_PARAMS = None
 
 def gen_sg_params():
     global SG_PARAMS
-    sg_param = {}
-    for window_length in range(10, 100):
-        sg_param[window_length]=savgol_coeffs(window_length, DEFAULT_ORDER)
-    with open(SG_PARAMS_FILENAME, 'wb') as outfile:
-        pickle.dump(sg_param, outfile)
-    SG_PARAMS = sg_param
+    # register_config(args=None)
 
-# this code is no part of gen_sg_params()
-try:
-    with open(SG_PARAMS_FILENAME, 'rb') as infile:
-        SG_PARAMS = pickle.load(infile)
-except Exception as e:
-    gen_sg_params()
+    DEFAULT_ORDER = 2
+    SG_PARAMS_FILENAME = abs_file_path(component.queryUtility(ICfg).SAV_GOLAY_FILE)
+    # SG_PARAMS_FILENAME = 'sg_params.pickle'
 
+    # this code is no part of gen_sg_params()
+    try:
+        with open(SG_PARAMS_FILENAME, 'rb') as infile:
+            SG_PARAMS = pickle.load(infile)
+    except Exception as e:
+        sg_param = {}
+        for window_length in range(10, 100):
+            sg_param[window_length]=savgol_coeffs(window_length, DEFAULT_ORDER)
+        with open(SG_PARAMS_FILENAME, 'wb') as outfile:
+            pickle.dump(sg_param, outfile)
+        SG_PARAMS = sg_param
 
 def sg_coeffs(window_length, order):
     return SG_PARAMS[window_length]

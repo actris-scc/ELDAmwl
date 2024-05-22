@@ -6,6 +6,7 @@ from ELDAmwl.elda_mwl.elda_mwl import register_params
 from ELDAmwl.log.log import register_logger
 from ELDAmwl.main import Main
 from ELDAmwl.monte_carlo.operation import register_monte_carlo
+from ELDAmwl.storage.cached_functions import gen_sg_params
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.tests.database.create_test_db import register_dbconstructor
 from ELDAmwl.tests.database.create_test_db import TEST_CONNECT_STRING
@@ -45,6 +46,8 @@ class Test(unittest.TestCase):
         register_params()
         # Bring up Monte Carlo Adapter
         register_monte_carlo()
+        # generate savitzky golay coefficients
+        gen_sg_params()
 
     def test_20181017oh00(self):
         Main().elda(
