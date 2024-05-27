@@ -277,7 +277,7 @@ class GetProductMatrixDefault(BaseOperation):
         self.result[res]['cloud_mask'] = cm.sel({'level': a_matrix.level, 'time': a_matrix.time})
 
         vert_res = self.data_storage.common_vertical_resolution(res)
-        self.result[res]['vertical_resolution'] = vert_res.sel({'level': a_matrix.level})
+        self.result[res]['vertical_resolution'] = vert_res.sel({'level': a_matrix.level, 'time': a_matrix.time})
 
     def filter_data(self, res):
         """set data points with critical quality flags to nan

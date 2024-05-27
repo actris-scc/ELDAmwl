@@ -248,7 +248,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
                 valid_heights.intersection_update(set(self.all_results[wwidth][channel][t].range))
 
             if len(valid_heights) == 0:
-                self.logger.warning(f'could not fine calibration for time slice {t} and window width {wwidth}')
+                self.logger.warning(f'could not find calibration for time slice {t} and window width {wwidth}')
 
                 # 2) if not successful, try all other window widths
                 w = 0
