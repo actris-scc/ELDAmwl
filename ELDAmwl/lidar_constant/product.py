@@ -41,7 +41,7 @@ class LidarConstantData(object):
         result.measurement_id = meas_params.meas_id
         result.system_id = meas_params.system_id
         result.product_id = bsc.params.prod_id
-        if not sig.is_from_depol_components:
+        if sig.channel_id.size == 1:
             result.channel_id = int(sig.channel_id.values)
         else:
             result.channel_id = sig.channel_id.values
