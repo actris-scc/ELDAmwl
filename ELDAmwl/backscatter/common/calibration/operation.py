@@ -30,6 +30,7 @@ class FindCommonBscCalibrWindow(BaseOperationFactory):
     def __call__(self, **kwargs):
         assert 'data_storage' in kwargs
         assert 'bsc_params' in kwargs
+        # todo: check whether all bsc params have the same method_id
         self.method_id = kwargs['bsc_params'][0].calibration_params.cal_range_search_algorithm
 
         res = super(FindCommonBscCalibrWindow, self).__call__(**kwargs)

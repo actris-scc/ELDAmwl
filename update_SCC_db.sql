@@ -161,6 +161,7 @@
 --    (15, 'Klett', 'CalcBscProfileKF'),
 --    (16, 'iter', 'CalcBscProfileIter');
 --
+--  correct a classname
 UPDATE `eldamwl_class_names` set classname = "FindBscCalibrWindowAsInELDA" where method = "minimum";
 --/*
 --* ===================================================================================
@@ -185,7 +186,7 @@ UPDATE `eldamwl_class_names` set classname = "FindBscCalibrWindowAsInELDA" where
 --
 --/*
 --* ===================================================================================
---* create a table with different options for smoothing and fillt it
+--* create a table with different options for smoothing and fill it
 --* ===================================================================================
 --*/
 --
