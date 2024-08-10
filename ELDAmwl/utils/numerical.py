@@ -257,3 +257,31 @@ def m_to_km(height):
 
 def km_to_m(height):
     return height * 1000
+
+
+def calc_resolution(axis_array):
+    result = None
+
+    diff = np.diff(axis_array, axis=-1)
+
+    if len(axis_array.shape) > 1:
+        d0 = diff[:, 0].reshape(axis_array.shape[0], 1)
+    else:
+        d0 = diff[0]
+    # reshape is needed to allow broadcasting of the 2 arrays
+
+    if np.all(abs(diff[:] - d0) < 1e-10):
+        result = d0
+
+    return result
+
+
+def get_rangebin_axis(range_axis):
+    range_res = calc_resolution(range_axis)
+
+    # the first range value is always at half range_res
+    first_bin = int(((range_axis[0] - range_res / 2) / range_res).round())
+
+    rangebin_axis = np.arange(first_bin, range_axis.size)
+
+    return rangebin_axis
