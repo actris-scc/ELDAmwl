@@ -33,14 +33,15 @@ def gen_sg_params():
             SG_PARAMS = pickle.load(infile)
     except Exception as e:
         sg_param = {}
-        for window_length in range(10, 100):
-            sg_param[window_length]=savgol_coeffs(window_length, DEFAULT_ORDER)
+        for window_length in range(DEFAULT_ORDER + 1, 100):
+            sg_param[window_length] = savgol_coeffs(window_length, DEFAULT_ORDER)
         with open(SG_PARAMS_FILENAME, 'wb') as outfile:
             pickle.dump(sg_param, outfile)
         SG_PARAMS = sg_param
 
 def sg_coeffs(window_length, order):
     return SG_PARAMS[window_length]
+    # todo: if requested window is not in file -> calculate params and add to file
 
 
 @lru_cache(maxsize=100)

@@ -31,6 +31,7 @@ from ELDAmwl.utils.constants import RESOLUTION_STR
 from ELDAmwl.utils.constants import TOTAL
 from ELDAmwl.utils.constants import TRANSMITTED
 from ELDAmwl.utils.constants import WATER_VAPOR
+from ELDAmwl.utils.numerical import calc_resolution, get_rangebin_axis
 from ELDAmwl.utils.path_utils import abs_file_path
 from zope import component
 
@@ -90,6 +91,7 @@ class ElppData(object):
     def __init__(self):
         self.signals = None
         self.cloud_mask = None
+        self.range_bins = None
         self.header = None
         self.data_storage = component.queryUtility(IDataStorage)
         self.logger = component.queryUtility(ILogger)
@@ -120,14 +122,15 @@ class ElppData(object):
             print(e)  # noqa T001
             raise(CannotOpenELLPFile(elpp_file))
 
-        self.cloud_mask = nc_ds.cloud_mask.astype(int)
+        self.range_bins = get_rangebin_axis(nc_ds.range)
+        self.cloud_mask = nc_ds.cloud_mask.astype(int).assign_coords(level=self.range_bins)
         self.data_storage.cloud_mask = self.cloud_mask
 
         self.header = Header.from_nc_file(elpp_file, nc_ds)
         self.data_storage.header = self.header
 
         for idx in range(nc_ds.dims['channel']):
-            sig = Signals.from_nc_file(nc_ds, idx)
+            sig = Signals.from_nc_file(nc_ds, idx, range_axis=self.range_bins)
             sig.ds.load()
             self.data_storage.set_elpp_signal(p_param.prod_id_str, sig)  # noqa E501
             sig.register(p_param)
@@ -238,7 +241,7 @@ class Signals(Columns):
         return result
 
     @classmethod
-    def from_nc_file(cls, nc_ds, idx_in_file):
+    def from_nc_file(cls, nc_ds, idx_in_file, range_axis=None):
         """creates a Signals instance from the content of a NetCDF file
 
         Args:
@@ -249,6 +252,9 @@ class Signals(Columns):
         Returns: Signals
 
         """
+        if range_axis is None:
+            range_axis = get_rangebin_axis(nc_ds.range)
+
         result = cls()
 
         result.channel_idx_in_ncfile = idx_in_file
@@ -256,14 +262,14 @@ class Signals(Columns):
 
         # result.ds = nc_ds.range_corrected_signal[idx_in_file].to_dataset(name='data')  # noqa E501
         result.ds = xr.Dataset()
-        result.ds['data'] = nc_ds.range_corrected_signal[idx_in_file]
-        result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file]  # noqa E501
+        result.ds['data'] = nc_ds.range_corrected_signal[idx_in_file].assign_coords(level=range_axis)
+        result.ds['err'] = nc_ds.range_corrected_signal_statistical_error[idx_in_file].assign_coords(level=range_axis)  # noqa E501
 
         # initiate bin resolution with value 1
         result.ds['binres'] = xr.DataArray(
             np.ones((nc_ds.dims['time'],
             nc_ds.dims['level'])).astype(np.int64),  # noqa E501
-            coords=[nc_ds.time, nc_ds.level],
+            coords=[nc_ds.time, range_axis],
             dims=['time', 'level'])
         result.ds['binres'].attrs = {'long_name': 'vertical resolution',
                                      'units': 'bins',
@@ -273,7 +279,7 @@ class Signals(Columns):
         qf = np.ones((nc_ds.dims['time'], nc_ds.dims['level'])).astype(np.short) * ALL_OK
         result.ds['qf'] = xr.DataArray(
             qf,
-            coords=[nc_ds.time, nc_ds.level],
+            coords=[nc_ds.time, range_axis],
             dims=['time', 'level'])
         result.ds['qf'].attrs = {
             'long_name': 'quality_flag',
@@ -311,7 +317,7 @@ class Signals(Columns):
             laser_pointing_angle_of_profiles,
             laser_pointing_angle)
 
-        result.ds['mol_extinction'] = nc_ds.molecular_extinction[idx_in_file]  # noqa E501
+        result.ds['mol_extinction'] = nc_ds.molecular_extinction[idx_in_file].assign_coords(level=range_axis)  # noqa E501
 #        atmospheric_molecular_extinction = nc_ds.atmospheric_molecular_extinction[idx_in_file]  # noqa E501
 #        result.ds['mol_extinction'] = result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,  # noqa E501
 #                                                                         atmospheric_molecular_extinction)  # noqa E501
@@ -319,12 +325,12 @@ class Signals(Columns):
         result.ds['mol_lidar_ratio'] = nc_ds.molecular_lidar_ratio[idx_in_file]  # noqa E501
 #        result.ds['mol_lidar_ratio'] = nc_ds.atmospheric_molecular_lidar_ratio[idx_in_file]  # noqa E501
 
-        result.ds['mol_trasm_at_detection_wl'] = nc_ds.molecular_transmissivity_at_detection_wavelength[idx_in_file]  # noqa E501
+        result.ds['mol_trasm_at_detection_wl'] = nc_ds.molecular_transmissivity_at_detection_wavelength[idx_in_file].assign_coords(level=range_axis)  # noqa E501
 #        mol_trasm_at_detection_wl = nc_ds.atmospheric_molecular_trasmissivity_at_detection_wavelength[idx_in_file]  # noqa E501
 #        result.ds['mol_trasm_at_detection_wl'] = result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,  # noqa E501
 #                                                                                    mol_trasm_at_detection_wl)  # noqa E501
 
-        result.ds['mol_trasm_at_emission_wl'] = nc_ds.molecular_transmissivity_at_emission_wavelength[idx_in_file]  # noqa E501
+        result.ds['mol_trasm_at_emission_wl'] = nc_ds.molecular_transmissivity_at_emission_wavelength[idx_in_file].assign_coords(level=range_axis)  # noqa E501
 #        mol_trasm_at_emission_wl = nc_ds.atmospheric_molecular_trasmissivity_at_emission_wavelength[idx_in_file]  # noqa E501
 #        result.ds['mol_trasm_at_emission_wl'] = result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,  # noqa E501
 #                                                                                   mol_trasm_at_emission_wl)  # noqa E501
@@ -371,11 +377,11 @@ class Signals(Columns):
             result.ds['assumed_particle_lidar_ratio'] = \
                 result.angle_to_time_dependent_var(
                     laser_pointing_angle_of_profiles,
-                    lidar_ratio)
+                    lidar_ratio).assign_coords(level=range_axis)
             result.ds['assumed_particle_lidar_ratio_error'] = \
                 result.angle_to_time_dependent_var(
                     laser_pointing_angle_of_profiles,
-                    lidar_ratio_err)
+                    lidar_ratio_err).assign_coords(level=range_axis)
 
         result.get_raw_heightres()
         result.calc_mol_backscatter()
@@ -435,15 +441,21 @@ class Signals(Columns):
         return (heightres / self.raw_heightres).round().astype(int)
 
     def get_raw_heightres(self):
-        diff = np.diff(self.height, axis=1)
-
-        d0 = diff[:, 0].reshape(self.num_times, 1)
-        # reshape is needed to allow broadcasting of the 2 arrays
-
-        if np.all(abs(diff[:] - d0) < 1e-10):
-            self.raw_heightres = d0
+        resolution = calc_resolution(self.height)
+        if resolution is not None:
+            self.raw_heightres = resolution
         else:
             self.logger.error('height axis is not equidistant')
+
+        # diff = np.diff(self.height, axis=1)
+        #
+        # d0 = diff[:, 0].reshape(self.num_times, 1)
+        # # reshape is needed to allow broadcasting of the 2 arrays
+        #
+        # if np.all(abs(diff[:] - d0) < 1e-10):
+        #     self.raw_heightres = d0
+        # else:
+        #     self.logger.error('height axis is not equidistant')
 
     def ranges_to_levels(self, ranges):
         """converts a series of range value into a series of level (dim=time)

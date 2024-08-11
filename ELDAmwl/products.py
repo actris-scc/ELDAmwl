@@ -229,8 +229,12 @@ class Products(Signals):
         # select only data which are ok
         dummy_data = self.data.where(self.ds.qf == ALL_OK)
 
-        # the common vertical resolution in m
-        vert_res_m = self.data_storage.common_vertical_resolution(self.resolution).data
+        # the common vertical resolution of all products in m
+        # vert_res_m = self.data_storage.common_vertical_resolution(self.resolution).data
+        common_vert_res = self.data_storage.common_vertical_resolution(self.resolution)
+        # use only those parts of the common_vert_res array which have the coordinates as this product
+        # use the inner join to make this selection
+        vert_res_m = xr.merge([common_vert_res, self.data], join='inner').vertical_resolution.data
 
         # if some values in vert_res_m are smaller than the minimum layer depth, replace them with min_layer_depth
         min_layer_depth = self.cfg.MIN_LAYER_DEPTH

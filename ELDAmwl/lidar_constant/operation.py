@@ -927,7 +927,7 @@ class SplitDepolLidarConstantDefault(BaseOperation):
         if not self.transm_signal.corrected_for_mol_transmission:
             self.transm_signal.correct_for_mol_transmission()
         if not self.refl_signal.corrected_for_mol_transmission:
-            self.transm_signal.correct_for_mol_transmission()
+            self.refl_signal.correct_for_mol_transmission()
 
         sigratio = Signals.as_sig_ratio(self.refl_signal, self.transm_signal)
         h_refl = float(self.refl_signal.h.value)

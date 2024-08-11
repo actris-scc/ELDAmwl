@@ -811,9 +811,13 @@ class DataStorage:
 
     @cloud_mask.setter
     def cloud_mask(self, new_mask):
-        if self.cloud_mask is not None:
-            if not self.cloud_mask.equals(new_mask):
-                raise DifferentCloudMaskExists(None)  # ToDo Ina Where to find the prod_id the Exception needs
+        existing_cloud_mask = self.cloud_mask
+
+        if existing_cloud_mask is not None:
+            if not existing_cloud_mask.equals(new_mask):
+                new_mask = xr.merge([existing_cloud_mask, new_mask], join='outer').cloud_mask.astype(int)
+                # todo: check whether overlapping parts of both masks are equal
+                # raise DifferentCloudMaskExists(None)  # ToDo Ina Where to find the prod_id the Exception needs
 
         self.__data.cloud_mask = new_mask
 
