@@ -25,24 +25,6 @@ import sys
 import traceback
 
 
-# meas_id = '20181017oh00'
-# hoi_system_id =182 (RALPH Bauhof night)
-# products=
-#   328: Rbsc&Depol 532 (RBsc pid = 324), uc7 (without depol combination)
-#   channels    453: elPP
-#               454: elCP
-#               395: vrRN2
-#               445: elT
-#   324: RBsc 532, uc7 (with depol comb)
-#   379: LR 355 (377+378)
-#   381: LR 532 (324 + 380)
-#   330: EBsc 1064
-#   378: RBsc 355
-#   377: Ext 355
-#   380: Ext 532
-#   598: mwl (378 + 379 + 328)
-
-
 def elda_setup_components(args=None):
     # Get the configuration
     register_config(args)
