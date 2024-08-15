@@ -18,14 +18,14 @@ from ELDAmwl.utils.path_utils import abs_file_path
 # # SG_PARAMS_FILENAME = 'sg_params.pickle'
 #
 SG_PARAMS = None
+DEFAULT_ORDER = 2
+
 
 def gen_sg_params():
     global SG_PARAMS
     # register_config(args=None)
 
-    DEFAULT_ORDER = 2
     SG_PARAMS_FILENAME = abs_file_path(component.queryUtility(ICfg).SAV_GOLAY_FILE)
-    # SG_PARAMS_FILENAME = 'sg_params.pickle'
 
     # this code is no part of gen_sg_params()
     try:
@@ -40,8 +40,16 @@ def gen_sg_params():
         SG_PARAMS = sg_param
 
 def sg_coeffs(window_length, order):
-    return SG_PARAMS[window_length]
-    # todo: if requested window is not in file -> calculate params and add to file
+    try:
+        param = SG_PARAMS[window_length]
+    except:
+        param = savgol_coeffs(window_length, DEFAULT_ORDER)
+        SG_PARAMS[window_length] = param
+
+        SG_PARAMS_FILENAME = abs_file_path(component.queryUtility(ICfg).SAV_GOLAY_FILE)
+        with open(SG_PARAMS_FILENAME, 'wb') as outfile:
+            pickle.dump(SG_PARAMS, outfile)
+    return param
 
 
 @lru_cache(maxsize=100)
