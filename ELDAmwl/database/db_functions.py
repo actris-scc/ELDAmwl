@@ -1228,7 +1228,7 @@ class DBFunc(DBUtils):
                     # self.logger.info('all products have the same temporal and vertical resolution')
                     return True
                 else:
-                    self.logger.error('there are different vertical resolutions configured')
+                    self.logger.error('not all individual products have the same pre-processing vertical resolution')
                     return False
             else:
                 if same_vertical_resolution:

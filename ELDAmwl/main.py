@@ -172,20 +172,25 @@ class Main:
 
             sys.exit(return_code)
 
-        # todo: exit codes corresponding to needs of deamon
-        except ELDAmwlException as e:
-            if not self.logger:
-                print('exception raised {0} {1}'.format(e.return_value, e))  # noqa T001
-            else:
-                self.logger.error('exception raised {0} {1}'.format(e.return_value, e))
-            sys.exit(e.return_value)
+        # ELDAmwlExceptions are caught in self.elda
+        # except ELDAmwlException as e:
+        #     if not self.logger:
+        #         print(f'exception raised {e.return_value} {e}')  # noqa T001
+        #     else:
+        #         self.logger.error(f'exception raised {e.return_value} {e}')
+        #     sys.exit(EXIT_CODE_NONE)
 
         except Exception as e:
-            self.logger.error('unknown exception raised {0}'.format(e))
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            for line in traceback.format_tb(exc_traceback):
-                self.logger.error('exception: {}' % (line[:-1]))  # noqa P103
-            sys.exit(UNKNOWN_EXCEPTION)
+            if not self.logger:
+                print(f'unknown exception raised {e}')
+                for line in traceback.format_tb(exc_traceback):
+                    print(f'exception: {line[:-1]}')  # noqa P103
+            else:
+                self.logger.error(f'unknown exception raised {e}')
+                for line in traceback.format_tb(exc_traceback):
+                    self.logger.error(f'exception: {line[:-1]}')  # noqa P103
+            sys.exit(EXIT_CODE_NONE)
 
 
 def run():
