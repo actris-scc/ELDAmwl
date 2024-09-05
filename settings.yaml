@@ -71,6 +71,12 @@ default:
   APPEND_LOG_FILE : False
 
 # :::::::::::::::::::
+# if there are errors in configuration of mwl product or its individual products
+# if IGNORE_CONFIGURATION_ERRORS == True -> an exception is raised and ELDAmwl is stopped
+# if IGNORE_CONFIGURATION_ERRORS == False -> the wrongly configured  product is not retrieved, but everything else is continued
+  IGNORE_CONFIGURATION_ERRORS : False
+
+# :::::::::::::::::::
 # single-wavelength quality control
 #  (flag values are defined in utils.constants.py)
 # :::::::::::::::::::

@@ -58,6 +58,8 @@ SAME_WL_FOR_AE = 63
 DIFFERENT_PRODUCT_TYPE_FOR_AE = 64
 
 NO_BASIC_PRODUCT_FOR_DERIVED_PRODUCT = 65
+WRONG_TYPE_BASIC_PRODUCT_FOR_DERIVED_PRODUCT = 66
+
 
 # ===============================================
 # error codes which occur only during development

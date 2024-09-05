@@ -1,5 +1,5 @@
 from ELDAmwl.component.interface import IParams
-from ELDAmwl.errors.exceptions import BasicProductMissingForDerivedProduct
+from ELDAmwl.errors.exceptions import BasicProductMissingForDerivedProduct, WrongBasicProductForDerivedProduct
 from ELDAmwl.products import ProductParams
 from ELDAmwl.utils.constants import ERROR_METHODS, RBSC
 from zope import component
@@ -30,20 +30,22 @@ class LidarRatioParams(ProductParams):
 
         # self. backscatter_params is a link to the parameters of the basic bsc product
         self.backscatter_params = meas_params.product_list[str(self.bsc_prod_id)]
-        if self.backscatter_params.general_params.product_type != RBSC:
-            self.logger.error('cannot calculate lidar ratio ({general_params.prod_id}) from backscatter'
-                              '{self.bsc_prod_id} because it is no Raman backscatter.')
         if self.backscatter_params == {}:
-            self.logger.error(f'Raman bsc product {self.bsc_prod_id} is not attributed to this mwl product.'
+            self.logger.error(f'Raman bsc product {self.bsc_prod_id} is not attributed to this mwl product, '
                               f'but it is needed for lidar ratio {general_params.prod_id} ')
             raise BasicProductMissingForDerivedProduct(general_params.prod_id, self.bsc_prod_id)
 
         # self. extinction_params is a link to the parameters of the basic ext product
         self.extinction_params = meas_params.product_list[str(self.ext_prod_id)]
         if self.extinction_params == {}:
-            self.logger.error(f'Extinction product {self.ext_prod_id} is not attributed to this mwl product.'
+            self.logger.error(f'Extinction product {self.ext_prod_id} is not attributed to this mwl product, '
                               f'but it is needed for lidar ratio {general_params.prod_id} ')
             raise BasicProductMissingForDerivedProduct(general_params.prod_id, self.ext_prod_id)
+
+        if self.backscatter_params.general_params.product_type != RBSC:
+            self.logger.error(f'cannot calculate lidar ratio ({general_params.prod_id}) '
+                              f'from elastic backscatter {self.bsc_prod_id}. Need Raman backscatter')
+            raise WrongBasicProductForDerivedProduct(general_params.prod_id, self.bsc_prod_id)
 
         # use emission wavelength of ext product also for this lr
         self.general_params.emission_wavelength = self.backscatter_params.general_params.emission_wavelength

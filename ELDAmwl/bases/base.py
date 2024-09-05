@@ -6,6 +6,8 @@
 """
 from ELDAmwl.component.interface import IDBFunc
 from ELDAmwl.component.interface import ILogger
+from ELDAmwl.component.interface import ICfg
+
 from zope import component
 
 import xarray as xr
@@ -26,6 +28,10 @@ class Params(object):
     @property
     def db_func(self):
         return component.queryUtility(IDBFunc)
+
+    @property
+    def cfg(selfself):
+        return component.queryUtility(ICfg)
 
     def __getattribute__(self, item):
         try:

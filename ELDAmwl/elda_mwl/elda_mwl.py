@@ -16,7 +16,8 @@ from ELDAmwl.depol.params import VLDRParams
 from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
 from ELDAmwl.elda_mwl.get_lidar_constants import GetLidarConstants
-from ELDAmwl.errors.exceptions import ProductNotUnique, DifferentProductsResolution, CouldNotFindProductsResolution
+from ELDAmwl.errors.exceptions import ProductNotUnique, DifferentProductsResolution, CouldNotFindProductsResolution, \
+    ELDAmwlConfigurationException
 from ELDAmwl.elda_mwl.compile_mwl_product import GetProductMatrix
 from ELDAmwl.elda_mwl.do_quality_control import QualityControl
 from ELDAmwl.errors.exceptions import ProductNotUnique, ELDAmwlException
@@ -409,8 +410,12 @@ class MeasurementParams(Params):
                     try:
                         prod_params.from_db(general_params)
                         prod_params.assign_to_product_list(self.measurement_params)
-                    except ELDAmwlException:
-                        pass
+                    except ELDAmwlConfigurationException as e:
+                        ignore_error = self.cfg.IGNORE_CONFIGURATION_ERRORS
+                        if ignore_error:
+                            pass
+                        else:
+                            raise e
                 else:
                     self.logger.error('product type {} not yet implemented'.format(prod_type))
 
@@ -524,7 +529,6 @@ class RunELDAmwl(BaseOperation):
         #  least one resolution with which they shall be derived
         #  (calc_with_lr or calc_with_hr)
         # todo: check whether there is only one product per wavelength and type (e.g. no different usecases or Raman+elast
-        # todo: check that there is not the combination lr + ext + ebsc, only lr+ext+rbsc is allowed
 
     def read_elpp_data(self):
         """read pre-processed signals from ELPP files

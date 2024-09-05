@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, WRONG_TYPE_BASIC_PRODUCT_FOR_DERIVED_PRODUCT
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -38,6 +38,17 @@ from ELDAmwl.errors.error_codes import DIFFERENT_PRODS_RESOLUTION, COULD_NOT_FIN
 class ELDAmwlException(BaseException):
     """
     base class of exceptions raised by ELDAmwl
+    """
+    return_value = None
+    prod_id = None
+
+    def __init__(self, prod_id):
+        self.prod_id = prod_id
+
+
+class ELDAmwlConfigurationException(ELDAmwlException):
+    """
+    base class of exceptions raised by ELDAmwl if an error in configuration is found
     """
     return_value = None
     prod_id = None
@@ -162,7 +173,7 @@ class NotFoundInStorage(ELDAmwlException):
                'in data storage'.format(self.what, self.where))
 
 
-class ProductNotUnique(ELDAmwlException):
+class ProductNotUnique(ELDAmwlConfigurationException):
     """
     Raised if there is more than one product defined with the same type and wavelength
     """
@@ -213,7 +224,7 @@ class NoELPPFileInDB(ELDAmwlException):
         return f'no ELPP file in database for measurement{self.meas_id}'
 
 
-class NoBasicProductsInDB(ELDAmwlException):
+class NoBasicProductsInDB(ELDAmwlConfigurationException):
     """raised when no basic products are attributed to a mwl product in database
     """
 
@@ -228,7 +239,7 @@ class LogPathNotExists(ELDAmwlException):
     return_value = ERROR_LOG_DIR_NOT_EXISTS
 
 
-class UseCaseNotImplemented(ELDAmwlException):
+class UseCaseNotImplemented(ELDAmwlConfigurationException):
     """Raised if a usecase or BaseOperation is called but not yet implemented
     """
     return_value = USE_CASE_NOT_IMPLEMENTED
@@ -246,7 +257,7 @@ class UseCaseNotImplemented(ELDAmwlException):
         return msg
 
 
-class DifferentWlForLR(ELDAmwlException):
+class DifferentWlForLR(ELDAmwlConfigurationException):
     """raised when the backscatter and extinction products for a lidar ratio
     retrieval have different wavelengths"""
     return_value = DIFFERENT_WL_IN_EXT_AND_BSC_FOR_LR
@@ -260,8 +271,8 @@ class DifferentWlForLR(ELDAmwlException):
                'have different wavelengths'.format(self.product_id))
 
 
-class BasicProductMissingForDerivedProduct(ELDAmwlException):
-    """raised when no one of the necessary basic products of a derived product was not attributed to the mwl product """
+class BasicProductMissingForDerivedProduct(ELDAmwlConfigurationException):
+    """raised when one of the necessary basic products of a derived product was not attributed to the mwl product """
     return_value = NO_BASIC_PRODUCT_FOR_DERIVED_PRODUCT
 
     def __init__(self, product_id, missing_product_id):
@@ -269,12 +280,27 @@ class BasicProductMissingForDerivedProduct(ELDAmwlException):
         self.missing_id = missing_product_id
 
     def __str__(self):
-        return('the backscatter product '
-               'for the retrieval of lidar ratio (product_id={0}) '
-               'was not attributed to the mwl product'.format(self.product_id))
+        return(f'the basic product {self.missing_id} '
+               f'for the retrieval of the derived product {self.product_id} '
+               f'was not attributed to the mwl product')
 
 
-class CalRangeHigherThanValid(ELDAmwlException):
+class WrongBasicProductForDerivedProduct(ELDAmwlConfigurationException):
+    """raised when one of the necessary basic products of a derived product
+    has the wrong product type (e.g. elast bsc for lidar ratio) """
+    return_value = WRONG_TYPE_BASIC_PRODUCT_FOR_DERIVED_PRODUCT
+
+    def __init__(self, product_id, wrong_product_id):
+        self.product_id = product_id
+        self.wrong_id = wrong_product_id
+
+    def __str__(self):
+        return(f'the basic product {self.wrong_id} '
+               f'for the retrieval of the derived product {self.product_id} '
+               f'has the wrong type (e.g. Elastic backscatter is not allowed for lidar ratio).')
+
+
+class CalRangeHigherThanValid(ELDAmwlConfigurationException):
     """raised when the range for finding the calibration window is higher
     than vertical range for product calculation"""
     return_value = CAL_RANGE_HIGHER_THAN_VALID
@@ -344,7 +370,7 @@ class NoCalibrWindowFound(ELDAmwlException):
                format(self.prod_id))
 
 
-class NotEnoughMCIterations(ELDAmwlException):
+class NotEnoughMCIterations(ELDAmwlConfigurationException):
     """raised when number of MC iterations is not >1"""
     return_value = ERR_INVALID_NB_OF_MC_ITERATIONS
 
@@ -354,7 +380,7 @@ class NotEnoughMCIterations(ELDAmwlException):
                .format(self.prod_id))
 
 
-class DetectionLimitZero(ELDAmwlException):
+class DetectionLimitZero(ELDAmwlConfigurationException):
     """raised when a detection limit = 0.0 . The value must be >0.0
     """
     return_value = ZERO_DETECTION_LIMIT
@@ -393,7 +419,7 @@ class DifferentHeaderExists(ELDAmwlException):
                'has already been red')
 
 
-class BscCalParamsNotEqual(ELDAmwlException):
+class BscCalParamsNotEqual(ELDAmwlConfigurationException):
     """raised when calibration params of backscatter products are not equal"""
     return_value = DIFFERENT_BSC_OPTIONS_IN_MEASUREMENT
 
@@ -406,7 +432,7 @@ class BscCalParamsNotEqual(ELDAmwlException):
                'are not equal.'.format(self.pid1, self.pid2))
 
 
-class NOMCOptions(ELDAmwlException):
+class NOMCOptions(ELDAmwlConfigurationException):
     """raised when no MonteCarlo options are provided in SCC db
     for a product with error_method == mc
     """
@@ -419,7 +445,7 @@ class NOMCOptions(ELDAmwlException):
                .format(self.prod_id))
 
 
-class NoBscCalOptions(ELDAmwlException):
+class NoBscCalOptions(ELDAmwlConfigurationException):
     """raised when a backscatter product has no calibration options in SCC db
     """
 
@@ -484,7 +510,7 @@ class NoParamsForDepolUncertainty(ELDAmwlException):
         return ('no matching parameter for depolarization uncertainty for product {0} '
                 'and measurement time{1} in database'.format(self.prod_id, self.measurement_date))
 
-class NoMwlProductDefined(ELDAmwlException):
+class NoMwlProductDefined(ELDAmwlConfigurationException):
     """raised when no multi-wavelength product is defined for the measurement
     """
 
@@ -497,7 +523,7 @@ class NoMwlProductDefined(ELDAmwlException):
     def __str__(self):
         return ('no multi-wavelength product is defined for the system_id {0}'.format(self.system_id))
 
-class DifferentProductsResolution(ELDAmwlException):
+class DifferentProductsResolution(ELDAmwlConfigurationException):
     """raised when the temporal and/or vertical resolutions are not the same for all the products of a mwl_product_id"""
     return_value = DIFFERENT_PRODS_RESOLUTION
 
@@ -509,7 +535,7 @@ class DifferentProductsResolution(ELDAmwlException):
                'not consistent for all the products configured (mwl_product_id={0})'
                .format(self.mwl_product_id))
 
-class CouldNotFindProductsResolution(ELDAmwlException):
+class CouldNotFindProductsResolution(ELDAmwlConfigurationException):
     """raised when the temporal and vertical resolutions are not defined for a mwl_product_id"""
     return_value = COULD_NOT_FIND_PRODS_RESOLUTION
 
@@ -521,7 +547,7 @@ class CouldNotFindProductsResolution(ELDAmwlException):
                'not available for mwl_product_id={0}'
                .format(self.mwl_product_id))
 
-class SameWlForAE(ELDAmwlException):
+class SameWlForAE(ELDAmwlConfigurationException):
     """raised when the two products for the angstroem exponent
     retrieval have the same wavelength"""
     return_value = SAME_WL_FOR_AE
@@ -534,7 +560,7 @@ class SameWlForAE(ELDAmwlException):
                'of angstroem exponent (product_id={0}) '
                'have the same wavelength'.format(self.mwl_product_id))
 
-class DifferentProductTypeForAE(ELDAmwlException):
+class DifferentProductTypeForAE(ELDAmwlConfigurationException):
     """raised when the two products for the angstroem exponent
     retrieval are not of the same type (b/e)"""
     return_value = DIFFERENT_PRODUCT_TYPE_FOR_AE
