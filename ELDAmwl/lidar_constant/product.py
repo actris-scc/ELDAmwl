@@ -78,12 +78,7 @@ class LidarConstantData(object):
         # find valid time slices
         valid_ts = np.where(~self.ds.lidar_constant.isnull())[0]
 
-        # todo: which channel id shall be used here? change db structure so that all ids can be written?
-        try:
-            # if there are more than 1 channel_ids
-            channel_id = self.channel_id[0]
-        except:
-            channel_id = self.channel_id
+        channel_id = self.channel_id
 
         # for t in range(self.ds.dims['time']):
         for t in valid_ts:

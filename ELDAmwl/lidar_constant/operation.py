@@ -340,7 +340,8 @@ class LidarConstantFactoryDefault(BaseOperation):
 
     def write_lc_to_db(self):
         for lc in self.lidar_constants.values():
-            lc.write_to_database()
+            if not lc.is_from_combined_signal:
+                lc.write_to_database()
 
     def run(self):
         self.prepare()
