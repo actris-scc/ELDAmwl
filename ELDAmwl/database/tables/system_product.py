@@ -217,19 +217,13 @@ class SmoothOptions(Base):
         DECIMAL(10, 4),
         nullable=True,
     )
-    lowres_lowrange_integration_time = Column(
+    lowres_integration_time = Column(
+        'lowres_lowrange_integration_time',
         INTEGER,
         nullable=True,
     )
-    lowres_highrange_integration_time = Column(
-        INTEGER,
-        nullable=True,
-    )
-    highres_lowrange_integration_time = Column(
-        INTEGER,
-        nullable=True,
-    )
-    highres_highrange_integration_time = Column(
+    highres_integration_time = Column(
+        'highres_lowrange_integration_time',
         INTEGER,
         nullable=True,
     )

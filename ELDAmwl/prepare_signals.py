@@ -5,11 +5,13 @@ from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
+from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.signals import Signals
-from ELDAmwl.utils.constants import EBSC, VLDR
+from ELDAmwl.utils.constants import EBSC, VLDR, RESOLUTIONS, RESOLUTION_STR
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import KF
 from ELDAmwl.utils.constants import RBSC
+from ELDAmwl.utils.constants import FIXED
 
 
 class PrepareBscSignalsDefault(BaseOperation):
@@ -203,12 +205,29 @@ class PrepareSignalsDefault(BaseOperation):
     def run(self):
         products = self.kwargs['products']
 
+        # if the products (and signals) are to be smoothed and integrated onto a fixed, pre-defined grid
+        if self.params.smooth_params.smooth_type == FIXED:
+            self.logger.info('time integration of signals')
+            raw_res = self.data_storage.time_res_raw
+            for res in RESOLUTIONS:
+                target_res = self.params.smooth_params.time_res[RESOLUTION_STR[res]]
+                multiples = (target_res / raw_res).round()
+
+            for p_param in products:
+                elpp_signals = self.data_storage.elpp_signals(p_param.prod_id_str)
+
+            # todo smooth cloud mask
+
         for p_param in products:
             if p_param.product_type in PREP_SIG_CLASSES:
                 PREP_SIG_CLASSES[p_param.product_type]()(
                     data_storage=self.data_storage,
                     prod_param=p_param)\
                     .run()
+            else:
+                self.logger.error(f'signal preparation for product type {p_param.product_type} '
+                                  f'is not yet implemented')
+                raise UseCaseNotImplemented('all', f'product type {p_param.product_type}', 'non')
 
 
 class PrepareSignals(BaseOperationFactory):

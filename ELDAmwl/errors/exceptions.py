@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
-from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, WRONG_TYPE_BASIC_PRODUCT_FOR_DERIVED_PRODUCT
+from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, WRONG_TYPE_BASIC_PRODUCT_FOR_DERIVED_PRODUCT, \
+    DIFFERENT_TIME_RES_EXISTS, TIME_RES_MWL_IS_NO_MULTIPLE, TIME_RES_MWL_SMALLER_TAHN_SINGLE
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -34,6 +35,8 @@ from ELDAmwl.errors.error_codes import USE_CASE_NOT_IMPLEMENTED
 from ELDAmwl.errors.error_codes import WRONG_COMMAND_LINE_PARAM
 from ELDAmwl.errors.error_codes import ZERO_DETECTION_LIMIT
 from ELDAmwl.errors.error_codes import DIFFERENT_PRODS_RESOLUTION, COULD_NOT_FIND_PRODS_RESOLUTION
+from ELDAmwl.utils.constants import RESOLUTION_STR
+
 
 class ELDAmwlException(BaseException):
     """
@@ -417,6 +420,48 @@ class DifferentHeaderExists(ELDAmwlException):
     def __str__(self):
         return('Another ELPP file with different header information '
                'has already been red')
+
+
+class DifferentRawResolutionExists(ELDAmwlException):
+    """
+    Raised if a raw time resolution shall be written to the data storage
+    but the existing one is different from the new one
+    """
+    return_value = DIFFERENT_TIME_RES_EXISTS
+
+    def __str__(self):
+        return('Another ELPP file with a different time resolution '
+               'has already been red')
+
+
+class MwlResIsNoMultiple(ELDAmwlConfigurationException):
+    """
+    Raised if the scheduled averaging time of mwl product is no multiple of the pre-processing
+    integration time of individual products
+    """
+    return_value = TIME_RES_MWL_IS_NO_MULTIPLE
+
+    def __init__(self, resolution):
+        self.resolution = RESOLUTION_STR[resolution]
+
+    def __str__(self):
+        return(f'The scheduled averaging time of the mwl product in {self.resolution} resolution '
+               'is no multiple of the pre-processing time resolution of the individual products')
+
+
+class MwlResSmallerThanSingle(ELDAmwlConfigurationException):
+    """
+    Raised if the scheduled averaging time of mwl product is smaller than the pre-processing
+    integration time of individual products
+    """
+    return_value = TIME_RES_MWL_SMALLER_TAHN_SINGLE
+
+    def __init__(self, resolution):
+        self.resolution = RESOLUTION_STR[resolution]
+
+    def __str__(self):
+        return(f'The scheduled averaging time of the mwl product in {self.resolution} resolution '
+               'is smaller than the pre-processing time resolution of the individual products')
 
 
 class BscCalParamsNotEqual(ELDAmwlConfigurationException):

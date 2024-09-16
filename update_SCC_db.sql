@@ -234,10 +234,8 @@ UPDATE `eldamwl_class_names` set classname = "FindBscCalibrWindowAsInELDA" where
 --	`detection_limit` DECIMAL(11,11) NOT NULL DEFAULT '0',
 --	`transition_zone_from` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
 --	`transition_zone_to` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
---    `lowres_lowrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
---    `lowres_highrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
---    `highres_lowrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
---    `highres_highrange_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
+--    `lowres_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
+--    `highres_integration_time` INT(11) NULL DEFAULT NULL COMMENT 'in s',
 --    `lowres_lowrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
 --    `lowres_highrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL COMMENT 'in m',
 --    `highres_lowrange_vertical_resolution` DECIMAL(10,4) NULL DEFAULT NULL,
@@ -263,8 +261,8 @@ UPDATE `eldamwl_class_names` set classname = "FindBscCalibrWindowAsInELDA" where
 --    detection_limit
 --from product_options;
 --
---INSERT INTO `smooth_options` (`_product_ID`, `_lowrange_error_threshold_ID`, `_highrange_error_threshold_ID`, `detection_limit`, `transition_zone_from`, `transition_zone_to`, `lowres_lowrange_integration_time`, `lowres_highrange_integration_time`, `highres_lowrange_integration_time`, `highres_highrange_integration_time`, `lowres_lowrange_vertical_resolution`, `lowres_highrange_vertical_resolution`, `highres_lowrange_vertical_resolution`, `highres_highrange_vertical_resolution`, `_smooth_type`) VALUES
---	(@mwlid, 1, 1, 0, 2000.0000, 3000.0000, 3600, 7200, 1800, 1800, 300.0000, 900.0000, 150.0000, 300.0000, 1);
+--INSERT INTO `smooth_options` (`_product_ID`, `_lowrange_error_threshold_ID`, `_highrange_error_threshold_ID`, `detection_limit`, `transition_zone_from`, `transition_zone_to`, `lowres_integration_time`, `highres_integration_time`, `lowres_lowrange_vertical_resolution`, `lowres_highrange_vertical_resolution`, `highres_lowrange_vertical_resolution`, `highres_highrange_vertical_resolution`, `_smooth_type`) VALUES
+--	(@mwlid, 1, 1, 0, 2000.0000, 3000.0000, 3600, 1800, 300.0000, 900.0000, 150.0000, 300.0000, 1);
 --
 --/*
 --* ===================================================================================

@@ -93,6 +93,7 @@ class ElppData(object):
         self.cloud_mask = None
         self.range_bins = None
         self.header = None
+        self.time_res = None
         self.data_storage = component.queryUtility(IDataStorage)
         self.logger = component.queryUtility(ILogger)
 
@@ -128,6 +129,14 @@ class ElppData(object):
 
         self.header = Header.from_nc_file(elpp_file, nc_ds)
         self.data_storage.header = self.header
+
+        # calculate time resolution from bounds
+        # convert ns -> seconds
+        # remove dimension nv
+        self.time_res = (nc_ds.time_bounds.diff('nv') / 1E9).astype('int').squeeze('nv')
+        self.time_res.attrs['units'] = 's'
+        self.time_res.name = 'time_resolution'
+        self.data_storage.time_res_raw = self.time_res
 
         for idx in range(nc_ds.dims['channel']):
             sig = Signals.from_nc_file(nc_ds, idx, range_axis=self.range_bins)

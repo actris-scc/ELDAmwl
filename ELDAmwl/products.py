@@ -668,6 +668,8 @@ class GeneralProductParams(Params):
         self.valid_alt_range = Dict({'min_height': None,
                                      'max_height': None})
 
+        self.integration_time = None
+
         self.elpp_file = ''
 
         self.signals = []
@@ -679,6 +681,7 @@ class GeneralProductParams(Params):
         result.valid_alt_range.min_height = float(query.PreProcOptions.min_height)
         result.valid_alt_range.max_height = float(query.PreProcOptions.max_height)
         result.emission_wavelength = float(query.Channels.emission_wavelength)
+        result.integration_time = float(query.PreProcOptions.preprocessing_integration_time)
 
         try:
             result.elpp_file = query.PreparedSignalFile.filename
@@ -800,16 +803,8 @@ class SmoothParams(Params):
 
         self.time_res = Dict(
             {
-                RESOLUTION_STR[LOWRES]: Dict(
-                    {
-                        'lowrange': None,
-                        'highrange': None,
-                    }),
-                RESOLUTION_STR[HIGHRES]: Dict(
-                    {
-                        'lowrange': None,
-                        'highrange': None,
-                    }),
+                RESOLUTION_STR[LOWRES]: None,
+                RESOLUTION_STR[HIGHRES]: None,
             })
 
     @classmethod
@@ -839,14 +834,10 @@ class SmoothParams(Params):
             result.vert_res[RESOLUTION_STR[HIGHRES]].highrange \
                 = float(query.highres_highrange_vertical_resolution)
 
-            result.time_res[RESOLUTION_STR[LOWRES]].lowrange \
-                = query.lowres_lowrange_integration_time
-            result.time_res[RESOLUTION_STR[LOWRES]].highrange \
-                = query.lowres_highrange_integration_time
-            result.time_res[RESOLUTION_STR[HIGHRES]].lowrange \
-                = query.highres_lowrange_integration_time
-            result.time_res[RESOLUTION_STR[HIGHRES]].highrange \
-                = query.highres_highrange_integration_time
+            result.time_res[RESOLUTION_STR[LOWRES]] \
+                = query.lowres_integration_time
+            result.time_res[RESOLUTION_STR[HIGHRES]] \
+                = query.highres_integration_time
 
         return result
 

@@ -3,7 +3,7 @@
 from addict import Dict
 from copy import deepcopy
 from ELDAmwl.component.interface import IDataStorage
-from ELDAmwl.errors.exceptions import DifferentCloudMaskExists
+from ELDAmwl.errors.exceptions import DifferentCloudMaskExists, DifferentRawResolutionExists
 from ELDAmwl.errors.exceptions import NotFoundInStorage
 from ELDAmwl.products import Products
 from ELDAmwl.utils.constants import HIGHRES, RESOLUTIONS, RBSC, EBSC
@@ -37,7 +37,13 @@ class DataStorage:
             {
                 'number_of_scheduled_products': None,
                 'scc_version_id': None,
+
+                'header': None,
+                'cloud_mask': None,
+                'time_res_raw': None,
+
                 'elpp_signals': Dict(),
+                'integrated_signals': Dict(),
                 'prepared_signals': Dict(),
 
                 'basic_products_raw': Dict(),
@@ -83,8 +89,6 @@ class DataStorage:
                         HIGHRES: Dict(),
                     }),
 
-                'header': None,
-                'cloud_mask': None,
                 'bsc_ratio_532': Dict({
                     LOWRES: None,
                     HIGHRES: None,
@@ -101,6 +105,11 @@ class DataStorage:
         """write new ELPP signal to storage"""
 
         self.__data.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
+
+    def set_integrated_signal(self, prod_id_str, new_signal):
+        """write new time integrated ELPP signal to storage"""
+
+        self.__data.integrated_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_prepared_signal(self, prod_id_str, new_signal):
         """write new prepared signal to storage"""
@@ -267,6 +276,52 @@ class DataStorage:
             return deepcopy(self.__data.elpp_signals[prod_id_str][ch_id_str])
         except AttributeError:
             raise NotFoundInStorage('ELPP signal {0}'.format(ch_id_str),
+                                    'product {0}'.format(prod_id_str))
+
+    def integrated_signals(self, prod_id_str):
+        """copies of all time integrated ELPP signals of one product
+
+        Those are the otime-integrated signals of one basic product from
+        the corresponding ELPP file.
+
+        Args:
+            prod_id_str (str):  product id
+
+        Returns:
+            :obj:`list` of :obj:`Signals`: list with deepcopies of all signals related
+                                            to the product id
+
+        Raises:
+             NotFoundInStorage: if no signals for the given product id
+                are found in storage
+        """
+        try:
+            result = []
+            for ch_id in self.__data.integrated_signals[prod_id_str]:
+                result.append(deepcopy(self.__data.integrated_signals[prod_id_str][ch_id]))
+            return result
+        except AttributeError:
+            raise NotFoundInStorage('time integrated signals',
+                                    'product {0}'.format(prod_id_str))
+
+    def integrated_signal(self, prod_id_str, ch_id_str):
+        """copy of a time integrated ELPP signal
+
+        Args:
+            prod_id_str (str):  product id
+            ch_id_str (str):  channel id
+
+        Returns:
+            :obj:`Signals`: deepcopy of the requested time integrated ELPP signal
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and signal id was found in storage
+        """
+        try:
+            return deepcopy(self.__data.integrated_signals[prod_id_str][ch_id_str])
+        except AttributeError:
+            raise NotFoundInStorage('time integrated signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
 
     def lidar_constant(self, channel_id):
@@ -820,6 +875,33 @@ class DataStorage:
                 # raise DifferentCloudMaskExists(None)  # ToDo Ina Where to find the prod_id the Exception needs
 
         self.__data.cloud_mask = new_mask
+
+    @property
+    def time_res_raw(self):
+        """one-dimensional (time) time resolution in seconds
+
+        time resolution of the measurement, read from the ELPP files.
+
+        Returns:
+            time_res_raw (xarray.DataArray): raw time resolution of the measurement
+
+        Raises:
+            DifferentRawResolutionExists: if a time resolution
+            shall be written to the data storage but
+            there is already one from a previously read ELPP file
+            which is different from the new one
+        """
+        return self.__data.time_res_raw
+
+    @time_res_raw.setter
+    def time_res_raw(self, new_time_res):
+        existing_time_res = self.time_res_raw
+
+        if existing_time_res is None:
+            self.__data.time_res_raw = new_time_res
+        else:
+            if not existing_time_res.equals(new_time_res):
+                raise DifferentRawResolutionExists(None)  # ToDo Ina Where to find the prod_id the Exception needs
 
     def get_max_binres(self, res):
         """

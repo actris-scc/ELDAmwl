@@ -17,7 +17,7 @@ from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
 from ELDAmwl.elda_mwl.get_lidar_constants import GetLidarConstants
 from ELDAmwl.errors.exceptions import ProductNotUnique, DifferentProductsResolution, CouldNotFindProductsResolution, \
-    ELDAmwlConfigurationException
+    ELDAmwlConfigurationException, MwlResIsNoMultiple, MwlResSmallerThanSingle
 from ELDAmwl.elda_mwl.compile_mwl_product import GetProductMatrix
 from ELDAmwl.elda_mwl.do_quality_control import QualityControl
 from ELDAmwl.errors.exceptions import ProductNotUnique, ELDAmwlException
@@ -29,7 +29,7 @@ from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams
 from ELDAmwl.products import SmoothParams
 from ELDAmwl.signals import ElppData
-from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EBSC, RESOLUTIONS
 from ELDAmwl.utils.constants import EXIT_CODE_NONE
 from ELDAmwl.utils.constants import EXIT_CODE_OK
 from ELDAmwl.utils.constants import EXIT_CODE_SOME
@@ -41,6 +41,7 @@ from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR
 from ELDAmwl.utils.constants import VLDR
 from ELDAmwl.utils.constants import AE
+from ELDAmwl.utils.constants import FIXED
 from zope import component
 
 import numpy as np
@@ -472,6 +473,38 @@ class MeasurementParams(Params):
         else:
             return None
 
+    def check_resolutions(self):
+        # Check whether all the temporal and vertical resolutions are equal
+        self.logger.info('read products resolution from db')
+        same_prod_res = self.get_products_resolution()
+        if same_prod_res is False:
+            # Different resolutions, we cannot continue with the processing
+            raise DifferentProductsResolution(self.params.mwl_product_id)
+        if same_prod_res is None:
+            # No resolutions found in preproc_options for the current mwl_product_id
+            raise CouldNotFindProductsResolution(self.params.mwl_product_id)
+
+        # check whether the temporal resolutions (high res / low res) of the mwl product are multiples of the individual products
+        self.logger.debug('check whether the temporal resolutions (high res / low res) '
+                          'of the mwl product are multiples of the individual products')
+
+        # at this point, it is ensured that all individual products have the same resolution.
+        # Thus, test only the first product
+        pre_process_res = self.basic_products()[0].general_params.integration_time
+        for res in RESOLUTIONS:
+            mwl_res = self.smooth_params.time_res[RESOLUTION_STR[res]]
+            if (mwl_res % pre_process_res) != 0:
+                self.logger.error(f'the time resolution of the mwl product in {RESOLUTION_STR[res]} '
+                                  f'resolution ({mwl_res} s) is no multiple of the pre-processing resolutions '
+                                  f'({pre_process_res} s) of the individual products')
+                raise MwlResIsNoMultiple(res)
+
+            if mwl_res < pre_process_res:
+                self.logger.error(f'the time resolution of the mwl product in {RESOLUTION_STR[res]} '
+                                  f'resolution ({mwl_res} s) is smaller than the pre-processing resolutions '
+                                  f'({pre_process_res} s) of the individual products')
+                raise MwlResSmallerThanSingle(res)
+
     def get_products_resolution(self):
         """Reads the products resolution to make sure it is consistent between all the products     # ToDo Pilar improve
 
@@ -510,15 +543,7 @@ class RunELDAmwl(BaseOperation):
         """
         self.logger.info('read tasks from db')
         self.params.read_product_list()
-        # Check whether all the temporal and vertical resolutions are equal
-        self.logger.info('read products resolution from db')
-        same_prod_res = self.params.get_products_resolution()
-        if same_prod_res is False:
-            # Different resolutions, we cannot continue with the processing
-            raise DifferentProductsResolution(self.params.mwl_product_id)
-        if same_prod_res is None:
-            # No resolutions found in preproc_options for the current mwl_product_id
-            raise CouldNotFindProductsResolution(self.params.mwl_product_id)
+        self.params.check_resolutions()
 
         pc = self.params.count_scheduled_products()
         self.data_storage.set_number_of_scheduled_products(pc)
@@ -543,6 +568,9 @@ class RunELDAmwl(BaseOperation):
 
         """
         self.logger.info('prepare signals')
+        # if self.params.smooth_params.smooth_type == FIXED:
+        #     pass
+        #     # todo time integration of ELPP signals
         PrepareSignals()(products=self.params.basic_products()).run()
 
     def get_basic_products(self):
