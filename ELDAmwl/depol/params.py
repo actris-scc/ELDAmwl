@@ -105,39 +105,39 @@ class VLDRParams(ProductParams):
         # VLDR for different measurement times. When creating the VLDR parameter,
         # the measurement time is not yet known.
         # therefore, read the H, G, and uncertainty parameters now with the start time of the signal
-        self.logger.debug('add depol parameters of signal {0} to VLDRParams'.format(int(signal.channel_id)))
+        self.logger.debug('add depol parameters of signal {0} to VLDRParams'.format(int(signal.channel_ids)))
 
         if self.depol_uncertainty_params is None:
             self.depol_uncertainty_params = DepolUncertaintyParams.from_db(
                 self.general_params,
                 signal.ds.time[0].values)
 
-        if signal.channel_id == self.refl_sig_id:
+        if signal.channel_ids == self.refl_sig_id:
             self.crosstalk_g_refl = float(signal.g.value)
             self.crosstalk_h_refl = float(signal.h.value)
 
-        elif signal.channel_id == self.transm_sig_id:
+        elif signal.channel_ids == self.transm_sig_id:
             self.crosstalk_g_transm = float(signal.g.value)
             self.crosstalk_h_transm = float(signal.h.value)
         else:
             self.logger.error('signal {} is neither reflected nor transmitted one '
-                              '(as it should be)'.format(signal.channel_id))
+                              '(as it should be)'.format(signal.channel_ids))
 
     def add_signal_role(self, signal):
         super(VLDRParams, self)
         if signal.is_elast_sig:
             if signal.is_cross_sig:
                 self.cross_sig_id_str = signal.channel_id_str
-                self.cross_sig_id = signal.channel_id.values
+                self.cross_sig_id = signal.channel_ids.values
             if signal.is_parallel_sig:
                 self.parallel_sig_id_str = signal.channel_id_str
-                self.parallel_sig_id = signal.channel_id.values
+                self.parallel_sig_id = signal.channel_ids.values
             if signal.is_transm_sig:
                 self.transm_sig_id_str = signal.channel_id_str
-                self.transm_sig_id = signal.channel_id.values
+                self.transm_sig_id = signal.channel_ids.values
             if signal.is_refl_sig:
                 self.refl_sig_id_str = signal.channel_id_str
-                self.refl_sig_id = signal.channel_id.values
+                self.refl_sig_id = signal.channel_ids.values
         else:
             self.logger.debug('channel {0} is no elast signal'.format(signal.channel_id_str))
 

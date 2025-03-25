@@ -19,7 +19,8 @@ class LidarConstantData(object):
     product_id = None
     measurement_id = None
     system_id = None
-    channel_id = None
+    channel_ids = None
+    channel_id_str = None
     wavelength = None
     calibr_height = None
     is_from_combined_signal = None
@@ -41,10 +42,11 @@ class LidarConstantData(object):
         result.measurement_id = meas_params.meas_id
         result.system_id = meas_params.system_id
         result.product_id = bsc.params.prod_id
-        if sig.channel_id.size == 1:
-            result.channel_id = int(sig.channel_id.values)
+        if sig.channel_ids.size == 1:
+            result.channel_ids = int(sig.channel_ids.values)
         else:
-            result.channel_id = sig.channel_id.values
+            result.channel_ids = sig.channel_ids.values
+        result.channel_id_str = sig.channel_id_str
         result.wavelength = float(sig.detection_wavelength.values)
 
         result.ds = xr.Dataset(data_vars=dict(
@@ -78,7 +80,7 @@ class LidarConstantData(object):
         # find valid time slices
         valid_ts = np.where(~self.ds.lidar_constant.isnull())[0]
 
-        channel_id = self.channel_id
+        channel_id = self.channel_id_str
 
         # for t in range(self.ds.dims['time']):
         for t in valid_ts:

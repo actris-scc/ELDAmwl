@@ -33,7 +33,7 @@ class ExtinctionParams(ProductParams):
         super(ExtinctionParams, self)
         if signal.is_Raman_sig:
             self.raman_sig_id_str = signal.channel_id_str
-            self.raman_sig_id = signal.channel_id.values
+            self.raman_sig_id = signal.channel_ids.values
         else:
             self.logger.debug('channel {0} is no Raman signal'.format(signal.channel_id_str))
 

@@ -157,7 +157,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
     elast_signals = None
 
     def run_a_rayl_fit(self, sig):
-        channel_id = sig.channel_id_str
+        channel_id = sig.channel_id_name
 
         if channel_id not in self.all_results.keys():
 

@@ -40,7 +40,7 @@ from ELDAmwl.database.tables.system_product import SystemProduct
 from ELDAmwl.errors.exceptions import NoBscCalOptions, NoParamsForDepolUncertainty, NoMwlProductDefined, NoELPPFileInDB, \
     NoBasicProductsInDB
 from ELDAmwl.errors.exceptions import NOMCOptions
-from ELDAmwl.utils.constants import EBSC
+from ELDAmwl.utils.constants import EBSC, DETECTION_TYPE_DB_ID
 from ELDAmwl.utils.constants import MWL
 from ELDAmwl.utils.constants import RBSC
 from sqlalchemy.orm import aliased
@@ -1060,7 +1060,7 @@ class DBFunc(DBUtils):
             """
         return self.read_algorithm(method_id, SmoothMethod)
 
-    def read_full_overlap(self, channel_id):
+    def read_full_overlap(self, channel_id: int):
         """ read height of full overlap of a channel
 
             Args:
@@ -1073,7 +1073,7 @@ class DBFunc(DBUtils):
         ovl_heights = self.session.query(
             Channels, Telescopes,
         ).filter(
-            Channels.ID == channel_id,
+            Channels.ID == int(channel_id),
         ).filter(Channels.telescope_id == Telescopes.ID)
 
         if ovl_heights.count() > 0:
@@ -1081,6 +1081,28 @@ class DBFunc(DBUtils):
         else:
             self.logger.error('wrong number of overlap heights ({0}) for channel {1}'.
                               format(ovl_heights.count(),
+                                     channel_id))
+
+    def read_detection_type(self, channel_id):
+        """ read detection type of a channel
+
+            Args:
+                channel_id (int): the id of the channel
+
+            Returns:
+                float: detection type
+
+        """
+        det_type = self.session.query(
+            Channels
+        ).filter(
+            Channels.ID == int(channel_id))
+
+        if det_type.count() > 0:
+            return DETECTION_TYPE_DB_ID[det_type.first().detection_mode_id]
+        else:
+            self.logger.error('wrong number of detection types ({0}) for channel {1}'.
+                              format(det_type.count(),
                                      channel_id))
 
     def register_mwl_file_to_db(self, meas_id, prod_id, scc_version_id, nowtime, filename):

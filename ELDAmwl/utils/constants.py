@@ -56,6 +56,8 @@ PH_CNT = 2
 GLUED = ANALOG + PH_CNT
 
 DETECTION_TYPES = [ANALOG, PH_CNT, GLUED]
+DETECTION_TYPE_DB_ID = {'an': ANALOG,
+                        'pc': PH_CNT}
 
 # ====== signal altitude ranges ======
 ALL_RANGE = 0

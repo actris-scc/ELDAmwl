@@ -2,11 +2,14 @@
 """Classes for signals"""
 
 from copy import deepcopy
+
+from zope.component import queryUtility
+
 from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.bases.columns import Columns
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import ICfg, ILogger
+from ELDAmwl.component.interface import ICfg, ILogger, IDBFunc
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import CannotOpenELLPFile
@@ -15,7 +18,7 @@ from ELDAmwl.errors.exceptions import RepeatedCorrectMolTransm
 from ELDAmwl.errors.exceptions import RepeatedNormalizeByshots
 from ELDAmwl.header import Header
 from ELDAmwl.rayleigh import RayleighLidarRatio
-from ELDAmwl.utils.constants import ABOVE_MAX_ALT
+from ELDAmwl.utils.constants import ABOVE_MAX_ALT, PH_CNT
 from ELDAmwl.utils.constants import ALL_OK, P_ALL_OK
 from ELDAmwl.utils.constants import ALL_RANGE
 from ELDAmwl.utils.constants import ANALOG
@@ -180,7 +183,8 @@ class Signals(Columns):
 
     emission_wavelength = None
     detection_wavelength = None
-    channel_id = None
+    channel_ids = None
+    channel_id_name = None  # if signal is glued (or otherwise from different components), this is the id of the most far channel
     detection_type = None
     channel_idx_in_ncfile = None
     scatterer = None
@@ -237,8 +241,8 @@ class Signals(Columns):
                       + np.square(denominator.rel_err)))
         result.ds['qf'] = enumerator.ds.qf | denominator.ds.qf
 
-        result.channel_id = xr.concat([enumerator.channel_id,
-                                       denominator.channel_id],
+        result.channel_ids = xr.concat([enumerator.channel_ids,
+                                       denominator.channel_ids],
                                       dim='nc')
         result.ds['mol_backscatter'] = enumerator.ds.mol_backscatter
         if 'mol_depolarization_ratio' in enumerator.ds:
@@ -344,7 +348,8 @@ class Signals(Columns):
 #        result.ds['mol_trasm_at_emission_wl'] = result.angle_to_time_dependent_var(laser_pointing_angle_of_profiles,  # noqa E501
 #                                                                                   mol_trasm_at_emission_wl)  # noqa E501
 
-        result.channel_id = nc_ds.range_corrected_signal_channel_id[idx_in_file].astype(int)  # noqa E501
+        result.channel_ids = nc_ds.range_corrected_signal_channel_id[idx_in_file].astype(int)  # noqa E501
+        result.channel_id_name = result.get_channel_id_name()
         result.detection_type = nc_ds.range_corrected_signal_detection_mode[idx_in_file].astype(int)  # noqa E501
         result.detection_wavelength = nc_ds.range_corrected_signal_detection_wavelength[idx_in_file]  # noqa E501
         result.detection_wavelength.load()
@@ -432,8 +437,8 @@ class Signals(Columns):
             depol_params=depol_params,
         ).run()
 
-        result.channel_id = xr.concat([transm_sig.channel_id,
-                                       refl_sig.channel_id],
+        result.channel_ids = xr.concat([transm_sig.channel_ids,
+                                       refl_sig.channel_ids],
                                       dim='nc')
         result.pol_channel_conf.values = TOTAL
         result.pol_channel_geometry.values = TRANSMITTED + REFLECTED  # ToDo Ina debug
@@ -571,10 +576,50 @@ class Signals(Columns):
 
     @property
     def channel_id_str(self):
-        if self.channel_id is not None:
-            return str(self.channel_id.values)
+        if self.channel_ids is not None:
+            return str(self.channel_ids.values)
         else:
             return None
+
+    def get_channel_id_name(self):
+        num_channels = self.channel_ids.size
+        if num_channels == 0:
+            self.logger.warning('channel has no channel_ids')
+            return None
+        elif num_channels == 1:
+            return str(self.channel_ids[0].values)
+        else:
+            # read from db which channel id corresponds to the "most far" channel
+            db_func = queryUtility(IDBFunc)
+            det_types = np.zeros(num_channels, dtype=int)
+            ovl_heights = np.ones(num_channels) * np.nan
+            for ch in range(num_channels):
+                det_types[ch] = db_func.read_detection_type(self.channel_ids[ch])
+                ovl_heights[ch] = db_func.read_full_overlap(self.channel_ids[ch])
+
+            # if channels have different ovl heights
+            if not np.all(ovl_heights == ovl_heights[0]):
+                # what is the maximum ovl height?
+                max_ovl = ovl_heights.max()
+                # count channels with max ovl height
+                num_fr_channels = np.count_nonzero(ovl_heights == max_ovl)
+                # if there is only 1, use this channel_id
+                if num_fr_channels == 1:
+                    return str(self.channel_ids.values[ovl_heights.argmax()])
+                # if there is more than 1, ignore all channels with lower overlaps (remove all channels with ovl < max_ovl)
+                else:
+                    det_types[ovl_heights < max_ovl] = NC_FILL_INT
+
+            # continue testing for detection type
+            # count pc channels
+            num_pc_channels = np.count_nonzero(det_types == PH_CNT)
+            if num_pc_channels == 1:
+                return str(self.channel_ids.values[det_types == PH_CNT])
+            else:
+                self.logger.error(f'channels {self.channel_ids.values} have less ore more than 1 pc channel with maximum ovl'
+                                  f' -> cannot derive unique channel_id_name')
+                return None
+
 
     def register(self, p_params):
         p_params.general_params.signals.append(self.channel_id_str)
@@ -614,7 +659,7 @@ class Signals(Columns):
 
         """
         if self.normalized_by_shots:
-            raise RepeatedNormalizeByshots(self.channel_id)
+            raise RepeatedNormalizeByshots(self.channel_id_name)
         self.ds['err'] = self.ds['err'] * self.scale_factor_shots
         self.ds['data'] = self.ds['data'] * self.scale_factor_shots
         self.normalized_by_shots = True

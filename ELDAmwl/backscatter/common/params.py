@@ -40,19 +40,19 @@ class BackscatterParams(ProductParams):
         if signal.is_elast_sig:
             if signal.is_total_sig:
                 self.total_sig_id_str = signal.channel_id_str
-                self.total_sig_id = signal.channel_id.values
+                self.total_sig_id = signal.channel_ids.values
             if signal.is_cross_sig:
                 self.cross_sig_id_str = signal.channel_id_str
-                self.cross_sig_id = signal.channel_id.values
+                self.cross_sig_id = signal.channel_ids.values
             if signal.is_parallel_sig:
                 self.parallel_sig_id_str = signal.channel_id_str
-                self.parallel_sig_id = signal.channel_id.values
+                self.parallel_sig_id = signal.channel_ids.values
             if signal.is_transm_sig:
                 self.transm_sig_id_str = signal.channel_id_str
-                self.transm_sig_id = signal.channel_id.values
+                self.transm_sig_id = signal.channel_ids.values
             if signal.is_refl_sig:
                 self.refl_sig_id_str = signal.channel_id_str
-                self.refl_sig_id = signal.channel_id.values
+                self.refl_sig_id = signal.channel_ids.values
         else:
             self.logger.debug('channel {0} is no elast signal'.format(signal.channel_id_str))
 
