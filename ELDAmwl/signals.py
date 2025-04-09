@@ -12,13 +12,13 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import ICfg, ILogger, IDBFunc
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import CannotOpenELLPFile
+from ELDAmwl.errors.exceptions import CannotOpenELLPFile, CannotFindUniqueChannelID
 from ELDAmwl.errors.exceptions import ELPPFileNotFound
 from ELDAmwl.errors.exceptions import RepeatedCorrectMolTransm
 from ELDAmwl.errors.exceptions import RepeatedNormalizeByshots
 from ELDAmwl.header import Header
 from ELDAmwl.rayleigh import RayleighLidarRatio
-from ELDAmwl.utils.constants import ABOVE_MAX_ALT, PH_CNT
+from ELDAmwl.utils.constants import ABOVE_MAX_ALT, PH_CNT, FAR_RANGE_CHANNEL_ROLES, ALL_RANGE_CHANNEL_ROLES
 from ELDAmwl.utils.constants import ALL_OK, P_ALL_OK
 from ELDAmwl.utils.constants import ALL_RANGE
 from ELDAmwl.utils.constants import ANALOG
@@ -93,6 +93,7 @@ class ElppData(object):
 
     def __init__(self):
         self.signals = None
+        self.prod_id = None
         self.cloud_mask = None
         self.range_bins = None
         self.header = None
@@ -113,6 +114,7 @@ class ElppData(object):
         # todo: check if scc version in query = current version
 
         filename = p_param.general_params.elpp_file
+        self.prod_id = p_param.prod_id
         elpp_file = abs_file_path(self.cfg.SIGNAL_PATH, filename)
         self.logger.debug('read file {0}'.format(filename))
 
@@ -142,7 +144,7 @@ class ElppData(object):
         self.data_storage.time_res_raw = self.time_res
 
         for idx in range(nc_ds.dims['channel']):
-            sig = Signals.from_nc_file(nc_ds, idx, range_axis=self.range_bins)
+            sig = Signals.from_nc_file(nc_ds, idx, self.prod_id, range_axis=self.range_bins)
             sig.ds.load()
             self.data_storage.set_elpp_signal(p_param.prod_id_str, sig)  # noqa E501
             sig.register(p_param)
@@ -254,13 +256,14 @@ class Signals(Columns):
         return result
 
     @classmethod
-    def from_nc_file(cls, nc_ds, idx_in_file, range_axis=None):
+    def from_nc_file(cls, nc_ds, idx_in_file, product_id, range_axis=None):
         """creates a Signals instance from the content of a NetCDF file
 
         Args:
             nc_ds (xarray.Dataset): content of the NetCDF file.
             idx_in_file (int):      index of the signal within the
                                     channel dimension of the file.
+            product_id(int):    product id
 
         Returns: Signals
 
@@ -349,7 +352,7 @@ class Signals(Columns):
 #                                                                                   mol_trasm_at_emission_wl)  # noqa E501
 
         result.channel_ids = nc_ds.range_corrected_signal_channel_id[idx_in_file].astype(int)  # noqa E501
-        result.channel_id_name = result.get_channel_id_name()
+        result.channel_id_name = result.get_channel_id_name(product_id)
         result.detection_type = nc_ds.range_corrected_signal_detection_mode[idx_in_file].astype(int)  # noqa E501
         result.detection_wavelength = nc_ds.range_corrected_signal_detection_wavelength[idx_in_file]  # noqa E501
         result.detection_wavelength.load()
@@ -581,7 +584,19 @@ class Signals(Columns):
         else:
             return None
 
-    def get_channel_id_name(self):
+    def get_channel_id_name(self, product_id):
+        """if a signal in ELPP file was merged from several channels,
+        this function finds the id of the "most relevant" one, which is
+        usually the far range channel in the merging process.
+        This id is used for internal purposes (e.g., in central data storage)
+        and for writing intermediate products (e.g. calibration constants) into the SCC db
+
+        Args:
+            product_id: int
+
+        Returns:
+            id (str) : unique channel id of the signal
+        """
         num_channels = self.channel_ids.size
         if num_channels == 0:
             self.logger.warning('channel has no channel_ids')
@@ -589,37 +604,21 @@ class Signals(Columns):
         elif num_channels == 1:
             return str(self.channel_ids[0].values)
         else:
-            # read from db which channel id corresponds to the "most far" channel
             db_func = queryUtility(IDBFunc)
-            det_types = np.zeros(num_channels, dtype=int)
-            ovl_heights = np.ones(num_channels) * np.nan
+            # read channel roles from db
+            channel_roles = np.zeros(num_channels, dtype=int)
             for ch in range(num_channels):
-                det_types[ch] = db_func.read_detection_type(self.channel_ids[ch])
-                ovl_heights[ch] = db_func.read_full_overlap(self.channel_ids[ch])
+                channel_roles[ch] = db_func.read_channel_role(self.channel_ids[ch], product_id)
 
-            # if channels have different ovl heights
-            if not np.all(ovl_heights == ovl_heights[0]):
-                # what is the maximum ovl height?
-                max_ovl = ovl_heights.max()
-                # count channels with max ovl height
-                num_fr_channels = np.count_nonzero(ovl_heights == max_ovl)
-                # if there is only 1, use this channel_id
-                if num_fr_channels == 1:
-                    return str(self.channel_ids.values[ovl_heights.argmax()])
-                # if there is more than 1, ignore all channels with lower overlaps (remove all channels with ovl < max_ovl)
-                else:
-                    det_types[ovl_heights < max_ovl] = NC_FILL_INT
+            fr_channels = self.channel_ids[np.isin(channel_roles, FAR_RANGE_CHANNEL_ROLES)].values
 
-            # continue testing for detection type
-            # count pc channels
-            num_pc_channels = np.count_nonzero(det_types == PH_CNT)
-            if num_pc_channels == 1:
-                return str(self.channel_ids.values[det_types == PH_CNT])
+            # if there is exactly 1 far range channel -> return this
+            if fr_channels.size == 1:
+                return str(fr_channels[0])
             else:
-                self.logger.error(f'channels {self.channel_ids.values} have less ore more than 1 pc channel with maximum ovl'
-                                  f' -> cannot derive unique channel_id_name')
-                return None
-
+                self.logger.error(f'cannot find a unique signal name for channels {self.channel_ids.values} '
+                                  f'in ELPP file of product {product_id}')
+                raise CannotFindUniqueChannelID(product_id, self.channel_ids.values)
 
     def register(self, p_params):
         p_params.general_params.signals.append(self.channel_id_str)

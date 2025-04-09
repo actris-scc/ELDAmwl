@@ -67,6 +67,28 @@ FAR_RANGE = 4
 
 SIGNAL_ALTITUDE_RANGES = [ULTRA_NEAR_RANGE, NEAR_RANGE, FAR_RANGE]
 
+# ====== channel roles ======
+# elastic total
+elT = 0
+elTnr = 1
+elTfr = 2
+# elastic reflected
+elPR = 6
+elPRnr = 10
+elPRfr = 11
+# elastic transmitted
+elPT = 7
+elPTnr = 12
+elPTfr = 13
+# vibrational-rotational Raman of N2
+vrRN2 = 3
+vrRN2nr = 4
+vrRN2fr = 5
+
+FAR_RANGE_CHANNEL_ROLES = [elTfr, elPRfr, elPTfr, vrRN2fr]
+NEAR_RANGE_CHANNEL_ROLES = [elTnr, elPRnr, elPTnr, vrRN2nr]
+ALL_RANGE_CHANNEL_ROLES = [elT, elPR, elPT, vrRN2]
+
 # ====== signal scatterer type ======
 PARTICLE = 1
 NITROGEN = 2

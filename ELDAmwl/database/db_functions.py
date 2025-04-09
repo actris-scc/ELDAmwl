@@ -1060,6 +1060,29 @@ class DBFunc(DBUtils):
             """
         return self.read_algorithm(method_id, SmoothMethod)
 
+    def read_channel_role(self, channel_id, product_id: int):
+        """ read height of full overlap of a channel
+
+            Args:
+                channel_id (int): the id of the channel
+                product_id (int): the id of the product
+
+            Returns:
+                float: height of the full overlap in m a.g.
+
+        """
+        channel_role = self.session.query(ProductChannels)\
+            .filter(ProductChannels.channel_id == int(channel_id),)\
+            .filter(ProductChannels.prod_id == product_id)
+
+        if channel_role.count() == 1:
+            return channel_role.first().signal_type_id
+        else:
+            self.logger.error('wrong number of signal types ({0}) for channel {1} and product {2}'.
+                              format(channel_role.count(),
+                                     channel_id,
+                                     product_id))
+
     def read_full_overlap(self, channel_id: int):
         """ read height of full overlap of a channel
 

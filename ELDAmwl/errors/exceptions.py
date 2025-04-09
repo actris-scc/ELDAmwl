@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
 from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, WRONG_TYPE_BASIC_PRODUCT_FOR_DERIVED_PRODUCT, \
-    DIFFERENT_TIME_RES_EXISTS, TIME_RES_MWL_IS_NO_MULTIPLE, TIME_RES_MWL_SMALLER_TAHN_SINGLE
+    DIFFERENT_TIME_RES_EXISTS, TIME_RES_MWL_IS_NO_MULTIPLE, TIME_RES_MWL_SMALLER_TAHN_SINGLE, NO_FR_ROLE_IN_CHANNEL_IDS
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -420,6 +420,22 @@ class DifferentHeaderExists(ELDAmwlException):
     def __str__(self):
         return('Another ELPP file with different header information '
                'has already been red')
+
+
+class CannotFindUniqueChannelID(ELDAmwlException):
+    """
+    Raised if an ELPP signal is created from several channels
+    but none of them ore more than one has a role as far range channel
+    """
+    return_value = NO_FR_ROLE_IN_CHANNEL_IDS
+
+    def __init__(self, product_id, channel_ids):
+        self.product_id = product_id
+        self.channel_ids = channel_ids
+
+    def __str__(self):
+        return(f'a signal in ELPP file was created from several channels {self.channel_ids}, '
+               'but none of them (or more than one) is a far range channel')
 
 
 class DifferentRawResolutionExists(ELDAmwlException):
