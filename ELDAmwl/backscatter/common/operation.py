@@ -17,8 +17,10 @@ class BackscatterFactoryDefault(BaseOperation):
     param = None
     empty_bsc = None
     prod_id = None
+    resolution  = None
 
     def prepare(self):
+        self.resolution = self.kwargs['resolution']
         self.param = self.kwargs['bsc_param']
         self.calibr_window = self.kwargs['calibr_window']
         self.prod_id = self.param.prod_id_str
@@ -26,7 +28,8 @@ class BackscatterFactoryDefault(BaseOperation):
         if not self.param.includes_product_merging():
             self.elast_sig = self.data_storage.prepared_signal(
                 self.param.prod_id_str,
-                self.param.total_sig_id_str)
+                self.param.total_sig_id_str,
+                self.resolution)
 
     def get_non_merge_product(self):
         pass
@@ -59,6 +62,7 @@ class BackscatterFactory(BaseOperationFactory):
         assert 'bsc_param' in kwargs
         assert 'autosmooth' in kwargs
         assert 'calibr_window' in kwargs
+        assert 'resolution' in kwargs
         res = super(BackscatterFactory, self).__call__(**kwargs)
         return res
 

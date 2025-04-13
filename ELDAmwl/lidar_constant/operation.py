@@ -132,20 +132,24 @@ class LidarConstantFactoryDefault(BaseOperation):
         self.signals = Dict({
             'total': self.data_storage.prepared_signal(
                 self.bsc_param.prod_id_str,
-                self.bsc_param.total_sig_id_str)})
+                self.bsc_param.total_sig_id_str,
+                self.used_resolution)})
 
         if self.bsc_param.is_bsc_from_depol_components():
             self.signals['refl'] = self.data_storage.prepared_signal(
                 self.bsc_param.prod_id_str,
-                self.bsc_param.refl_sig_id_str)
+                self.bsc_param.refl_sig_id_str,
+                self.used_resolution)
             self.signals['transm'] = self.data_storage.prepared_signal(
                 self.bsc_param.prod_id_str,
-                self.bsc_param.transm_sig_id_str)
+                self.bsc_param.transm_sig_id_str,
+                self.used_resolution)
 
         if self.bsc_param.bsc_method == RAMAN:
             self.signals['raman'] = self.data_storage.prepared_signal(
                 self.bsc_param.prod_id_str,
-                self.bsc_param.raman_sig_id_str)
+                self.bsc_param.raman_sig_id_str,
+                self.used_resolution)
 
     def find_angstroem(self):
         """ find best assumption for angstroem exponent

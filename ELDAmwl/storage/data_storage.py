@@ -42,10 +42,19 @@ class DataStorage:
                 'cloud_mask': None,
                 'time_res_raw': None,
 
-                'time_integration_multiples': Dict({LOWRES: None, HIGHRES: None}),
                 'elpp_signals': Dict(),
-                'integrated_signals': Dict(),
-                'prepared_signals': Dict(),
+                'time_integration_multiples': Dict({LOWRES: None, HIGHRES: None}),
+                'integrated_signals': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
+                'integrated_cloud_mask': Dict({LOWRES: None, HIGHRES: None}),
+                'prepared_signals': Dict(
+                    {
+                        LOWRES: Dict(),
+                        HIGHRES: Dict(),
+                    }),
 
                 'basic_products_raw': Dict(),
                 'basic_products_auto_smooth': Dict(),
@@ -107,15 +116,19 @@ class DataStorage:
 
         self.__data.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
-    def set_integrated_signal(self, prod_id_str, new_signal):
+    def set_integrated_signal(self, prod_id_str, res, new_signal):
         """write new time integrated ELPP signal to storage"""
 
-        self.__data.integrated_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
+        self.__data.integrated_signals[res][prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
-    def set_prepared_signal(self, prod_id_str, new_signal):
+    def set_integrated_cloud_mask(self, resolution, new_cm):
+        """write new time integrated cloud mask to storage"""
+        self.__data.integrated_cloud_mask[resolution] = new_cm
+
+    def set_prepared_signal(self, prod_id_str, resolution, new_signal):
         """write new prepared signal to storage"""
 
-        self.__data.prepared_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
+        self.__data.prepared_signals[resolution][prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_basic_product_raw(self, prod_id_str, new_product):
         """write new un-smoothed basic product to storage
@@ -289,7 +302,7 @@ class DataStorage:
             raise NotFoundInStorage('ELPP signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
 
-    def integrated_signals(self, prod_id_str):
+    def integrated_signals(self, prod_id_str, resolution):
         """copies of all time integrated ELPP signals of one product
 
         Those are the otime-integrated signals of one basic product from
@@ -297,6 +310,7 @@ class DataStorage:
 
         Args:
             prod_id_str (str):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
 
         Returns:
             :obj:`list` of :obj:`Signals`: list with deepcopies of all signals related
@@ -308,33 +322,33 @@ class DataStorage:
         """
         try:
             result = []
-            for ch_id in self.__data.integrated_signals[prod_id_str]:
-                result.append(deepcopy(self.__data.integrated_signals[prod_id_str][ch_id]))
+            for ch_id in self.__data.integrated_signals[resolution][prod_id_str]:
+                result.append(deepcopy(self.__data.integrated_signals[resolution][prod_id_str][ch_id]))
             return result
         except AttributeError:
             raise NotFoundInStorage('time integrated signals',
                                     'product {0}'.format(prod_id_str))
 
-    def integrated_signal(self, prod_id_str, ch_id_str):
-        """copy of a time integrated ELPP signal
-
-        Args:
-            prod_id_str (str):  product id
-            ch_id_str (str):  channel id
-
-        Returns:
-            :obj:`Signals`: deepcopy of the requested time integrated ELPP signal
-
-        Raises:
-             NotFoundInStorage: if no entry for the given product id
-                and signal id was found in storage
-        """
-        try:
-            return deepcopy(self.__data.integrated_signals[prod_id_str][ch_id_str])
-        except AttributeError:
-            raise NotFoundInStorage('time integrated signal {0}'.format(ch_id_str),
-                                    'product {0}'.format(prod_id_str))
-
+    # def integrated_signal(self, prod_id_str, ch_id_str):
+    #     """copy of a time integrated ELPP signal
+    #
+    #     Args:
+    #         prod_id_str (str):  product id
+    #         ch_id_str (str):  channel id
+    #
+    #     Returns:
+    #         :obj:`Signals`: deepcopy of the requested time integrated ELPP signal
+    #
+    #     Raises:
+    #          NotFoundInStorage: if no entry for the given product id
+    #             and signal id was found in storage
+    #     """
+    #     try:
+    #         return deepcopy(self.__data.integrated_signals[prod_id_str][ch_id_str])
+    #     except AttributeError:
+    #         raise NotFoundInStorage('time integrated signal {0}'.format(ch_id_str),
+    #                                 'product {0}'.format(prod_id_str))
+    #
     def lidar_constant(self, channel_id):
         """copies the lidar constant of a given channel id
 
@@ -381,13 +395,14 @@ class DataStorage:
             raise NotFoundInStorage('lidar constant',
                                     'wavelength {0}'.format(wavelength))
 
-    def prepared_signals(self, prod_id_str):
+    def prepared_signals(self, prod_id_str, resolution):
         """copies of all prepared signals of one product
 
         Those are the prepared signals of one basic product .
 
         Args:
             prod_id_str (str):  product id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
 
         Returns:
             :obj:`list` of :obj:`Signals`: list with deepcopies of all signals related
@@ -399,14 +414,14 @@ class DataStorage:
         """
         try:
             result = []
-            for ch_id in self.__data.prepared_signals[prod_id_str]:
-                result.append(deepcopy(self.__data.prepared_signals[prod_id_str][ch_id]))
+            for ch_id in self.__data.prepared_signals[resolution][prod_id_str]:
+                result.append(deepcopy(self.__data.prepared_signals[resolution][prod_id_str][ch_id]))
             return result
         except AttributeError:
             raise NotFoundInStorage('prepared signals',
                                     'product {0}'.format(prod_id_str))
 
-    def prepared_signal(self, prod_id_str, ch_id_str):
+    def prepared_signal(self, prod_id_str, ch_id_str, resolution):
         """copy of an prepared signal
 
         The preparation includes normalization by number of laser shots,
@@ -416,6 +431,7 @@ class DataStorage:
         Args:
             prod_id_str (str):  product id
             ch_id_str (str):  channel id
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
 
         Returns:
             :obj:`Signals`: deepcopy of the requested prepared signal
@@ -425,7 +441,7 @@ class DataStorage:
                 and signal id was found in storage
         """
         try:
-            return deepcopy(self.__data.prepared_signals[prod_id_str][ch_id_str])
+            return deepcopy(self.__data.prepared_signals[resolution][prod_id_str][ch_id_str])
         except AttributeError:
             raise NotFoundInStorage('prepared signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))

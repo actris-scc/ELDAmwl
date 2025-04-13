@@ -6,7 +6,7 @@ from ELDAmwl.database.tables.backscatter import BscCalibrMethod
 from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
 from ELDAmwl.signals import Signals
 from ELDAmwl.tests.pickle_data import write_test_data
-from ELDAmwl.utils.constants import RBSC, NC_FILL_INT
+from ELDAmwl.utils.constants import RBSC, NC_FILL_INT, LOWRES
 from ELDAmwl.utils.numerical import calc_rolling_means_sems, m_to_km, km_to_m
 from ELDAmwl.utils.numerical import find_minimum_window
 
@@ -46,7 +46,7 @@ class FindCommonBscCalibrWindow(BaseOperationFactory):
 
 
 class FindBscCalibrWindow(BaseOperation):
-    """base class for finding calibration windows for all bsc products"""
+    """base class for finding calibration windows for all bsc products, as a default, use only low resolution signals"""
 
     data_storage = None
     bsc_params = None
@@ -86,12 +86,13 @@ class FindBscCalibrWindow(BaseOperation):
         """
 
         el_sig = self.data_storage.prepared_signal(bsc_param.prod_id_str,
-                                                   bsc_param.total_sig_id_str)
+                                                   bsc_param.total_sig_id_str,
+                                                   LOWRES)
         error_threshold = bsc_param.quality_params.error_threshold.highrange
 
         if bsc_param.general_params.product_type == RBSC:
             r_sig = self.data_storage.prepared_signal(
-                bsc_param.prod_id_str, bsc_param.raman_sig_id_str)
+                bsc_param.prod_id_str, bsc_param.raman_sig_id_str, LOWRES)
             sigratio = Signals.as_sig_ratio(el_sig, r_sig)
             ds = sigratio.data_in_vertical_range(
                 bsc_param.calibration_params.cal_interval)
@@ -292,7 +293,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
             for sig in sigs:
                 if sig.is_elast_sig:
                     self.elast_signals[bp] = sig
-                    self.channels.append(sig.channel_id_str)
+                    self.channels.append(sig.channel_id_name)
                     self.time_dim = sig.ds.dims['time']
                     self.run_a_rayl_fit(sig)
 

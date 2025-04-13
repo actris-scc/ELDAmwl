@@ -105,7 +105,7 @@ class Products(Signals):
     def is_derived_product(self):
         return self.params.general_params.is_derived_product
 
-    def smooth(self, binres):
+    def smooth(self, binres, res=None):
         """
         performs smoothing of the data
         Args:
@@ -114,7 +114,11 @@ class Products(Signals):
         Returns:
 
         """
-        self.logger.debug(f'smooth product {self.product_id_str}')
+        if res is None:
+            self.logger.debug(f'smooth product {self.product_id_str}', prod_id=self.product_id_str)
+        else:
+            self.logger.debug(f'smooth product {self.product_id_str} with {RESOLUTION_STR[res]}', prod_id=self.product_id_str)
+
         if self.data.shape != binres.shape:
             raise SizeMismatch('bin resolution',
                                'product {}'.format(self.params.prod_id_str),

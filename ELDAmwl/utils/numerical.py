@@ -1,6 +1,6 @@
 from copy import deepcopy
 from ELDAmwl.errors.exceptions import IntegrationFailed
-from ELDAmwl.utils.constants import NEG_TEST_STD_FACTOR
+from ELDAmwl.utils.constants import NEG_TEST_STD_FACTOR, LOWRES, HIGHRES
 from ELDAmwl.utils.wrapper import scipy_reduce_wrapper
 from scipy.integrate import cumulative_trapezoid
 from scipy.stats import sem
@@ -304,3 +304,10 @@ def average_error(arr, axis):
     # assuming error propagation: e = 1/n sqrt(e1² + e2² + .. + en²)
     # n is the axis dimension of arr, axis is a tuple
     return np.sqrt(np.sum(np.power(arr, 2), axis=axis)) / arr.shape[axis[0]]
+
+
+def the_other_res(resolution):
+    if resolution == LOWRES:
+        return HIGHRES
+    else:
+        return LOWRES

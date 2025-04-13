@@ -159,7 +159,7 @@ class GetBasicProductsDefault(BaseOperation):
                 used_binres_routine = GET_USED_BINRES_CLASSES[prod_param.product_type]()(prod_id=pid)
                 # todo: get binres for all signals involved in the product and then store the max of them
                 # dummy_sig is a deepcopy from data storage
-                dummy_sig = self.data_storage.prepared_signals(pid)[0]
+                dummy_sig = self.data_storage.prepared_signals(pid, res)[0]
                 binres = dummy_sig.get_binres_from_fixed_smooth(
                     sp,
                     res,
