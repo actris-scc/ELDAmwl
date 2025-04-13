@@ -76,7 +76,7 @@ class GetDerivedProductsDefault(BaseOperation):
             ae_params = self.product_params.angstroem_exp_products(res=res)
 
             if len(ae_params) == 0:
-                self.logger.warning(f'no angstroem exponent product will be calculated'
+                self.logger.warning(f'no angstroem exponent product will be calculated '
                                     f'with {RESOLUTION_STR[res]} resolution')
 
             for ae_param in ae_params:

@@ -29,7 +29,7 @@ from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams
 from ELDAmwl.products import SmoothParams
 from ELDAmwl.signals import ElppData
-from ELDAmwl.utils.constants import EBSC, RESOLUTIONS
+from ELDAmwl.utils.constants import EBSC, RESOLUTIONS, EXIT_CODE_TEXT
 from ELDAmwl.utils.constants import EXIT_CODE_NONE
 from ELDAmwl.utils.constants import EXIT_CODE_OK
 from ELDAmwl.utils.constants import EXIT_CODE_SOME
@@ -66,6 +66,7 @@ class MeasurementParams(Params):
         self.sub_params = ['measurement_params', 'smooth_params']
         self.smooth_params = None
         self.measurement_params = None
+        self.data_storage = component.queryUtility(IDataStorage)
 
     def load_from_db(self, meas_id):
         """ reads the parameters of a measurement from db
@@ -146,8 +147,8 @@ class MeasurementParams(Params):
     def prod_types(self, res=None):
         """unique sorted list of all product types with resolution = res
 
-        Args:
             res (optional): ['lowres', 'highres']
+        Args:
         Returns:
             list of float: unique, sorted list of all product types with resolution = res
         """
@@ -491,19 +492,23 @@ class MeasurementParams(Params):
         # at this point, it is ensured that all individual products have the same resolution.
         # Thus, test only the first product
         pre_process_res = self.basic_products()[0].general_params.integration_time
+
         for res in RESOLUTIONS:
             mwl_res = self.smooth_params.time_res[RESOLUTION_STR[res]]
-            if (mwl_res % pre_process_res) != 0:
-                self.logger.error(f'the time resolution of the mwl product in {RESOLUTION_STR[res]} '
-                                  f'resolution ({mwl_res} s) is no multiple of the pre-processing resolutions '
-                                  f'({pre_process_res} s) of the individual products')
-                raise MwlResIsNoMultiple(res)
 
             if mwl_res < pre_process_res:
                 self.logger.error(f'the time resolution of the mwl product in {RESOLUTION_STR[res]} '
                                   f'resolution ({mwl_res} s) is smaller than the pre-processing resolutions '
                                   f'({pre_process_res} s) of the individual products')
                 raise MwlResSmallerThanSingle(res)
+
+            if (mwl_res % pre_process_res) != 0:
+                self.logger.error(f'the time resolution of the mwl product in {RESOLUTION_STR[res]} '
+                                  f'resolution ({mwl_res} s) is no multiple of the pre-processing resolutions '
+                                  f'({pre_process_res} s) of the individual products')
+                raise MwlResIsNoMultiple(res)
+            else:
+                self.data_storage.set_time_integration_multiple(res, int(mwl_res / pre_process_res))
 
     def get_products_resolution(self):
         """Reads the products resolution to make sure it is consistent between all the products     # ToDo Pilar improve
@@ -620,13 +625,13 @@ class RunELDAmwl(BaseOperation):
         num_products = self.data_storage.number_of_derived_products()
 
         if num_products == self.data_storage.number_of_scheduled_products():
-            self.logger.info('all scheduled products have been calculated')
+            self.logger.info(EXIT_CODE_TEXT[EXIT_CODE_OK])
             return EXIT_CODE_OK
         elif num_products > 0:
-            self.logger.warning('only some of the scheduled products have been calculated')
+            self.logger.warning(EXIT_CODE_TEXT[EXIT_CODE_SOME])
             return EXIT_CODE_SOME
         else:
-            self.logger.error('none of the scheduled products have been calculated')
+            self.logger.error(EXIT_CODE_TEXT[EXIT_CODE_NONE])
             return EXIT_CODE_NONE
 
 

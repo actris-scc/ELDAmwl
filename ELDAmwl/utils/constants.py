@@ -252,3 +252,8 @@ NEG_TEST_STD_FACTOR = 2
 EXIT_CODE_OK = 0
 EXIT_CODE_SOME = 1
 EXIT_CODE_NONE = 2
+
+EXIT_CODE_TEXT = {EXIT_CODE_OK: 'all scheduled products have been calculated',
+                  EXIT_CODE_SOME: 'only some of the scheduled products have been calculated',
+                  EXIT_CODE_NONE: 'none of the scheduled products have been calculated',
+                  }

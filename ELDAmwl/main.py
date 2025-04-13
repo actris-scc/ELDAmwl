@@ -17,7 +17,7 @@ from ELDAmwl.log.log import register_logger
 from ELDAmwl.monte_carlo.operation import register_monte_carlo
 from ELDAmwl.storage.cached_functions import gen_sg_params
 from ELDAmwl.storage.data_storage import register_datastorage
-from ELDAmwl.utils.constants import ELDA_MWL_VERSION, EXIT_CODE_NONE, MWL_PROD_ID_DEFAULT
+from ELDAmwl.utils.constants import ELDA_MWL_VERSION, EXIT_CODE_NONE, MWL_PROD_ID_DEFAULT, EXIT_CODE_TEXT
 from zope import component
 
 import argparse
@@ -141,9 +141,15 @@ class Main:
         Todo Ina Missing doc
         """
 
+        eldamwl_prod_id = MWL_PROD_ID_DEFAULT
+
         try:
+            dbfunc = component.queryUtility(IDBFunc)
             self.logger.meas_id = arg_dict.meas_id
+
             elda_mwl = RunELDAmwl(arg_dict.meas_id)
+            eldamwl_prod_id = elda_mwl.params.measurement_params.mwl_product_id
+
             elda_mwl.read_tasks()
             elda_mwl.read_elpp_data()
             elda_mwl.prepare_signals()
@@ -153,13 +159,13 @@ class Main:
             elda_mwl.quality_control()
             elda_mwl.get_product_matrix()
             elda_mwl.write_mwl_output()
-            return_code = elda_mwl.get_return_value()
 
+            return_code = elda_mwl.get_return_value()
+            dbfunc.write_product_status_in_db(arg_dict.meas_id, eldamwl_prod_id, None, return_code, EXIT_CODE_TEXT[return_code])
             self.logger.info('the happy end')
 
         except ELDAmwlException as e:
-            dbfunc = component.queryUtility(IDBFunc)
-            dbfunc.write_product_status_in_db(arg_dict.meas_id, MWL_PROD_ID_DEFAULT, None, e.return_value, str(e))
+            dbfunc.write_product_status_in_db(arg_dict.meas_id, eldamwl_prod_id, None, e.return_value, str(e))
             return_code = EXIT_CODE_NONE
 
         return return_code
