@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """ELDA exceptions"""
 from ELDAmwl.errors.error_codes import CAL_RANGE_HIGHER_THAN_VALID, WRONG_TYPE_BASIC_PRODUCT_FOR_DERIVED_PRODUCT, \
-    DIFFERENT_TIME_RES_EXISTS, TIME_RES_MWL_IS_NO_MULTIPLE, TIME_RES_MWL_SMALLER_TAHN_SINGLE, NO_FR_ROLE_IN_CHANNEL_IDS
+    DIFFERENT_TIME_RES_EXISTS, TIME_RES_MWL_IS_NO_MULTIPLE, TIME_RES_MWL_SMALLER_TAHN_SINGLE, NO_FR_ROLE_IN_CHANNEL_IDS, \
+    DIFF_SCAN_ANGLES, DIFF_BIN_RES
 from ELDAmwl.errors.error_codes import CLASS_REGISTRY_TOO_MAY_OVERRIDES
 from ELDAmwl.errors.error_codes import COULD_NOT_FIND_CALIBR_WINDOW
 from ELDAmwl.errors.error_codes import DATA_NOT_IN_STORAGE
@@ -633,3 +634,26 @@ class DifferentProductTypeForAE(ELDAmwlConfigurationException):
         return('the products for the retrieval '
                'of angstroem exponent (product_id={0}) '
                'are not of the same type'.format(self.mwl_product_id))
+
+
+class AveragingDifferentScanAngles(ELDAmwlException):
+    """raised when time integration / averaging of time slices with different laser pointing angles is attempted
+    """
+
+    return_value = DIFF_SCAN_ANGLES
+
+    def __str__(self):
+        return('cannot perform time integration of time slices with different lidar pointing angles in product {}'
+               .format(self.prod_id))
+
+
+class AveragingDifferentBinRes(ELDAmwlException):
+    """raised when time integration / averaging of time slices with different profiles of bin resolution is attempted
+    """
+
+    return_value = DIFF_BIN_RES
+
+    def __str__(self):
+        return('cannot perform time integration of time slices with different profiles of bin resolution in product {}'
+               .format(self.prod_id))
+

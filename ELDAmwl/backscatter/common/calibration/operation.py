@@ -288,7 +288,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
         self.elast_signals = Dict()
 
         for bp in self.bsc_params:
-            sigs = self.data_storage.elpp_signals(bp.prod_id_str)
+            sigs = self.data_storage.integrated_signals(bp.prod_id_str)
             for sig in sigs:
                 if sig.is_elast_sig:
                     self.elast_signals[bp] = sig

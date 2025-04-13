@@ -47,11 +47,11 @@ class PrepareBscSignalsDefault(BaseOperation):
     def run(self):
         self.bsc_param = self.kwargs['prod_param']
         pid = self.bsc_param.prod_id_str
-        self.logger.debug('prepare signals for backscatter product {}'.format(pid))
+        self.logger.debug('prepare signals for backscatter product {}'.format(pid), prod_id=pid)
 
         # todo: prepare only the signals that are actually needed for the usecase
         # sig is a deepcopy from the data storage
-        for sig in self.data_storage.elpp_signals(pid):
+        for sig in self.data_storage.integrated_signals(pid):
             prep_sig = deepcopy(sig)
             prep_sig.set_valid_height_range(self.bsc_param.valid_alt_range)
             prep_sig.normalize_by_shots()
@@ -107,7 +107,7 @@ class PrepareExtSignalsDefault(BaseOperation):
 
         # todo: prepare only the signals that are actually needed for the usecase
         # sig is deepcopy from data storage
-        for sig in self.data_storage.elpp_signals(pid):
+        for sig in self.data_storage.integrated_signals(pid):
             if sig.is_Raman_sig:
                 prep_sig = deepcopy(sig)
                 prep_sig.set_valid_height_range(self.ext_param.valid_alt_range)
@@ -181,7 +181,7 @@ class PrepareDepolSignalsDefault(BaseOperation):
 
         # todo: prepare only the signals that are actually needed for the usecase
         # sig is deepcopy from data storage
-        for sig in self.data_storage.elpp_signals(pid):
+        for sig in self.data_storage.integrated_signals(pid):
             sig.set_valid_height_range(self.depol_param.valid_alt_range)
             sig.normalize_by_shots()
             sig.correct_for_mol_transmission()
@@ -208,13 +208,17 @@ class PrepareSignalsDefault(BaseOperation):
         # if the products (and signals) are to be smoothed and integrated onto a fixed, pre-defined grid
         if self.params.smooth_params.smooth_type == FIXED:
             self.logger.info('time integration of signals')
-            raw_res = self.data_storage.time_res_raw
-            for res in RESOLUTIONS:
-                target_res = self.params.smooth_params.time_res[RESOLUTION_STR[res]]
-                multiples = (target_res / raw_res).round()
 
-            for p_param in products:
-                elpp_signals = self.data_storage.elpp_signals(p_param.prod_id_str)
+            for res in RESOLUTIONS:
+                multiple = self.data_storage.time_integration_multiple(res)
+
+                for p_param in products:
+                    p_id = p_param.prod_id_str
+                    elpp_signals = self.data_storage.elpp_signals(p_id)  # returns a deepcopy of the data in stoorage
+                    for ch_idx in range(len(elpp_signals)):
+                        integrated_signal = elpp_signals[ch_idx]
+                        integrated_signal.time_integration(multiple)
+                        self.data_storage.set_integrated_signal(p_id, integrated_signal)
 
             # todo smooth cloud mask
 

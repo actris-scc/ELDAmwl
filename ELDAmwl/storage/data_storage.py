@@ -42,6 +42,7 @@ class DataStorage:
                 'cloud_mask': None,
                 'time_res_raw': None,
 
+                'time_integration_multiples': Dict({LOWRES: None, HIGHRES: None}),
                 'elpp_signals': Dict(),
                 'integrated_signals': Dict(),
                 'prepared_signals': Dict(),
@@ -161,7 +162,7 @@ class DataStorage:
         """
         self.__data.lidar_constants[wl] = new_lidar_constant
         for lc in new_lidar_constant.values():
-            channel_id = str(lc.channel_id)
+            channel_id = lc.channel_id_str
             self.__data.lidar_constants[channel_id] = lc
 
     def set_product_matrix(self, prod_type, res, new_dataset):
@@ -188,6 +189,16 @@ class DataStorage:
 
         """
         self.__data.binres_common_smooth[resolution][prod_id_str] = new_res_array
+
+    def set_time_integration_multiple(self, resolution, new_multiple):
+        """
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+            new_multiple: int
+
+        """
+        self.__data.time_integration_multiples[resolution] = new_multiple
 
     def set_common_vertical_resolution(self, resolution, new_res_array):
         """writes an array with common vertical resolution into storage
@@ -626,6 +637,29 @@ class DataStorage:
             'binres_common_smooth',
             'common bin resolution profile',
             'product {0} in '.format(prod_id_str))
+
+    def time_integration_multiple(self, resolution):
+        """ factor between the temporal resolutions (high res / low res) of the mwl product
+        and the common pre-processing time resolution of the ELPP signals
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :int: factor between time resolutions of MWL product and ELPP signals
+
+        Raises:
+             NotFoundInStorage: if no entry for the given product id
+                and resolution was found in storage
+        """
+        try:
+            if resolution is not None:
+                return self.__data.time_integration_multiples[resolution]
+            else:
+                return None
+
+        except AttributeError:
+            raise NotFoundInStorage('{0} {1}'.format('time_integration_multiples', RESOLUTION_STR[resolution]))
 
     def basic_product_common_smooth(self, prod_id, resolution):
         """copy of a basic product, derived with common smooth

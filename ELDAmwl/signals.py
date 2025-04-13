@@ -12,7 +12,8 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import ICfg, ILogger, IDBFunc
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.registry import registry
-from ELDAmwl.errors.exceptions import CannotOpenELLPFile, CannotFindUniqueChannelID
+from ELDAmwl.errors.exceptions import CannotOpenELLPFile, CannotFindUniqueChannelID, AveragingDifferentScanAngles, \
+    AveragingDifferentBinRes
 from ELDAmwl.errors.exceptions import ELPPFileNotFound
 from ELDAmwl.errors.exceptions import RepeatedCorrectMolTransm
 from ELDAmwl.errors.exceptions import RepeatedNormalizeByshots
@@ -34,7 +35,8 @@ from ELDAmwl.utils.constants import RESOLUTION_STR
 from ELDAmwl.utils.constants import TOTAL
 from ELDAmwl.utils.constants import TRANSMITTED
 from ELDAmwl.utils.constants import WATER_VAPOR
-from ELDAmwl.utils.numerical import calc_resolution, get_rangebin_axis
+from ELDAmwl.utils.numerical import calc_resolution, get_rangebin_axis, bitwise_or_reduce, average_shot_scale_factor, \
+    average_error
 from ELDAmwl.utils.path_utils import abs_file_path
 from zope import component
 
@@ -187,6 +189,7 @@ class Signals(Columns):
     detection_wavelength = None
     channel_ids = None
     channel_id_name = None  # if signal is glued (or otherwise from different components), this is the id of the most far channel
+    prod_id = None
     detection_type = None
     channel_idx_in_ncfile = None
     scatterer = None
@@ -273,6 +276,7 @@ class Signals(Columns):
 
         result = cls()
 
+        result.prod_id = product_id
         result.channel_idx_in_ncfile = idx_in_file
         result.num_scan_angles = nc_ds.dims['angle']
 
@@ -352,7 +356,7 @@ class Signals(Columns):
 #                                                                                   mol_trasm_at_emission_wl)  # noqa E501
 
         result.channel_ids = nc_ds.range_corrected_signal_channel_id[idx_in_file].astype(int)  # noqa E501
-        result.channel_id_name = result.get_channel_id_name(product_id)
+        result.channel_id_name = result.get_channel_id_name()
         result.detection_type = nc_ds.range_corrected_signal_detection_mode[idx_in_file].astype(int)  # noqa E501
         result.detection_wavelength = nc_ds.range_corrected_signal_detection_wavelength[idx_in_file]  # noqa E501
         result.detection_wavelength.load()
@@ -449,6 +453,63 @@ class Signals(Columns):
         result.is_from_depol_components = True
 
         return result
+
+    def time_integration(self, multiple):
+        """
+        performs time integration of the data
+        Args:
+            multiple (int) factor between the temporal resolutions of the mwl product and this ELPP signal
+
+        Returns:
+
+        """
+        self.logger.debug(f'time integration of signal {self.channel_id_str} with multiple {multiple}')
+
+        # multiple == 1 means that there is no time integration -> keep data unchanged and return
+        if multiple == 1:
+            return
+
+        # check whether the integration would combine time slices with different pointing angles
+        angles = self.ds.laser_pointing_angle
+        if (angles.coarsen(time=multiple, boundary='pad').min() !=
+            angles.coarsen(time=multiple, boundary='pad').max()).any():
+            self.logger.error('cannot average time slices with different scan angles')
+            raise AveragingDifferentScanAngles(self.prod_id)
+
+        # check whether the integration would combine time slices with different bin resolution
+        if (self.binres.coarsen(time=multiple, boundary='pad').min() !=
+            self.binres.coarsen(time=multiple, boundary='pad').max()).any():
+            self.logger.error('cannot average time slices with different bin resolutions')
+            raise AveragingDifferentBinRes(self.prod_id)
+
+        # calculate combined time slices as averages
+        new_ds = self.ds.coarsen(time=multiple, boundary='pad').mean()
+
+        # in case of int variables -> change datatypes back to originals
+        for var in ['qf', 'binres']:
+            new_ds[var] = new_ds[var].astype(self.ds[var].dtype)
+
+        # some variables need extra handling
+
+        # start of time bounds is always the min of combined time slices
+        new_ds.time_bounds[:, 0] = self.ds.time_bounds.coarsen(time=multiple, boundary='pad').min()[:,0]
+        # end of time bounds is always the max of combined time slices
+        new_ds.time_bounds[:, 1] = self.ds.time_bounds.coarsen(time=multiple, boundary='pad').max()[:, 1]
+        # time coordinate is always the start of the combined time slice
+        new_ds['time'] = self.ds.time.coarsen(time=multiple, boundary='pad').min()
+
+        # averaging of quality flags, errors and scale_factor_shots need specific routines
+        new_ds['qf'] = self.ds.qf.coarsen(time=multiple, boundary="pad")\
+            .reduce(bitwise_or_reduce)
+        new_ds['err'] = self.ds.err.coarsen(time=multiple, boundary="pad")\
+            .reduce(average_error)
+        new_scale_factor_shots = self.scale_factor_shots.coarsen(time=multiple, boundary="pad")\
+            .reduce(average_shot_scale_factor)
+
+        # replace current ds by new one
+        self.ds = new_ds
+        self.scale_factor_shots = new_scale_factor_shots
+
 
     def heightres_to_bins(self, heightres):
         """converts a height resolution into number of vertical bins
@@ -584,7 +645,7 @@ class Signals(Columns):
         else:
             return None
 
-    def get_channel_id_name(self, product_id):
+    def get_channel_id_name(self):
         """if a signal in ELPP file was merged from several channels,
         this function finds the id of the "most relevant" one, which is
         usually the far range channel in the merging process.
@@ -599,7 +660,7 @@ class Signals(Columns):
         """
         num_channels = self.channel_ids.size
         if num_channels == 0:
-            self.logger.warning('channel has no channel_ids')
+            self.logger.warning('channel has no channel_ids', prod_id=self.prod_id)
             return None
         elif num_channels == 1:
             return str(self.channel_ids[0].values)
@@ -608,7 +669,7 @@ class Signals(Columns):
             # read channel roles from db
             channel_roles = np.zeros(num_channels, dtype=int)
             for ch in range(num_channels):
-                channel_roles[ch] = db_func.read_channel_role(self.channel_ids[ch], product_id)
+                channel_roles[ch] = db_func.read_channel_role(self.channel_ids[ch], self.prod_id)
 
             fr_channels = self.channel_ids[np.isin(channel_roles, FAR_RANGE_CHANNEL_ROLES)].values
 
@@ -617,8 +678,8 @@ class Signals(Columns):
                 return str(fr_channels[0])
             else:
                 self.logger.error(f'cannot find a unique signal name for channels {self.channel_ids.values} '
-                                  f'in ELPP file of product {product_id}')
-                raise CannotFindUniqueChannelID(product_id, self.channel_ids.values)
+                                  f'in ELPP file of product {self.prod_id}')
+                raise CannotFindUniqueChannelID(self.prod_id, self.channel_ids.values)
 
     def register(self, p_params):
         p_params.general_params.signals.append(self.channel_id_str)
@@ -854,7 +915,7 @@ class Signals(Columns):
         if self.calc_used_bin_res_routine:
             return self.calc_used_bin_res_routine.run(eff_binres=an_eff_binres)
         else:
-            self.logger.warning('no method implemented for effective-to-used bin resolution')
+            self.logger.warning('no method implemented for effective-to-used bin resolution', prod_id=self.prod_id)
             return an_eff_binres
 
     def get_binres_from_fixed_smooth(self, smooth_params, res, used_binres_routine=None):

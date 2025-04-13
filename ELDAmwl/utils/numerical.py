@@ -285,3 +285,22 @@ def get_rangebin_axis(range_axis):
     rangebin_axis = np.arange(first_bin, range_axis.size)
 
     return rangebin_axis
+
+
+def bitwise_or_reduce(arr, axis):
+    return np.bitwise_or.reduce(arr.astype(np.int32), axis=axis)
+
+
+def average_shot_scale_factor(arr, axis):
+    # shot scale factor is defined as f=1/s
+    # sum of shots: s = s1+sn2+.. +sn
+    # 'sum' of factors: f = 1/s = 1/(s1+s2+..+sn) = 1/(1/f1 + 1/f2 +... + 1/fn)
+    # 1/f1 + 1/f2 +... + 1/fn = (f1 +f2 +..+fn) / (f1 * f2 * ..* fn)
+    # f = 1/(sum(fi) / prod(fi)) = prod(fi) / sum(fi)
+    return np.prod(arr, axis=axis) / np.sum(arr, axis=axis)
+
+
+def average_error(arr, axis):
+    # assuming error propagation: e = 1/n sqrt(e1² + e2² + .. + en²)
+    # n is the axis dimension of arr, axis is a tuple
+    return np.sqrt(np.sum(np.power(arr, 2), axis=axis)) / arr.shape[axis[0]]

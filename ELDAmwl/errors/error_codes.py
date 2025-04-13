@@ -3,9 +3,10 @@
 # those error codes shall be transformed into exceptions, where applicable
 
 NO_ERROR = 0
-
+# error codes 1 and 2 shall not be used because they overlap with return codes EXIT_CODE_SOME and EXIT_CODE_NONE
 # ERROR_INI_FILE_NOT_EXISTS = 1
-ERROR_LR_FILE_NOT_EXISTS = 2
+# ERROR_LR_FILE_NOT_EXISTS = 2
+
 ERROR_SIG_FILE_NOT_EXISTS = 3
 ERROR_SG_FILE_NOT_EXISTS = 4
 INVALID_MEASUREMENT_ID = 5
@@ -63,6 +64,7 @@ DIFFERENT_TIME_RES_EXISTS = 67
 TIME_RES_MWL_IS_NO_MULTIPLE = 68
 TIME_RES_MWL_SMALLER_TAHN_SINGLE = 69
 NO_FR_ROLE_IN_CHANNEL_IDS = 70
+DIFF_BIN_RES = 71
 
 
 # ===============================================

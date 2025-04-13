@@ -205,7 +205,7 @@ class Products(Signals):
             min_bsc_ratio = self.cfg.MIN_BSC_RATIO[self.product_type]
         else:
             self.logger.warning('cannot perform screening for aerosol free layers '
-                                'because no minimum bsc ratio was defined')
+                                'because no minimum bsc ratio was defined', prod_id=self.product_id_str)
             return None
 
         try:
@@ -215,7 +215,8 @@ class Products(Signals):
         except NotFoundInStorage:
             self.logger.error('screening for aerosol free layers '
                                   f'for {PRODUCT_TYPE_NAME[self.product_type]} failed '
-                                  f'because no bsc ratio is available for {RESOLUTION_STR[self.resolution]} ')
+                                  f'because no bsc ratio is available for {RESOLUTION_STR[self.resolution]} ',
+                              prod_id=self.product_id_str)
 
     def screen_for_single_points(self):
         """ flag single data points which are not connected to other neighboring valid data points
@@ -288,7 +289,8 @@ class Products(Signals):
                 if integral > max_integral:
                     self.profile_qf[t] = self.profile_qf[t] | P_TOO_LARGE_INTEGRAL
             else:
-                self.logger.warning('cannot perform qc integral check because no valid data in profile')
+                self.logger.warning('cannot perform qc integral check because no valid data in profile',
+                                    prod_id=self.product_id_str)
 
     def qc_profile_data_range(self):
         if self.product_type in self.cfg.MAX_ALLOWED_PERCENTAGE_OF_OUT_OF_RANGE_DATA:

@@ -46,7 +46,7 @@ class LidarConstantData(object):
             result.channel_ids = int(sig.channel_ids.values)
         else:
             result.channel_ids = sig.channel_ids.values
-        result.channel_id_str = sig.channel_id_str
+        result.channel_id_str = sig.channel_id_name
         result.wavelength = float(sig.detection_wavelength.values)
 
         result.ds = xr.Dataset(data_vars=dict(
