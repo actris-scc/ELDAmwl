@@ -486,17 +486,10 @@ class Signals(Columns):
         new_ds = self.ds.coarsen(time=multiple, boundary='pad').mean()
 
         # in case of int variables -> change datatypes back to originals
-        for var in ['qf', 'binres']:
+        for var in ['binres']:
             new_ds[var] = new_ds[var].astype(self.ds[var].dtype)
 
         # some variables need extra handling
-
-        # start of time bounds is always the min of combined time slices
-        new_ds.time_bounds[:, 0] = self.ds.time_bounds.coarsen(time=multiple, boundary='pad').min()[:,0]
-        # end of time bounds is always the max of combined time slices
-        new_ds.time_bounds[:, 1] = self.ds.time_bounds.coarsen(time=multiple, boundary='pad').max()[:, 1]
-        # time coordinate is always the start of the combined time slice
-        new_ds['time'] = self.ds.time.coarsen(time=multiple, boundary='pad').min()
 
         # averaging of quality flags, errors and scale_factor_shots need specific routines
         new_ds['qf'] = self.ds.qf.coarsen(time=multiple, boundary="pad")\
@@ -506,10 +499,23 @@ class Signals(Columns):
         new_scale_factor_shots = self.scale_factor_shots.coarsen(time=multiple, boundary="pad")\
             .reduce(average_shot_scale_factor)
 
+        # start of time bounds is always the min of combined time slices
+        new_ds.time_bounds[:, 0] = self.ds.time_bounds.coarsen(time=multiple, boundary='pad').min()[:,0]
+        # end of time bounds is always the max of combined time slices
+        new_ds.time_bounds[:, 1] = self.ds.time_bounds.coarsen(time=multiple, boundary='pad').max()[:, 1]
+        # time coordinate is always the start of the combined time slice
+        new_ds['time'] = self.ds.time.coarsen(time=multiple, boundary='pad').min()
+        # make sure that variable scale_factor_shots has the same time axis
+        new_scale_factor_shots['time'] = new_ds.time
+
         # replace current ds by new one
         self.ds = new_ds
         self.scale_factor_shots = new_scale_factor_shots
+        # recalculate raw_heightres in order to update its shape (reduce time dimension)
+        self.get_raw_heightres()
 
+        new_profile_qf = self.profile_qf.coarsen(time=multiple, boundary="pad").reduce(bitwise_or_reduce)
+        self.profile_qf = new_profile_qf.astype(self.profile_qf.dtype)
 
     def heightres_to_bins(self, heightres):
         """converts a height resolution into number of vertical bins

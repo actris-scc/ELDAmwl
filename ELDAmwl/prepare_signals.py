@@ -23,14 +23,14 @@ class PrepareSignalsForProductDefault(BaseOperation):
     pid = None
     data_already_exist = False
 
-    def data_already_exist(self):
+    def check_data_already_exist(self):
         # if integration time of low and high resolutions are the same
         # and one set of prepared signals already exists -> just make a copy
         current_res = self.resolution
         other_res = the_other_res(current_res)
 
-        if self.data_storage.time_integration_multiple(current_res) == self.data_storage.time_integration_multiple(
-            other_res):
+        if self.data_storage.time_integration_multiple(current_res) == \
+            self.data_storage.time_integration_multiple(other_res):
             existing_signals = self.data_storage.prepared_signals(self.pid, other_res)
             if len(existing_signals) > 0:
                 self.data_already_exist = True
@@ -42,6 +42,7 @@ class PrepareSignalsForProductDefault(BaseOperation):
         pid = self.bsc_param.prod_id_str
         self.logger.debug('prepare signals for backscatter product {}'.format(pid), prod_id=pid)
 
+        self.check_data_already_exist()
         if self.data_already_exist:
             for sig in self.existing_signals:
                 self.data_storage.set_prepared_signal(pid, self.resolution, sig)
@@ -63,11 +64,9 @@ class PrepareBscSignalsDefault(PrepareSignalsForProductDefault):
         pid = p_param.prod_id_str
         # transm_sig and refl_sig are deepcopies from the data storage
         transm_sig = self.data_storage.prepared_signal(pid,
-                                                       self.resolution,
                                                        p_param.transm_sig_id_str,
                                                        self.resolution)
         refl_sig = self.data_storage.prepared_signal(pid,
-                                                     self.resolution,
                                                      p_param.refl_sig_id_str,
                                                      self.resolution)
         total_sig = Signals.from_depol_components(transm_sig,

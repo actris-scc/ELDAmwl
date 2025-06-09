@@ -17,7 +17,20 @@ class BackscatterFactoryDefault(BaseOperation):
     param = None
     empty_bsc = None
     prod_id = None
-    resolution  = None
+    resolution = None
+
+    def prepare_calibr_window(self):
+        # if time axis of calibr_window and signals are not equal -> interpolate calibr_window
+        if self.elast_sig.ds.time.equals(self.calibr_window.time):
+            return
+        else:
+            new_time_axis = self.elast_sig.ds.time
+            new_calibr_window = self.calibr_window.interp(
+                time=new_time_axis,
+                method='nearest',
+                kwargs={"fill_value": "extrapolate"})
+            new_calibr_window['resolution'] = self.resolution
+            self.calibr_window = new_calibr_window
 
     def prepare(self):
         self.resolution = self.kwargs['resolution']
@@ -30,6 +43,8 @@ class BackscatterFactoryDefault(BaseOperation):
                 self.param.prod_id_str,
                 self.param.total_sig_id_str,
                 self.resolution)
+
+        self.prepare_calibr_window()
 
     def get_non_merge_product(self):
         pass

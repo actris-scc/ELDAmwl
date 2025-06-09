@@ -23,7 +23,7 @@ from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.extinction.operation import ExtinctionFactory
 from ELDAmwl.extinction.vertical_resolution.operation import ExtEffBinRes
 from ELDAmwl.extinction.vertical_resolution.operation import ExtUsedBinRes
-from ELDAmwl.utils.constants import AUTO, P_ALL_OK
+from ELDAmwl.utils.constants import AUTO, P_ALL_OK, LOWRES, HIGHRES
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import FIXED
@@ -71,7 +71,8 @@ class GetBasicProductsDefault(BaseOperation):
         if len(self.product_params.all_bsc_products()) > 0:
             self.bsc_calibr_window = FindCommonBscCalibrWindow()(
                 data_storage=self.data_storage,
-                bsc_params=self.product_params.all_bsc_products()).run()
+                bsc_params=self.product_params.all_bsc_products()
+            ).run()
 
         if self.smooth_type == AUTO:
             self.get_auto_smooth_products()
@@ -263,22 +264,39 @@ class GetBasicProductsDefault(BaseOperation):
                 raise NoCalibrWindowFound(prod_id)
 
             # calc preliminary bsc
-            bsc = RamanBackscatterFactory()(
-                data_storage=self.data_storage,
-                bsc_param=bsc_param,
-                calibr_window=cal_win,
-                autosmooth=False,
-            ).get_product()
+            if self.data_storage.time_integration_multiple(LOWRES) == \
+                    self.data_storage.time_integration_multiple(HIGHRES):
+                bsc = RamanBackscatterFactory()(
+                    data_storage=self.data_storage,
+                    bsc_param=bsc_param,
+                    calibr_window=cal_win,
+                    autosmooth=False,
+                    resolution=HIGHRES,
+                    ).get_product()
+            else:
+                bsc = None
 
             for res in RESOLUTIONS:
                 # if resolution res is required: make a copy of bsc and smooth it
                 if bsc_param in self.product_params.all_products_of_res(res):
-                    smooth_bsc = deepcopy(bsc)
+                    if bsc is None:
+                        res_bsc = RamanBackscatterFactory()(
+                            data_storage=self.data_storage,
+                            bsc_param=bsc_param,
+                            calibr_window=cal_win,
+                            autosmooth=False,
+                            resolution=res,
+                        ).get_product()
+                    else:
+                        res_bsc = bsc
+
+                    smooth_bsc = deepcopy(res_bsc)
                     smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                     smooth_bsc.resolution = res
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_bsc)
             del bsc
+            del res_bsc
 
     def get_elast_bsc_fixed_smooth(self):
         if len(self.product_params.elast_bsc_products()) == 0:
@@ -301,23 +319,39 @@ class GetBasicProductsDefault(BaseOperation):
                 raise NoCalibrWindowFound(prod_id)
 
             try:
-                # calc preliminary bsc
-                bsc = ElastBackscatterFactory()(
-                    data_storage=self.data_storage,
-                    bsc_param=bsc_param,
-                    calibr_window=cal_win,
-                    autosmooth=False,
-                ).get_product()
+                if self.data_storage.time_integration_multiple(LOWRES) == \
+                        self.data_storage.time_integration_multiple(HIGHRES):
+                    # calc preliminary bsc
+                    bsc = ElastBackscatterFactory()(
+                        data_storage=self.data_storage,
+                        bsc_param=bsc_param,
+                        calibr_window=cal_win,
+                        autosmooth=False,
+                        resolution=HIGHRES,
+                    ).get_product()
+                else:
+                    bsc = None
 
                 for res in RESOLUTIONS:
                     # if resolution res is required: make a copy of bsc and smooth it
                     if bsc_param in self.product_params.all_products_of_res(res):
-                        smooth_bsc = deepcopy(bsc)
+                        if bsc is None:
+                            res_bsc = ElastBackscatterFactory()(
+                                data_storage=self.data_storage,
+                                bsc_param=bsc_param,
+                                calibr_window=cal_win,
+                                autosmooth=False,
+                                resolution=res,
+                            ).get_product()
+                        else:
+                            res_bsc = bsc
+                        smooth_bsc = deepcopy(res_bsc)
                         smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                         smooth_bsc.resolution = res
                         self.data_storage.set_basic_product_common_smooth(
                             prod_id, res, smooth_bsc)
                 del bsc
+                del res_bsc
             except ELDAmwlException as e:
                 self.logger.error('cannot get backscatter product {}'.format(bsc_param.prod_id_str))
                 bsc_param.mark_as_failed(self.product_params)
@@ -357,16 +391,30 @@ class GetBasicProductsDefault(BaseOperation):
             ))
 
             # calc preliminary vlrd
-            vldr = VLRDFactory()(
-                data_storage=self.data_storage,
-                vldr_param=depol_param,
-                autosmooth=False,
-            ).get_product()
+            if self.data_storage.time_integration_multiple(LOWRES) == \
+                    self.data_storage.time_integration_multiple(HIGHRES):
+                vldr = VLRDFactory()(
+                    data_storage=self.data_storage,
+                    vldr_param=depol_param,
+                    autosmooth=False,
+                    resolution=HIGHRES,
+                ).get_product()
+            else:
+                vldr = None
 
             for res in RESOLUTIONS:
                 # if resolution res is required: make a copy of bsc and smooth it
                 if depol_param in self.product_params.all_products_of_res(res):
-                    smooth_vldr = deepcopy(vldr)
+                    if vldr is None:
+                        res_vlrd = VLRDFactory()(
+                            data_storage=self.data_storage,
+                            vldr_param=depol_param,
+                            autosmooth=False,
+                            resolution=res,
+                            ).get_product()
+                    else:
+                        res_vlrd = vldr
+                    smooth_vldr = deepcopy(res_vlrd)
                     smooth_vldr.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                     smooth_vldr.resolution = res
                     self.data_storage.set_basic_product_common_smooth(

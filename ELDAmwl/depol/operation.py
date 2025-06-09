@@ -24,6 +24,7 @@ class VLRDFactory(BaseOperationFactory):
 
     def __call__(self, **kwargs):
         assert 'vldr_param' in kwargs
+        assert 'resolution' in kwargs
         res = super(VLRDFactory, self).__call__(**kwargs)
         return res
 
@@ -54,18 +55,22 @@ class VLRDFactoryDefault(BaseOperation):
     param = None
     empty_vldr = None
     prod_id = None
+    resolution = None
 
     def prepare(self):
         self.param = self.kwargs['vldr_param']
+        self.resolution = self.kwargs['resolution']
         self.prod_id = self.param.prod_id_str
 
         if not self.param.includes_product_merging():
             self.transm_sig = self.data_storage.prepared_signal(
                 self.param.prod_id_str,
-                self.param.transm_sig_id_str)
+                self.param.transm_sig_id_str,
+                self.resolution)
             self.refl_sig = self.data_storage.prepared_signal(
                 self.param.prod_id_str,
-                self.param.refl_sig_id_str)
+                self.param.refl_sig_id_str,
+                self.resolution)
 
             self.param.add_params_from_signal(self.transm_sig)
             self.param.add_params_from_signal(self.refl_sig)

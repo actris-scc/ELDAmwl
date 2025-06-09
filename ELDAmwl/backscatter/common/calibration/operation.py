@@ -6,7 +6,7 @@ from ELDAmwl.database.tables.backscatter import BscCalibrMethod
 from ELDAmwl.errors.exceptions import BscCalParamsNotEqual
 from ELDAmwl.signals import Signals
 from ELDAmwl.tests.pickle_data import write_test_data
-from ELDAmwl.utils.constants import RBSC, NC_FILL_INT, LOWRES
+from ELDAmwl.utils.constants import RBSC, NC_FILL_INT, LOWRES, HIGHRES, RESOLUTION_STR
 from ELDAmwl.utils.numerical import calc_rolling_means_sems, m_to_km, km_to_m
 from ELDAmwl.utils.numerical import find_minimum_window
 
@@ -49,12 +49,28 @@ class FindBscCalibrWindow(BaseOperation):
     """base class for finding calibration windows for all bsc products, as a default, use only low resolution signals"""
 
     data_storage = None
+    all_bsc_params = None
     bsc_params = None
     calibration_params = None
     name = None
+    initial_res = None
 
     def init(self):
-        self.bsc_params = self.kwargs['bsc_params']
+        self.all_bsc_params = self.kwargs['bsc_params']
+
+        # if there are bsc products with low resolution, use only them to get calibration window
+        low_res_products = self.params.all_products_of_res(LOWRES)
+        self.bsc_params = []
+        for bp in self.all_bsc_params:
+            if bp in low_res_products:
+                self.bsc_params.append(bp)
+                self.initial_res = LOWRES
+
+        # if there are no bsc products with low resolution, use the ones with high resolution
+        if len(self.bsc_params) == 0:
+            self.bsc_params = self.all_bsc_params
+            self.initial_res = HIGHRES
+
         self.calibration_params = self.bsc_params[0].calibration_params
         self.check_calibr_params()
 
@@ -111,7 +127,8 @@ class FindBscCalibrWindow(BaseOperation):
     def create_calibration_window_dataarray(self, ds,
                                             win_first_idx, win_last_idx,
                                             win_bottom_height,
-                                            win_top_height):
+                                            win_top_height,
+                                            resolution):
         """
         Create a backscatter calibration window
 
@@ -130,15 +147,16 @@ class FindBscCalibrWindow(BaseOperation):
         da.name = 'backscatter_calibration_range'
         da.attrs = {'long_name': 'height_axis range where '
                                  'calibration was calculated',
-                    'units': 'm'}
+                    'units': 'm',
+                    'resolution': resolution,
+                    }
         if (win_first_idx is not None) and (win_last_idx is not None):
             for t in range(ds.dims['time']):
                 da[t, 0] = ds.height[t, win_first_idx[t]].values
                 da[t, 1] = ds.height[t, win_last_idx[t]].values
-        elif (win_bottom_height is not None and win_top_height is not None):
+        elif (win_bottom_height is not None) and (win_top_height is not None):
             da[:, 0] = win_bottom_height[:]
             da[:, 1] = win_top_height[:]
-
 
         return da
 
@@ -289,7 +307,7 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
         self.elast_signals = Dict()
 
         for bp in self.bsc_params:
-            sigs = self.data_storage.integrated_signals(bp.prod_id_str)
+            sigs = self.data_storage.integrated_signals(bp.prod_id_str, self.initial_res)
             for sig in sigs:
                 if sig.is_elast_sig:
                     self.elast_signals[bp] = sig
@@ -335,7 +353,9 @@ class FindBscCalibrWindowWithRaylFit(FindBscCalibrWindow):
 
         # 7) generate DataArray with correct time dimension
         calibration_window = self.create_calibration_window_dataarray(
-            sig.ds, None, None, win_bottom_heights, win_top_heights)
+            sig.ds, None, None,
+            win_bottom_heights, win_top_heights,
+            self.initial_res)
 
         return calibration_window
 
@@ -385,7 +405,10 @@ class FindBscCalibrWindowAsInELDA(FindBscCalibrWindow):
         win_first_idx, win_last_idx = find_minimum_window(means, sems, w_width, error_threshold)
 
         # Create a calibration window from win_first_idx, win_last_idx
-        calibration_window = self.create_calibration_window_dataarray(data_set, win_first_idx, win_last_idx, None, None)
+        calibration_window = self.create_calibration_window_dataarray(data_set,
+                                                                      win_first_idx, win_last_idx,
+                                                                      None, None,
+                                                                      self.initial_res)
 
         # Store the calibration window
         bsc_param.calibr_window = calibration_window

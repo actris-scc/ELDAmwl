@@ -288,7 +288,7 @@ def get_rangebin_axis(range_axis):
 
 
 def bitwise_or_reduce(arr, axis):
-    return np.bitwise_or.reduce(arr.astype(np.int32), axis=axis)
+    return np.bitwise_or.reduce(arr.astype(np.int16), axis=axis)
 
 
 def average_shot_scale_factor(arr, axis):

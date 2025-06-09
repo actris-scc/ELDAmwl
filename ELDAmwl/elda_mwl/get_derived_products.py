@@ -27,6 +27,7 @@ class GetDerivedProductsDefault(BaseOperation):
 
     def single_products_quality_control(self):
         for res in RESOLUTIONS:
+            self.logger.info(f'quality control of single products with {RESOLUTION_STR[res]}')
             all_products = self.product_params.derived_products(res=res)
             for prod_param in all_products:
                 prod_id = prod_param.prod_id_str
