@@ -204,7 +204,6 @@ class CalcLidarRatioDefault(BaseOperation):
             self.result.ds.qf[t, lvb:] = self.result.ds.qf[t, lvb:] | CALC_WINDOW_OUTSIDE_PROFILE
             self.result.ds.qf[t, :fvb] = self.result.ds.qf[t, :fvb] | CALC_WINDOW_OUTSIDE_PROFILE
 
-
         return self.result
 
 

@@ -36,7 +36,7 @@ class GetDerivedProductsDefault(BaseOperation):
                 self.data_storage.set_derived_products_qc(prod_id, res, product)
 
     def get_derived_products(self):
-        self.get_standard_bsc_ratio()
+        self.get_standard_bsc_ratio()  # MEM 20.9% -> 0.6%
         self.get_lidar_ratios()
         self.get_angstroem_exps()
         self.single_products_quality_control()

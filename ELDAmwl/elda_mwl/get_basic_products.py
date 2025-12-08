@@ -88,6 +88,7 @@ class GetBasicProductsDefault(BaseOperation):
                                         '{0} or {1}'.format(AUTO, FIXED)))
 
         self.get_common_smooth_products()
+        self.data_storage.remove('integrated_signals')
 
     def find_common_smooth(self):
         """
@@ -108,7 +109,7 @@ class GetBasicProductsDefault(BaseOperation):
 
         for res in RESOLUTIONS:
             # use dimensions and axes of cloud_mask
-            cm = self.data_storage.cloud_mask
+            cm = self.data_storage.integrated_cloud_mask(res)
 
             # create empty array
             vres = xr.DataArray(np.ones(cm.shape)*np.nan,
@@ -183,12 +184,12 @@ class GetBasicProductsDefault(BaseOperation):
 
         """
         self.logger.info('get products on common smooth grid')
-        self.get_extinctions_fixed_smooth()
-        self.get_raman_bsc_fixed_smooth()
-        self.get_elast_bsc_fixed_smooth()
-        self.get_bsc_ratios_fixed_smooth()
-        self.get_vldr_fixed_smooth()
-        self.single_products_quality_control()
+        self.get_extinctions_fixed_smooth()  # MEM 0.5% -> 0.6%
+        self.get_raman_bsc_fixed_smooth()  # MEM -> 1.1%
+        self.get_elast_bsc_fixed_smooth()  # MEM -> 2.6%
+        self.get_bsc_ratios_fixed_smooth()  # MEM -> 3.3%
+        self.get_vldr_fixed_smooth()  # MEM -> 17%
+        self.single_products_quality_control()  # MEM -> 20.9%
 
     def get_extinctions_auto_smooth(self):
         """get extinction products with automatic smoothing
@@ -379,6 +380,8 @@ class GetBasicProductsDefault(BaseOperation):
                 self.data_storage.set_basic_product_common_smooth(
                     bsc_ratio.product_id_str, res, bsc_ratio)
 
+                del bsc
+
     def get_vldr_fixed_smooth(self):
         if len(self.product_params.vldr_products()) == 0:
             self.logger.warning('no VLDR products will be calculated')
@@ -420,16 +423,20 @@ class GetBasicProductsDefault(BaseOperation):
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_vldr)
             del vldr
+            del res_vlrd
 
     def single_products_quality_control(self):
+        self.logger.info('quality control of individual basic products')
         for res in RESOLUTIONS:
             all_products = self.product_params.basic_products(res=res)
             # todo: add bsc ratio
             for prod_param in all_products:
                 prod_id = prod_param.prod_id_str
+                self.logger.debug(f'quality control of product {prod_id} with resolution {RESOLUTION_STR[res]}')
                 product = self.data_storage.basic_product_common_smooth(prod_id, res)
                 product.quality_control()
                 self.data_storage.set_basic_product_qc(prod_id, res, product)
+        self.data_storage.remove('basic_products_common_smooth')
 
 
 class GetBasicProducts(BaseOperationFactory):

@@ -258,6 +258,10 @@ class PrepareSignalsDefault(BaseOperation):
             if multiple > 1:
                 integrated_cloud_mask = cm.coarsen(time=multiple, boundary="pad").reduce(bitwise_or_reduce)
                 integrated_cloud_mask['time'] = cm.time.coarsen(time=multiple, boundary='pad').min()
+                self.data_storage.set_integrated_cloud_mask(res, integrated_cloud_mask)
+                del cm
+            else:
+                self.data_storage.set_integrated_cloud_mask(res, cm)
 
             for p_param in self.products:
                 p_id = p_param.prod_id_str
@@ -274,6 +278,8 @@ class PrepareSignalsDefault(BaseOperation):
         if self.params.smooth_params.smooth_type == FIXED:
             self.logger.info('time integration of signals')
             self.time_integration()
+            self.data_storage.remove('elpp_signals')
+            self.data_storage.remove('cloud_mask')
 
         for p_param in self.products:
             if p_param.product_type in PREP_SIG_CLASSES:

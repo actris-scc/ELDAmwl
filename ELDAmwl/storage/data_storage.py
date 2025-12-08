@@ -105,6 +105,10 @@ class DataStorage:
                 })
             })
 
+    def remove(self, dataset_name):
+        #  pass
+        del self.__data[dataset_name]
+
     def set_number_of_scheduled_products(self, number):
         self.__data.number_of_scheduled_products = number
 
@@ -302,10 +306,31 @@ class DataStorage:
             raise NotFoundInStorage('ELPP signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
 
+    def integrated_cloud_mask(self, resolution):
+        """copy of all the time integrated cloud mask
+
+        Args:
+            resolution (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            :obj:`list` of :obj:`Signals`: list with deepcopies of all signals related
+                                            to the product id
+
+        Raises:
+             NotFoundInStorage: if no cloud mask is found in storage with the given resolution
+        """
+        result = (deepcopy(self.__data.integrated_cloud_mask[resolution]))
+
+        if result is not None:
+            return result
+        else:
+            raise NotFoundInStorage('cloud mask',
+                                    f'resolution {RESOLUTION_STR[resolution]}')
+
     def integrated_signals(self, prod_id_str, resolution):
         """copies of all time integrated ELPP signals of one product
 
-        Those are the otime-integrated signals of one basic product from
+        Those are the time-integrated signals of one basic product from
         the corresponding ELPP file.
 
         Args:
@@ -971,11 +996,24 @@ class DataStorage:
         return maxres
 
     def get_common_cloud_mask(self, res):
+        """ common cloud mask for all products with resolution res
+
+        gets two-dimensional (time, level) cloud mask with the maximum bin resolution of all products with resolution res
+
+        Args:
+            res (int): can be LOWRES (=0) or HIGHRES (=1)
+
+        Returns:
+            cloud_mask (xarray.Dataset): cloud mask of the products with resolution res
+
+        """
         maxres = self.get_max_binres(res)
         if maxres is None:
             return None
 
-        cm = deepcopy(self.cloud_mask)
+        # time integrated cloud mask
+        cm_int = self.__data.integrated_cloud_mask[res]
+        cm = deepcopy(cm_int)
         cm[:] = NC_FILL_BYTE
 
         num_times = cm.shape[0]
@@ -988,7 +1026,7 @@ class DataStorage:
 
         for t in range(num_times):
             for lev in range(num_levels):
-                cm[t, lev] = np.bitwise_or.reduce(self.cloud_mask.values[t, int(fb[lev, t]):int(lb[lev, t])])
+                cm[t, lev] = np.bitwise_or.reduce(cm_int.values[t, int(fb[lev, t]):int(lb[lev, t])])
         # self.cloud_mask[0, 50] =2
         # self.cloud_mask[:, 100] = 1
         # np.bitwise_or.reduce(self.cloud_mask.values[:,40:110], axis=1)

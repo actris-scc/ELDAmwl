@@ -106,8 +106,12 @@ class MonteCarlo:
 
         self.get_sample_inputs(orig_data)
         self.get_sample_results()
+        result = self.calc_mc_error()
 
-        return self.calc_mc_error()
+        del self.sample_inputs
+        del self.sample_results
+
+        return result
 
 
 @zope.component.adapter(IExtOp)
