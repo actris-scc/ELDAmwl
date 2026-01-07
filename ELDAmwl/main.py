@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 
+import psutil
+
 from ELDAmwl.component.interface import ICfg, IDBFunc
 from ELDAmwl.component.interface import ILogger
 from ELDAmwl.component.interface import IParams
@@ -19,6 +21,7 @@ from ELDAmwl.storage.cached_functions import gen_sg_params
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.utils.constants import ELDA_MWL_VERSION, EXIT_CODE_NONE, MWL_PROD_ID_DEFAULT, EXIT_CODE_TEXT
 from zope import component
+
 
 import argparse
 import sys
@@ -153,6 +156,7 @@ class Main:
             elda_mwl.read_tasks()
             elda_mwl.read_elpp_data()
             elda_mwl.prepare_signals()
+            print(psutil.Process().memory_full_info().uss)
             elda_mwl.get_basic_products()
             elda_mwl.get_derived_products()
             elda_mwl.get_lidar_constants()
@@ -197,7 +201,6 @@ class Main:
                 for line in traceback.format_tb(exc_traceback):
                     self.logger.error(f'exception: {line[:-1]}')  # noqa P103
             sys.exit(EXIT_CODE_NONE)
-
 
 def run():
     main = Main()

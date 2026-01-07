@@ -37,3 +37,13 @@ class BackscatterRatios(Products):
         result.profile_qf = deepcopy(bsc.profile_qf)
 
         return result
+
+    def copy(self, target=None):
+        if target is None:
+            new = BackscatterRatios()
+        else:
+            new = target
+        new = super(BackscatterRatios, self).copy(target=new)
+        new.calibr_window = self.calibr_window.copy(deep=True)
+
+        return new

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Classes for getting basic products
 """
+import psutil
 from addict import Dict
 from copy import deepcopy
 from ELDAmwl.backscatter.bsc_ratio.product import BackscatterRatios
@@ -103,7 +104,7 @@ class GetBasicProductsDefault(BaseOperation):
         fixed vertical resolution of the mwl product
 
         """
-        self.logger.debug('calculate profile of common height resolution')
+        print('calculate profile of common height resolution')
         sp = self.product_params.smooth_params
         station_height = float(self.data_storage.header.vars.station_altitude)
 
@@ -183,13 +184,21 @@ class GetBasicProductsDefault(BaseOperation):
         """get all basic products with pre-defined smoothing
 
         """
-        self.logger.info('get products on common smooth grid')
-        self.get_extinctions_fixed_smooth()  # MEM 0.5% -> 0.6%
-        self.get_raman_bsc_fixed_smooth()  # MEM -> 1.1%
-        self.get_elast_bsc_fixed_smooth()  # MEM -> 2.6%
-        self.get_bsc_ratios_fixed_smooth()  # MEM -> 3.3%
-        self.get_vldr_fixed_smooth()  # MEM -> 17%
-        self.single_products_quality_control()  # MEM -> 20.9%
+        self.logger.info('get products on common smooth grid')  # pmem(rss=208.117.760
+        print(psutil.Process().memory_full_info().uss)
+        # self.get_extinctions_fixed_smooth()
+        # print(psutil.Process().memory_full_info().uss)  # -> 209 346 560
+        # self.get_raman_bsc_fixed_smooth()  # -> 322 306 048 (ohne ext)
+
+        # print(psutil.Process().memory_full_info().uss)
+        self.get_elast_bsc_fixed_smooth()  # MEM -> 969 400 320 ohne ext, mit Rbsc
+        print(psutil.Process().memory_full_info().uss)
+        self.get_bsc_ratios_fixed_smooth()  # MEM -> 969 400 320
+        print(psutil.Process().memory_full_info().uss)
+        self.get_vldr_fixed_smooth()  # MEM -> 3.307.786.240
+        print(psutil.Process().memory_full_info().uss)
+        self.single_products_quality_control()  # MEM -> pmem(rss=7.881.302.016
+        print(psutil.Process().memory_full_info().uss)
 
     def get_extinctions_auto_smooth(self):
         """get extinction products with automatic smoothing
@@ -267,13 +276,15 @@ class GetBasicProductsDefault(BaseOperation):
             # calc preliminary bsc
             if self.data_storage.time_integration_multiple(LOWRES) == \
                     self.data_storage.time_integration_multiple(HIGHRES):
-                bsc = RamanBackscatterFactory()(
+                calculator = RamanBackscatterFactory()(
                     data_storage=self.data_storage,
                     bsc_param=bsc_param,
                     calibr_window=cal_win,
                     autosmooth=False,
                     resolution=HIGHRES,
-                    ).get_product()
+                    )
+                bsc = calculator.get_product()
+                del calculator
             else:
                 bsc = None
 
@@ -281,23 +292,25 @@ class GetBasicProductsDefault(BaseOperation):
                 # if resolution res is required: make a copy of bsc and smooth it
                 if bsc_param in self.product_params.all_products_of_res(res):
                     if bsc is None:
-                        res_bsc = RamanBackscatterFactory()(
+                        calculator = RamanBackscatterFactory()(
                             data_storage=self.data_storage,
                             bsc_param=bsc_param,
                             calibr_window=cal_win,
                             autosmooth=False,
                             resolution=res,
-                        ).get_product()
+                        )
+                        res_bsc = calculator.get_product()
+                        # del calculator
                     else:
                         res_bsc = bsc
 
-                    smooth_bsc = deepcopy(res_bsc)
+                    smooth_bsc = res_bsc.copy()
                     smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                     smooth_bsc.resolution = res
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_bsc)
-            del bsc
-            del res_bsc
+                bsc = None  # pmem(rss=237252608, vms=1148125184, shared=72712192, text=2658304, lib=0, data=482574336, dirty=0)
+                del res_bsc
 
     def get_elast_bsc_fixed_smooth(self):
         if len(self.product_params.elast_bsc_products()) == 0:
@@ -351,7 +364,7 @@ class GetBasicProductsDefault(BaseOperation):
                         smooth_bsc.resolution = res
                         self.data_storage.set_basic_product_common_smooth(
                             prod_id, res, smooth_bsc)
-                del bsc
+                bsc = None
                 del res_bsc
             except ELDAmwlException as e:
                 self.logger.error('cannot get backscatter product {}'.format(bsc_param.prod_id_str))
@@ -432,7 +445,7 @@ class GetBasicProductsDefault(BaseOperation):
             # todo: add bsc ratio
             for prod_param in all_products:
                 prod_id = prod_param.prod_id_str
-                self.logger.debug(f'quality control of product {prod_id} with resolution {RESOLUTION_STR[res]}')
+                print(f'quality control of product {prod_id} with resolution {RESOLUTION_STR[res]}')
                 product = self.data_storage.basic_product_common_smooth(prod_id, res)
                 product.quality_control()
                 self.data_storage.set_basic_product_qc(prod_id, res, product)

@@ -578,6 +578,8 @@ class RunELDAmwl(BaseOperation):
         #     # todo time integration of ELPP signals
         PrepareSignals()(products=self.params.basic_products()).run()
 
+    from memory_profiler import profile
+    @profile
     def get_basic_products(self):
         """calculate basic products
 

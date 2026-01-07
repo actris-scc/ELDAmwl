@@ -60,6 +60,11 @@ class DataPoint(object):
     def __init__(self):
         self.data = xr.Dataset()
 
+    def copy(self):
+        new = DataPoint()
+        new.data = self.data.copy(deep=True)
+        return new
+
     @classmethod
     def from_data(cls, value, stat_err, sys_err):
         result = cls()

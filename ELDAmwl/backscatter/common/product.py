@@ -8,6 +8,16 @@ class Backscatters(Products):
 
     calibr_window = None
 
+    def copy(self, target=None):
+        if target is None:
+            new = Backscatters()
+        else:
+            new = target
+        new = super(Backscatters, self).copy(target=new)
+        new.calibr_window = self.calibr_window.copy(deep=True)
+
+        return new
+
     @classmethod
     def init(cls, signal, p_params, calibr_window=None):
         """creates an empty instance of Backscatters with meta data copied from signal.

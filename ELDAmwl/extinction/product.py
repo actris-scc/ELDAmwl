@@ -22,6 +22,15 @@ class Extinctions(Products):
 
         return result
 
+    def copy(self, target=None):
+        if target is None:
+            new = Extinctions()
+        else:
+            new = target
+        new = super(Extinctions, self).copy(target=new)
+
+        return new
+
     def to_meta_ds_dict(self, meta_data):
         # the parent method creates the Dict({'attrs': Dict(), 'data_vars': Dict()})
         # and attributes it with key self.mwl_meta_id to meta_data

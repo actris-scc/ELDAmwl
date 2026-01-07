@@ -23,6 +23,15 @@ class VLDRs(Products):
 
         return result
 
+    def copy(self, target=None):
+        if target is None:
+            new = VLDRs()
+        else:
+            new = target
+        new = super(VLDRs, self).copy(target=new)
+
+        return new
+
     def screen_valid_data_range(self):
         # todo: test if the mol depol is available here
         min_value = self.ds.molecular_depolarization_ratio

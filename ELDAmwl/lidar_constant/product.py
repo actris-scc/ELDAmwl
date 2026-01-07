@@ -23,7 +23,7 @@ class LidarConstantData(object):
     channel_id_str = None
     wavelength = None
     calibr_height = None
-    is_from_combined_signal = None
+    is_from_combined_signal : bool = None
 
     @classmethod
     def init(cls, bsc, sig):
@@ -67,6 +67,23 @@ class LidarConstantData(object):
         ))
         result.ds.load()
         return result
+
+    def copy(self, target=None):
+        if target is None:
+            new = LidarConstantData()
+        else:
+            new = target
+        new.ds = self.ds.copy(deep=True)
+        new.product_id = self.product_id
+        new.measurement_id = self.measurement_id
+        new.system_id = self.system_id
+        new.channel_ids = self.channel_ids
+        new.channel_id_str = self.channel_id_str
+        new.wavelength = self.wavelength
+        new.calibr_height = self.calibr_height
+        new.is_from_combined_signal = self.is_from_combined_signal
+
+        return new
 
     @property
     def logger(self):

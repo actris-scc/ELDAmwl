@@ -47,3 +47,12 @@ class RamanBackscatters(Backscatters):
         #                              error_params=error_params,
         #                              calibration=cal_params)
         return result
+
+    def copy(self, target=None):
+        if target is None:
+            new = RamanBackscatters()
+        else:
+            new = target
+
+        new = super(RamanBackscatters, self).copy(target=new)
+        return new

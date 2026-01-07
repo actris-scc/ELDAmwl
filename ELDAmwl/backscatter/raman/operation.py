@@ -60,8 +60,11 @@ class RamanBackscatterFactoryDefault(BackscatterFactoryDefault):
         else:
             bsc = bsc
 
-        del self.sig_ratio
-        del self.raman_sig
+        del bsc_retrieval_routine
+
+        self.sig_ratio = None
+        self.raman_sig = None
+        self.elast_sig = None
 
         return bsc
 

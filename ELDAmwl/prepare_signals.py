@@ -254,7 +254,7 @@ class PrepareSignalsDefault(BaseOperation):
         for res in RESOLUTIONS:
             multiple = self.data_storage.time_integration_multiple(res)
 
-            cm = deepcopy(self.data_storage.cloud_mask)
+            cm = self.data_storage.cloud_mask.copy(deep=True)
             if multiple > 1:
                 integrated_cloud_mask = cm.coarsen(time=multiple, boundary="pad").reduce(bitwise_or_reduce)
                 integrated_cloud_mask['time'] = cm.time.coarsen(time=multiple, boundary='pad').min()
@@ -265,7 +265,7 @@ class PrepareSignalsDefault(BaseOperation):
 
             for p_param in self.products:
                 p_id = p_param.prod_id_str
-                elpp_signals = self.data_storage.elpp_signals(p_id)  # returns a deepcopy of the data in stoorage
+                elpp_signals = self.data_storage.elpp_signals(p_id)  # returns a deepcopy of the data in storage
                 for ch_idx in range(len(elpp_signals)):
                     integrated_signal = elpp_signals[ch_idx]
                     integrated_signal.time_integration(multiple)

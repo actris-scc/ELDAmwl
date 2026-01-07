@@ -59,6 +59,20 @@ class Products(Signals):
     num_scan_angles = None
     resolution = None
 
+    def copy(self, target=None):
+        if target is None:
+            new = Products()
+        else:
+            new = target
+        new = super(Products, self).copy(target=new)
+        new.smooth_routine = self.smooth_routine
+        new.mwl_meta_id = self.mwl_meta_id
+        new.params = deepcopy(self.params)
+        new.num_scan_angles = self.num_scan_angles
+        new.resolution = self.resolution
+
+        return new
+
     @classmethod
     def from_signal(cls, signal, p_params, **kw_args):
         """creates an instance of Products from general data of signal.
@@ -68,22 +82,13 @@ class Products(Signals):
 
         """
         result = cls()
-        result.ds = deepcopy(signal.ds)
+        result = signal.copy(target=result)
         result.ds['data'][:] = np.nan
         result.ds['err'][:] = np.nan
         result.ds['qf'][:] = ALL_OK
         result.ds['binres'][:] = NC_FILL_INT
 
-        result.station_altitude = signal.station_altitude
-        result.raw_heightres = signal.raw_heightres
-        result.params = p_params
-
-        # todo: copy other general parameter
-        result.emission_wavelength = deepcopy(signal.emission_wavelength)
-        result.num_scan_angles = signal.num_scan_angles
-        result.ds['time_bounds'] = signal.ds['time_bounds']
-        result.ds['mol_backscatter'] = signal.ds.mol_backscatter
-        result.profile_qf = deepcopy(signal.profile_qf)
+        result.params = deepcopy(p_params)
 
         result.mwl_meta_id = '{}_{}'.format(MWLFileStructure.NC_VAR_NAMES[p_params.general_params.product_type],
                                             round(float(result.emission_wavelength)))
@@ -406,6 +411,14 @@ class ProductParams(Params):
         self.mc_params = None
         self.smooth_params = None
         self.quality_params = None
+
+    # def copy(self, target=None):
+    #     if target is None:
+    #         new = ProductParams
+    #     else:
+    #         new = target
+    #
+    #     return new
 
     def from_db(self, general_params):
         self.general_params = general_params

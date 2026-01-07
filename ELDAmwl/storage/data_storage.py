@@ -33,7 +33,7 @@ class DataStorage:
     name = 'Datastorage'
 
     def __init__(self):
-        self.__data = Dict(
+        self._mydata = Dict(
             {
                 'number_of_scheduled_products': None,
                 'scc_version_id': None,
@@ -106,43 +106,43 @@ class DataStorage:
             })
 
     def remove(self, dataset_name):
-        #  pass
-        del self.__data[dataset_name]
+        if dataset_name in self._mydata:
+            del self._mydata[dataset_name]
 
     def set_number_of_scheduled_products(self, number):
-        self.__data.number_of_scheduled_products = number
+        self._mydata.number_of_scheduled_products = number
 
     def set_scc_version_id(self, id):
-        self.__data.scc_version_id = id
+        self._mydata.scc_version_id = id
 
     def set_elpp_signal(self, prod_id_str, new_signal):
         """write new ELPP signal to storage"""
 
-        self.__data.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
+        self._mydata.elpp_signals[prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_integrated_signal(self, prod_id_str, res, new_signal):
         """write new time integrated ELPP signal to storage"""
 
-        self.__data.integrated_signals[res][prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
+        self._mydata.integrated_signals[res][prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_integrated_cloud_mask(self, resolution, new_cm):
         """write new time integrated cloud mask to storage"""
-        self.__data.integrated_cloud_mask[resolution] = new_cm
+        self._mydata.integrated_cloud_mask[resolution] = new_cm
 
     def set_prepared_signal(self, prod_id_str, resolution, new_signal):
         """write new prepared signal to storage"""
 
-        self.__data.prepared_signals[resolution][prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
+        self._mydata.prepared_signals[resolution][prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_basic_product_raw(self, prod_id_str, new_product):
         """write new un-smoothed basic product to storage
         """
-        self.__data.basic_products_raw[prod_id_str] = new_product  # noqa E501
+        self._mydata.basic_products_raw[prod_id_str] = new_product  # noqa E501
 
     def set_basic_product_auto_smooth(self, prod_id_str, new_product):
         """write new auto smoothed basic product to storage
         """
-        self.__data.basic_products_auto_smooth[prod_id_str] = new_product  # noqa E501
+        self._mydata.basic_products_auto_smooth[prod_id_str] = new_product  # noqa E501
 
     def set_binres_auto_smooth(self, prod_id_str, new_res_array):
         """write new auto smoothed basic product to storage
@@ -152,49 +152,49 @@ class DataStorage:
             new_res_array: xarray.DataArray
 
         """
-        self.__data.binres_auto_smooth[prod_id_str] = new_res_array  # noqa E501
+        self._mydata.binres_auto_smooth[prod_id_str] = new_res_array  # noqa E501
 
     def set_basic_product_common_smooth(self, prod_id_str, res, new_product):
         """write a basic product that was smoothed with onto a common grid to storage
         """
-        self.__data.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
+        self._mydata.basic_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
 
     def set_basic_product_qc(self, prod_id_str, res, new_product):
         """write a basic, quality controlled product to storage
         """
-        self.__data.basic_products_qc[res][prod_id_str] = new_product  # noqa E501
+        self._mydata.basic_products_qc[res][prod_id_str] = new_product  # noqa E501
 
     def set_derived_products(self, prod_id_str, res, new_product):
         """write a derived product to storage
         """
-        self.__data.derived_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
+        self._mydata.derived_products_common_smooth[res][prod_id_str] = new_product  # noqa E501
 
     def set_derived_products_qc(self, prod_id_str, res, new_product):
         """write a quality controlled, derived product to storage
         """
-        self.__data.derived_products_qc[res][prod_id_str] = new_product  # noqa E501
+        self._mydata.derived_products_qc[res][prod_id_str] = new_product  # noqa E501
 
     def set_lidar_constant(self, wl, new_lidar_constant):
         """write a lidar constant to storage
         """
-        self.__data.lidar_constants[wl] = new_lidar_constant
+        self._mydata.lidar_constants[wl] = new_lidar_constant
         for lc in new_lidar_constant.values():
             channel_id = lc.channel_id_str
-            self.__data.lidar_constants[channel_id] = lc
+            self._mydata.lidar_constants[channel_id] = lc
 
     def set_product_matrix(self, prod_type, res, new_dataset):
         """write a dataset with common grid (wavelength, time, altitude) to storage
 
         one dataset per product type and resolution
         """
-        self.__data.product_matrix[res][prod_type] = new_dataset  # noqa E501
+        self._mydata.product_matrix[res][prod_type] = new_dataset  # noqa E501
 
     def set_qc_product_matrix(self, prod_type, res, new_dataset):
         """write a quality controlled dataset with common grid (wavelength, time, altitude) to storage
 
         one dataset per product type and resolution
         """
-        self.__data.qc_product_matrix[res][prod_type] = new_dataset  # noqa E501
+        self._mydata.qc_product_matrix[res][prod_type] = new_dataset  # noqa E501
 
     def set_binres_common_smooth(self, prod_id_str, resolution, new_res_array):
         """
@@ -205,7 +205,7 @@ class DataStorage:
             new_res_array: xarray.DataArray
 
         """
-        self.__data.binres_common_smooth[resolution][prod_id_str] = new_res_array
+        self._mydata.binres_common_smooth[resolution][prod_id_str] = new_res_array
 
     def set_time_integration_multiple(self, resolution, new_multiple):
         """
@@ -215,7 +215,7 @@ class DataStorage:
             new_multiple: int
 
         """
-        self.__data.time_integration_multiples[resolution] = new_multiple
+        self._mydata.time_integration_multiples[resolution] = new_multiple
 
     def set_common_vertical_resolution(self, resolution, new_res_array):
         """writes an array with common vertical resolution into storage
@@ -225,7 +225,7 @@ class DataStorage:
             new_res_array: xarray.DataArray
 
         """
-        self.__data.common_vertical_resolution[resolution] = new_res_array
+        self._mydata.common_vertical_resolution[resolution] = new_res_array
 
     def set_clipped_vertical_resolution(self, resolution, new_array):
         """writes an array with common vertical resolution into storage.
@@ -236,7 +236,7 @@ class DataStorage:
             new_array: xarray.DataArray
 
         """
-        self.__data.clipped_vertical_resolution[resolution] = new_array
+        self._mydata.clipped_vertical_resolution[resolution] = new_array
 
     def set_clipped_cloud_mask(self, resolution, new_array):
         """writes an array with cloud mask into storage.
@@ -247,7 +247,7 @@ class DataStorage:
             new_array: xarray.DataArray
 
         """
-        self.__data.clipped_cloud_mask[resolution] = new_array
+        self._mydata.clipped_cloud_mask[resolution] = new_array
 
     def set_bsc_ratio_532(self, res, new_bsc_ratio):
         """
@@ -258,7 +258,7 @@ class DataStorage:
 
         """
 
-        self.__data.bsc_ratio_532[res] = new_bsc_ratio
+        self._mydata.bsc_ratio_532[res] = new_bsc_ratio
 
     def elpp_signals(self, prod_id_str):
         """copies of all ELPP signals of one product
@@ -279,8 +279,8 @@ class DataStorage:
         """
         try:
             result = []
-            for ch_id in self.__data.elpp_signals[prod_id_str]:
-                result.append(deepcopy(self.__data.elpp_signals[prod_id_str][ch_id]))
+            for ch_id in self._mydata.elpp_signals[prod_id_str]:
+                result.append(self._mydata.elpp_signals[prod_id_str][ch_id].copy())
             return result
         except AttributeError:
             raise NotFoundInStorage('ELPP signals',
@@ -301,7 +301,7 @@ class DataStorage:
                 and signal id was found in storage
         """
         try:
-            return deepcopy(self.__data.elpp_signals[prod_id_str][ch_id_str])
+            return self._mydata.elpp_signals[prod_id_str][ch_id_str].copy()
         except AttributeError:
             raise NotFoundInStorage('ELPP signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
@@ -319,7 +319,7 @@ class DataStorage:
         Raises:
              NotFoundInStorage: if no cloud mask is found in storage with the given resolution
         """
-        result = (deepcopy(self.__data.integrated_cloud_mask[resolution]))
+        result = self._mydata.integrated_cloud_mask[resolution].copy(deep=True)
 
         if result is not None:
             return result
@@ -347,8 +347,8 @@ class DataStorage:
         """
         try:
             result = []
-            for ch_id in self.__data.integrated_signals[resolution][prod_id_str]:
-                result.append(deepcopy(self.__data.integrated_signals[resolution][prod_id_str][ch_id]))
+            for ch_id in self._mydata.integrated_signals[resolution][prod_id_str]:
+                result.append(self._mydata.integrated_signals[resolution][prod_id_str][ch_id].copy())
             return result
         except AttributeError:
             raise NotFoundInStorage('time integrated signals',
@@ -387,8 +387,8 @@ class DataStorage:
              NotFoundInStorage: if no lidar constant for the given channel id
                 is found in storage
         """
-        if channel_id in self.__data.lidar_constants:
-            result = deepcopy(self.__data.lidar_constants[channel_id])
+        if channel_id in self._mydata.lidar_constants:
+            result = self._mydata.lidar_constants[channel_id].copy()
             return result
         else:
             raise NotFoundInStorage('lidar constant',
@@ -413,8 +413,8 @@ class DataStorage:
              NotFoundInStorage: if no lidar constants for the given wavelength
                 are found in storage
         """
-        if wavelength in self.__data.lidar_constants:
-            result = deepcopy(self.__data.lidar_constants[wavelength])
+        if wavelength in self._mydata.lidar_constants:
+            result = self._mydata.lidar_constants[wavelength].copy()
             return result
         else:
             raise NotFoundInStorage('lidar constant',
@@ -439,8 +439,8 @@ class DataStorage:
         """
         try:
             result = []
-            for ch_id in self.__data.prepared_signals[resolution][prod_id_str]:
-                result.append(deepcopy(self.__data.prepared_signals[resolution][prod_id_str][ch_id]))
+            for ch_id in self._mydata.prepared_signals[resolution][prod_id_str]:
+                result.append(self._mydata.prepared_signals[resolution][prod_id_str][ch_id].copy())
             return result
         except AttributeError:
             raise NotFoundInStorage('prepared signals',
@@ -466,7 +466,8 @@ class DataStorage:
                 and signal id was found in storage
         """
         try:
-            return deepcopy(self.__data.prepared_signals[resolution][prod_id_str][ch_id_str])
+            return self._mydata.prepared_signals[resolution][prod_id_str][ch_id_str].copy()
+            # return deepcopy(self.__data.prepared_signals[resolution][prod_id_str][ch_id_str])
         except AttributeError:
             raise NotFoundInStorage('prepared signal {0}'.format(ch_id_str),
                                     'product {0}'.format(prod_id_str))
@@ -489,17 +490,17 @@ class DataStorage:
         """
         try:
             if resolution is not None:
-                result = self.__data[source][resolution][prod_id_str]
+                result = self._mydata[source][resolution][prod_id_str]
             else:
-                result = self.__data[source][prod_id_str]
+                result = self._mydata[source][prod_id_str]
         except AttributeError:
             raise NotFoundInStorage('{0} {1}'.format(what_str, prod_id_str),
                                     '{0} {1}'.format(where_str, RESOLUTION_STR[resolution]))
 
         if isinstance(result, xr.DataArray):
-            return deepcopy(result)
+            return result.copy(deep=True)
         elif isinstance(result, Products):
-            return deepcopy(result)
+            return result.copy()
         else:
             # Dict returns {} instead of AttributeError
             if resolution is not None:
@@ -591,12 +592,12 @@ class DataStorage:
                 and resolution was found in storage
         """
         if resolution in RESOLUTIONS:
-            result = self.__data.common_vertical_resolution[resolution]
+            result = self._mydata.common_vertical_resolution[resolution]
         else:
             result = None
 
         if isinstance(result, xr.DataArray):
-            return deepcopy(result)
+            return result.copy(deep=True)
         else:
             raise NotFoundInStorage('{0} {1}'.format(RESOLUTION_STR[resolution], ''),
                                     '{0} {1}'.format('vertical resolution', RESOLUTION_STR[resolution]))
@@ -616,12 +617,12 @@ class DataStorage:
                 and resolution was found in storage
         """
         if resolution in RESOLUTIONS:
-            result = self.__data.clipped_vertical_resolution[resolution]
+            result = self._mydata.clipped_vertical_resolution[resolution]
         else:
             result = None
 
         if isinstance(result, xr.DataArray):
-            return deepcopy(result)
+            return result.copy(deep=True)
         else:
             raise NotFoundInStorage('{0} {1}'.format(RESOLUTION_STR[resolution], ''),
                                     '{0} {1}'.format('clipped vertical resolution', RESOLUTION_STR[resolution]))
@@ -641,12 +642,12 @@ class DataStorage:
                 and resolution was found in storage
         """
         if resolution in RESOLUTIONS:
-            result = self.__data.clipped_cloud_mask[resolution]
+            result = self._mydata.clipped_cloud_mask[resolution]
         else:
             result = None
 
         if isinstance(result, xr.DataArray):
-            return deepcopy(result)
+            return result.copy(deep=True)
         else:
             raise NotFoundInStorage('{0} {1}'.format(RESOLUTION_STR[resolution], ''),
                                     '{0} {1}'.format('clipped cloud_mask', RESOLUTION_STR[resolution]))
@@ -695,7 +696,7 @@ class DataStorage:
         """
         try:
             if resolution is not None:
-                return self.__data.time_integration_multiples[resolution]
+                return self._mydata.time_integration_multiples[resolution]
             else:
                 return None
 
@@ -815,6 +816,9 @@ class DataStorage:
 
         return result
 
+    def print_storage(self):
+        print(self._mydata.keys())
+
     def product_qc(self, prod_id_str, resolution):
         """copy of a quality controlled product
 
@@ -857,7 +861,8 @@ class DataStorage:
 
         """
         try:
-            result = deepcopy(self.__data.product_matrix[res][prod_type])
+            result = self._mydata.product_matrix[res][prod_type].copy(deep=True)
+            # result = deepcopy(self.__data.product_matrix[res][prod_type])
         except NotFoundInStorage:
             raise NotFoundInStorage('product matrix of type {0}'.format(prod_type),
                                     'products with common smoothing with {0}'.format(RESOLUTION_STR[res]))
@@ -881,7 +886,8 @@ class DataStorage:
 
         """
         try:
-            result = deepcopy(self.__data.qc_product_matrix[res][prod_type])
+            result = self._mydata.qc_product_matrix[res][prod_type].copy(deep=True)
+            # result = deepcopy(self.__data.qc_product_matrix[res][prod_type])
         except NotFoundInStorage:
             raise NotFoundInStorage('product matrix of type {0}'.format(prod_type),
                                     'products with common smoothing with {0}'.format(RESOLUTION_STR[res]))
@@ -897,7 +903,7 @@ class DataStorage:
         Returns:
             :obj:'xarray.DataArray': deepcopy of the backscatter ratio at 532 nm
         """
-        return deepcopy(self.__data.bsc_ratio_532[res])
+        return self._mydata.bsc_ratio_532[res].copy()
 
     def number_of_derived_products(self):
         count = 0
@@ -916,11 +922,11 @@ class DataStorage:
         return count
 
     def number_of_scheduled_products(self):
-        return self.__data.number_of_scheduled_products
+        return self._mydata.number_of_scheduled_products
 
     @property
     def scc_version_id(self):
-        return self.__data.scc_version_id
+        return self._mydata.scc_version_id
 
     @property
     def cloud_mask(self):
@@ -937,7 +943,7 @@ class DataStorage:
             there is already one from a previously read ELPP file
             which is different from the new one
         """
-        return self.__data.cloud_mask
+        return self._mydata.cloud_mask
 
     @cloud_mask.setter
     def cloud_mask(self, new_mask):
@@ -949,7 +955,7 @@ class DataStorage:
                 # todo: check whether overlapping parts of both masks are equal
                 # raise DifferentCloudMaskExists(None)  # ToDo Ina Where to find the prod_id the Exception needs
 
-        self.__data.cloud_mask = new_mask
+        self._mydata.cloud_mask = new_mask
 
     @property
     def time_res_raw(self):
@@ -966,14 +972,14 @@ class DataStorage:
             there is already one from a previously read ELPP file
             which is different from the new one
         """
-        return self.__data.time_res_raw
+        return self._mydata.time_res_raw
 
     @time_res_raw.setter
     def time_res_raw(self, new_time_res):
         existing_time_res = self.time_res_raw
 
         if existing_time_res is None:
-            self.__data.time_res_raw = new_time_res
+            self._mydata.time_res_raw = new_time_res
         else:
             if not existing_time_res.equals(new_time_res):
                 raise DifferentRawResolutionExists(None)  # ToDo Ina Where to find the prod_id the Exception needs
@@ -987,10 +993,10 @@ class DataStorage:
         Returns:
             xr.DataArray with same shape as single binres arrays
         """
-        if self.__data.binres_common_smooth[res] == {}:
+        if self._mydata.binres_common_smooth[res] == {}:
             return None
 
-        all_binres = xr.concat(list(self.__data.binres_common_smooth[res].values()), 'x')
+        all_binres = xr.concat(list(self._mydata.binres_common_smooth[res].values()), 'x')
         maxres = all_binres.max('x')
 
         return maxres
@@ -1012,7 +1018,7 @@ class DataStorage:
             return None
 
         # time integrated cloud mask
-        cm_int = self.__data.integrated_cloud_mask[res]
+        cm_int = self._mydata.integrated_cloud_mask[res]
         cm = deepcopy(cm_int)
         cm[:] = NC_FILL_BYTE
 
@@ -1045,12 +1051,12 @@ class DataStorage:
             there is already one from a previously read ELPP file
             which is different from the new one
         """
-        return self.__data.header
+        return self._mydata.header
 
     @header.setter
     def header(self, new_header):
         if self.header is None:
-            self.__data.header = new_header
+            self._mydata.header = new_header
         else:
             self.header.append(new_header)
 

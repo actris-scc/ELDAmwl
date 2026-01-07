@@ -14,8 +14,8 @@ class Columns(object):
     base column class (2 dimensional: (time, level))
     """
 
-    has_sys_err = None
-    profile_qf = None
+    has_sys_err : bool = None
+    profile_qf : xr.DataArray = None
 
     def __init__(self):
         self.ds = xr.Dataset(
@@ -39,6 +39,16 @@ class Columns(object):
         self.station_altitude = None
 
         self.has_sys_err = False
+
+    def copy(self, target=None):
+        if target is None:
+            new = Columns()
+        else:
+            new = target
+        new.ds = self.ds.copy(deep=True)
+        new.has_sys_err = self.has_sys_err
+        new.profile_qf = self.profile_qf.copy(deep=True)
+        return new
 
     @property
     def logger(self):

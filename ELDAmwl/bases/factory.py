@@ -54,6 +54,7 @@ class BaseOperation(object):
     def __init__(self, **kwargs):
         self.kwargs = kwargs
         self.data_storage = component.queryUtility(IDataStorage)
+        a=1
 
     def init(self):
         pass

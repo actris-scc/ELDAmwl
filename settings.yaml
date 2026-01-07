@@ -53,11 +53,11 @@ default:
 
   # The logfiles
   # general log level
-  log_level : DEBUG
+  log_level : INFO
   # The desired log_level for console output
   log_level_console : DEBUG
   # The desired log_level for the logfile
-  log_level_file : DEBUG
+  log_level_file : INFO
   # Colors for the log console output (Options see color_log-package)
   log_colors : {
       'DEBUG': 'cyan',

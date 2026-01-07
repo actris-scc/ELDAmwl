@@ -1,4 +1,3 @@
-from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import ICfg, IVLDROp, IRamBscOp
@@ -275,7 +274,7 @@ class CreateMCCopiesDefault(BaseOperation):
 
         result = []
         for n in range(num_samples):
-            mc_copy = deepcopy(original)
+            mc_copy = original.copy()
             mc_copy.data[:, :] = sample_data[:, :, n]
             result.append(mc_copy)
 

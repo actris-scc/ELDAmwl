@@ -99,6 +99,7 @@ class VLRDFactoryDefault(BaseOperation):
         del self.sig_ratio
         del self.refl_sig
         del self.transm_sig
+        del self.empty_vldr
 
         return vldr
 

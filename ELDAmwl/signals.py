@@ -158,9 +158,15 @@ class DepolarizationCalibration(object):
     gain_factor = None
     gain_factor_correction = None
 
+    def copy(self):
+        new = DepolarizationCalibration()
+        new.gain_factor = self.gain_factor.copy()
+        new.gain_factor_correction = self.gain_factor_correction.copy()
+        return new
+
     @classmethod
     def from_nc_file(cls, nc_ds, pol_cal_idx):
-        result = cls
+        result = cls()
         result.gain_factor = \
             DataPoint.from_nc_file(nc_ds,
                                    'polarization_gain_factor',
@@ -185,34 +191,69 @@ class Signals(Columns):
 
     """
 
-    emission_wavelength = None
-    detection_wavelength = None
-    channel_ids = None
-    channel_id_name = None  # if signal is glued (or otherwise from different components), this is the id of the most far channel
-    prod_id = None
-    detection_type = None
-    channel_idx_in_ncfile = None
-    scatterer = None
-    alt_range = None
-    pol_channel_conf = None
-    scale_factor_shots = None
-    pol_calibr = None
-    raw_heightres = None
-    station_altitude = None
-    is_from_depol_components = None
+    emission_wavelength : xr.DataArray = None
+    detection_wavelength : xr.DataArray = None
+    channel_ids : xr.DataArray = None
+    channel_id_name : str = None  # if signal is glued (or otherwise from different components), this is the id of the most far channel
+    prod_id : int = None
+    detection_type : xr.DataArray = None
+    channel_idx_in_ncfile : int = None
+    scatterer : xr.DataArray = None
+    alt_range : xr.DataArray = None
+    pol_channel_conf : xr.DataArray = None
+    scale_factor_shots : xr.DataArray = None
+    pol_calibr : DepolarizationCalibration = None
+    raw_heightres : np.ndarray = None
+    num_scan_angles : int = None
+    station_altitude : xr.DataArray = None
+    is_from_depol_components : bool = None
 
-    calc_eff_bin_res_routine = None
-    calc_used_bin_res_routine = None
+    calc_eff_bin_res_routine : BaseOperationFactory = None
+    calc_used_bin_res_routine : BaseOperationFactory = None
 
-    h = None
-    g = None
-    pol_channel_geometry = None
+    h : DataPoint = None
+    g : DataPoint = None
+    pol_channel_geometry : xr.DataArray = None
 
     def __init__(self):
         super(Signals, self).__init__()
         self.normalized_by_shots = False
         self.corrected_for_mol_transmission = False
         self.is_from_depol_components = False
+
+    def copy(self, target=None):
+        if target is None:
+            new = Signals()
+        else:
+            new = target
+        super(Signals, self).copy(target=new)
+        new.emission_wavelength = self.emission_wavelength.copy(deep=True)
+        new.detection_wavelength = self.detection_wavelength.copy(deep=True)
+        new.channel_ids = self.channel_ids.copy(deep=True)
+        new.channel_id_name = self.channel_id_name  # if signal is glued (or otherwise from different components), this is the id of the most far channel
+        new.prod_id = self.prod_id
+        new.detection_type = self.detection_type.copy(deep=True)
+        new.channel_idx_in_ncfile = self.channel_idx_in_ncfile
+        new.scatterer = self.scatterer.copy(deep=True)
+        new.alt_range = self.alt_range.copy(deep=True)
+        new.pol_channel_conf = self.pol_channel_conf.copy(deep=True)
+        new.scale_factor_shots = self.scale_factor_shots.copy(deep=True)
+        if self.pol_calibr is None:
+            new.pol_calibr = None
+        else:
+            new.pol_calibr = self.pol_calibr.copy()
+        new.raw_heightres = self.raw_heightres.copy()
+        new.num_scan_angles = self.num_scan_angles
+        new.station_altitude = self.station_altitude.copy(deep=True)
+        new.is_from_depol_components = self.is_from_depol_components
+        new.h = self.h.copy()
+        new.g = self.g.copy()
+        new.pol_channel_geometry = self.pol_channel_geometry.copy(deep=True)
+
+        new.calc_eff_bin_res_routine = self.calc_eff_bin_res_routine
+        new.calc_used_bin_res_routine = self.calc_used_bin_res_routine
+
+        return new
 
     @property
     def cfg(self):
@@ -429,7 +470,7 @@ class Signals(Columns):
         Returns: Signals
         """
 
-        result = deepcopy(transm_sig)  # see also weakref
+        result = transm_sig.copy()  # see also weakref
         depol_params = {'HR': refl_sig.h.data,
                         'GR': refl_sig.g.data,
                         'HT': transm_sig.h.data,
@@ -829,7 +870,7 @@ class Signals(Columns):
     def range(self):
         """xarray.DataArray(dimensions = time, level): range axis in m
                                                     = distance from lidar"""
-        return self.height / xr.ufuncs.cos(xr.ufuncs.radians(self.ds.laser_pointing_angle))  # noqa E501
+        return self.height / np.cos(np.radians(self.ds.laser_pointing_angle))  # noqa E501
 
     @property
     def is_WV_sig(self):
