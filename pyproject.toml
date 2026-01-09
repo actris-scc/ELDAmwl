@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ELDAmwl"
-version = "0.1.0"
+version = "0.2.0"
 description = "ELDA multi wavelengt SCC module"
 authors = ["Ina Mattis <ina.mattis@dwd.de>"]
 
