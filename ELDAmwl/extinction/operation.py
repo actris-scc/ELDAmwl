@@ -103,7 +103,7 @@ class CalcExtinctionDefault(BaseOperation):
         self.ext_params = self.kwargs['ext_params']
         self.slope_routine = self.kwargs['slope_routine']
         self.slope_to_ext_routine = self.kwargs['slope_to_ext_routine']
-        self.result = deepcopy(self.kwargs['empty_ext'])
+        self.result = self.kwargs['empty_ext'].copy()
 
     def calc_slope(self, t, lev, window, half_win):
         fb = lev - half_win
@@ -178,7 +178,7 @@ class CalcExtinctionDefault(BaseOperation):
         self.slope_to_ext_routine(
             slope=self.result.ds,
             ext_params=param_dct).run()
-        self.result.profile_qf = deepcopy(data.profile_qf)
+        self.result.profile_qf = data.profile_qf.copy(deep=True)
 
         return self.result
 

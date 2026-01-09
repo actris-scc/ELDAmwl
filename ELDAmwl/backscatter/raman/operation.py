@@ -105,7 +105,7 @@ class CalcRamanBackscatterDefault(BaseOperation):
         self.calibr_window = self.kwargs['calibr_window']
         self.calc_routine = self.kwargs['calc_routine']
         self.bsc_params = self.kwargs['bsc_params']
-        self.result = deepcopy(self.kwargs['empty_bsc'])
+        self.result = self.kwargs['empty_bsc'].copy()
 
     def run(self, data=None):
         """
@@ -148,8 +148,8 @@ class CalcRamanBackscatterDefault(BaseOperation):
             error_params=error_params,
             calibration=cal_params)
 
-        self.result.ds['mol_backscatter'] = deepcopy(data.ds.mol_backscatter)
-        self.profile_qf = deepcopy(data.profile_qf)
+        self.result.ds['mol_backscatter'] = data.ds.mol_backscatter.copy(deep=True)
+        self.profile_qf = data.profile_qf.copy(deep=True)
 
         return self.result
 

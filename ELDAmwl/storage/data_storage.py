@@ -907,7 +907,7 @@ class DataStorage:
 
     def number_of_derived_products(self):
         count = 0
-        for resolutions, res_data in self._DataStorage__data.product_matrix.items():
+        for resolutions, res_data in self._mydata.product_matrix.items():
             prod_types = list(res_data.keys())
             # at this point, if EBSC and RBSC were calculated, both matrices have the same content
             if (RBSC in prod_types) and (EBSC in prod_types):

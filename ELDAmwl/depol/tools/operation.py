@@ -118,7 +118,7 @@ class CalcVldrVFreudenthaler22(BaseOperation):
 
         vldr_data_sqr = sqr(vldr_data)
 
-        vldr = deepcopy(sigratio)
+        vldr = sigratio.copy()
         vldr['data'] = vldr_data
 
         vldr['err'] = np.absolute(

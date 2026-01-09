@@ -167,7 +167,7 @@ class CalcLidarRatioDefault(BaseOperation):
     def __init__(self, **kwargs):
         self.ext = kwargs['ext']
         self.bsc = kwargs['bsc']
-        self.result = deepcopy(kwargs['empty_lr'])
+        self.result = kwargs['empty_lr'].copy()
 
     def run(self, ext=None, bsc=None):
         """

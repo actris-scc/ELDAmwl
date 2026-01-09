@@ -249,6 +249,9 @@ class Signals(Columns):
         new.h = self.h.copy()
         new.g = self.g.copy()
         new.pol_channel_geometry = self.pol_channel_geometry.copy(deep=True)
+        new.normalized_by_shots = self.normalized_by_shots
+        new.corrected_for_mol_transmission = self.corrected_for_mol_transmission
+        new.is_from_depol_components = self.is_from_depol_components
 
         new.calc_eff_bin_res_routine = self.calc_eff_bin_res_routine
         new.calc_used_bin_res_routine = self.calc_used_bin_res_routine
@@ -278,7 +281,7 @@ class Signals(Columns):
         Returns: Signals
 
         """
-        result = deepcopy(enumerator)
+        result = enumerator.copy()
 
         result.ds['data'] = enumerator.ds.data / denominator.ds.data
         result.ds['err'] = np.absolute(
@@ -1035,7 +1038,7 @@ class CombineDepolComponentsDefault(BaseOperation):
         factor = etaS / K * HR
         denom = (HR * GT - HT * GR)
 
-        result = deepcopy(transm_sig)  # todo ina: is this copy necessary?
+        result = transm_sig.copy()  # todo ina: is this copy necessary?
         result['data'] = (factor * transm_sig.data - HT * refl_sig.data) / denom
         result['err'] = np.sqrt(
             np.square(HT * refl_sig.err) +   # noqa W504

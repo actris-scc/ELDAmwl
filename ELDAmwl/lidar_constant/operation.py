@@ -8,7 +8,7 @@ from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented, NegBscForLidarconst, NoBscForLidarconst
 from ELDAmwl.lidar_constant.product import LidarConstantData
 from ELDAmwl.signals import Signals
-from ELDAmwl.utils.constants import ANGSTROEM_DEFAULT
+from ELDAmwl.utils.constants import ANGSTROEM_DEFAULT, LOWRES
 from ELDAmwl.utils.constants import ASSUMED_LR_DEFAULT
 from ELDAmwl.utils.constants import ASSUMED_LR_ERROR_DEFAULT
 from ELDAmwl.utils.constants import EBSC
@@ -97,12 +97,12 @@ class LidarConstantFactoryDefault(BaseOperation):
         # which signals are used for the retrieval of this backscatter ? -> self.signals
         self.find_signals()
 
-        # find the best value for the angstroem assumption -> assumed_angstroem
-        self.find_angstroem()
-
         # find calibration height and resolution -> self.calibr_height
         #                                       -> self.used_resolution
         self.find_calibration_height_and_res()
+
+        # find the best value for the angstroem assumption -> assumed_angstroem
+        self.find_angstroem()
 
         # find the best value for lidar ratio assumption -> self.assumed_lr
         #                                                  -> self.assumed_lr_err
@@ -113,8 +113,8 @@ class LidarConstantFactoryDefault(BaseOperation):
                                                            self.used_resolution)
 
         # create empty lidar constants (with all meta data) for each involved signals
-        for sig in self.signals.keys():
-            self.lidar_constants[sig] = LidarConstantData.init(self.bsc, self.signals[sig])
+        for sig in self.signals[self.used_resolution].keys():
+            self.lidar_constants[sig] = LidarConstantData.init(self.bsc, self.signals[self.used_resolution][sig])
             self.lidar_constants[sig].calibr_height = self.calibr_height
 
     def find_signals(self):
@@ -129,27 +129,29 @@ class LidarConstantFactoryDefault(BaseOperation):
             * 'raman' (in case of Raman backscatter)
 
         """
-        self.signals = Dict({
+        self.signals = Dict({})
+        for res in RESOLUTIONS:
+            self.signals[res] = dict({
             'total': self.data_storage.prepared_signal(
                 self.bsc_param.prod_id_str,
                 self.bsc_param.total_sig_id_str,
-                self.used_resolution)})
+                res)})
 
-        if self.bsc_param.is_bsc_from_depol_components():
-            self.signals['refl'] = self.data_storage.prepared_signal(
-                self.bsc_param.prod_id_str,
-                self.bsc_param.refl_sig_id_str,
-                self.used_resolution)
-            self.signals['transm'] = self.data_storage.prepared_signal(
-                self.bsc_param.prod_id_str,
-                self.bsc_param.transm_sig_id_str,
-                self.used_resolution)
+            if self.bsc_param.is_bsc_from_depol_components():
+                self.signals[res]['refl'] = self.data_storage.prepared_signal(
+                    self.bsc_param.prod_id_str,
+                    self.bsc_param.refl_sig_id_str,
+                    res)
+                self.signals[res]['transm'] = self.data_storage.prepared_signal(
+                    self.bsc_param.prod_id_str,
+                    self.bsc_param.transm_sig_id_str,
+                    res)
 
-        if self.bsc_param.bsc_method == RAMAN:
-            self.signals['raman'] = self.data_storage.prepared_signal(
-                self.bsc_param.prod_id_str,
-                self.bsc_param.raman_sig_id_str,
-                self.used_resolution)
+            if self.bsc_param.bsc_method == RAMAN:
+                self.signals[res]['raman'] = self.data_storage.prepared_signal(
+                    self.bsc_param.prod_id_str,
+                    self.bsc_param.raman_sig_id_str,
+                    res)
 
     def find_angstroem(self):
         """ find best assumption for angstroem exponent
@@ -186,7 +188,7 @@ class LidarConstantFactoryDefault(BaseOperation):
 
         ovl_height = np.nan
         if not self.bsc_param.includes_product_merging():
-            for sig in self.signals.values():
+            for sig in self.signals[LOWRES].values():
                 for channel_id in sig.channel_ids.values:
                     ovl_height = np.nanmax([ovl_height, self.db_func.read_full_overlap(int(channel_id))])
         else:
@@ -312,7 +314,7 @@ class LidarConstantFactoryDefault(BaseOperation):
     def calc_lc_total(self):
         calc_routine = CalcLidarConstant()(
             bsc=self.bsc,
-            signal=self.signals.total,
+            signal=self.signals[self.used_resolution]['total'],
             lc_params=self.lc_params,
             empty_lc=self.lidar_constants.total,
         )
@@ -321,7 +323,7 @@ class LidarConstantFactoryDefault(BaseOperation):
 
     def calc_lc_raman(self):
         raman_calc_routine = CalcRamanLidarConstant()(
-            signal=self.signals.raman,
+            signal=self.signals[self.used_resolution]['raman'],
             lc_params=self.lc_params,
             elast_lc=self.lidar_constants.total,
             empty_lc=self.lidar_constants.raman,
@@ -331,8 +333,8 @@ class LidarConstantFactoryDefault(BaseOperation):
 
     def calc_lc_depol(self):
         depol_calc_routine = SplitDepolLidarConstant()(
-            refl_signal=self.signals.refl,
-            transm_signal=self.signals.transm,
+            refl_signal=self.signals[self.used_resolution]['refl'],
+            transm_signal=self.signals[self.used_resolution]['transm'],
             lc_params=self.lc_params,
             total_lc=self.lidar_constants.total,
             empty_lc_refl=self.lidar_constants.refl,
@@ -437,8 +439,8 @@ class CalcLidarConstantDefault(BaseOperation):
 
     def __init__(self, **kwargs):
         super(CalcLidarConstantDefault, self).__init__(**kwargs)
-        self.signal = deepcopy(kwargs['signal'])
-        self.bsc = deepcopy(kwargs['bsc'])
+        self.signal = kwargs['signal'].copy()
+        self.bsc = kwargs['bsc'].copy()
         self.lc_params = kwargs['lc_params']
         self.result = kwargs['empty_lc']
 
@@ -675,9 +677,9 @@ class CalcRamanLidarConstantDefault(BaseOperation):
 
     def __init__(self, **kwargs):
         super(CalcRamanLidarConstantDefault, self).__init__(**kwargs)
-        self.signal = deepcopy(kwargs['signal'])
+        self.signal = kwargs['signal'].copy()
         self.lc_params = kwargs['lc_params']
-        self.elast_lc = deepcopy(kwargs['elast_lc'])
+        self.elast_lc = deepcopy(kwargs['elast_lc'])  # what is elast_lc -> replace deepcopy
         self.result = kwargs['empty_lc']
 
     def run(self):
@@ -851,10 +853,10 @@ class SplitDepolLidarConstantDefault(BaseOperation):
 
     def __init__(self, **kwargs):
         super(SplitDepolLidarConstantDefault, self).__init__(**kwargs)
-        self.refl_signal = deepcopy(kwargs['refl_signal'])
-        self.transm_signal = deepcopy(kwargs['transm_signal'])
+        self.refl_signal = kwargs['refl_signal'].copy()
+        self.transm_signal = kwargs['transm_signal'].copy()
         self.lc_params = kwargs['lc_params']
-        self.total_lc = deepcopy(kwargs['total_lc'])
+        self.total_lc = kwargs['total_lc'].copy()
         self.result = Dict({'refl': kwargs['empty_lc_refl'],
                             'transm': kwargs['empty_lc_transm'],
                             })

@@ -188,7 +188,7 @@ class CalcVLDRDefault(BaseOperation):
         self.sig_ratio = self.kwargs['signal_ratio']
         self.calc_routine = self.kwargs['calc_routine']
         self.vldr_params = self.kwargs['vldr_params']
-        self.result = deepcopy(self.kwargs['empty_vldr'])
+        self.result = self.kwargs['empty_vldr'].copy()
 
     def run(self, data=None):
         r""" collects all parameters for VLDR calculation and run the calculator class `.CalcVLDRProfile`.
@@ -239,7 +239,7 @@ class CalcVLDRDefault(BaseOperation):
         self.result.ds = self.calc_routine.run(
             sigratio=data.ds,
             depol_params=params)
-        self.result.profile_qf = deepcopy(data.profile_qf)
+        self.result.profile_qf = data.profile_qf.copy(deep=True)
 
         return self.result
 

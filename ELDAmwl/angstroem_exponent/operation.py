@@ -177,7 +177,7 @@ class CalcAngstroemExpDefault(BaseOperation):
     def __init__(self, **kwargs):
         self.lambda1 = kwargs['lambda1']
         self.lambda2 = kwargs['lambda2']
-        self.result = deepcopy(kwargs['empty_ae'])
+        self.result = kwargs['empty_ae'].copy()
 
     def run(self, lambda1=None, lambda2=None):
         """

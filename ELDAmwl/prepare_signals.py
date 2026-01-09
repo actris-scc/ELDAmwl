@@ -91,7 +91,7 @@ class PrepareBscSignalsDefault(PrepareSignalsForProductDefault):
             # todo: prepare only the signals that are actually needed for the usecase
             # sig is a deepcopy from the data storage
             for sig in self.data_storage.integrated_signals(self.pid, self.resolution):
-                prep_sig = deepcopy(sig)
+                prep_sig = sig.copy()
                 prep_sig.set_valid_height_range(self.bsc_param.valid_alt_range)
                 prep_sig.normalize_by_shots()
                 if (self.bsc_param.product_type == EBSC) and (self.bsc_param.elast_bsc_algorithm == KF):
@@ -152,7 +152,7 @@ class PrepareExtSignalsDefault(PrepareSignalsForProductDefault):
             # sig is deepcopy from data storage
             for sig in self.data_storage.integrated_signals(self.pid, self.resolution):
                 if sig.is_Raman_sig:
-                    prep_sig = deepcopy(sig)
+                    prep_sig = sig.copy()
                     prep_sig.set_valid_height_range(self.ext_param.valid_alt_range)
                     prep_sig.normalize_by_shots()
                     prep_sig.correct_for_mol_transmission()

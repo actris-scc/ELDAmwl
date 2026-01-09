@@ -230,7 +230,7 @@ class ExtinctionAutosmoothDefault(BaseOperation):
 
     def run(self):
         # todo ina: test whether this copy makes sense and is necessary
-        self.signal = deepcopy(self.kwargs['signal'])
+        self.signal = self.kwargs['signal'].copy()
         self.smooth_params = self.kwargs['smooth_params']
 
         self.max_smooth()

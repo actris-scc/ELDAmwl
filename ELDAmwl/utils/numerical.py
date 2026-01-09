@@ -150,8 +150,8 @@ def integral_profile(data,
     Returns:
 
     """
-    ydata = deepcopy(data)
-    xdata = deepcopy(range_axis)
+    ydata = data.copy()
+    xdata = range_axis.copy()
 
     if np.all(np.isnan(ydata)):
         return None

@@ -157,10 +157,10 @@ class StandardBackscatterRatioFactoryDefault(BaseOperation):
         result = BackscatterRatios.from_signal(source, source.params)
         # calculate data
         result.ds['data'] = source.data * factor + (1 - factor)
-        result.ds['qf'] = deepcopy(source.ds.qf)
+        result.ds['qf'] = source.ds.qf.copy(deep=True)
         # set the correct value for emission wavelength
         result.emission_wavelength.values = 532
-        result.profile_qf[:] = deepcopy(source.profile_qf[:])
+        result.profile_qf[:] = source.profile_qf[:].copy(deep=True)
 
         # todo: testing, handle errors and attributes
         return result

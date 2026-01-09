@@ -142,7 +142,7 @@ class CalcElastBackscatterDefault(BaseOperation):
         self.calibr_window = self.kwargs['calibr_window']
         self.calc_routine = self.kwargs['calc_routine']
         self.bsc_params = self.kwargs['bsc_params']
-        self.result = deepcopy(self.kwargs['empty_bsc'])
+        self.result = self.kwargs['empty_bsc'].copy()
 
     def run(self, data=None):
         """
@@ -196,12 +196,12 @@ class CalcElastBackscatterDefault(BaseOperation):
             self.logger.error('retrieval of elastic backscatter failed')
             return None
 
-        self.result.ds['assumed_particle_lidar_ratio'] = deepcopy(data.ds.assumed_particle_lidar_ratio)
-        self.result.ds['assumed_particle_lidar_ratio_error'] = deepcopy(data.ds.assumed_particle_lidar_ratio_error)
-        self.result.ds['time_bounds'] = deepcopy(data.ds.time_bounds)
-        self.result.ds['laser_pointing_angle'] = deepcopy(data.ds.laser_pointing_angle)
-        self.result.ds['mol_backscatter'] = deepcopy(data.ds.mol_backscatter)
-        self.result.profile_qf = deepcopy(data.profile_qf)
+        self.result.ds['assumed_particle_lidar_ratio'] = data.ds.assumed_particle_lidar_ratio.copy(deep=True)
+        self.result.ds['assumed_particle_lidar_ratio_error'] = data.ds.assumed_particle_lidar_ratio_error.copy(deep=True)
+        self.result.ds['time_bounds'] = data.ds.time_bounds.copy(deep=True)
+        self.result.ds['laser_pointing_angle'] = data.ds.laser_pointing_angle.copy(deep=True)
+        self.result.ds['mol_backscatter'] = data.ds.mol_backscatter.copy(deep=True)
+        self.result.profile_qf = data.profile_qf.copy(deep=True)
 
         return self.result
 

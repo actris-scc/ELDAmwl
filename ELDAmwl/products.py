@@ -352,7 +352,7 @@ class Products(Signals):
 
         # if all data points are flagged, set profile flag, but keep individual values
         # operate on a copy of the data array
-        dummy_data = deepcopy(self.data)
+        dummy_data = self.data.copy(deep=True)
         for qf in self.cfg.CRITICAL_FLAGS:
             # where returns values where condition is fulfilled, nan otherwise
             # data points where the qf is set are filled with nan

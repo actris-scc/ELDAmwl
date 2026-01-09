@@ -90,6 +90,7 @@ class GetBasicProductsDefault(BaseOperation):
 
         self.get_common_smooth_products()
         self.data_storage.remove('integrated_signals')
+        print(psutil.Process().memory_full_info().uss)
 
     def find_common_smooth(self):
         """
@@ -184,20 +185,24 @@ class GetBasicProductsDefault(BaseOperation):
         """get all basic products with pre-defined smoothing
 
         """
-        self.logger.info('get products on common smooth grid')  # pmem(rss=208.117.760
+        self.logger.info('get products on common smooth grid')  # 199.970.816
         print(psutil.Process().memory_full_info().uss)
-        # self.get_extinctions_fixed_smooth()
-        # print(psutil.Process().memory_full_info().uss)  # -> 209 346 560
-        # self.get_raman_bsc_fixed_smooth()  # -> 322 306 048 (ohne ext)
+        self.get_extinctions_fixed_smooth()
+        print(psutil.Process().memory_full_info().uss)  # -> 211.968.000
 
-        # print(psutil.Process().memory_full_info().uss)
-        self.get_elast_bsc_fixed_smooth()  # MEM -> 969 400 320 ohne ext, mit Rbsc
+        self.get_raman_bsc_fixed_smooth()  # -> 213.127.168
         print(psutil.Process().memory_full_info().uss)
-        self.get_bsc_ratios_fixed_smooth()  # MEM -> 969 400 320
+
+        self.get_elast_bsc_fixed_smooth()  # -> 217.956.352
         print(psutil.Process().memory_full_info().uss)
-        self.get_vldr_fixed_smooth()  # MEM -> 3.307.786.240
+
+        self.get_bsc_ratios_fixed_smooth()  # -> 218.144.768
         print(psutil.Process().memory_full_info().uss)
-        self.single_products_quality_control()  # MEM -> pmem(rss=7.881.302.016
+
+        self.get_vldr_fixed_smooth()  # -> 218.509.312
+        print(psutil.Process().memory_full_info().uss)
+
+        self.single_products_quality_control()  # -> 216.518.656
         print(psutil.Process().memory_full_info().uss)
 
     def get_extinctions_auto_smooth(self):
@@ -359,7 +364,7 @@ class GetBasicProductsDefault(BaseOperation):
                             ).get_product()
                         else:
                             res_bsc = bsc
-                        smooth_bsc = deepcopy(res_bsc)
+                        smooth_bsc = res_bsc.copy()
                         smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                         smooth_bsc.resolution = res
                         self.data_storage.set_basic_product_common_smooth(
@@ -430,12 +435,12 @@ class GetBasicProductsDefault(BaseOperation):
                             ).get_product()
                     else:
                         res_vlrd = vldr
-                    smooth_vldr = deepcopy(res_vlrd)
+                    smooth_vldr = res_vlrd.copy()
                     smooth_vldr.smooth(self.data_storage.binres_common_smooth(prod_id, res))
                     smooth_vldr.resolution = res
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_vldr)
-            del vldr
+            vldr = None
             del res_vlrd
 
     def single_products_quality_control(self):
@@ -449,7 +454,6 @@ class GetBasicProductsDefault(BaseOperation):
                 product = self.data_storage.basic_product_common_smooth(prod_id, res)
                 product.quality_control()
                 self.data_storage.set_basic_product_qc(prod_id, res, product)
-        self.data_storage.remove('basic_products_common_smooth')
 
 
 class GetBasicProducts(BaseOperationFactory):
