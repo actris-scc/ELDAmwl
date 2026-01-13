@@ -31,8 +31,8 @@ class PrepareSignalsForProductDefault(BaseOperation):
 
         if self.data_storage.time_integration_multiple(current_res) == \
             self.data_storage.time_integration_multiple(other_res):
-            existing_signals = self.data_storage.prepared_signals(self.pid, other_res)
-            if len(existing_signals) > 0:
+            self.existing_signals = self.data_storage.prepared_signals(self.pid, other_res)
+            if len(self.existing_signals) > 0:
                 self.data_already_exist = True
 
     def run(self):

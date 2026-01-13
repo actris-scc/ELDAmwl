@@ -1,4 +1,5 @@
 from ELDAmwl.backscatter.common.calibration.operation import FindBscCalibrWindowAsInELDA
+from ELDAmwl.elda_mwl.elda_mwl import register_params
 from ELDAmwl.storage.data_storage import register_datastorage
 from ELDAmwl.tests.pickle_data import un_pickle_data
 from numpy import array_equal
@@ -14,6 +15,7 @@ class Test(unittest.TestCase):
         # get state
         self.data = un_pickle_data(self.data_name)
         register_datastorage(self.data['data_storage'])
+        register_params(self.data['measurement_params'])
         self.op = FindBscCalibrWindowAsInELDA(bsc_params=self.data['bsc_params'])
         self.op.init()
 

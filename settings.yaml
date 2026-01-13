@@ -16,13 +16,6 @@ default:
   FILE_FORMAT_VERSION : 1.0
 
 # :::::::::::::::::::
-# testing
-# :::::::::::::::::::
-#  FIXTURES :
-#    - FindBscCalibrWindowAsInELDA
-#    - FindBscCalibrWindowAsInELDA.find_calibration_window
-
-# :::::::::::::::::::
 # Parallel processing
 # :::::::::::::::::::
   NUM_CPU : 4
@@ -164,6 +157,10 @@ default:
                     256,  # UNCERTAINTY_TOO_LARGE
                     1024,  # SINGLE_POINT
   ]
+
+#  FIXTURES :
+#    - FindBscCalibrWindowAsInELDA
+#    - FindBscCalibrWindowAsInELDA.find_calibration_window
 
 testing:
   SIGNAL_PATH : 'data/ELPP_files'

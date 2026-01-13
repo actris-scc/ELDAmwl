@@ -78,6 +78,7 @@ class FindBscCalibrWindow(BaseOperation):
             self.name,
             cls=self.__class__,
             data_storage=self.data_storage,
+            measurement_params=self.params,
             bsc_params=self.bsc_params,
         )
 

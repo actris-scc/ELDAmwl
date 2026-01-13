@@ -11,7 +11,7 @@ ID,method,classname
 10,eff_bin_resolution_of_sliding_average,SlidAvrgEffBinRes
 11,Ansmann method,CalcRamanBscProfileAsAnsmann
 12,via backscatter ratio,CalcRamanBscProfileViaBR
-13,minimum,FindCalibrWindowMinimum
+13,minimum,FindBscCalibrWindowAsInELDA
 14,fit-slope,FindBscCalibrWindowWithRaylFit
 15,Klett,CalcBscProfileKF
 16,iter,CalcBscProfileIter

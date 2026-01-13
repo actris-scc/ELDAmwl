@@ -25,8 +25,9 @@ TEST_INTERMEDIATE_FILE_1 = os.path.join(
 
 def test_Signals_from_nc_file():
     nc_ds = xr.open_dataset(TEST_INTERMEDIATE_FILE_1)
+    prod_id = 379
     for channelidx in range(2):
-        Signals.from_nc_file(nc_ds, channelidx)
+        Signals.from_nc_file(nc_ds, channelidx, prod_id)
 
 
 class Test(unittest.TestCase):
@@ -39,6 +40,6 @@ class Test(unittest.TestCase):
         params.general_params = GeneralProductParams()
 
         nc_ds = xr.open_dataset(TEST_INTERMEDIATE_FILE_1)
-        testsig = Signals.from_nc_file(nc_ds, 0)
+        testsig = Signals.from_nc_file(nc_ds, 0, 379)
 
         testsig.register(params)
