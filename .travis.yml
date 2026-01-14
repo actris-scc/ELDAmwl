@@ -5,23 +5,25 @@ branches:
   - master
 language: python
 python:
-  - 3.8
+  - 3.9
 cache:
   pip: true
 matrix:
   fast_finish: true
   include:
-    - name: "Python 3.8 on Xenial Linux"
-      python: 3.8           # this works for Linux but is ignored on macOS or Windows
+    - name: "Python 3.9 on Xenial Linux"
+      python: 3.9           # this works for Linux but is ignored on macOS or Windows
       dist: xenial          # required for Python >= 3.8
 before_install:
-  - pip install poetry
+  # install uv
+  - pip install uv
 install:
-  - poetry install
+  # install dependencies from pyproject.toml with  uv
+  - uv sync
 script:
-  - poetry run coverage run --source=ELDAmwl -m pytest
+  - uv run coverage run --source=ELDAmwl -m pytest
 after_success:
-  - poetry run coveralls
+  - uv run coveralls
 notifications:
   email:
     - volker.jaenisch@inqbus.de
