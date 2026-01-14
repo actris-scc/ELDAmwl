@@ -66,7 +66,7 @@ dev = [
 includes = ["ELDAmwl"]
 
 [tool.uv.sources]
-rayleigh-fit = { path = "../rayleigh_fit" }
+rayleigh-fit = { path = "../rayleigh_fit", editable = true }
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
@@ -104,7 +104,7 @@ dependencies = [
     #    "plotly<6.0.0,>=5.17.0",
     #    "PyDynamic<3.0.0,>=2.4.2",
     "memory-profiler>=0.61.0",
-    "rayleigh-fit @ file:///home/ina/myprograms/python/rayleigh_fit#editable",
+    "rayleigh-fit",
     "pympler>=1.1",
 ]
 name = "ELDAmwl"
