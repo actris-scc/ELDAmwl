@@ -6,6 +6,7 @@ from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.lidar_ratio.operation import LidarRatioFactory
+from ELDAmwl.depol.pldr.operation import PLDRFactory
 from ELDAmwl.utils.constants import RESOLUTIONS, RESOLUTION_STR
 from ELDAmwl.angstroem_exponent.operation import AngstroemExpFactory
 from ELDAmwl.utils.constants import RESOLUTIONS
@@ -38,6 +39,7 @@ class GetDerivedProductsDefault(BaseOperation):
     def get_derived_products(self):
         self.get_standard_bsc_ratio()  # MEM 20.9% -> 0.6%
         self.get_lidar_ratios()
+        self.get_pldr()
         self.get_angstroem_exps()
         self.single_products_quality_control()
 
@@ -67,6 +69,26 @@ class GetDerivedProductsDefault(BaseOperation):
 
                 lr = LidarRatioFactory()(
                     lr_param=lr_param,
+                    resolution=res).get_product()
+
+                self.data_storage.set_derived_products(
+                    prod_id, res, lr)
+
+    def get_pldr(self):
+        for res in RESOLUTIONS:
+            pldr_params = self.product_params.pldr_products(res=res)
+            if len(pldr_params) == 0:
+                self.logger.warning(f'no PLDR product will be calculated with {RESOLUTION_STR[res]} resolution')
+
+            for pldr_param in pldr_params:
+                prod_id = pldr_param.prod_id_str
+                self.logger.info('get PLDR at {0} nm (product id {1})'.format(
+                    pldr_param.general_params.emission_wavelength,
+                    prod_id
+                ))
+
+                lr = PLDRFactory()(
+                    pldr_param=pldr_param,
                     resolution=res).get_product()
 
                 self.data_storage.set_derived_products(

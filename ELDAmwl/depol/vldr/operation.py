@@ -1,12 +1,11 @@
 from addict import Dict
-from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IMonteCarlo
 from ELDAmwl.component.interface import IVLDROp
 from ELDAmwl.component.registry import registry
-from ELDAmwl.depol.product import VLDRs
-from ELDAmwl.depol.tools.operation import CalcVLDRProfile
+from ELDAmwl.depol.vldr.product import VLDRs
+from ELDAmwl.depol.vldr.tools.operation import CalcVLDRProfile
 from ELDAmwl.signals import Signals
 from ELDAmwl.utils.constants import MC
 

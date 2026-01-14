@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """ELDAmwl operations"""
-import numpy as np
-import pandas as pd
-import zope
 from addict import Dict
-from zope import component
 
 from ELDAmwl.backscatter.elastic.params import ElastBscParams
 from ELDAmwl.backscatter.raman.params import RamanBscParams
@@ -12,15 +8,15 @@ from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IParams
-from ELDAmwl.depol.params import VLDRParams
+from ELDAmwl.depol.vldr.params import VLDRParams
 from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
 from ELDAmwl.elda_mwl.get_lidar_constants import GetLidarConstants
-from ELDAmwl.errors.exceptions import ProductNotUnique, DifferentProductsResolution, CouldNotFindProductsResolution, \
+from ELDAmwl.errors.exceptions import DifferentProductsResolution, CouldNotFindProductsResolution, \
     ELDAmwlConfigurationException, MwlResIsNoMultiple, MwlResSmallerThanSingle
 from ELDAmwl.elda_mwl.compile_mwl_product import GetProductMatrix
 from ELDAmwl.elda_mwl.do_quality_control import QualityControl
-from ELDAmwl.errors.exceptions import ProductNotUnique, ELDAmwlException
+from ELDAmwl.errors.exceptions import ProductNotUnique
 from ELDAmwl.extinction.params import ExtinctionParams
 from ELDAmwl.lidar_ratio.params import LidarRatioParams
 from ELDAmwl.angstroem_exponent.params import AngstroemExpParams
@@ -29,7 +25,7 @@ from ELDAmwl.prepare_signals import PrepareSignals
 from ELDAmwl.products import GeneralProductParams
 from ELDAmwl.products import SmoothParams
 from ELDAmwl.signals import ElppData
-from ELDAmwl.utils.constants import EBSC, RESOLUTIONS, EXIT_CODE_TEXT
+from ELDAmwl.utils.constants import EBSC, RESOLUTIONS, EXIT_CODE_TEXT, PLDR
 from ELDAmwl.utils.constants import EXIT_CODE_NONE
 from ELDAmwl.utils.constants import EXIT_CODE_OK
 from ELDAmwl.utils.constants import EXIT_CODE_SOME
@@ -41,7 +37,6 @@ from ELDAmwl.utils.constants import RBSC
 from ELDAmwl.utils.constants import RESOLUTION_STR
 from ELDAmwl.utils.constants import VLDR
 from ELDAmwl.utils.constants import AE
-from ELDAmwl.utils.constants import FIXED
 from zope import component
 
 import numpy as np
@@ -323,6 +318,20 @@ class MeasurementParams(Params):
         if res is not None:
             prod_df = prod_df[prod_df[RESOLUTION_STR[res]]]
         ids = prod_df['id'][prod_df.type == LR]
+        return self.filtered_list(ids)
+
+    def pldr_products(self, res=None):
+        """list of parameters of all pldr products
+
+        Returns:
+            list of :class:`ELDAmwl.products.ProductParams`:
+            list of parameters of all pldr products
+        """
+        prod_df = self.measurement_params.product_table
+        prod_df = prod_df[prod_df['failed'] == False]
+        if res is not None:
+            prod_df = prod_df[prod_df[RESOLUTION_STR[res]]]
+        ids = prod_df['id'][prod_df.type == PLDR]
         return self.filtered_list(ids)
 
     def angstroem_exp_products(self, res = None):

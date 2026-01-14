@@ -2,8 +2,6 @@
 """Classes for getting basic products
 """
 import psutil
-from addict import Dict
-from copy import deepcopy
 from ELDAmwl.backscatter.bsc_ratio.product import BackscatterRatios
 from ELDAmwl.backscatter.common.calibration.operation import FindCommonBscCalibrWindow
 from ELDAmwl.backscatter.common.vertical_resolution.operation import ElastBscEffBinRes
@@ -15,16 +13,16 @@ from ELDAmwl.backscatter.raman.operation import RamanBackscatterFactory
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
-from ELDAmwl.depol.operation import VLRDFactory
-from ELDAmwl.depol.vertical_resolution.operation import VLDREffBinRes
-from ELDAmwl.depol.vertical_resolution.operation import VLDRUsedBinRes
+from ELDAmwl.depol.vldr.operation import VLRDFactory
+from ELDAmwl.depol.vldr.vertical_resolution.operation import VLDREffBinRes
+from ELDAmwl.depol.vldr.vertical_resolution.operation import VLDRUsedBinRes
 from ELDAmwl.errors.exceptions import ELDAmwlException
 from ELDAmwl.errors.exceptions import NoCalibrWindowFound
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.extinction.operation import ExtinctionFactory
 from ELDAmwl.extinction.vertical_resolution.operation import ExtEffBinRes
 from ELDAmwl.extinction.vertical_resolution.operation import ExtUsedBinRes
-from ELDAmwl.utils.constants import AUTO, P_ALL_OK, LOWRES, HIGHRES
+from ELDAmwl.utils.constants import AUTO, LOWRES, HIGHRES
 from ELDAmwl.utils.constants import EBSC
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import FIXED

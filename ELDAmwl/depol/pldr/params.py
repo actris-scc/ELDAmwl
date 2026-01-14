@@ -1,0 +1,72 @@
+from ELDAmwl.component.interface import IParams
+from ELDAmwl.errors.exceptions import BasicProductMissingForDerivedProduct, WrongBasicProductForDerivedProduct
+from ELDAmwl.products import ProductParams
+from ELDAmwl.utils.constants import ERROR_METHODS, RBSC
+from zope import component
+
+
+class PLDRParams(ProductParams):
+
+    def __init__(self):
+        super(PLDRParams, self).__init__()
+        self.sub_params += ['backscatter_params', 'vldr_params']
+        self.bsc_prod_id = None
+        self.vldr_prod_id = None
+        self.min_BscRatio = None
+
+        self.vldr_params = None
+        self.backscatter_params = None
+
+    def from_db(self, general_params):
+        super(PLDRParams, self).from_db(general_params)
+        # global measurement params
+        meas_params = component.queryUtility(IParams).measurement_params
+
+        query = self.db_func.read_pldr_params(general_params.prod_id)
+        self.bsc_prod_id = query.backscatter_options_product_id
+        self.vldr_prod_id = query.vldr_options_product_id
+        self.general_params.error_method = ERROR_METHODS[query.error_method_id]  # noqa E501
+        self.min_BscRatio = float(query.min_BscRatio_for_LR)
+
+        # self. backscatter_params is a link to the parameters of the basic bsc product
+        self.backscatter_params = meas_params.product_list[str(self.bsc_prod_id)]
+        if self.backscatter_params == {}:
+            self.logger.error(f'bsc product {self.bsc_prod_id} is not attributed to this mwl product, '
+                              f'but it is needed for PLDR {general_params.prod_id} ')
+            raise BasicProductMissingForDerivedProduct(general_params.prod_id, self.bsc_prod_id)
+
+        # self.vldr_params is a link to the parameters of the basic vldr product
+        self.vldr_params = meas_params.product_list[str(self.vldr_prod_id)]
+        if self.vldr_params == {}:
+            self.logger.error(f'EVLDR product {self.ext_prod_id} is not attributed to this mwl product, '
+                              f'but it is needed for PLDR {general_params.prod_id} ')
+            raise BasicProductMissingForDerivedProduct(general_params.prod_id, self.ext_prod_id)
+
+        # use emission wavelength of vldr product also for this pldr
+        self.general_params.emission_wavelength = self.vldr_params.general_params.emission_wavelength
+
+        # some consistency tests and harmonization of / with bsc and vldr params
+        basic_params = [self.backscatter_params, self.vldr_params]
+        self.harmonize_resolution_settings(basic_params)
+        self.ensure_same_wavelength(basic_params)
+        self.get_valid_alt_range(basic_params)
+
+    def assign_to_product_list(self, global_product_list):
+        super(PLDRParams, self).assign_to_product_list(
+            global_product_list,
+        )
+        self.backscatter_params.assign_to_product_list(global_product_list)
+        self.vldr_params.assign_to_product_list(global_product_list)
+
+    def to_meta_ds_dict(self, dct):
+        """
+        writes parameter content into Dict for further export in mwl file
+        Args:
+            dct (addict.Dict): is a dict which will be converted into dataset.
+                            has the keys 'attrs' and 'data_vars'
+
+        Returns:
+
+        """
+        super(PLDRParams, self).to_meta_ds_dict(dct)   # ToDo Ina debug
+        # dct.data_vars.minimum_backscatter_ratio = self.min_BscRatio
