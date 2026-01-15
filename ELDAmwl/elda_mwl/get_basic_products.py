@@ -287,7 +287,6 @@ class GetBasicProductsDefault(BaseOperation):
                     resolution=HIGHRES,
                     )
                 bsc = calculator.get_product()
-                del calculator
             else:
                 bsc = None
 
@@ -303,7 +302,6 @@ class GetBasicProductsDefault(BaseOperation):
                             resolution=res,
                         )
                         res_bsc = calculator.get_product()
-                        # del calculator
                     else:
                         res_bsc = bsc
 
@@ -312,8 +310,8 @@ class GetBasicProductsDefault(BaseOperation):
                     smooth_bsc.resolution = res
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_bsc)
-                bsc = None  # pmem(rss=237252608, vms=1148125184, shared=72712192, text=2658304, lib=0, data=482574336, dirty=0)
-                del res_bsc
+                    del res_bsc
+            bsc = None
 
     def get_elast_bsc_fixed_smooth(self):
         if len(self.product_params.elast_bsc_products()) == 0:
@@ -367,8 +365,8 @@ class GetBasicProductsDefault(BaseOperation):
                         smooth_bsc.resolution = res
                         self.data_storage.set_basic_product_common_smooth(
                             prod_id, res, smooth_bsc)
+                        del res_bsc
                 bsc = None
-                del res_bsc
             except ELDAmwlException as e:
                 self.logger.error('cannot get backscatter product {}'.format(bsc_param.prod_id_str))
                 bsc_param.mark_as_failed(self.product_params)
@@ -438,8 +436,8 @@ class GetBasicProductsDefault(BaseOperation):
                     smooth_vldr.resolution = res
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_vldr)
+                    del res_vlrd
             vldr = None
-            del res_vlrd
 
     def single_products_quality_control(self):
         self.logger.info('quality control of individual basic products')

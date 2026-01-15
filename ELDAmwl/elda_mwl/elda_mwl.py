@@ -8,6 +8,7 @@ from ELDAmwl.bases.base import Params
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.component.interface import IDataStorage
 from ELDAmwl.component.interface import IParams
+from ELDAmwl.depol.pldr.params import PLDRParams
 from ELDAmwl.depol.vldr.params import VLDRParams
 from ELDAmwl.elda_mwl.get_basic_products import GetBasicProducts
 from ELDAmwl.elda_mwl.get_derived_products import GetDerivedProducts
@@ -49,8 +50,8 @@ PARAM_CLASSES = {RBSC: RamanBscParams,
                  EXT: ExtinctionParams,
                  LR: LidarRatioParams,
                  AE: AngstroemExpParams,
-                 VLDR: VLDRParams}
-
+                 VLDR: VLDRParams,
+                 PLDR: PLDRParams}
 
 @zope.interface.implementer(IParams)
 class MeasurementParams(Params):

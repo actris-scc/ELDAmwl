@@ -3,6 +3,7 @@ from sqlalchemy import Column
 from sqlalchemy import DateTime
 from sqlalchemy import FLOAT
 from sqlalchemy import INTEGER
+from sqlalchemy import DECIMAL
 from sqlalchemy import String
 from sqlalchemy import text
 
@@ -146,4 +147,50 @@ class PolarizationCalibrationCorrectionFactors(Base):
         FLOAT,
         nullable=False,
         server_default=text("'0.0'"),
+    )
+
+
+class PLDROption(Base):
+    """content of the db table pldr_options
+
+    """
+
+    __tablename__ = 'pldr_options'
+
+    ID = Column(
+        INTEGER,
+        primary_key=True,
+    )
+    product_id = Column(
+        '_product_ID',
+        INTEGER,
+        nullable=False,
+        server_default=text("'-1'"),
+    )
+    vldr_options_product_id = Column(
+        '_vldr_product_ID',
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'"),
+    )
+    backscatter_options_product_id = Column(
+        '_bsc_product_ID',
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'"),
+    )
+    error_method_id = Column(
+        '_error_method_ID',
+        INTEGER,
+        nullable=False,
+        index=True,
+        server_default=text("'-1'"),
+    )
+    min_BscRatio_for_LR = Column(
+        'min_BscRatio_for_PLDR',
+        DECIMAL(10, 4),
+        nullable=False,
+        server_default=text("'1.0000'"),
     )

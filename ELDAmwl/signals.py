@@ -242,6 +242,8 @@ class Signals(Columns):
             new.pol_calibr = None
         else:
             new.pol_calibr = self.pol_calibr.copy()
+        if 'mol_depolarization_ratio' in self.ds:
+            new.ds['mol_depolarization_ratio'] = self.ds.mol_depolarization_ratio.copy(deep=True)
         new.raw_heightres = self.raw_heightres.copy()
         new.num_scan_angles = self.num_scan_angles
         new.station_altitude = self.station_altitude.copy(deep=True)

@@ -7,7 +7,7 @@ class LidarRatios(Products):
     """
     @classmethod
     def init(cls, ext, bsc, p_params, resolution, **kwargs):
-        """calculates LidarRatios from a backscatter and an extinction profile.
+        """creates an empty instance of LidarRatios with meta data copied from a backscatter and an extinction profile.
 
         Args:
             bsc (Backscatters): time series of backscatter coefficient profiles

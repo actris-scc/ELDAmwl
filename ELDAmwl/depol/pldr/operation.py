@@ -1,4 +1,7 @@
+import numpy as np
 from addict import Dict
+
+from ELDAmwl.backscatter.bsc_ratio.product import BackscatterRatios
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IMonteCarlo
@@ -6,7 +9,7 @@ from ELDAmwl.component.interface import IPLDROp
 from ELDAmwl.component.registry import registry
 from ELDAmwl.depol.pldr.product import PLDRs
 from ELDAmwl.depol.pldr.tools.operation import CalcPLDRProfile
-from ELDAmwl.utils.constants import MC
+from ELDAmwl.utils.constants import MC, CALC_WINDOW_OUTSIDE_PROFILE, P_ALL_OK
 
 import zope
 
@@ -28,7 +31,7 @@ class PLDRFactory(BaseOperationFactory):
     def get_classname_from_db(self):
         """read from database (or other sources) which class to create
 
-        Returns: always "PLRDFactoryDefault"
+        Returns: always "PLDRFactoryDefault"
 
         """
         return PLDRFactoryDefault.__name__
@@ -58,33 +61,27 @@ class PLDRFactoryDefault(BaseOperation):
         self.resolution = self.kwargs['resolution']
         self.prod_id = self.param.prod_id_str
 
-        # if not self.param.includes_product_merging():
-        #     self.transm_sig = self.data_storage.prepared_signal(
-        #         self.param.prod_id_str,
-        #         self.param.transm_sig_id_str,
-        #         self.resolution)
-        #     self.refl_sig = self.data_storage.prepared_signal(
-        #         self.param.prod_id_str,
-        #         self.param.refl_sig_id_str,
-        #         self.resolution)
-        #
-        #     self.param.add_params_from_signal(self.transm_sig)
-        #     self.param.add_params_from_signal(self.refl_sig)
-        #
-        # self.sig_ratio = Signals.as_sig_ratio(self.refl_sig, self.transm_sig)
-        #
+        # vldr and bsc are deepcopies from the data storage
+        self.vldr = self.data_storage.basic_product_qc(self.param.vldr_prod_id, self.resolution)
+        self.bsc = self.data_storage.basic_product_qc(self.param.bsc_prod_id, self.resolution)
+
         self.empty_pldr = PLDRs.init(
-            self.vldr, self.bsc, self.param)
+            self.vldr, self.param, self.resolution)
 
     def get_non_merge_product(self):
 
+        # create Dict with all params which are needed for the calculation
+        pldr_params = Dict({
+            'error_method': self.param.error_method,
+            'min_bsc_ratio': self.param.min_BscRatio,
+        })
+
         pldr_retrieval_routine = CalcPLDR()(
-            pldr_params=self.param,
-            calc_routine=CalcPLDRProfile()(prod_id=self.prod_id),
+            prod_id=self.prod_id,
             vldr=self.vldr,
             bsc=self.bsc,
-            empty_pldr=self.empty_pldr,
-        )
+            pldr_params=pldr_params,
+            empty_pldr=self.empty_pldr,)
         pldr = pldr_retrieval_routine.run()
 
         if self.param.error_method == MC:
@@ -126,7 +123,6 @@ class CalcPLDR(BaseOperationFactory):
 
     Keyword Args:
         pldr_params (`.PLDRParams`): retrieval parameter of the PLDR product
-        calc_routine (`.BaseOperation`): result of `.CalcPLDRProfile`
         vldr (`.VLDRs`): volume linear depolarization ratio
         bsc (`.Backscatters`): particle backscatter coefficient
         empty_pldr (`.PLDRs`): instance of PLDRs which has all meta data but profile data are empty arrays
@@ -140,10 +136,10 @@ class CalcPLDR(BaseOperationFactory):
 
     def __call__(self, **kwargs):
         assert 'pldr_params' in kwargs
-        assert 'calc_routine' in kwargs
         assert 'vldr' in kwargs
         assert 'bsc' in kwargs
         assert 'empty_pldr' in kwargs
+        res = super(CalcPLDR, self).__call__(**kwargs)
 
         res = super(CalcPLDR, self).__call__(**kwargs)
         return res
@@ -165,7 +161,6 @@ class CalcPLDRDefault(BaseOperation):
     Keyword Args:
         pldr_params (`.PLDRParams`): \
                 retrieval parameter of the PLDR product
-        calc_routine (`.BaseOperation`): result of `.CalcPLDRProfile`
         vldr (`.VLDRs`): volume depolarization ratio
         bsc (`.Backscaters`): particle backscatter coefficient
         empty_pldr (`.PLDRs`): \
@@ -178,63 +173,65 @@ class CalcPLDRDefault(BaseOperation):
 
     name = 'CalcPLDRDefault'
 
-    pldr_params = None
     vldr = None
     bsc = None
-    calc_routine = None
     result = None
+    resolution = None
 
     def __init__(self, **kwargs):
         super(CalcPLDRDefault, self).__init__(**kwargs)
         self.vldr = self.kwargs['vldr']
         self.bsc = self.kwargs['bsc']
-        self.calc_routine = self.kwargs['calc_routine']
-        self.pldr_params = self.kwargs['pldr_params']
         self.result = self.kwargs['empty_pldr'].copy()
 
-    def run(self, data=None):
-        r""" collects all parameters for PLDR calculation and run the calculator class `.CalcPLDRProfile`.
+    def run(self, vldr=None, bsc=None):
+        """         run the pldr calculation
 
-        The the optional keyword arg 'data' allows to feed new svldr and bsc into
+        The the optional keyword args 'vldr' and 'bsc' allow to feed new input data into
         an existing instance of CalcPLDRDefault and run a new calculation.
         This feature is used e.g., for Monte-Carlo error retrievals
 
-        Note: Even if this class does not do much, it is necessary for the MC infrastructure.
-
-        The following parameters are collected for the retrieval
-
         Keyword Args:
-            data (`.Signals`): signal ratios, default=None
+            vldr (:class:`ELDAmwl.extinction.product.VLDRs`): VLDR profiles, default=None
+            bsc (:class:`ELDAmwl.backscatter.raman.product.Backscatters`): particle backscatter profiles, default=None
 
         Returns:
-            `.PLDRs`: profiles of particle linear depolarization ratios
+            profiles of PLDR (:class:`ELDAmwl.lidar_ratio.product.LidarRatios`)
 
         """
-        if data is None:
-            data = self.sig_ratio
+        if vldr is None:
+            vldr = self.vldr
+        if bsc is None:
+            bsc = self.bsc
 
-        # extract relevant parameter for calculation of VLDR into Dict
+        # bsc_ratio = BackscatterRatios.from_bsc(bsc)
+        bsc_ratio = self.data_storage.basic_product_common_smooth(bsc.params.prod_id_bsc_ratio_str, vldr.resolution)
+        rayl_depol = vldr.ds['molecular_depolarization_ratio']
 
-        # params = Dict({'gain_ratio': data.pol_calibr.gain_factor.value,
-        #                'gain_ratio_correction': data.pol_calibr.gain_factor_correction.value,
-        #                'HT': self.vldr_params.crosstalk_h_transm,
-        #                'HR': self.vldr_params.crosstalk_h_refl,
-        #                'GT': self.vldr_params.crosstalk_g_transm,
-        #                'GR': self.vldr_params.crosstalk_g_refl,
-        #                'sys_err_lower_bound_a': self.vldr_params.depol_uncertainty_params.a_lower,
-        #                'sys_err_lower_bound_b': self.vldr_params.depol_uncertainty_params.b_lower,
-        #                'sys_err_lower_bound_c': self.vldr_params.depol_uncertainty_params.c_lower,
-        #                'sys_err_upper_bound_a': self.vldr_params.depol_uncertainty_params.a_upper,
-        #                'sys_err_upper_bound_b': self.vldr_params.depol_uncertainty_params.b_upper,
-        #                'sys_err_upper_bound_c': self.vldr_params.depol_uncertainty_params.c_upper,
-        #                })
-        #
-        # # todo: propagate systematic errors through all operations, smoothing etc.
-        # self.result.ds = self.calc_routine.run(
-        #     sigratio=data.ds,
-        #     depol_params=params)
-        # self.result.profile_qf = data.profile_qf.copy(deep=True)
-        #
+        a = rayl_depol + 1
+        b = vldr.data + 1
+        denom = a * bsc_ratio.data - b
+        self.result.ds['data'] = (a * vldr.data * bsc_ratio.data - b * rayl_depol) / denom
+        self.result.ds['err'] = self.result.data * bsc_ratio.rel_err + self.result.data * vldr.rel_err
+#
+#     a := 1 + aRaylDepol[bin];
+#     b := 1 + VLDR.data[bin];
+#     denom := a * R - (1 + VLDR.data[bin]);
+#     self.Data[bin] := (a * VLDR.data[bin] * R - b * aRaylDepol[bin]) / (denom);
+#
+# self.Err[bin] := self.Data[bin] * Rerr / R + self.Data[bin] * VLDR.relErr[bin];
+
+        # todo: propagate systematic errors through all operations, smoothing etc.
+        self.result.resolution = vldr.resolution
+        self.result.profile_qf = vldr.profile_qf | bsc.profile_qf
+        self.result.ds['qf'] = vldr.qf | bsc.qf
+
+        for t in np.where(self.result.profile_qf == P_ALL_OK)[0]:
+            lvb = min(vldr.last_valid_bin(t), bsc.last_valid_bin(t))
+            fvb = max(vldr.first_valid_bin(t), bsc.first_valid_bin(t))
+            self.result.ds.qf[t, lvb:] = self.result.ds.qf[t, lvb:] | CALC_WINDOW_OUTSIDE_PROFILE
+            self.result.ds.qf[t, :fvb] = self.result.ds.qf[t, :fvb] | CALC_WINDOW_OUTSIDE_PROFILE
+
         return self.result
 
 

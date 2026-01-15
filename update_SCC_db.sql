@@ -566,9 +566,9 @@ UPDATE `eldamwl_class_names` set classname = "FindBscCalibrWindowAsInELDA" where
 --* remove columns from table create a table polarization_calibration_correction_factors which are no longer needed
 --* ===================================================================================
 --*/
-ALTER TABLE polarization_calibration_correction_factors DROP COLUMN lowerbound_calculation_time;
-ALTER TABLE polarization_calibration_correction_factors DROP COLUMN upperbound_calculation_time;
-ALTER TABLE polarization_calibration_correction_factors DROP COLUMN K_calculation_time;
+--ALTER TABLE polarization_calibration_correction_factors DROP COLUMN lowerbound_calculation_time;
+--ALTER TABLE polarization_calibration_correction_factors DROP COLUMN upperbound_calculation_time;
+--ALTER TABLE polarization_calibration_correction_factors DROP COLUMN K_calculation_time;
 
 --/*
 --* ===================================================================================
@@ -591,15 +591,15 @@ ALTER TABLE polarization_calibration_correction_factors DROP COLUMN K_calculatio
 --* and set processor _id for all mwl products
 --* ===================================================================================
 --*/
-INSERT INTO `_product_types` (`ID`, `product_type`, `description`, `nc_file_id`, `processor_ID`, `is_mwl_only_product`, `is_in_mwl_products`, `is_basic_product`) VALUES
-(17, 'backscatter ratio', 'backscatter ratio', '', 0, 1, 0, 0);
-
-INSERT INTO `_scc_processor` (`ID`, `processor_name`) VALUES
-(4, 'ELDAmwl');
-
-UPDATE `_product_types` set `processor_ID`=4 where ID = 12;
-UPDATE `_product_types` set `processor_ID`=4 where ID = 13;
-UPDATE `_product_types` set `processor_ID`=4 where ID = 14;
-UPDATE `_product_types` set `processor_ID`=4 where ID = 15;
-UPDATE `_product_types` set `processor_ID`=4 where ID = 16;
-UPDATE `_product_types` set `processor_ID`=4 where ID = 17;
+--INSERT INTO `_product_types` (`ID`, `product_type`, `description`, `nc_file_id`, `processor_ID`, `is_mwl_only_product`, `is_in_mwl_products`, `is_basic_product`) VALUES
+--(17, 'backscatter ratio', 'backscatter ratio', '', 0, 1, 0, 0);
+--
+--INSERT INTO `_scc_processor` (`ID`, `processor_name`) VALUES
+--(4, 'ELDAmwl');
+--
+--UPDATE `_product_types` set `processor_ID`=4 where ID = 12;
+--UPDATE `_product_types` set `processor_ID`=4 where ID = 13;
+--UPDATE `_product_types` set `processor_ID`=4 where ID = 14;
+--UPDATE `_product_types` set `processor_ID`=4 where ID = 15;
+--UPDATE `_product_types` set `processor_ID`=4 where ID = 16;
+--UPDATE `_product_types` set `processor_ID`=4 where ID = 17;

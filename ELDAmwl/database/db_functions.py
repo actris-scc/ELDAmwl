@@ -17,7 +17,8 @@ from ELDAmwl.database.tables.backscatter import RamanBscMethod
 from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.channels import Telescopes
-from ELDAmwl.database.tables.depolarization import VLDROption, PolarizationCalibrationCorrectionFactors, VLDRMethod
+from ELDAmwl.database.tables.depolarization import VLDROption, PolarizationCalibrationCorrectionFactors, VLDRMethod, \
+    PLDROption
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
@@ -482,6 +483,29 @@ class DBFunc(DBUtils):
         method_id = self.read_elast_bsc_smooth_method_id(product_id)
         return self.read_usedbin_algorithm(method_id, SmoothMethod)
 
+    def read_pldr_params(self, product_id):
+        """ function to read options of a PLDR product from db.
+
+            This function reads from db with which parameters a
+            PLDR product shall be derived.
+
+            Args:
+                product_id (int): the id of the actual PLDR product
+
+            Returns:
+                `.PLDROption`: options
+
+            """
+        options = self.session.query(PLDROption)\
+            .filter(PLDROption.product_id == product_id)
+
+        if options.count() == 1:
+            return options[0]
+        else:
+            self.logger.error(
+                'wrong number of PLDR options ({0})'.format(options.count()),
+            )
+
     def read_lidar_ratio_params(self, product_id):
         """ function to read options of an lidar ratio product from db.
 
@@ -489,7 +513,7 @@ class DBFunc(DBUtils):
             lidar ratio product shall be derived.
 
             Args:
-                product_id (int): the id of the actual extinction product
+                product_id (int): the id of the actual lidar ratio product
 
             Returns:
                 ??: options
