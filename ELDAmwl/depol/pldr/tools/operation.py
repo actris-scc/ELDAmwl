@@ -6,49 +6,51 @@ from ELDAmwl.component.registry import registry
 from numpy import square as sqr
 
 
-class CalcPldrDefault(BaseOperation):
-    """class for numerical calculations of PLDR profiles according to the method described in
-
+class CalcPLDRProfileDefault(BaseOperation):
+    """class for numerical calculations of PLDR profiles according to the method described in ?
 
     Keyword Args:
         ~: the same as for `.CalcPLDRProfile`
 
     """
 
-    name = 'CalcPldrDefault'
-    sigratio = None
+    name = 'CalcPLDRProfileDefault'
+    vldr = None
+    rayl_depol = None
+    bsc_ratio = None
     depol_params = None
 
     def run(self, **kwargs):
-        r"""calculates PLDR profile :math:`\delta (z)`
+        r"""calculates PLDR profile :math:`\delta^{par}(t,z)`
 
-        from reflected and transmitted signals :math:`\widetilde{P_r}(t,z)` and :math:`\widetilde{P_t}(t,z)`
-
-        The incoming signal ratio must be calculated from signals prepared with `.PrepareDepolSignals` before.
+        from VLDR :math:`\delta(t,z)`, molecular linear depolarization ratio :math:`\delta^{mol}(t,z)`,
+        particle backscatter coefficient :math:`\beta^{par}(t,z)`, and
+        backscatter ratio :math:`R(t,z) = 1 + \frac{\beta^{par}(t,z)}{\beta^{mol}(t,z)}`
 
         The retrieval has the following steps:
 
-        * the calibrated signal ratio :math:`\delta^*(z)` is derived from the signal ratio :math:`R(z)`
+        * we define terms :math:`a`, :math:`b`, and :math:`d` (denominator)
 
         .. math::
-            \delta^*(z) &= R(z) \: \frac{K}{\eta^*}
-                         = \frac{\widetilde{P_r}(z)}{\widetilde{P_t}(z)} \: \frac{K}{\eta^*} \\
-            \Delta\delta^*(z) &= \Delta R(z) \: \frac{K}{\eta^*}\\
+            m(z) &= 1 + \delta^{mol}(z) \\
+            v(z) &= 1 + \delta(z) \\
+            d(z) &= m(z) \: R(z) - v(z) \\
 
-        * the VLDR :math:`\delta(z)` is
-
-        .. math::
-            \delta(z) &= \frac{\delta^*(z) \bigl( G_t + H_t \bigr) - \bigl( G_r + H_r \bigr) }
-                              {\bigl( G_r - H_r \bigr) - \delta^*(z) \bigl( G_t - H_t \bigr)} \\
-                      &= \frac{\delta^*(z) a - b }
-                              {c - \delta^*(z) d} \\
-
-        * the statistical uncertainty is:
+        * the PLDR :math:`\delta^{par}(z)` is
 
         .. math::
-            \Delta\delta(z) &= \Biggl\lvert\frac{\delta^*(z) a (1 - d) - b d + a c}
-                                     { \bigl( c - \delta^*(z)d\bigr)^2} \:
-                                     \Delta\delta^*(z) \Biggr\rvert\\
+            \delta^{par}(z) &= \frac{ m(z) \: \delta(z) \: R(z) - v \: \delta^{mol}(t,z) }
+                                    { m(z) \: R(z) - b} \\
+
+        * the statistical uncertainty (for easier reading we omit z) is:
+
+        .. math::
+            \Delta\delta^{par} &= \sqrt{
+                                  \Biggl\frac{ m\:v(\delta^{mol} - \delta)}
+                                             { d^2} \Delta R \Biggr ^2 \:
+                                  \Biggl\frac{m^2 (R^2 - R) +2\:v\delta^{mol}}
+                                             {d^2} \Delta \delta \Biggr ^2
+                                       }\\
 
         * while the lower and upper bound of the systematic uncertainty are:
 
@@ -57,15 +59,25 @@ class CalcPldrDefault(BaseOperation):
             \Delta\delta_{up}(z) &= a_{up} + b_{up}\delta(z) + c_{up}\delta^2(z) \\
 
         Keyword Args:
-            sigratio (xarray.DataSet): already smoothed signal ratio with data_vars:
+            vldr (xarray.DataSet): volume linear depolarization ratio with data_vars:
 
-                * 'data' :math:`R = \frac{P_r}{P_t}` = ratio of reflected to transmitted signals
+                * 'data' :math:`\delta` = volume linear depolarization ratio
+
+                * 'error' :math:`\Delta\delta` = statistical absolute uncertainty of :math:`\delta`
+
+                * 'qf', 'binres' = quality flag and bin resolution of :math:`\delta` (not used here)
+
+                * 'molecular_depolarization_ratio' :math:`\delta^{mol}` = molecular linear depolarization ratio
+
+                * and others (not used here)
+
+            bsc_ratio (xarray.DataSet): backscatter ratio with data_vars:
+
+                * 'data' :math:`R(t,z) = 1 + \frac{\beta^{par}(t,z)}{\beta^{mol}(t,z)}` = backscatter ratio
 
                 * 'error' :math:`\Delta R` = statistical absolute uncertainty of :math:`R`
 
                 * 'qf', 'binres' = quality flag and bin resolution of :math:`R` (not used here)
-
-                * 'molecular_depolarization_ratio' (not used here)
 
                 * and others (not used here)
 
@@ -82,59 +94,57 @@ class CalcPldrDefault(BaseOperation):
                 * 'sys_err_upper_bound_a', 'sys_err_upper_bound_b', 'sys_err_upper_bound_c' = Parameters to calculate the upper bound of the systematic error (:math:`a_{up}`, :math:`b_{up}`, :math:`c_{up}`)  # noqa E501
 
             Returns:
-                VLDR profile (xarray.DataSet) with calculated data_vars:
+                PLDR profile (xarray.DataSet) with calculated data_vars:
 
-                * 'data' = :math:`\delta(z)`
+                * 'data' = :math:`\delta^{par}(z)`
 
-                * 'error' = :math:`\Delta\delta(z)`
+                * 'error' = :math:`\Delta\delta^{par}(z)`
 
-                * 'sys_err_neg', 'sys_err_pos' = :math:`\Delta\delta_{low}(z)`, :math:`\Delta\delta_{up}(z)`
+                * 'sys_err_neg', 'sys_err_pos' = :math:`\Delta\delta^{par}_{low}(z)`, :math:`\Delta\delta^{par}_{up}(z)`
 
                 * all other variables and attributes are copied from sigratio
         """
-        assert 'sigratio' in kwargs
+        assert 'vldr' in kwargs
+        assert 'bsc_ratio' in kwargs
         assert 'depol_params' in kwargs
 
-        sigratio = kwargs['sigratio']
+        vldr = kwargs['vldr'].data
+        vldr_err = kwargs['vldr'].error
+        mldr = kwargs['vldr'].molecular_depolarization_ratio
         depol_params = kwargs['depol_params']
 
-        # 1) calculate calibrated signal ratio
+        R = kwargs['bsc_ratio'].data
+        R_err = kwargs['bsc_ratio'].error
+        kwargs['bsc_ratio'] = R.error
 
-        calibr_factor = depol_params.gain_ratio_correction / depol_params.gain_ratio
+        # 1) calculate m, v, d
+        m = 1 + mldr
+        v = 1 + vldr
+        d = m * R - v
 
-        calibrated_sigratio = sigratio.data * calibr_factor
-        calibrated_sigratio_err = sigratio.err * calibr_factor
+        # 1) PLDR
+        pldr_data = (m * vldr * R - v * mldr) / d
 
-        # 2) calculate volume depolarization ratio
-        a = depol_params.GT + depol_params.HT
-        b = depol_params.GR + depol_params.HR
-        c = depol_params.GR - depol_params.HR
-        d = depol_params.GT - depol_params.HT
+        # 2) calculate statistical error
+        err_from_R = (m * v * (mldr - vldr)) / d**2 * R_err
+        err_from_vldr = (m**2 * (R**2 - R) + 2 * v * mldr) / d**2 * vldr_err
+        pldr_err = np.sqrt(err_from_R**2 + err_from_vldr**2)
 
-        vldr_data = (calibrated_sigratio * a - b) / (c - calibrated_sigratio * d)
+        pldr = vldr.copy(deep=True)
+        pldr['data'] = pldr_data
 
-        vldr_data_sqr = sqr(vldr_data)
-
-        vldr = sigratio.copy()
-        vldr['data'] = vldr_data
-
-        vldr['err'] = np.absolute(
-            (calibrated_sigratio * a * (1 - d) - b * d + a * c) / sqr(c - d * calibrated_sigratio)
-            * calibrated_sigratio_err)
+        pldr['err'] = pldr_err
 
         # 3) calculate systematic errors
-        vldr['sys_err_neg'] = depol_params.sys_err_lower_bound_a \
-            + depol_params.sys_err_lower_bound_b * vldr_data \
-            + depol_params.sys_err_lower_bound_c * vldr_data_sqr
+        # vldr['sys_err_neg'] = depol_params.sys_err_lower_bound_a \
+        #     + depol_params.sys_err_lower_bound_b * vldr_data \
+        #     + depol_params.sys_err_lower_bound_c * vldr_data_sqr
+        #
+        # vldr['sys_err_pos'] = depol_params.sys_err_upper_bound_a \
+        #     + depol_params.sys_err_upper_bound_b * vldr_data \
+        #     + depol_params.sys_err_upper_bound_c * vldr_data_sqr
 
-        vldr['sys_err_pos'] = depol_params.sys_err_upper_bound_a \
-            + depol_params.sys_err_upper_bound_b * vldr_data \
-            + depol_params.sys_err_upper_bound_c * vldr_data_sqr
-
-        # todo: test if the mol depol is available here
-        vldr['molecular_depolarization_ratio'] = sigratio['mol_depolarization_ratio']
-
-        return vldr
+        return pldr
 
 
 class CalcPLDRProfile(BaseOperationFactory):
@@ -172,5 +182,5 @@ class CalcPLDRProfile(BaseOperationFactory):
 
 
 registry.register_class(CalcPLDRProfile,
-                        CalcPldrDefault.__name__,
-                        CalcPldrDefault)
+                        CalcPLDRProfileDefault.__name__,
+                        CalcPLDRProfileDefault)

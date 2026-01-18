@@ -14,7 +14,7 @@ from ELDAmwl.utils.constants import MC, CALC_WINDOW_OUTSIDE_PROFILE, P_ALL_OK
 import zope
 
 class PLDRFactory(BaseOperationFactory):
-    """creates a factory for the retrieval of PLDR profiles.
+    r"""creates a factory for the retrieval of PLDR profiles.
 
     in this case, it always returns an instance of `.PLRDFactoryDefault`
 
@@ -38,7 +38,7 @@ class PLDRFactory(BaseOperationFactory):
 
 
 class PLDRFactoryDefault(BaseOperation):
-    """ a factory class that derives a single instance of `.PLDRs` .
+    r""" a factory class that derives a single instance of `.PLDRs` .
 
     This factory class handles the different use cases.
 
@@ -77,10 +77,10 @@ class PLDRFactoryDefault(BaseOperation):
         })
 
         pldr_retrieval_routine = CalcPLDR()(
-            prod_id=self.prod_id,
+            pldr_params=pldr_params,
+            calc_routine=CalcPLDRProfile()(prod_id=self.prod_id),
             vldr=self.vldr,
             bsc=self.bsc,
-            pldr_params=pldr_params,
             empty_pldr=self.empty_pldr,)
         pldr = pldr_retrieval_routine.run()
 
@@ -113,7 +113,7 @@ class PLDRFactoryDefault(BaseOperation):
 
 
 class CalcPLDR(BaseOperationFactory):
-    """
+    r"""
     creates a Class for the calculation of an instance of `.PLDRs`.
 
     Returns an instance of `.BaseOperation` which calculates the particle linear depolarization ratio
@@ -123,6 +123,7 @@ class CalcPLDR(BaseOperationFactory):
 
     Keyword Args:
         pldr_params (`.PLDRParams`): retrieval parameter of the PLDR product
+        calc_routine (`.BaseOperation`): result of `.CalcPLDRProfile`
         vldr (`.VLDRs`): volume linear depolarization ratio
         bsc (`.Backscatters`): particle backscatter coefficient
         empty_pldr (`.PLDRs`): instance of PLDRs which has all meta data but profile data are empty arrays
@@ -136,6 +137,7 @@ class CalcPLDR(BaseOperationFactory):
 
     def __call__(self, **kwargs):
         assert 'pldr_params' in kwargs
+        assert 'calc_routine' in kwargs
         assert 'vldr' in kwargs
         assert 'bsc' in kwargs
         assert 'empty_pldr' in kwargs
@@ -154,13 +156,13 @@ class CalcPLDR(BaseOperationFactory):
 
 @zope.interface.implementer(IPLDROp)
 class CalcPLDRDefault(BaseOperation):
-    """Calculates PLDRs from the volume linear depolarization and particle backscatter.
+    r"""Calculates PLDRs from the volume linear depolarization and particle backscatter.
 
     The result is a copy of empty_pldr, but its dataset (data, err, qf) is filled with the calculated values
 
     Keyword Args:
-        pldr_params (`.PLDRParams`): \
-                retrieval parameter of the PLDR product
+        pldr_params (`.PLDRParams`): retrieval parameter of the PLDR product
+        calc_routine (`.BaseOperation`): result of `.CalcPLDRProfile`
         vldr (`.VLDRs`): volume depolarization ratio
         bsc (`.Backscaters`): particle backscatter coefficient
         empty_pldr (`.PLDRs`): \
@@ -173,23 +175,32 @@ class CalcPLDRDefault(BaseOperation):
 
     name = 'CalcPLDRDefault'
 
+    calc_routine = None
     vldr = None
+    rayl_depol = None
     bsc = None
+    bsc_ratio = None
     result = None
     resolution = None
 
     def __init__(self, **kwargs):
         super(CalcPLDRDefault, self).__init__(**kwargs)
+        self.calc_routine = self.kwargs['calc_routine']
         self.vldr = self.kwargs['vldr']
+        self.rayl_depol = self.vldr.ds['molecular_depolarization_ratio'].copy(deep=True)
         self.bsc = self.kwargs['bsc']
+        self.bsc_ratio = self.data_storage.basic_product_common_smooth(self.bsc.params.prod_id_bsc_ratio_str,
+                                                                      self.vldr.resolution)
         self.result = self.kwargs['empty_pldr'].copy()
+
 
     def run(self, vldr=None, bsc=None):
         """         run the pldr calculation
 
         The the optional keyword args 'vldr' and 'bsc' allow to feed new input data into
         an existing instance of CalcPLDRDefault and run a new calculation.
-        This feature is used e.g., for Monte-Carlo error retrievals
+        This feature is used e.g., for Monte-Carlo error retrievals.
+        If no keeword parameters are provided, the calculation runs with the data that were provided for init()
 
         Keyword Args:
             vldr (:class:`ELDAmwl.extinction.product.VLDRs`): VLDR profiles, default=None
@@ -203,10 +214,32 @@ class CalcPLDRDefault(BaseOperation):
             vldr = self.vldr
         if bsc is None:
             bsc = self.bsc
+            bsc_ratio = self.bsc_ratio
+        else:
+            bsc_ratio = BackscatterRatios.from_bsc(bsc)
 
-        # bsc_ratio = BackscatterRatios.from_bsc(bsc)
-        bsc_ratio = self.data_storage.basic_product_common_smooth(bsc.params.prod_id_bsc_ratio_str, vldr.resolution)
-        rayl_depol = vldr.ds['molecular_depolarization_ratio']
+        # # extract relevant parameter for calculation of PLDR into Dict
+        #
+        params = Dict({})
+        # params = Dict({'gain_ratio': data.pol_calibr.gain_factor.value,
+        #                'gain_ratio_correction': data.pol_calibr.gain_factor_correction.value,
+        #                'HT': self.vldr_params.crosstalk_h_transm,
+        #                'HR': self.vldr_params.crosstalk_h_refl,
+        #                'GT': self.vldr_params.crosstalk_g_transm,
+        #                'GR': self.vldr_params.crosstalk_g_refl,
+        #                'sys_err_lower_bound_a': self.vldr_params.depol_uncertainty_params.a_lower,
+        #                'sys_err_lower_bound_b': self.vldr_params.depol_uncertainty_params.b_lower,
+        #                'sys_err_lower_bound_c': self.vldr_params.depol_uncertainty_params.c_lower,
+        #                'sys_err_upper_bound_a': self.vldr_params.depol_uncertainty_params.a_upper,
+        #                'sys_err_upper_bound_b': self.vldr_params.depol_uncertainty_params.b_upper,
+        #                'sys_err_upper_bound_c': self.vldr_params.depol_uncertainty_params.c_upper,
+        #                })
+
+
+        self.result.ds = self.calc_routine.run(
+            vldr=vldr.ds,
+            bsc_ratio=bsc_ratio.ds,
+            depol_params=params)
 
         a = rayl_depol + 1
         b = vldr.data + 1
