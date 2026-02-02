@@ -5,7 +5,7 @@ from ELDAmwl.backscatter.bsc_ratio.product import BackscatterRatios
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.interface import IMonteCarlo
-from ELDAmwl.component.interface import IPLDROp
+# from ELDAmwl.component.interface import IPLDROp
 from ELDAmwl.component.registry import registry
 from ELDAmwl.depol.pldr.product import PLDRs
 from ELDAmwl.depol.pldr.tools.operation import CalcPLDRProfile
@@ -84,12 +84,12 @@ class PLDRFactoryDefault(BaseOperation):
             empty_pldr=self.empty_pldr,)
         pldr = pldr_retrieval_routine.run()
 
-        if self.param.error_method == MC:
-            adapter = zope.component.getAdapter(pldr_retrieval_routine, IMonteCarlo)
-            pldr.err[:] = adapter(self.param.mc_params)
-        else:
-            pldr = pldr
-
+        # if self.param.error_method == MC:
+        #     adapter = zope.component.getAdapter(pldr_retrieval_routine, IMonteCarlo)
+        #     pldr.err[:] = adapter(self.param.mc_params)
+        # else:
+        #     pldr = pldr
+        #
         del self.vldr
         del self.bsc
         del self.empty_pldr
@@ -141,7 +141,6 @@ class CalcPLDR(BaseOperationFactory):
         assert 'vldr' in kwargs
         assert 'bsc' in kwargs
         assert 'empty_pldr' in kwargs
-        res = super(CalcPLDR, self).__call__(**kwargs)
 
         res = super(CalcPLDR, self).__call__(**kwargs)
         return res
@@ -154,7 +153,7 @@ class CalcPLDR(BaseOperationFactory):
         return 'CalcPLDRDefault'
 
 
-@zope.interface.implementer(IPLDROp)
+# @zope.interface.implementer(IPLDROp)
 class CalcPLDRDefault(BaseOperation):
     r"""Calculates PLDRs from the volume linear depolarization and particle backscatter.
 
@@ -175,9 +174,10 @@ class CalcPLDRDefault(BaseOperation):
 
     name = 'CalcPLDRDefault'
 
+    calc_param = None
     calc_routine = None
     vldr = None
-    rayl_depol = None
+    # rayl_depol = None
     bsc = None
     bsc_ratio = None
     result = None
@@ -185,9 +185,10 @@ class CalcPLDRDefault(BaseOperation):
 
     def __init__(self, **kwargs):
         super(CalcPLDRDefault, self).__init__(**kwargs)
+        self.calc_param = kwargs['pldr_params']
         self.calc_routine = self.kwargs['calc_routine']
         self.vldr = self.kwargs['vldr']
-        self.rayl_depol = self.vldr.ds['molecular_depolarization_ratio'].copy(deep=True)
+        # self.rayl_depol = self.vldr.ds['molecular_depolarization_ratio'].copy(deep=True)
         self.bsc = self.kwargs['bsc']
         self.bsc_ratio = self.data_storage.basic_product_common_smooth(self.bsc.params.prod_id_bsc_ratio_str,
                                                                       self.vldr.resolution)
@@ -203,11 +204,11 @@ class CalcPLDRDefault(BaseOperation):
         If no keeword parameters are provided, the calculation runs with the data that were provided for init()
 
         Keyword Args:
-            vldr (:class:`ELDAmwl.extinction.product.VLDRs`): VLDR profiles, default=None
-            bsc (:class:`ELDAmwl.backscatter.raman.product.Backscatters`): particle backscatter profiles, default=None
+            vldr (:class:`ELDAmwl.depol.vldr.product.VLDRs`): VLDR profiles, default=None
+            bsc (:class:`ELDAmwl.backscatter.common.product.Backscatters`): particle backscatter profiles, default=None
 
         Returns:
-            profiles of PLDR (:class:`ELDAmwl.lidar_ratio.product.LidarRatios`)
+            profiles of PLDR (:class:`ELDAmwl.lidar_ratio.product.PLDRs`)
 
         """
         if vldr is None:
@@ -218,41 +219,39 @@ class CalcPLDRDefault(BaseOperation):
         else:
             bsc_ratio = BackscatterRatios.from_bsc(bsc)
 
-        # # extract relevant parameter for calculation of PLDR into Dict
-        #
-        params = Dict({})
-        # params = Dict({'gain_ratio': data.pol_calibr.gain_factor.value,
-        #                'gain_ratio_correction': data.pol_calibr.gain_factor_correction.value,
-        #                'HT': self.vldr_params.crosstalk_h_transm,
-        #                'HR': self.vldr_params.crosstalk_h_refl,
-        #                'GT': self.vldr_params.crosstalk_g_transm,
-        #                'GR': self.vldr_params.crosstalk_g_refl,
-        #                'sys_err_lower_bound_a': self.vldr_params.depol_uncertainty_params.a_lower,
-        #                'sys_err_lower_bound_b': self.vldr_params.depol_uncertainty_params.b_lower,
-        #                'sys_err_lower_bound_c': self.vldr_params.depol_uncertainty_params.c_lower,
-        #                'sys_err_upper_bound_a': self.vldr_params.depol_uncertainty_params.a_upper,
-        #                'sys_err_upper_bound_b': self.vldr_params.depol_uncertainty_params.b_upper,
-        #                'sys_err_upper_bound_c': self.vldr_params.depol_uncertainty_params.c_upper,
-        #                })
+        params = Dict({'calc_stat_err': ~ (self.calc_param.error_method == MC),
+                       })
 
-
+        # calculate PLDR data
         self.result.ds = self.calc_routine.run(
             vldr=vldr.ds,
             bsc_ratio=bsc_ratio.ds,
-            depol_params=params)
+            calc_params=params,
+            )
 
-        a = rayl_depol + 1
-        b = vldr.data + 1
-        denom = a * bsc_ratio.data - b
-        self.result.ds['data'] = (a * vldr.data * bsc_ratio.data - b * rayl_depol) / denom
-        self.result.ds['err'] = self.result.data * bsc_ratio.rel_err + self.result.data * vldr.rel_err
-#
-#     a := 1 + aRaylDepol[bin];
-#     b := 1 + VLDR.data[bin];
-#     denom := a * R - (1 + VLDR.data[bin]);
-#     self.Data[bin] := (a * VLDR.data[bin] * R - b * aRaylDepol[bin]) / (denom);
-#
-# self.Err[bin] := self.Data[bin] * Rerr / R + self.Data[bin] * VLDR.relErr[bin];
+        if vldr.has_sys_err:
+            # calculate systematic errors
+            vldr_max = vldr.copy()
+            vldr_max.ds['data'] = vldr.data + vldr.ds.sys_err_pos
+            pldr_max = self.calc_routine.run(
+                vldr=vldr_max.ds,
+                bsc_ratio=bsc_ratio.ds,
+                calc_params=params,
+                )
+            vldr_min = vldr.copy()
+            vldr_min.ds['data'] = vldr.data - vldr.ds.sys_err_neg
+            pldr_min = self.calc_routine.run(
+                vldr=vldr_min.ds,
+                bsc_ratio=bsc_ratio.ds,
+                calc_params=params,
+                )
+            self.result.ds['sys_err_pos'] = pldr_max.data - self.result.data
+            self.result.ds['sys_err_neg'] = self.result.data - pldr_min.data
+
+            del vldr_max
+            del vldr_min
+            del pldr_max
+            del pldr_min
 
         # todo: propagate systematic errors through all operations, smoothing etc.
         self.result.resolution = vldr.resolution

@@ -14,6 +14,7 @@ default:
 # mwl output file
 # :::::::::::::::::::
   FILE_FORMAT_VERSION : 1.0
+  WRITE_SYSTEMATIC_ERRORS: True
 
 # :::::::::::::::::::
 # Parallel processing

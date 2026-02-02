@@ -75,12 +75,12 @@ class LidarRatioFactoryDefault(BaseOperation):
 
         lr = lr_routine.run()
 
-        if self.param.error_method == MC:
-            adapter = zope.component.getAdapter(lr_routine, IMonteCarlo)
-            self.result.err[:] = adapter(self.param.mc_params)
-        else:
-            lr = lr
-
+        # if self.param.error_method == MC:
+        #     adapter = zope.component.getAdapter(lr_routine, IMonteCarlo)
+        #     lr.err[:] = adapter(self.param.mc_params)
+        # else:
+        #     lr = lr
+        #
         del self.ext
         del self.bsc
 

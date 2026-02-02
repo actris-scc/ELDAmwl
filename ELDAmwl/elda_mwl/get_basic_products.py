@@ -306,7 +306,7 @@ class GetBasicProductsDefault(BaseOperation):
                         res_bsc = bsc
 
                     smooth_bsc = res_bsc.copy()
-                    smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
+                    smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res), res=res)
                     smooth_bsc.resolution = res
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_bsc)
@@ -361,7 +361,7 @@ class GetBasicProductsDefault(BaseOperation):
                         else:
                             res_bsc = bsc
                         smooth_bsc = res_bsc.copy()
-                        smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res))
+                        smooth_bsc.smooth(self.data_storage.binres_common_smooth(prod_id, res), res=res)
                         smooth_bsc.resolution = res
                         self.data_storage.set_basic_product_common_smooth(
                             prod_id, res, smooth_bsc)
@@ -432,7 +432,7 @@ class GetBasicProductsDefault(BaseOperation):
                     else:
                         res_vlrd = vldr
                     smooth_vldr = res_vlrd.copy()
-                    smooth_vldr.smooth(self.data_storage.binres_common_smooth(prod_id, res))
+                    smooth_vldr.smooth(self.data_storage.binres_common_smooth(prod_id, res), res=res)
                     smooth_vldr.resolution = res
                     self.data_storage.set_basic_product_common_smooth(
                         prod_id, res, smooth_vldr)

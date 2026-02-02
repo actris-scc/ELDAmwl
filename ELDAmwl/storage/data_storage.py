@@ -3,6 +3,7 @@
 from addict import Dict
 from copy import deepcopy
 from ELDAmwl.component.interface import IDataStorage
+from ELDAmwl.component.interface import ILogger
 from ELDAmwl.errors.exceptions import DifferentCloudMaskExists, DifferentRawResolutionExists
 from ELDAmwl.errors.exceptions import NotFoundInStorage
 from ELDAmwl.products import Products
@@ -15,7 +16,6 @@ from zope import component
 import numpy as np
 import xarray as xr
 import zope
-
 
 @zope.interface.implementer(IDataStorage)
 class DataStorage:
@@ -31,6 +31,10 @@ class DataStorage:
     """
 
     name = 'Datastorage'
+
+    @property
+    def logger(self):
+        return component.queryUtility(ILogger)
 
     def __init__(self):
         self._mydata = Dict(
@@ -860,14 +864,22 @@ class DataStorage:
             :obj:'xarray.Dataset': deepcopy of the final product matrix
 
         """
-        try:
-            result = self._mydata.product_matrix[res][prod_type].copy(deep=True)
-            # result = deepcopy(self.__data.product_matrix[res][prod_type])
-        except NotFoundInStorage:
-            raise NotFoundInStorage('product matrix of type {0}'.format(prod_type),
-                                    'products with common smoothing with {0}'.format(RESOLUTION_STR[res]))
+        result = self._mydata.product_matrix[res][prod_type]
+        # if no entry is found in self._mydata -> the result is an empty Dict {}
 
-        return result
+        if isinstance(result, xr.Dataset):
+            return result.copy(deep=True)
+        else:
+            self.logger.warning(f'not found in storage: product matrix of type {prod_type} with {RESOLUTION_STR[res]}')
+            return None
+        # try:
+        #     result = self._mydata.product_matrix[res][prod_type].copy(deep=True)
+        #     # result = deepcopy(self.__data.product_matrix[res][prod_type])
+        # except:
+        #     raise NotFoundInStorage('product matrix of type {0}'.format(prod_type),
+        #                             'products with common smoothing with {0}'.format(RESOLUTION_STR[res]))
+        #
+        # return result
 
     def qc_product_matrix(self, prod_type, res):
         """ 3-dimensional (wavelength, time, altitude) quality controlled data matrix

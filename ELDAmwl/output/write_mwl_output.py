@@ -138,7 +138,7 @@ class WriteMWLOutputDefault(BaseOperation):
                         group_data.data_vars[var_name] = p_matrix.data
                         group_data.data_vars['error_{}'.format(var_name)] = p_matrix.absolute_statistical_uncertainty
                         group_data.data_vars['{}_meta_data'.format(var_name)] = p_matrix.meta_data
-                        if ptype in MWLFileStructure.PRODUCTS_WITH_SYS_ERROR:
+                        if (ptype in MWLFileStructure.PRODUCTS_WITH_SYS_ERROR) and self.cfg.FILE_FORMAT_VERSION:
                             group_data.data_vars['positive_systematic_error_{}'.format(var_name)] = \
                                 p_matrix.absolute_systematic_uncertainty_positive
                             group_data.data_vars['negative_systematic_error_{}'.format(var_name)] = \

@@ -15,7 +15,7 @@ class PLDRs(Products):
             p_params (`.PLDRParams`): retrieval params of the PLDR product
         """
         result = super(PLDRs, cls).from_signal(vldr, p_params, **kwargs)
-        result.has_sys_err = True
+        result.has_sys_err = vldr.has_sys_err
         result.resolution = resolution
 
         return result

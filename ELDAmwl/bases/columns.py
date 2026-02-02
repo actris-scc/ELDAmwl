@@ -14,7 +14,7 @@ class Columns(object):
     base column class (2 dimensional: (time, level))
     """
 
-    has_sys_err : bool = None
+    _has_sys_err : bool = None
     profile_qf : xr.DataArray = None
 
     def __init__(self):
@@ -38,7 +38,7 @@ class Columns(object):
         self.ds.load()
         self.station_altitude = None
 
-        self.has_sys_err = False
+        self._has_sys_err = False
 
     def copy(self, target=None):
         if target is None:
@@ -46,7 +46,7 @@ class Columns(object):
         else:
             new = target
         new.ds = self.ds.copy(deep=True)
-        new.has_sys_err = self.has_sys_err
+        new.has_sys_err = self._has_sys_err
         new.profile_qf = self.profile_qf.copy(deep=True)
         return new
 
@@ -141,6 +141,24 @@ class Columns(object):
     @property
     def is_negative(self):
         return self._is_negative()
+
+    @property
+    def has_sys_err(self):
+        if self._has_sys_err:
+            if 'sys_err_neg' in self.ds.keys():
+                if (np.isnan(self.ds.sys_err_neg).all() or
+                    np.isnan(self.ds.sys_err_pos).all()):
+                    return False
+                else:
+                    return True
+            else:
+                return False
+        else:
+            return False
+
+    @has_sys_err.setter
+    def has_sys_err(self, value):
+        self._has_sys_err = value
 
     @property
     def qf(self):

@@ -105,18 +105,18 @@ class VLDRParams(ProductParams):
         # VLDR for different measurement times. When creating the VLDR parameter,
         # the measurement time is not yet known.
         # therefore, read the H, G, and uncertainty parameters now with the start time of the signal
-        self.logger.debug('add depol parameters of signal {0} to VLDRParams'.format(int(signal.channel_ids)))
+        self.logger.debug(f'add depol parameters of signal {signal.channel_ids} to VLDRParams')
 
         if self.depol_uncertainty_params is None:
             self.depol_uncertainty_params = DepolUncertaintyParams.from_db(
                 self.general_params,
                 signal.ds.time[0].values)
 
-        if signal.channel_ids == self.refl_sig_id:
+        if (signal.channel_ids == self.refl_sig_id).all():
             self.crosstalk_g_refl = float(signal.g.value)
             self.crosstalk_h_refl = float(signal.h.value)
 
-        elif signal.channel_ids == self.transm_sig_id:
+        elif (signal.channel_ids == self.transm_sig_id).all():
             self.crosstalk_g_transm = float(signal.g.value)
             self.crosstalk_h_transm = float(signal.h.value)
         else:

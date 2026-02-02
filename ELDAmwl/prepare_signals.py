@@ -38,14 +38,14 @@ class PrepareSignalsForProductDefault(BaseOperation):
     def run(self):
         self.resolution = self.kwargs['resolution']
 
-        self.bsc_param = self.kwargs['prod_param']
-        pid = self.bsc_param.prod_id_str
-        self.logger.debug('prepare signals for backscatter product {}'.format(pid), prod_id=pid)
+        self.prod_param = self.kwargs['prod_param']
+        self.pid = self.prod_param.prod_id_str
+        self.logger.debug('prepare signals for product {}'.format(self.pid), prod_id=self.pid)
 
         self.check_data_already_exist()
         if self.data_already_exist:
             for sig in self.existing_signals:
-                self.data_storage.set_prepared_signal(pid, self.resolution, sig)
+                self.data_storage.set_prepared_signal(self.pid, self.resolution, sig)
 
 
 class PrepareBscSignalsDefault(PrepareSignalsForProductDefault):
@@ -81,17 +81,17 @@ class PrepareBscSignalsDefault(PrepareSignalsForProductDefault):
         del refl_sig
 
     def run(self):
-        self.bsc_param = self.kwargs['prod_param']
-        self.pid = self.bsc_param.prod_id_str
-        self.logger.debug('prepare signals for backscatter product {}'.format(self.pid), prod_id=self.pid)
-
         super(PrepareBscSignalsDefault, self).run()
+
+        self.bsc_param = self.prod_param
+        self.logger.debug(f'prepare signals for backscatter product {self.pid} with '
+                          f'{RESOLUTION_STR[self.resolution]} resolution', prod_id=self.pid)
 
         if not self.data_already_exist:
             # todo: prepare only the signals that are actually needed for the usecase
             # sig is a deepcopy from the data storage
-            for sig in self.data_storage.integrated_signals(self.pid, self.resolution):
-                prep_sig = sig.copy()
+            for prep_sig in self.data_storage.integrated_signals(self.pid, self.resolution):
+                # prep_sig = sig.copy()
                 prep_sig.set_valid_height_range(self.bsc_param.valid_alt_range)
                 prep_sig.normalize_by_shots()
                 if (self.bsc_param.product_type == EBSC) and (self.bsc_param.elast_bsc_algorithm == KF):
@@ -141,18 +141,18 @@ class PrepareExtSignalsDefault(PrepareSignalsForProductDefault):
     ext_param = None
 
     def run(self):
-        self.ext_param = self.kwargs['prod_param']
-        self.pid = self.ext_param.prod_id_str
-        self.logger.debug('prepare signals for extinction product {}'.format(self.pid))
-
         super(PrepareExtSignalsDefault, self).run()
+
+        self.ext_param = self.prod_param
+        self.logger.debug(f'prepare signals for extinction product {self.pid} with '
+                          f'{RESOLUTION_STR[self.resolution]} resolution', prod_id=self.pid)
 
         if not self.data_already_exist:
             # todo: prepare only the signals that are actually needed for the usecase
             # sig is deepcopy from data storage
-            for sig in self.data_storage.integrated_signals(self.pid, self.resolution):
-                if sig.is_Raman_sig:
-                    prep_sig = sig.copy()
+            for prep_sig in self.data_storage.integrated_signals(self.pid, self.resolution):
+                if prep_sig.is_Raman_sig:
+                    # prep_sig = sig.copy()
                     prep_sig.set_valid_height_range(self.ext_param.valid_alt_range)
                     prep_sig.normalize_by_shots()
                     prep_sig.correct_for_mol_transmission()
@@ -220,21 +220,22 @@ class PrepareDepolSignalsDefault(PrepareSignalsForProductDefault):
     depol_param = None
 
     def run(self):
-        self.depol_param = self.kwargs['prod_param']
-        self.pid = self.depol_param.prod_id_str
-        self.logger.debug('prepare signals for VLDR product {}'.format(self.pid))
-
         super(PrepareDepolSignalsDefault, self).run()
+
+        self.depol_param = self.prod_param
+        self.logger.debug(f'prepare signals for VLDR product {self.pid} with '
+                          f'{RESOLUTION_STR[self.resolution]} resolution', prod_id=self.pid)
 
         if not self.data_already_exist:
             # todo: prepare only the signals that are actually needed for the usecase
             # sig is deepcopy from data storage
-            for sig in self.data_storage.integrated_signals(self.pid, self.resolution):
-                sig.set_valid_height_range(self.depol_param.valid_alt_range)
-                sig.normalize_by_shots()
-                sig.correct_for_mol_transmission()
+            for prep_sig in self.data_storage.integrated_signals(self.pid, self.resolution):
+                if prep_sig.is_elast_sig:
+                    prep_sig.set_valid_height_range(self.depol_param.valid_alt_range)
+                    prep_sig.normalize_by_shots()
+                    prep_sig.correct_for_mol_transmission()
 
-                self.data_storage.set_prepared_signal(self.pid, self.resolution, sig)
+                    self.data_storage.set_prepared_signal(self.pid, self.resolution, prep_sig)
 
 
 PREP_SIG_CLASSES = {EXT: PrepareExtSignals,

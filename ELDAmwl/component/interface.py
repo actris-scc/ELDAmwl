@@ -85,7 +85,7 @@ class IVLDROp(interface.Interface):
     """
 
 
-class IPLDROp(interface.Interface):
-    """
-    Marker Interface for PLDR operation
-    """
+# class IPLDROp(interface.Interface):
+#     """
+#     Marker Interface for PLDR operation
+#     """

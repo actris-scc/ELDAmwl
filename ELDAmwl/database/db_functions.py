@@ -18,7 +18,7 @@ from ELDAmwl.database.tables.channels import Channels
 from ELDAmwl.database.tables.channels import ProductChannels
 from ELDAmwl.database.tables.channels import Telescopes
 from ELDAmwl.database.tables.depolarization import VLDROption, PolarizationCalibrationCorrectionFactors, VLDRMethod, \
-    PLDROption
+    PLDROption, PolarizationCalibrationsProducts
 from ELDAmwl.database.tables.eldamwl_class_names import EldamwlClassNames
 from ELDAmwl.database.tables.eldamwl_products import EldamwlProducts
 from ELDAmwl.database.tables.extinction import ExtinctionOption
@@ -987,14 +987,15 @@ class DBFunc(DBUtils):
         """
         dt = np_datetime64_to_datetime(measurement_date)
 
-        params = self.session.query(PolarizationCalibrationCorrectionFactors)\
-            .filter(PolarizationCalibrationCorrectionFactors.product_id == prod_id)\
+        params = self.session.query(PolarizationCalibrationCorrectionFactors, PolarizationCalibrationsProducts)\
+            .filter(PolarizationCalibrationsProducts.product_to_calibrate_id == prod_id)\
+            .filter(PolarizationCalibrationsProducts.calibration_product_id == PolarizationCalibrationCorrectionFactors.product_id)\
             .filter(PolarizationCalibrationCorrectionFactors.correction_date <= dt)\
             .order_by(PolarizationCalibrationCorrectionFactors.correction_date.desc())\
             .order_by(PolarizationCalibrationCorrectionFactors.correction_submission_date.desc())
 
         if params.count() > 0:
-            return params.first()
+            return params.first().PolarizationCalibrationCorrectionFactors
         else:
             self.logger.error('no matching parameter for depolarization uncertainty for product {0} '
                               'and measurement time{1} in database'.format(prod_id, measurement_date))

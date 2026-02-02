@@ -130,6 +130,12 @@ class CalcExtinctionDefault(BaseOperation):
     def calc_single_profile(self, t, data):
         fvb = data.first_valid_bin(t)
         lvb = data.last_valid_bin(t)
+
+        for lev in range(fvb):
+            self.result.set_invalid_point(t, lev, BELOW_OVL)
+        for lev in range(lvb, self.result.num_levels):
+            self.result.set_invalid_point(t, lev, ABOVE_MAX_ALT)
+
         for lev in range(fvb, lvb):
             window = int(data.ds.binres[t, lev])
             half_win = window // 2

@@ -87,12 +87,12 @@ class GetDerivedProductsDefault(BaseOperation):
                     prod_id
                 ))
 
-                lr = PLDRFactory()(
+                pldr = PLDRFactory()(
                     pldr_param=pldr_param,
                     resolution=res).get_product()
 
                 self.data_storage.set_derived_products(
-                    prod_id, res, lr)
+                    prod_id, res, pldr)
 
     def get_angstroem_exps(self):
         for res in RESOLUTIONS:

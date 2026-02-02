@@ -96,6 +96,8 @@ class Products(Signals):
         if result.params.smooth_method is not None:
             result.smooth_routine = SmoothRoutine()(method_id=result.params.smooth_method)
 
+        result.prod_id = p_params.prod_id
+
         return result
 
     @property

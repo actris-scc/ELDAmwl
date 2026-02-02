@@ -130,7 +130,7 @@ class MWLFileStructure:
     COO_ATTR = 'longitude latitude'
     ANC_VAR_ATT = 'error_{} vertical_resolution'  # noqa P103
 
-    PRODUCTS_WITH_SYS_ERROR = [VLDR]
+    PRODUCTS_WITH_SYS_ERROR = [VLDR, PLDR]
 
     def is_product_with_sys_error(self, p_type):
         if p_type in self.PRODUCTS_WITH_SYS_ERROR:

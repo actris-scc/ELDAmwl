@@ -68,6 +68,29 @@ class VLDROption(Base):
     )
 
 
+class PolarizationCalibrationsProducts(Base):
+    """content of the db table polarization_calibrations_products
+    """
+    __tablename__ = 'polarization_calibrations_products'
+
+    ID = Column(
+        INTEGER,
+        primary_key=True,
+    )
+    calibration_product_id = Column(
+        '_calibration_product_ID',
+        INTEGER,
+        nullable=False,
+        server_default=text("'-1'"),
+    )
+    product_to_calibrate_id = Column(
+        '_product_to_calibrate_ID',
+        INTEGER,
+        nullable=False,
+        server_default=text("'-1'"),
+    )
+
+
 class PolarizationCalibrationCorrectionFactors(Base):
     """content of the db table polarization_calibration_correction_factors
 
