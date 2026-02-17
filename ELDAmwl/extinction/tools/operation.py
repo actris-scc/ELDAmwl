@@ -32,11 +32,13 @@ class LinFit(BaseOperation):
 
         if self.kwargs['weight']:
             weight = 1 / self.data.yerr_data
+            cov = 'unscaled'
         else:
             weight = None
+            cov = True
 
         fit = np.polyfit(self.data.x_data, self.data.y_data,
-                         1, w=weight, cov='unscaled')
+                         1, w=weight, cov=cov)
         # np.polyfit(x, y, deg, w=weight)
         # weight: For gaussian uncertainties, use 1/sigma.
         # These settings (w= 1/err, cov='unscaled')correspond
