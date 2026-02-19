@@ -1,4 +1,5 @@
 import numpy as np
+import xarray as xr
 
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
@@ -54,8 +55,14 @@ class CalcVldrVFreudenthaler22(BaseOperation):
         * while the lower and upper bound of the systematic uncertainty are:
 
         .. math::
-            \Delta\delta_{low}(z) &= a_{low} + b_{low}\delta(z) + c_{low}\delta^2(z) \\
-            \Delta\delta_{up}(z) &= a_{up} + b_{up}\delta(z) + c_{up}\delta^2(z) \\
+            \Delta\delta_{low}(z) &= a_{low} + b_{low} \: \delta(z) + c_{low} \: \delta^2(z) \\
+            \Delta\delta_{up}(z) &= a_{up} + b_{up} \: \delta(z) + c_{up} \: \delta^2(z) \\
+
+        * from physical (not mathematical) point of view it is always :math:`\delta(z) \ge \delta^{mol}(z)` and therefore:
+
+        .. math::
+            \Delta\delta_{low}(z) &= max \bigl (\Delta\delta_{low}(\delta), \Delta\delta_{low}(\delta^{mol}) \bigr) \\
+            \Delta\delta_{up}(z) &= max \bigl (\Delta\delta_{up}(\delta), \Delta\delta_{up}(\delta^{mol}) \bigr) \\
 
         Keyword Args:
             sigratio (xarray.DataSet): already smoothed signal ratio with data_vars:
@@ -66,7 +73,7 @@ class CalcVldrVFreudenthaler22(BaseOperation):
 
                 * 'qf', 'binres' = quality flag and bin resolution of :math:`R` (not used here)
 
-                * 'molecular_depolarization_ratio' (not used here)
+                * 'molecular_depolarization_ratio' :math:`\delta^{mol}(z)` = linear depolarization ratio of molecules
 
                 * and others (not used here)
 
@@ -76,20 +83,22 @@ class CalcVldrVFreudenthaler22(BaseOperation):
 
                 * 'gain_ratio_correction' :math:`K`
 
-                * 'HR', 'HT', 'GR', 'GT' = H and G parameters of the reflected and transmitted signals (:math:`H_r`, :math:`H_t`, :math:`G_r`, :math:`G_t`)  # noqa E501
+                * 'HR', 'HT', 'GR', 'GT' = H and G parameters of the reflected and transmitted signals (:math:`H_r`, :math:`H_t`, :math:`G_r`, :math:`G_t`)
 
-                * 'sys_err_lower_bound_a', 'sys_err_lower_bound_b', 'sys_err_lower_bound_c' = Parameters to calculate the lower bound of the systematic error (:math:`a_{low}`, :math:`b_{low}`, :math:`c_{low}`)  # noqa E501
+                * 'sys_err_lower_bound_a', 'sys_err_lower_bound_b', 'sys_err_lower_bound_c' = Parameters to calculate the lower bound of the systematic error (:math:`a_{low}`, :math:`b_{low}`, :math:`c_{low}`)
 
-                * 'sys_err_upper_bound_a', 'sys_err_upper_bound_b', 'sys_err_upper_bound_c' = Parameters to calculate the upper bound of the systematic error (:math:`a_{up}`, :math:`b_{up}`, :math:`c_{up}`)  # noqa E501
+                * 'sys_err_upper_bound_a', 'sys_err_upper_bound_b', 'sys_err_upper_bound_c' = Parameters to calculate the upper bound of the systematic error (:math:`a_{up}`, :math:`b_{up}`, :math:`c_{up}`)
 
             Returns:
                 VLDR profile (xarray.DataSet) with calculated data_vars:
 
                 * 'data' = :math:`\delta(z)`
 
-                * 'error' = :math:`\Delta\delta(z)`
+                * 'error' = :math:`\Delta\delta(z)` = statistical absolute uncertainty of :math:`\delta(z)`
 
                 * 'sys_err_neg', 'sys_err_pos' = :math:`\Delta\delta_{low}(z)`, :math:`\Delta\delta_{up}(z)`
+
+                * 'molecular_depolarization_ratio' = :math:`\delta^{mol}(z)` = linear depolarization ratio of molecules
 
                 * all other variables and attributes are copied from sigratio
         """
@@ -124,13 +133,29 @@ class CalcVldrVFreudenthaler22(BaseOperation):
             * calibrated_sigratio_err)
 
         # 3) calculate systematic errors
-        vldr['sys_err_neg'] = depol_params.sys_err_lower_bound_a \
+        sys_err_neg = depol_params.sys_err_lower_bound_a \
             + depol_params.sys_err_lower_bound_b * vldr_data \
             + depol_params.sys_err_lower_bound_c * vldr_data_sqr
 
-        vldr['sys_err_pos'] = depol_params.sys_err_upper_bound_a \
+        sys_err_pos = depol_params.sys_err_upper_bound_a \
             + depol_params.sys_err_upper_bound_b * vldr_data \
             + depol_params.sys_err_upper_bound_c * vldr_data_sqr
+
+        # calculate smalles physically possible values from molecular depol ratios
+        mldr = sigratio['mol_depolarization_ratio']
+        mldr_sqr = sqr(mldr)
+
+        sys_err_neg_min = depol_params.sys_err_lower_bound_a \
+            + depol_params.sys_err_lower_bound_b * mldr \
+            + depol_params.sys_err_lower_bound_c * mldr_sqr
+
+        sys_err_pos_min = depol_params.sys_err_upper_bound_a \
+                      + depol_params.sys_err_upper_bound_b * mldr \
+                      + depol_params.sys_err_upper_bound_c * mldr_sqr
+
+        # use the max of calculated and physically possible min value
+        vldr['sys_err_neg'] = xr.ufuncs.maximum(sys_err_neg, sys_err_neg_min)
+        vldr['sys_err_pos'] = xr.ufuncs.maximum(sys_err_pos, sys_err_pos_min)
 
         # todo: test if the mol depol is available here
         vldr['molecular_depolarization_ratio'] = sigratio['mol_depolarization_ratio']
