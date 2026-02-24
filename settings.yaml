@@ -160,6 +160,8 @@ default:
   ]
 
 #  FIXTURES :
+#    - PrepareSignalsDefault
+#    - PrepareSignalsDefault.result
 #    - FindBscCalibrWindowAsInELDA
 #    - FindBscCalibrWindowAsInELDA.find_calibration_window
 
