@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """base class for columns"""
+from ELDAmwl.bases.base import DataPoint
 from ELDAmwl.component.interface import ILogger
+from ELDAmwl.depol.depol_calibration_data import DepolarizationCalibration
 from ELDAmwl.utils.constants import NC_FILL_BYTE, NEG_TEST_STD_FACTOR, ALL_OK
 from ELDAmwl.utils.constants import NC_FILL_INT
 from zope import component
@@ -49,6 +51,33 @@ class Columns(object):
         new.has_sys_err = self._has_sys_err
         new.profile_qf = self.profile_qf.copy(deep=True)
         return new
+
+    def __eq__(self, other):
+        self_vars = vars(self)
+        other_vars = vars(other)
+
+        for attr, self_val in self_vars.items():
+            other_val = other_vars[attr]
+
+            # handle specifically xarray.Dataset/DataArray
+            if isinstance(self_val, (xr.Dataset, xr.DataArray)):
+                if not self_val.equals(other_val):
+                    return False
+            elif isinstance(self_val, np.ndarray):
+                if not (self_val == other_val).all():
+                    return False
+            elif isinstance(self_val, DataPoint):
+                if self_val != other_val:
+                    return False
+            elif isinstance(self_val, DepolarizationCalibration):
+                if self_val != other_val:
+                    return False
+            else:
+                # compare as usual for other types
+                if self_val != other_val:
+                    return False
+
+        return True
 
     @property
     def logger(self):

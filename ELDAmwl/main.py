@@ -156,7 +156,7 @@ class Main:
             elda_mwl.read_tasks()
             elda_mwl.read_elpp_data()
             elda_mwl.prepare_signals()
-            print(psutil.Process().memory_full_info().uss)
+            # print(psutil.Process().memory_full_info().uss)
             elda_mwl.get_basic_products()
             elda_mwl.get_derived_products()
             elda_mwl.get_lidar_constants()

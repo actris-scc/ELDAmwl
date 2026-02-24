@@ -60,6 +60,12 @@ class DataPoint(object):
     def __init__(self):
         self.data = xr.Dataset()
 
+    def __eq__(self, other):
+        if not self.data.equals(other.data):
+            return False
+        else:
+            return True
+
     def copy(self):
         new = DataPoint()
         new.data = self.data.copy(deep=True)
