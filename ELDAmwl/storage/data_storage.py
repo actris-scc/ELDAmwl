@@ -127,6 +127,8 @@ class DataStorage:
     def set_integrated_signal(self, prod_id_str, res, new_signal):
         """write new time integrated ELPP signal to storage"""
 
+        if prod_id_str not in self._mydata.integrated_signals[res]:
+            self._mydata.integrated_signals[res][prod_id_str] = Dict()
         self._mydata.integrated_signals[res][prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_integrated_cloud_mask(self, resolution, new_cm):
@@ -136,6 +138,8 @@ class DataStorage:
     def set_prepared_signal(self, prod_id_str, resolution, new_signal):
         """write new prepared signal to storage"""
 
+        if prod_id_str not in self._mydata.prepared_signals[resolution]:
+            self._mydata.prepared_signals[resolution][prod_id_str] = Dict()
         self._mydata.prepared_signals[resolution][prod_id_str][new_signal.channel_id_str] = new_signal  # noqa E501
 
     def set_basic_product_raw(self, prod_id_str, new_product):
@@ -424,6 +428,13 @@ class DataStorage:
             raise NotFoundInStorage('lidar constant',
                                     'wavelength {0}'.format(wavelength))
 
+    def prepared_signals_exist(self, prod_id_str, resolution):
+        result = False
+        if prod_id_str in self._mydata.prepared_signals[resolution]:
+            if len(self.prepared_signals(prod_id_str, resolution)) > 0:
+                result = True
+        return result
+
     def prepared_signals(self, prod_id_str, resolution):
         """copies of all prepared signals of one product
 
@@ -441,6 +452,7 @@ class DataStorage:
              NotFoundInStorage: if no signals for the given product id
                 are found in storage
         """
+
         try:
             result = []
             for ch_id in self._mydata.prepared_signals[resolution][prod_id_str]:

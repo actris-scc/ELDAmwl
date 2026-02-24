@@ -7,6 +7,7 @@ from ELDAmwl.bases.factory import BaseOperationFactory
 from ELDAmwl.component.registry import registry
 from ELDAmwl.errors.exceptions import UseCaseNotImplemented
 from ELDAmwl.signals import Signals
+from ELDAmwl.tests.pickle_data import write_test_data
 from ELDAmwl.utils.constants import EBSC, VLDR, RESOLUTIONS, RESOLUTION_STR
 from ELDAmwl.utils.constants import EXT
 from ELDAmwl.utils.constants import KF
@@ -31,8 +32,8 @@ class PrepareSignalsForProductDefault(BaseOperation):
 
         if self.data_storage.time_integration_multiple(current_res) == \
             self.data_storage.time_integration_multiple(other_res):
-            self.existing_signals = self.data_storage.prepared_signals(self.pid, other_res)
-            if len(self.existing_signals) > 0:
+            if self.data_storage.prepared_signals_exist(self.pid, other_res):
+                self.existing_signals = self.data_storage.prepared_signals(self.pid, other_res)
                 self.data_already_exist = True
 
     def run(self):
@@ -275,6 +276,14 @@ class PrepareSignalsDefault(BaseOperation):
     def run(self):
         self.products = self.kwargs['products']
 
+        write_test_data(
+            'PrepareSignalsDefault',
+            cls=PrepareSignalsDefault,
+            data_storage=self.data_storage,
+            measurement_params=self.params,
+            basic_products=self.products,
+        )
+
         # if the products (and signals) are to be smoothed and integrated onto a fixed, pre-defined grid
         if self.params.smooth_params.smooth_type == FIXED:
             self.logger.info('time integration of signals')
@@ -294,6 +303,12 @@ class PrepareSignalsDefault(BaseOperation):
                 self.logger.error(f'signal preparation for product type {p_param.product_type} '
                                   f'is not yet implemented')
                 raise UseCaseNotImplemented('all', f'product type {p_param.product_type}', 'non')
+
+        write_test_data(
+            'PrepareSignalsDefault.result',
+            file_name='PrepareSignalsDefault.result',
+            result=self.data_storage,
+        )
 
 
 class PrepareSignals(BaseOperationFactory):
