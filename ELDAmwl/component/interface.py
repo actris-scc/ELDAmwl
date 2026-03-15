@@ -85,6 +85,12 @@ class IVLDROp(interface.Interface):
     """
 
 
+class ILROp(interface.Interface):
+    """
+    Marker Interface for lidar ratio operation
+    """
+
+
 # class IPLDROp(interface.Interface):
 #     """
 #     Marker Interface for PLDR operation

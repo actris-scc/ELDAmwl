@@ -1,6 +1,6 @@
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import ICfg, IVLDROp, IRamBscOp  #, IPLDROp
+from ELDAmwl.component.interface import ICfg, IVLDROp, IRamBscOp, ILROp  # , IPLDROp
 from ELDAmwl.component.interface import IElastBscOp
 from ELDAmwl.component.interface import IExtOp
 from ELDAmwl.component.interface import ILogger
@@ -190,6 +190,27 @@ class MonteCarloVLDRAdapter(MonteCarlo):
         return self.op.run(data=data['sig_ratio'])
 
 
+@zope.component.adapter(ILROp)
+@zope.interface.implementer(IMonteCarlo)
+class MonteCarloLRAdapter(MonteCarlo):
+
+    def get_data(self):
+        """
+        Returns the data monte carlo has to operate on.
+        Usually this is a dict with Columns
+        """
+        return {'ext': self.op.ext,
+                'bsc': self.op.bsc,
+                }
+
+    def run(self, data):
+        """
+        puts the mc copy of data into the operation and runs the operation
+        Returns the operation result
+        """
+        return self.op.run(ext=data['ext'], bsc=data['bsc'])
+
+
 # @zope.component.adapter(IPLDROp)
 # @zope.interface.implementer(IMonteCarlo)
 # class MonteCarloPLDRAdapter(MonteCarlo):
@@ -308,6 +329,7 @@ def register_monte_carlo():
     gsm.registerAdapter(MonteCarloExtAdapter, (IExtOp,), IMonteCarlo)
     gsm.registerAdapter(MonteCarloElastBscAdapter, (IElastBscOp,), IMonteCarlo)
     gsm.registerAdapter(MonteCarloRamanBscAdapter, (IRamBscOp,), IMonteCarlo)
+    gsm.registerAdapter(MonteCarloLRAdapter, (ILROp,), IMonteCarlo)
 
     registry.register_class(CreateMCCopies,
                             CreateMCCopiesDefault.__name__,

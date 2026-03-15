@@ -4,7 +4,7 @@ from addict import Dict
 from copy import deepcopy
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import IMonteCarlo
+from ELDAmwl.component.interface import IMonteCarlo, ILROp
 from ELDAmwl.component.registry import registry
 from ELDAmwl.lidar_ratio.product import LidarRatios
 from ELDAmwl.utils.constants import MC, ABOVE_MAX_ALT, CALC_WINDOW_OUTSIDE_PROFILE, ALL_OK, P_ALL_OK
@@ -75,12 +75,12 @@ class LidarRatioFactoryDefault(BaseOperation):
 
         lr = lr_routine.run()
 
-        # if self.param.error_method == MC:
-        #     adapter = zope.component.getAdapter(lr_routine, IMonteCarlo)
-        #     lr.err[:] = adapter(self.param.mc_params)
-        # else:
-        #     lr = lr
-        #
+        if self.param.error_method == MC:
+            adapter = zope.component.getAdapter(lr_routine, IMonteCarlo)
+            lr.err[:] = adapter(self.param.mc_params)
+        else:
+            lr = lr
+
         del self.ext
         del self.bsc
 
@@ -139,6 +139,7 @@ class CalcLidarRatio(BaseOperationFactory):
         return 'CalcLidarRatioDefault'
 
 
+@zope.interface.implementer(ILROp)
 class CalcLidarRatioDefault(BaseOperation):
     """
     Calculates particle lidar ratio from extinction and backscatter.
@@ -191,7 +192,7 @@ class CalcLidarRatioDefault(BaseOperation):
             bsc = self.bsc
 
         self.result.ds['data'] = ext.data / bsc.data
-        self.result.ds['err'] = self.result.data * np.sqrt(
+        self.result.ds['err'] = abs(self.result.data) * np.sqrt(
             np.power(ext.err / ext.err, 2) + np.power(bsc.err / bsc.err, 2))
 
         self.result.resolution = ext.resolution

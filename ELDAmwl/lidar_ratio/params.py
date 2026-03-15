@@ -50,6 +50,8 @@ class LidarRatioParams(ProductParams):
         # use emission wavelength of ext product also for this lr
         self.general_params.emission_wavelength = self.backscatter_params.general_params.emission_wavelength
 
+        self.get_error_params({'error_method': query.error_method_id})
+
         # some consistency tests and harmonization of / with bsc and ext params
         basic_params = [self.backscatter_params, self.extinction_params]
         self.harmonize_resolution_settings(basic_params)
