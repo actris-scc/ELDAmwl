@@ -154,8 +154,8 @@ class CalcVldrVFreudenthaler22(BaseOperation):
                       + depol_params.sys_err_upper_bound_c * mldr_sqr
 
         # use the max of calculated and physically possible min value
-        vldr['sys_err_neg'] = xr.ufuncs.maximum(sys_err_neg, sys_err_neg_min)
-        vldr['sys_err_pos'] = xr.ufuncs.maximum(sys_err_pos, sys_err_pos_min)
+        vldr['sys_err_neg'] = np.maximum(sys_err_neg, sys_err_neg_min)
+        vldr['sys_err_pos'] = np.maximum(sys_err_pos, sys_err_pos_min)
 
         # todo: test if the mol depol is available here
         vldr['molecular_depolarization_ratio'] = sigratio['mol_depolarization_ratio']
