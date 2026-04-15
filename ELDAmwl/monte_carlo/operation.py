@@ -1,6 +1,6 @@
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import ICfg, IVLDROp, IRamBscOp, ILROp  # , IPLDROp
+from ELDAmwl.component.interface import ICfg, IVLDROp, IRamBscOp, ILROp, IPLDROp
 from ELDAmwl.component.interface import IElastBscOp
 from ELDAmwl.component.interface import IExtOp
 from ELDAmwl.component.interface import ILogger
@@ -211,26 +211,26 @@ class MonteCarloLRAdapter(MonteCarlo):
         return self.op.run(ext=data['ext'], bsc=data['bsc'])
 
 
-# @zope.component.adapter(IPLDROp)
-# @zope.interface.implementer(IMonteCarlo)
-# class MonteCarloPLDRAdapter(MonteCarlo):
-#
-#     def get_data(self):
-#         """
-#         Returns the data monte carlo has to operate on.
-#         Usually this is a dict with Columns
-#         """
-#         return {'vldr': self.op.vldr,
-#                 'bsc': self.op.sig_ratio}
-#
-#     def run(self, data):
-#         """
-#         puts the mc copy of data into the operation and runs the operation
-#         Returns the operation result
-#         """
-#         return self.op.run(vldr=data['vldr'], bsc=data['bsc'])
-#
-#
+@zope.component.adapter(IPLDROp)
+@zope.interface.implementer(IMonteCarlo)
+class MonteCarloPLDRAdapter(MonteCarlo):
+
+    def get_data(self):
+        """
+        Returns the data monte carlo has to operate on.
+        Usually this is a dict with Columns
+        """
+        return {'vldr': self.op.vldr,
+                'bsc': self.op.bsc}
+
+    def run(self, data):
+        """
+        puts the mc copy of data into the operation and runs the operation
+        Returns the operation result
+        """
+        return self.op.run(vldr=data['vldr'], bsc=data['bsc'])
+
+
 @zope.component.adapter(IRamBscOp)
 @zope.interface.implementer(IMonteCarlo)
 class MonteCarloRamanBscAdapter(MonteCarlo):
@@ -325,7 +325,7 @@ class CreateMCCopiesDefault(BaseOperation):
 def register_monte_carlo():
     gsm = zope.component.getGlobalSiteManager()
     gsm.registerAdapter(MonteCarloVLDRAdapter, (IVLDROp,), IMonteCarlo)
-    # gsm.registerAdapter(MonteCarloPLDRAdapter, (IPLDROp,), IMonteCarlo)
+    gsm.registerAdapter(MonteCarloPLDRAdapter, (IPLDROp,), IMonteCarlo)
     gsm.registerAdapter(MonteCarloExtAdapter, (IExtOp,), IMonteCarlo)
     gsm.registerAdapter(MonteCarloElastBscAdapter, (IElastBscOp,), IMonteCarlo)
     gsm.registerAdapter(MonteCarloRamanBscAdapter, (IRamBscOp,), IMonteCarlo)

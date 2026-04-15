@@ -45,6 +45,8 @@ class PLDRParams(ProductParams):
         # use emission wavelength of vldr product also for this pldr
         self.general_params.emission_wavelength = self.vldr_params.general_params.emission_wavelength
 
+        self.get_error_params({'error_method': query.error_method_id})
+
         # some consistency tests and harmonization of / with bsc and vldr params
         basic_params = [self.backscatter_params, self.vldr_params]
         self.harmonize_resolution_settings(basic_params)

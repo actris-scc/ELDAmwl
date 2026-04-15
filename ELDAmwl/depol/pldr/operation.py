@@ -4,8 +4,7 @@ from addict import Dict
 from ELDAmwl.backscatter.bsc_ratio.product import BackscatterRatios
 from ELDAmwl.bases.factory import BaseOperation
 from ELDAmwl.bases.factory import BaseOperationFactory
-from ELDAmwl.component.interface import IMonteCarlo
-# from ELDAmwl.component.interface import IPLDROp
+from ELDAmwl.component.interface import IMonteCarlo, IPLDROp
 from ELDAmwl.component.registry import registry
 from ELDAmwl.depol.pldr.product import PLDRs
 from ELDAmwl.depol.pldr.tools.operation import CalcPLDRProfile
@@ -84,12 +83,12 @@ class PLDRFactoryDefault(BaseOperation):
             empty_pldr=self.empty_pldr,)
         pldr = pldr_retrieval_routine.run()
 
-        # if self.param.error_method == MC:
-        #     adapter = zope.component.getAdapter(pldr_retrieval_routine, IMonteCarlo)
-        #     pldr.err[:] = adapter(self.param.mc_params)
-        # else:
-        #     pldr = pldr
-        #
+        if self.param.error_method == MC:
+            adapter = zope.component.getAdapter(pldr_retrieval_routine, IMonteCarlo)
+            pldr.err[:] = adapter(self.param.mc_params)
+        else:
+            pldr = pldr
+
         del self.vldr
         del self.bsc
         del self.empty_pldr
@@ -153,7 +152,7 @@ class CalcPLDR(BaseOperationFactory):
         return 'CalcPLDRDefault'
 
 
-# @zope.interface.implementer(IPLDROp)
+@zope.interface.implementer(IPLDROp)
 class CalcPLDRDefault(BaseOperation):
     r"""Calculates PLDRs from the volume linear depolarization and particle backscatter.
 
