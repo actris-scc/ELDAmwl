@@ -560,7 +560,8 @@ class CalcLidarConstantDefault(BaseOperation):
 
             # volume bsc
             vol_bsc = (part_bsc + mol_bsc)[bsc_calibr_bins[t]]
-            vol_bsc_err = vol_bsc * (part_bsc_err / part_bsc)[bsc_calibr_bins[t]]
+            # vol_bsc_err = vol_bsc * (part_bsc_err / part_bsc)[bsc_calibr_bins[t]]
+            vol_bsc_err = part_bsc_err[bsc_calibr_bins[t]]
 
             # calculate atmospheric transmission below calibration height
             # 1) integrated backscatter with lower and upper error bound

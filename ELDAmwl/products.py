@@ -327,7 +327,7 @@ class Products(Signals):
             return False
 
     def flag_empty_profiles(self):
-        empty_profiles = self.data.isnull().all('level')
+        empty_profiles = self.data.isnull().all('level').values
         self.profile_qf[empty_profiles] = self.profile_qf[empty_profiles] | P_EMPTY
 
     def quality_control(self):

@@ -198,7 +198,7 @@ def integral_profile(data,
     # insert_pos = None
     if extrapolate_ovl_factor is not None:
         # if the range axis is ascending, insert at position 0
-        if xdata[0] < xdata[-1]:
+        if xdata[0] <= xdata[-1]:
             xdata = np.insert(xdata, 0, np.array([0]))
             ydata = np.insert(ydata, 0, np.array(ydata[0]) * extrapolate_ovl_factor)
         # if range axis is descending, append at the end
