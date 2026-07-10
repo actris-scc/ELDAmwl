@@ -1054,7 +1054,7 @@ class CombineDepolComponentsDefault(BaseOperation):
             np.square(HT * refl_sig.err) +   # noqa W504
             np.square(factor * transm_sig.err) +    # noqa W504
             np.square(HR / K * transm_sig.data * err_etaS) +    # noqa W504
-            np.square(HR / K / K * transm_sig.data * err_K)) / denom    # noqa W504
+            np.square(HR / K / K * transm_sig.data * etaS * err_K)) / abs(denom)    # noqa W504
 
         result['qf'] = transm_sig.qf | refl_sig.qf
 
